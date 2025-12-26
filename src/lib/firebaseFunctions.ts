@@ -1,37 +1,41 @@
-import { functions, db } from "@/lib/firebase";
+export interface FreeReportUserData {
+  dateOfBirth: string | Date | undefined;
+  gender: string;
+  videoId: string | number;
+  name: string;
+  email: string;
+}
+
+import { functions } from "@/lib/firebase";
 import { httpsCallable } from "firebase/functions";
-import { doc, getDoc } from "firebase/firestore";
 import { format } from "date-fns";
 
-export async function getProgramVideoUrl(dateOfBirth: Date | null): Promise<string> {
+export async function getProgramId(dateOfBirth: string | Date | undefined) {
   const formattedDateOfBirth = dateOfBirth ? format(dateOfBirth, "yyyy-MM-dd") : null;
   const calculateProgram = httpsCallable(functions, "calculateProgram");
   const result = await calculateProgram({ birthDate: formattedDateOfBirth });
   const programNumber = result.data as number;
-  const videoId = programNumber.toString();
-  const programDocRef = doc(db, "programs", videoId);
-  const programSnapshot = await getDoc(programDocRef);
-  if (programSnapshot.exists()) {
-    const programData = programSnapshot.data();
-    return programData.webUrl;
-  }
-  return "";
+
+  return programNumber;
 }
 
-export async function sendPersonalizedEmail({
+export async function sendFreeReport({
   to,
-  videoUrl,
+  productIds,
   webinarUrl,
+  userData,
 }: {
   to: string;
-  videoUrl: string;
+  productIds: string[];
   webinarUrl: string;
+  userData: FreeReportUserData;
 }) {
   const sendEmail = httpsCallable(functions, "sendEmail");
   await sendEmail({
     to,
     subject: "Your personalized video and webinar invitation",
-    videoUrl,
+    productIds,
     webinarUrl,
+    userData,
   });
 }

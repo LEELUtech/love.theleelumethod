@@ -5,7 +5,7 @@ import UniversalModal from "./UniversalModal";
 import { UserForm, UserFormProps } from "@/components/ui/userModal/UserForm";
 
 export interface UserDataModalProps<T extends React.ElementType = 'button'> extends Partial<UserFormProps> {
-  trigger: ((open: () => void) => React.ReactNode) | React.ReactElement<any, T>;
+  trigger: ((open: () => void) => React.ReactNode) | React.ReactElement<unknown, T>;
   onSuccess?: () => void;
 }
 
@@ -24,12 +24,15 @@ export default function UserDataModal<T extends React.ElementType = 'button'>({
       {typeof trigger === 'function'
         ? trigger(handleOpen)
         : React.isValidElement(trigger)
-          ? React.cloneElement(trigger, {
-              onClick: (e: React.MouseEvent) => {
-                if (trigger.props.onClick) trigger.props.onClick(e);
-                handleOpen();
-              }
-            })
+          ? (() => {
+              const el = trigger as React.ReactElement<Record<string, unknown>, T>;
+              return React.cloneElement(el, {
+                onClick: (e: React.MouseEvent) => {
+                  if (typeof el.props.onClick === 'function') el.props.onClick(e);
+                  handleOpen();
+                }
+              });
+            })()
           : null}
       <UniversalModal open={open} onClose={handleClose}>
         <UserForm

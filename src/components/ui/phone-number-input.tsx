@@ -2,7 +2,6 @@
 
 import React, { FC } from "react";
 import { PhoneInput, PhoneInputProps } from "react-international-phone";
-import "./style.css";
 
 interface Props extends PhoneInputProps {
   value?: string;
