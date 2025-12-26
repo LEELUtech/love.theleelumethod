@@ -12,6 +12,7 @@ export default function JoinProgramButton() {
           Join Program
         </button>
       )}
+      title="Join Program"
     />
   );
 }

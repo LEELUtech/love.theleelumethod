@@ -26,10 +26,11 @@ export interface UserFormValues {
 }
 
 export interface UserFormProps {
-	onSuccess?: () => void;
+	title?: string;
+	onSuccess?: (values: UserFormValues) => void;
 	onSubmit?: (values: UserFormValues) => Promise<void> | void;
 }
-export const UserForm: React.FC<UserFormProps> = ({ onSuccess, onSubmit }) => {
+export const UserForm: React.FC<UserFormProps> = ({ title, onSuccess, onSubmit }) => {
 	const [form, handleChange] = useCustomForm<UserFormValues>();
 
 	const handleFinish = async (values: UserFormValues) => {
@@ -49,7 +50,7 @@ export const UserForm: React.FC<UserFormProps> = ({ onSuccess, onSubmit }) => {
 		}
 		const submitValues: UserFormValues = { ...values, name, dateOfBirth };
 		if (onSubmit) await onSubmit(submitValues);
-		if (onSuccess) onSuccess();
+		if (onSuccess) onSuccess(submitValues);
 	};
 
 	return (
@@ -60,7 +61,7 @@ export const UserForm: React.FC<UserFormProps> = ({ onSuccess, onSubmit }) => {
 			onFinish={handleFinish}
 		>
 			<h2 className="text-3xl font-bold text-pink-600 mb-8 text-center tracking-tight drop-shadow-lg">
-				Join the Program
+				{title || "Join the Program"}
 			</h2>
 			<div className="grid sm:grid-cols-2 gap-x-8 gap-y-6">
 				<FormItem

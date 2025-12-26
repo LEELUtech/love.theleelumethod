@@ -16,6 +16,7 @@ export default function FreeReportsModalButton() {
 					Free Reports CTA
 				</button>
 			)}
+			title="Get Free Reports!"
 			onSubmit={handleFreeReport}
 			onSuccess={() => {
 				router.replace("/confirmation");

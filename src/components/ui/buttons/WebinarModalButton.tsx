@@ -1,17 +1,25 @@
 "use client";
 import UserDataModal from "@/components/ui/userModal/UserDataModal";
+import { redirectToWebinar } from "@/utils/redirectToWebinar";
 
 export default function WebinarModalButton() {
-  return (
-    <UserDataModal
-      trigger={open => (
-        <button className="px-4 py-2 border rounded hover:bg-gray-100 transition" onClick={open}>
-          Webinar CTA
-        </button>
-      )}
-      onSuccess={() => {
-        window.location.href = "https://leelutech.ewebinar.com/webinar/decoded-love-22610";
-      }}
-    />
-  );
+	return (
+		<UserDataModal
+			trigger={(open) => (
+				<button
+					className="px-4 py-2 border rounded hover:bg-gray-100 transition"
+					onClick={open}
+				>
+					Webinar CTA
+				</button>
+			)}
+      title="Join Webinar"
+			onSuccess={(values) => {
+				redirectToWebinar({
+					name: `${values.firstName} ${values.lastName}`,
+					email: values.email,
+				});
+			}}
+		/>
+	);
 }

@@ -2,11 +2,12 @@
 
 import React, { useState } from "react";
 import UniversalModal from "./UniversalModal";
-import { UserForm, UserFormProps } from "@/components/ui/userModal/UserForm";
+import { UserForm, UserFormProps, UserFormValues } from "@/components/ui/userModal/UserForm";
 
 export interface UserDataModalProps<T extends React.ElementType = 'button'> extends Partial<UserFormProps> {
   trigger: ((open: () => void) => React.ReactNode) | React.ReactElement<unknown, T>;
-  onSuccess?: () => void;
+  onSuccess?: (values: UserFormValues) => void;
+  title?: string;
 }
 
 export default function UserDataModal<T extends React.ElementType = 'button'>({
@@ -37,9 +38,10 @@ export default function UserDataModal<T extends React.ElementType = 'button'>({
       <UniversalModal open={open} onClose={handleClose}>
         <UserForm
           {...formProps}
-          onSuccess={() => {
+          title={formProps.title}
+          onSuccess={(values) => {
             handleClose();
-            if (onSuccess) onSuccess();
+            if (onSuccess) onSuccess(values);
           }}
         />
       </UniversalModal>
