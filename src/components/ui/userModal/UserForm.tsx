@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import dayjs from "dayjs";
 import { Form, Input, DatePicker, Radio } from "antd";
 import { useCustomForm } from "@/hooks/use-custom-form";
 import { phoneValidationRules } from "@/utils/validations";
@@ -14,14 +15,14 @@ const genderOptions = [
 ];
 
 export interface UserFormValues {
-  [key: string]: string | Date | undefined;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber?: string;
-  dateOfBirth: Date | string;
-  gender: string;
-  name?: string;
+	[key: string]: string | Date | undefined;
+	firstName: string;
+	lastName: string;
+	email: string;
+	phoneNumber?: string;
+	dateOfBirth: Date | string;
+	gender: string;
+	name?: string;
 }
 
 export interface UserFormProps {
@@ -33,7 +34,20 @@ export const UserForm: React.FC<UserFormProps> = ({ onSuccess, onSubmit }) => {
 
 	const handleFinish = async (values: UserFormValues) => {
 		const name = [values.firstName, values.lastName].filter(Boolean).join(" ");
-		const submitValues: UserFormValues = { ...values, name };
+		let dateOfBirth: string | Date = values.dateOfBirth;
+		if (values.dateOfBirth) {
+			if (typeof values.dateOfBirth === "string") {
+				dateOfBirth = values.dateOfBirth;
+			} else if (values.dateOfBirth instanceof Date) {
+				dateOfBirth = values.dateOfBirth.toISOString();
+			} else if (typeof values.dateOfBirth === "object") {
+				// Assume dayjs object
+				dateOfBirth = dayjs(values.dateOfBirth).toISOString();
+			}
+		} else {
+			dateOfBirth = "";
+		}
+		const submitValues: UserFormValues = { ...values, name, dateOfBirth };
 		if (onSubmit) await onSubmit(submitValues);
 		if (onSuccess) onSuccess();
 	};
