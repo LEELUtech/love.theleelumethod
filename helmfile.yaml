@@ -1,0 +1,86 @@
+environments:
+  default:
+    values:
+    - tlsIssuer:
+        enabled: false
+      ingressController:
+        enabled: false
+      database:
+        enabled: false
+  staging:
+    values:
+      - tlsIssuer:
+          enabled: true
+        ingressController:
+          enabled: false
+        database:
+          enabled: false
+  production:
+    values:
+      - tlsIssuer:
+          enabled: true
+        ingressController:
+          enabled: true
+        database:
+          enabled: true
+
+repositories:
+  - name: ingress-nginx
+    url: https://kubernetes.github.io/ingress-nginx
+  - name: jetstack
+    url: https://charts.jetstack.io
+  - name: bndigital
+    url: https://bn-digital.github.io/helm
+
+helmfiles:
+  - path: git::https://github.com/bn-digital/helm.git@helmfiles/load-balancer.yaml?ref=latest
+    values:
+    - ingressShim:
+        defaultACMEChallengeType: http01
+
+helmDefaults:
+  createNamespace: false
+  cleanupOnFail: true
+
+releases:
+  - name: '{{ requiredEnv "APP_NAME" }}'
+    namespace: '{{ env "APP_ENV" | default "default" }}'
+    chart: bndigital/app
+    version: 2.0.1
+    labels:
+      component: app
+    set:
+      - name: app.name
+        value: '{{ requiredEnv "APP_NAME" }}'
+      - name: app.component
+        value: 'app'
+      - name: service.containerPort
+        value: 3000
+      - name: ingress.host
+        value: {{ requiredEnv "DOMAIN" }}
+      - name: image.pullPolicy
+        value: 'Always'
+      - name: image.repository
+        value: 'app'
+      - name: image.tag
+        value: '{{ env "APP_VERSION" | default "latest" }}'
+      - name: image.registry.url
+        value: '{{ requiredEnv "DOCKER_REGISTRY" }}/{{ requiredEnv "APP_NAME" }}'
+      - name: image.registry.username
+        value: '{{ requiredEnv "DOCKER_USERNAME" }}'
+      - name: image.registry.password
+        value: '{{ requiredEnv "DOCKER_PASSWORD" }}'
+    values:
+      - vcs:
+          repository: '{{ env "GITHUB_REPOSITORY" | default "unknown" }}'
+          ref: '{{ env "GITHUB_REF_NAME" | default "latest" }}'
+          commit: '{{ env "GITHUB_SHA" | default "unknown" }}'
+        ingress:
+          annotations:
+            nginx.ingress.kubernetes.io/auth-type: basic
+            nginx.ingress.kubernetes.io/auth-secret: nginx-basic-auth
+          tls:
+            issuer:
+              enabled: true
+          proxy:
+            www: false

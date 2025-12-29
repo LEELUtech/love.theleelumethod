@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
 const quizResults = [
@@ -9,18 +9,18 @@ const quizResults = [
   { id: 4, type: "strategist", title: "Business Strategist", description: "You see the big picture and excel at strategic planning and decision-making.", color: "#F59E0B", icon: "♟️" },
 ];
 
-export default function QuizRedirectPage() {
+function QuizRedirectContent() {
   const searchParams = useSearchParams();
   const [timeLeft, setTimeLeft] = useState(10);
   const [result, setResult] = useState<any>(null);
-  
+
   const type = searchParams.get("type");
   const score = searchParams.get("score");
 
   useEffect(() => {
     const foundResult = quizResults.find(r => r.type === type) || quizResults[0];
     setResult(foundResult);
-    
+
     const timer = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
@@ -46,15 +46,18 @@ export default function QuizRedirectPage() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white p-4 md:p-8">
+      {/* ...existing code... */}
       <div className="max-w-4xl mx-auto">
+        {/* ...existing code... */}
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
             Quiz Results
           </h1>
           <p className="text-gray-600">Based on your answers, here's your professional profile</p>
         </div>
-
+        {/* ...existing code... */}
         <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 mb-8 border-l-4" style={{ borderLeftColor: result.color }}>
+          {/* ...existing code... */}
           <div className="flex flex-col md:flex-row items-start md:items-center gap-6 mb-6">
             <div className="flex items-center justify-center w-16 h-16 rounded-full text-3xl" style={{ backgroundColor: `${result.color}20` }}>
               {result.icon}
@@ -73,10 +76,9 @@ export default function QuizRedirectPage() {
               <h2 className="text-2xl md:text-3xl font-bold text-gray-900">{result.title}</h2>
             </div>
           </div>
-          
+          {/* ...existing code... */}
           <div className="space-y-4">
             <p className="text-lg text-gray-700 leading-relaxed">{result.description}</p>
-            
             <div className="bg-blue-50 rounded-lg p-4">
               <h3 className="font-semibold text-blue-900 mb-2">🎯 Personalized Recommendation:</h3>
               <p className="text-blue-800">
@@ -85,13 +87,13 @@ export default function QuizRedirectPage() {
             </div>
           </div>
         </div>
-
+        {/* ...existing code... */}
         <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl p-6 md:p-8 text-white text-center">
+          {/* ...existing code... */}
           <h3 className="text-xl md:text-2xl font-bold mb-4">🎁 Special Webinar Invitation</h3>
           <p className="text-lg mb-6 opacity-90">
             Join our exclusive webinar to learn how to leverage your {result.title} strengths for career success
           </p>
-          
           <div className="flex flex-col items-center space-y-4">
             <div className="flex items-center justify-center space-x-2 mb-2">
               <div className="bg-white text-blue-600 rounded-full w-16 h-16 flex items-center justify-center">
@@ -102,7 +104,6 @@ export default function QuizRedirectPage() {
                 <p className="text-xl font-bold">seconds</p>
               </div>
             </div>
-            
             <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={() => window.location.href = "https://leelutech.ewebinar.com/webinar/decoded-love-22610"}
@@ -119,28 +120,26 @@ export default function QuizRedirectPage() {
                 Wait {timeLeft + 30}s
               </button>
             </div>
-            
             <p className="text-sm opacity-80 mt-4">
               You will be automatically redirected to the webinar registration page
             </p>
           </div>
         </div>
-
+        {/* ...existing code... */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* ...existing code... */}
           <div className="bg-gray-50 rounded-xl p-5">
             <h4 className="font-semibold text-gray-900 mb-2">📊 What This Means</h4>
             <p className="text-gray-600 text-sm">
               Your {result.title} profile indicates specific strengths and working preferences that can guide your career decisions.
             </p>
           </div>
-          
           <div className="bg-gray-50 rounded-xl p-5">
             <h4 className="font-semibold text-gray-900 mb-2">🎯 Webinar Focus</h4>
             <p className="text-gray-600 text-sm">
               The webinar will cover practical strategies for leveraging your unique strengths in professional settings.
             </p>
           </div>
-          
           <div className="bg-gray-50 rounded-xl p-5">
             <h4 className="font-semibold text-gray-900 mb-2">💡 Quick Tip</h4>
             <p className="text-gray-600 text-sm">
@@ -148,7 +147,7 @@ export default function QuizRedirectPage() {
             </p>
           </div>
         </div>
-
+        {/* ...existing code... */}
         <div className="mt-12">
           <h3 className="text-xl font-bold text-gray-900 mb-4">Other Result Types</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -168,5 +167,13 @@ export default function QuizRedirectPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function QuizRedirectPage() {
+  return (
+    <Suspense fallback={<main className="flex flex-col items-center justify-center min-h-[60vh] p-4"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div><p className="mt-4 text-gray-600">Loading your results...</p></main>}>
+      <QuizRedirectContent />
+    </Suspense>
   );
 }

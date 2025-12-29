@@ -1,0 +1,78 @@
+---
+name: Staging Deployment
+on:
+  workflow_dispatch: {}
+  push:
+    branches:
+      - latest
+    paths-ignore:
+      - 'helmfile.*'
+      - 'Dockerfile'
+      - 'docker-compose.yml'
+      - '.git*'
+      - '.dockerignore'
+      - '.github/**'
+
+jobs:
+  secrets:
+    uses: bn-digital/vault/.github/workflows/import-secrets.yml@latest
+    secrets: inherit
+  build:
+    needs: [ secrets ]
+    runs-on: self-hosted
+    concurrency:
+      group: "${{ github.event.repository.name }}-docker-${{ github.ref_name }}"
+      cancel-in-progress: true
+    env:
+      APP_NAME: ${{ github.event.repository.name }}
+      APP_ENV: staging
+      BUILDKIT_PROGRESS: plain
+      DOCKER_REPOSITORY: dcr.bndigital.dev/${{ github.event.repository.name }}
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      DOCKER_IMAGE: app
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Generate .env files
+        uses: bn-digital/vault-env@latest
+        continue-on-error: true
+        with:
+          endpoint: ${{ secrets.VAULT_ENDPOINT }}
+          token: ${{ secrets.GH_TOKEN }}
+          template: .env.${{ env.APP_ENV }}.tpl
+          target: .env
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+           cache-image: false
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login Docker registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.DOCKER_REPOSITORY }}
+          username: ${{ env.DOCKER_USERNAME }}
+          password: ${{ env.DOCKER_PASSWORD }}
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: "${{ env.DOCKER_REPOSITORY }}/${{ env.DOCKER_IMAGE }}"
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+  deploy:
+    needs: [ build ]
+    uses: bn-digital/helm/.github/workflows/deploy-charts.yml@latest
+    secrets: inherit
