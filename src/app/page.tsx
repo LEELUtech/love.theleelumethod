@@ -1,8 +1,15 @@
+import FreeQuizButton from "@/components/ui/buttons/FreeQuizButton"
+import FreeReportsModalButton from "@/components/ui/buttons/FreeReportsModalButton"
+import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton"
+
 export default function HomePage() {
 	return (
 		<main>
-			<h1>Welcome to Leelu App</h1>
-			<p>This is the main page.</p>
+			<div className="flex gap-2">
+				<FreeReportsModalButton />
+				<WebinarModalButton />
+				<FreeQuizButton />
+			</div>
 		</main>
 	);
 }

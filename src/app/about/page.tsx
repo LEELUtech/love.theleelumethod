@@ -1,6 +1,6 @@
-
 import FreeReportsModalButton from "@/components/ui/buttons/FreeReportsModalButton";
 import FreeQuizButton from "@/components/ui/buttons/FreeQuizButton";
+import JoinProgramButton from "@/components/ui/buttons/JoinProgramButton";
 
 export default function AboutPage() {
 	return (
@@ -11,11 +11,7 @@ export default function AboutPage() {
 				{/* Free Report CTA */}
 				<FreeReportsModalButton />
 				{/* Join Program CTA */}
-				<button
-					className="bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 px-8 rounded-xl text-lg shadow-md transition-all duration-200"
-				>
-					Join Program
-				</button>
+				<JoinProgramButton />
 				{/* Free Quiz CTA */}
 				<FreeQuizButton />
 			</div>
