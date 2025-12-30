@@ -1,11 +1,13 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import dayjs from "dayjs";
 import { Form, Input, DatePicker, Radio } from "antd";
 import { useCustomForm } from "@/hooks/use-custom-form";
 import { phoneValidationRules } from "@/utils/validations";
 import { PhoneNumberInput } from "@/components/ui/phone-number-input";
+import { getUserFormFromStorage, saveUserFormToStorage } from "@/helpers"
+
 
 const FormItem = Form.Item;
 
@@ -30,8 +32,16 @@ export interface UserFormProps {
 	onSuccess?: (values: UserFormValues) => void;
 	onSubmit?: (values: UserFormValues) => Promise<void> | void;
 }
+
 export const UserForm: React.FC<UserFormProps> = ({ title, onSuccess, onSubmit }) => {
 	const [form, handleChange] = useCustomForm<UserFormValues>();
+
+	useEffect(() => {
+  const storedValues = getUserFormFromStorage();
+  if (!storedValues) return;
+
+  form.setFieldsValue(storedValues);
+}, [form]);
 
 	const handleFinish = async (values: UserFormValues) => {
 		const name = [values.firstName, values.lastName].filter(Boolean).join(" ");
@@ -49,6 +59,8 @@ export const UserForm: React.FC<UserFormProps> = ({ title, onSuccess, onSubmit }
 			dateOfBirth = "";
 		}
 		const submitValues: UserFormValues = { ...values, name, dateOfBirth };
+
+		saveUserFormToStorage(submitValues);
 		if (onSubmit) await onSubmit(submitValues);
 		if (onSuccess) onSuccess(submitValues);
 	};
