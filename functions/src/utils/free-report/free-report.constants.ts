@@ -1,0 +1,32 @@
+export const POWER_TABLE: Record<number, number> = {
+  1: 36.0,
+  2: 13.5,
+  3: 18.0,
+  4: 67.5,
+  5: 31.5,
+  6: 22.5,
+  7: 85.5,
+  8: 72.0,
+  9: 63.0,
+  10: 58.5,
+  11: 78.5,
+  12: 49.5,
+  13: 94.5,
+  14: 54.0,
+  15: 90.0,
+  16: 99.0,
+  17: 40.5,
+  18: 45.0,
+  19: 81.0,
+  20: 27.0,
+  21: 4.5,
+  22: 9.0,
+};
+
+export const COMPATIBILITY_RANGES = [
+  { max: 20, type: "Revolution" },
+  { max: 40, type: "Battle" },
+  { max: 60, type: "Truce" },
+  { max: 80, type: "Victory" },
+  { max: 99, type: "Absorption" },
+] as const;
