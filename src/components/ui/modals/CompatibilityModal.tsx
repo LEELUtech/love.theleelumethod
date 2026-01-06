@@ -2,19 +2,19 @@
 
 import React, { useState } from "react";
 import UniversalModal from "./UniversalModal";
-import { UserForm, UserFormProps, UserFormValues } from "@/components/ui/userModal/UserForm";
+import { CompatibilityForm, CompatibilityFormProps, CompatibilityFormValues } from "@/components/ui/forms/CompatibilityForm";
 
-export interface UserDataModalProps<T extends React.ElementType = 'button'> extends Partial<UserFormProps> {
+export interface CompatibilityModalProps<T extends React.ElementType = 'button'> extends Partial<CompatibilityFormProps> {
   trigger: ((open: () => void) => React.ReactNode) | React.ReactElement<unknown, T>;
-  onSuccess?: (values: UserFormValues) => void;
+  onSuccess?: (values: CompatibilityFormValues) => void;
   title?: string;
 }
 
-export default function UserDataModal<T extends React.ElementType = 'button'>({
+export default function CompatibilityModal<T extends React.ElementType = 'button'>({
   trigger,
   onSuccess,
   ...formProps
-}: UserDataModalProps<T>) {
+}: CompatibilityModalProps<T>) {
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(true);
@@ -36,7 +36,7 @@ export default function UserDataModal<T extends React.ElementType = 'button'>({
             })()
           : null}
       <UniversalModal open={open} onClose={handleClose}>
-        <UserForm
+        <CompatibilityForm
           {...formProps}
           title={formProps.title}
           onSuccess={(values) => {

@@ -1,5 +1,5 @@
 "use client";
-import UserDataModal from "@/components/ui/userModal/UserDataModal";
+import UserDataModal from "@/components/ui/modals/UserDataModal";
 import { redirectToWebinar } from "@/utils/redirectToWebinar";
 
 export default function WebinarModalButton() {
