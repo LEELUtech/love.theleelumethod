@@ -2,7 +2,11 @@
 import UserDataModal from "@/components/ui/modals/UserDataModal";
 import { redirectToWebinar } from "@/utils/redirectToWebinar";
 
-export default function WebinarModalButton() {
+interface WebinarModalButtonProps {
+	text?: string;
+}
+
+export default function WebinarModalButton({ text = "Webinar CTA" }: WebinarModalButtonProps) {
 	return (
 		<UserDataModal
 			trigger={(open) => (
@@ -10,7 +14,7 @@ export default function WebinarModalButton() {
 					className="px-4 py-2 border rounded hover:bg-gray-100 transition"
 					onClick={open}
 				>
-					Webinar CTA
+					{text}
 				</button>
 			)}
       title="Join Webinar"
