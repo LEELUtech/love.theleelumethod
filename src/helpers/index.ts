@@ -1,12 +1,39 @@
-import { UserFormValues } from "@/components/ui/userModal/UserForm";
-import { FORM_STORAGE_KEY } from "@/utils/constants"
+import { UserFormValues } from "@/components/ui/forms/UserForm";
+import { FORM_STORAGE_KEY } from "@/utils/constants";
+import dayjs, { Dayjs } from "dayjs";
 
+// Generates random number with R- prefix (e.g. R-123456)
 export function generateRandomNumber(length = 6): string {
-  let result = "R-";
-  for (let i = 0; i < length; i++) {
-    result += Math.floor(Math.random() * 10);
+	let result = "R-";
+	for (let i = 0; i < length; i++) {
+		result += Math.floor(Math.random() * 10);
+	}
+	return result;
+}
+
+// Formats date to DD.MM.YYYY for backend parseBirthDate
+export function formatDateToISO(
+  dateValue: string | Date | Dayjs | undefined
+): string {
+  if (!dateValue) return "";
+
+  let d: Dayjs;
+  if (typeof dateValue === "string") {
+    d = dayjs(dateValue);
+  } else if (dateValue instanceof Date) {
+    d = dayjs(dateValue);
+  } else {
+    d = dateValue;
   }
-  return result;
+  return d.isValid() ? d.format("DD.MM.YYYY") : "";
+}
+
+// Joins first and last name into full name
+export function combineNames(
+	firstName?: string,
+	lastName?: string
+): string {
+	return [firstName, lastName].filter(Boolean).join(" ");
 }
 
 export const saveUserFormToStorage = (email: string) => {

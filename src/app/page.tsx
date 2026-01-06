@@ -1,12 +1,12 @@
 import FreeQuizButton from "@/components/ui/buttons/FreeQuizButton"
-import FreeReportsModalButton from "@/components/ui/buttons/FreeReportsModalButton"
+import CompatibilityReportModalButton from "@/components/ui/buttons/CompatibilityReportModalButton"
 import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton"
 
 export default function HomePage() {
 	return (
 		<main>
 			<div className="flex gap-2">
-				<FreeReportsModalButton />
+				<CompatibilityReportModalButton />
 				<WebinarModalButton />
 				<FreeQuizButton />
 			</div>

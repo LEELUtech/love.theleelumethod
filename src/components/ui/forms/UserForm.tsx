@@ -7,7 +7,12 @@ import { Form, Input, DatePicker, Radio } from "antd";
 import { useCustomForm } from "@/hooks/use-custom-form";
 import { phoneValidationRules } from "@/utils/validations";
 import { PhoneNumberInput } from "@/components/ui/phone-number-input";
-import { getUserFormFromStorage, saveUserFormToStorage } from "@/helpers";
+import {
+	getUserFormFromStorage,
+	saveUserFormToStorage,
+	formatDateToISO,
+	combineNames,
+} from "@/helpers";
 
 const FormItem = Form.Item;
 
@@ -75,27 +80,15 @@ export const UserForm: React.FC<UserFormProps> = ({ title, onSuccess, onSubmit }
   const handleFinish = async (values: UserFormValues) => {
     setLoading(true);
     try {
-      const name = [values.firstName, values.lastName].filter(Boolean).join(" ");
-      let dateOfBirth = values.dateOfBirth;
-      if (values.dateOfBirth) {
-        if (typeof values.dateOfBirth === "string") {
-          const d = dayjs(values.dateOfBirth);
-          dateOfBirth = d.isValid() ? d.toISOString() : "";
-        } else if (values.dateOfBirth instanceof Date) {
-          dateOfBirth = values.dateOfBirth.toISOString();
-        } else if (typeof values.dateOfBirth === "object") {
-          const d = values.dateOfBirth as Dayjs;
-          dateOfBirth = typeof d.isValid === "function" && d.isValid() ? d.toISOString() : "";
-        } else {
-          dateOfBirth = "";
-        }
-      } else {
-        dateOfBirth = "";
-      }
+      const name = combineNames(values.firstName, values.lastName);
+      const dateOfBirth = formatDateToISO(values.dateOfBirth);
+      
       const submitValues: UserFormValues = { ...values, name, dateOfBirth };
+      
       if (submitValues.email) {
         saveUserFormToStorage(submitValues.email);
       }
+      
       if (onSubmit) await onSubmit(submitValues);
       if (onSuccess) onSuccess(submitValues);
     } finally {
