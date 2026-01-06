@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+	.btn-pill {
+		@apply inline-flex items-center justify-center rounded-full bg-black text-white px-8 py-3 text-base font-semibold shadow-[0_10px_30px_rgba(0,0,0,0.25)] transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-200/40;
+	}
+
+	.btn-pill:hover {
+		@apply bg-neutral-900 shadow-[0_14px_34px_rgba(0,0,0,0.28)] -translate-y-0.5;
+	}
+
+	.btn-pill:active {
+		@apply translate-y-0 shadow-[0_8px_24px_rgba(0,0,0,0.24)];
+	}
+
+	.btn-pill:disabled {
+		@apply opacity-70 cursor-not-allowed translate-y-0 shadow-[0_6px_18px_rgba(0,0,0,0.2)];
+	}
+
+	.btn-pill__icon {
+		@apply ml-3 text-lg;
+	}
+}

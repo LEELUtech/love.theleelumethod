@@ -1,6 +1,7 @@
 "use client";
 import UserDataModal from "@/components/ui/modals/UserDataModal";
 import { redirectToWebinar } from "@/utils/redirectToWebinar";
+import PillButton from "@/components/ui/buttons/PillButton";
 
 interface WebinarModalButtonProps {
 	text?: string;
@@ -10,12 +11,9 @@ export default function WebinarModalButton({ text = "Webinar CTA" }: WebinarModa
 	return (
 		<UserDataModal
 			trigger={(open) => (
-				<button
-					className="px-4 py-2 border rounded hover:bg-gray-100 transition"
-					onClick={open}
-				>
-					{text}
-				</button>
+				<PillButton onClick={open} type="button">
+					<span>{text}</span>
+				</PillButton>
 			)}
       title="Join Webinar"
 			onSuccess={(values) => {

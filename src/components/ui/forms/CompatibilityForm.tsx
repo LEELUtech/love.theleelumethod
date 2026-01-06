@@ -183,13 +183,17 @@ export const CompatibilityForm: React.FC<CompatibilityFormProps> = ({
       <div className="flex justify-center mt-10">
         <button
           type="submit"
-          className="bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-12 rounded-full text-lg shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-pink-400/50 flex items-center justify-center gap-2 relative"
+          className="btn-pill gap-2"
           disabled={loading}
         >
           <span>{loading ? "Sending Report..." : "Get Compatibility Report"}</span>
-          {loading && (
-            <span className="ml-3 flex items-center">
+          {loading ? (
+            <span className="ml-2 flex items-center">
               <LoadingOutlined className="text-white text-xl" spin />
+            </span>
+          ) : (
+            <span aria-hidden className="btn-pill__icon">
+              →
             </span>
           )}
         </button>
