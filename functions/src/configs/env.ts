@@ -9,4 +9,8 @@ export const configs = {
   stripeSecretKey: process.env.STRIPE_SECRET_KEY,
   baseUrl: process.env.NEXT_PUBLIC_BASE_URL || process.env.DOMAIN_URL || "http://localhost:3000",
   test: process.env.TEST,
+  // Circle API configuration
+  circleApiKey: process.env.CIRCLE_API_KEY || "",
+  circleCommunityId: process.env.CIRCLE_COMMUNITY_ID || "",
+  circleCommunityUrl: process.env.CIRCLE_COMMUNITY_URL || "",
 };

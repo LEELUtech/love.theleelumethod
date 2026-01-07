@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from "next/navigation";
 import UserDataModal from "@/components/ui/modals/UserDataModal";
 import PillButton from "@/components/ui/buttons/PillButton";
 
@@ -7,6 +8,16 @@ interface JoinProgramButtonProps {
 }
 
 export default function JoinProgramButton({ text = "Join Program" }: JoinProgramButtonProps) {
+	const router = useRouter();
+
+	const handleSuccess = (values: any) => {
+		// Save user data to localStorage for checkout page
+		localStorage.setItem("checkoutData", JSON.stringify(values));
+		
+		// Redirect to checkout
+		router.push("/checkout");
+	};
+
 	return (
 		<UserDataModal
 			trigger={(open) => (
@@ -15,6 +26,7 @@ export default function JoinProgramButton({ text = "Join Program" }: JoinProgram
 				</PillButton>
 			)}
 			title="Join Program"
+			onSuccess={handleSuccess}
 		/>
 	);
 }

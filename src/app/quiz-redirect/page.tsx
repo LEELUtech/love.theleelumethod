@@ -73,9 +73,12 @@ function QuizRedirectContent() {
 							(window.location.href =
 								"https://leelutech.ewebinar.com/webinar/decoded-love-22610")
 						}
-						className="bg-pink-600 text-white hover:bg-pink-700 px-10 py-4 rounded-full font-bold text-lg transition-all transform hover:scale-105 shadow-lg"
+						className="btn-pill"
 					>
-						Join the Free Masterclass Now
+						<span>Join the Free Masterclass Now</span>
+						<span aria-hidden className="btn-pill__icon">
+							→
+						</span>
 					</button>
 				</div>
 			</div>

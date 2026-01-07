@@ -12,9 +12,12 @@ export default function ConfirmationPage() {
 				</p>
 				<Link
 					href="/"
-					className="inline-block bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-8 rounded-full text-lg shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-pink-400/50"
+					className="btn-pill"
 				>
-					Back to Home
+					<span>Back to Home</span>
+					<span aria-hidden className="btn-pill__icon">
+						→
+					</span>
 				</Link>
 			</div>
 		</main>
