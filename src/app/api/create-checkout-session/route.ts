@@ -1,93 +1,74 @@
+
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-
-interface ProductItem {
-  id: string;
-  price: number;
-}
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-04-30.basil",
 });
 
 export async function POST(req: NextRequest) {
-  const { amount, email, productIdsWithPrices, userId, referralData } =
-    await req.json();
-  const productIds = productIdsWithPrices.map((item: ProductItem) => item.id);
+  const { 
+    email, 
+    name,
+    firstName,
+    lastName,
+    phone,
+    productId = "course_decodedlove",
+    circleSpaceId,
+    circleCourseId,
+    zohoContactId,
+    addPaidReport = false,
+    amount = 9700, // Default $97.00 in cents
+    productName = "Decoded Love Course"
+  } = await req.json();
+  
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || req.nextUrl.origin;
 
-  if (!amount || typeof amount !== "number") {
-    return NextResponse.json({ error: "Invalid amount" }, { status: 400 });
-  }
-
-  const originalTotal = productIdsWithPrices.reduce(
-    (sum: number, product: ProductItem) => sum + product.price,
-    0,
-  );
-  const discountedTotal = amount / 100;
-  const hasDiscount = Math.abs(originalTotal - discountedTotal) > 0.01;
-
   try {
-    let lineItems;
-
-    if (hasDiscount) {
-      const discountAmount = originalTotal - discountedTotal;
-      lineItems = [
-        {
-          price_data: {
-            currency: "usd",
-            unit_amount: Math.round(discountedTotal * 100),
-            product_data: {
-              name: `Personalized Report (${Math.round(
-                (discountAmount / originalTotal) * 100,
-              )}% discount applied)`,
-              description: `Products: ${productIds
-                .map((id: string) => id.toUpperCase())
-                .join(", ")}`,
-            },
-          },
-          quantity: 1,
-        },
-      ];
-    } else {
-      lineItems = productIdsWithPrices.map((product: ProductItem) => ({
+    // Build line items
+    const lineItems = [
+      {
         price_data: {
           currency: "usd",
-          unit_amount: Math.round(product.price * 100),
+          unit_amount: amount,
           product_data: {
-            name: `Product ${product.id.toUpperCase()}`,
+            name: productName,
+            description: "Access to Decoded Love Course with lifetime updates",
           },
         },
         quantity: 1,
-      }));
-    }
+      },
+    ];
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
       customer_email: email ?? "",
-      success_url: `${baseUrl}${userId ? `/${userId}/thank` : "/thank"}`,
-      cancel_url: `${baseUrl}${userId ? `/${userId}` : ""}`,
-      metadata: {
-        email,
-        productIds: productIds.join(","),
-        originalAmount: originalTotal.toString(),
-        discountedAmount: discountedTotal.toString(),
-        hasDiscount: hasDiscount.toString(),
-        ...(referralData && {
-          promoCode: referralData.promoCode,
-          agentId: referralData.agentId,
-          agentName: referralData.agentName,
-          agentZohoId: referralData.agentZohoId,
-        }),
+      billing_address_collection: "required",
+      phone_number_collection: {
+        enabled: true,
       },
+      // Critical: metadata for webhook processing
+      metadata: {
+        product_id: productId,
+        circle_space_id: circleSpaceId || process.env.CIRCLE_DEFAULT_SPACE_ID || "",
+        circle_course_id: circleCourseId || "",
+        zoho_contact_id: zohoContactId || "",
+        source: "website",
+        customer_name: name || `${firstName} ${lastName}`,
+        customer_first_name: firstName || "",
+        customer_last_name: lastName || "",
+        customer_phone: phone || "",
+        add_paid_report: addPaidReport.toString(),
+      },
+      success_url: `${baseUrl}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/payment/cancel`,
     });
-
-    return NextResponse.json({ sessionId: session.id });
-  } catch {
+    return NextResponse.json({ sessionId: session.id, sessionUrl: session.url });
+  } catch (error) {
     return NextResponse.json(
-      { error: "Something went wrong" },
+      { error: (error as Error).message || "Something went wrong" },
       { status: 500 },
     );
   }

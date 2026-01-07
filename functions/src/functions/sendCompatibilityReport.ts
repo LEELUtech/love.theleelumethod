@@ -4,6 +4,9 @@ import { storage } from "../configs/firebase";
 import { configs } from "../configs/env";
 import { calculateCompatibility } from "../utils/free-report/free-report.service";
 
+// Webinar CTA URL
+const WEBINAR_URL = "https://leelutech.ewebinar.com/webinar/decoded-love-22610";
+
 export const sendCompatibilityReport = onCall(async (req) => {
   const { email, birthDate1, birthDate2, name1, name2 } = req.data || {};
 
@@ -45,18 +48,29 @@ export const sendCompatibilityReport = onCall(async (req) => {
     const subject = "Your Compatibility Report";
     const names = name1 && name2 ? `${name1} and ${name2}` : "you and your partner";
 
+    const webinarLink = `${WEBINAR_URL}?name=${encodeURIComponent(name1)}&email=${encodeURIComponent(email)}`;
+
     const html = `
-      <div style="font-family: Arial, sans-serif;">
-        <p style="margin-bottom: 6px;">Hi!</p>
-        <p>Thank you for using our compatibility analysis service.</p>
-        <p style="margin-bottom: 6px;">Your personalized compatibility report for ${names} is ready!</p>
-        <p style="margin-bottom: 6px;"><strong>Compatibility Type:</strong> ${compatibility.type}</p>
-        <p style="margin-bottom: 6px;"><strong>Compatibility Score:</strong> ${compatibility.diff.toFixed(1)}%</p>
-        <p>This report reveals the unique dynamics between your energies and provides insights into your relationship patterns.</p>
-        <p style="margin-bottom: 6px;">Take your time reading through the attached PDF.</p>
-        <p style="margin-bottom: 6px;">Remember, every relationship is a mirror showing us what we need to learn and grow.</p>
-        <p>With love,</p>
-        <p>Lily</p>
+      <div style="font-family: Arial, sans-serif; color: #111; line-height: 1.5;">
+        <p style="margin: 0 0 10px;">Hi!</p>
+        <p style="margin: 0 0 10px;">Thank you for using our compatibility analysis service.</p>
+        <p style="margin: 0 0 10px;">Your personalized compatibility report for ${names} is ready.</p>
+        <p style="margin: 0 0 10px;"><strong>Compatibility Type:</strong> ${compatibility.type}</p>
+        <p style="margin: 0 0 10px;"><strong>Compatibility Score:</strong> ${compatibility.diff.toFixed(1)}%</p>
+        <p style="margin: 0 0 14px;">Take your time reading the attached PDF. It highlights your unique dynamics and gives ideas on how to grow together.</p>
+        <p style="margin: 18px 0 22px;">
+          <a
+            href="${webinarLink}"
+            style="color: #222; text-decoration: underline; font-weight: 600; font-size: 17px; background: none; border: none; padding: 0;"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Join the live webinar
+          </a>
+        </p>
+        <p style="margin: 0 0 10px;">Remember, every relationship is a mirror showing us what we need to learn and grow.</p>
+        <p style="margin: 0 0 6px;">With love,</p>
+        <p style="margin: 0;">Lily</p>
       </div>
     `;
 
