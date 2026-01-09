@@ -35,7 +35,7 @@ export default function PillButton(props: PillButtonProps) {
 				{children}
 				{showArrow && (
 					<span aria-hidden className="btn-pill__icon">
-						→
+						&rarr;
 					</span>
 				)}
 			</a>
@@ -49,7 +49,7 @@ export default function PillButton(props: PillButtonProps) {
 			{children}
 			{showArrow && (
 				<span aria-hidden className="btn-pill__icon">
-					→
+					&rarr;
 				</span>
 			)}
 		</button>

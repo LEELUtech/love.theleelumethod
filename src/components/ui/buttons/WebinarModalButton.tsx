@@ -5,17 +5,19 @@ import PillButton from "@/components/ui/buttons/PillButton";
 
 interface WebinarModalButtonProps {
 	text?: string;
+	className?: string;
+	showArrow?: boolean;
 }
 
-export default function WebinarModalButton({ text = "Webinar CTA" }: WebinarModalButtonProps) {
+export default function WebinarModalButton({ text = "Webinar CTA", className, showArrow = true }: WebinarModalButtonProps) {
 	return (
 		<UserDataModal
 			trigger={(open) => (
-				<PillButton onClick={open} type="button">
+				<PillButton onClick={open} type="button" className={className} showArrow={showArrow}>
 					<span>{text}</span>
 				</PillButton>
 			)}
-      title="Join Webinar"
+	      title="Join Webinar"
 			onSuccess={(values) => {
 				redirectToWebinar({
 					name: `${values.firstName} ${values.lastName}`,

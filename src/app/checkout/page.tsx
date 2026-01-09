@@ -51,7 +51,7 @@ export default function CheckoutPage() {
           lastName: userData.lastName,
           phone: userData.phone,
           productId: "course_decodedlove",
-          circleSpaceId: process.env.NEXT_PUBLIC_CIRCLE_DEFAULT_SPACE_ID || "",
+          circleSpaceId: "", // Will be filled from env on server side
           addPaidReport: addPaidReport,
           amount: addPaidReport ? 14700 : 9700, // $147 or $97
           productName: addPaidReport 
