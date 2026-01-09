@@ -6,13 +6,15 @@ import React from "react";
 
 interface FreeQuizButtonProps {
 	text?: string;
+	className?: string;
 }
 
-export default function FreeQuizButton({ text = "Free Quiz" }: FreeQuizButtonProps) {
+export default function FreeQuizButton({ text = "Free Quiz", className }: FreeQuizButtonProps) {
 	return (
 		<PillButton
 			href={QUIZ_URL}
 			rel="noopener noreferrer"
+			className={className}
 		>
 			<span>{text}</span>
 		</PillButton>

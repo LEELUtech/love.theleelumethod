@@ -1,5 +1,40 @@
+import localFont from "next/font/local";
+import { Figtree, Inter, Playfair_Display } from "next/font/google";
 import Header from "@/components/ui/header";
 import "./globals.css";
+
+const inter = Inter({
+	subsets: ["latin"],
+	variable: "--font-inter",
+	display: "swap",
+});
+
+const playfair = Playfair_Display({
+	weight: ["400", "600", "700"],
+	subsets: ["latin"],
+	variable: "--font-playfair",
+	display: "swap",
+});
+
+const figtree = Figtree({
+	weight: ["400", "600", "700"],
+	subsets: ["latin"],
+	variable: "--font-figtree",
+	display: "swap",
+});
+
+const canela = localFont({
+	src: [
+		{ path: "../../public/fonts/CanelaTrial/Canela-Thin-Trial.otf", weight: "100", style: "normal" },
+		{ path: "../../public/fonts/CanelaTrial/Canela-Light-Trial.otf", weight: "300", style: "normal" },
+		{ path: "../../public/fonts/CanelaTrial/Canela-Regular-Trial.otf", weight: "400", style: "normal" },
+		{ path: "../../public/fonts/CanelaTrial/Canela-Medium-Trial.otf", weight: "500", style: "normal" },
+		{ path: "../../public/fonts/CanelaTrial/Canela-Bold-Trial.otf", weight: "700", style: "normal" },
+		{ path: "../../public/fonts/CanelaTrial/Canela-Black-Trial.otf", weight: "900", style: "normal" },
+	],
+	variable: "--font-canela",
+	display: "swap",
+});
 
 export const metadata = {
 	title: "Leelu v2",
@@ -12,8 +47,11 @@ export default function RootLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<html lang="en">
-			<body>
+		<html
+			lang="en"
+			className={`${inter.variable} ${playfair.variable} ${figtree.variable} ${canela.variable}`}
+		>
+			<body className="antialiased">
 				<Header />
 				{children}
 			</body>
