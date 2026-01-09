@@ -25,12 +25,12 @@ const figtree = Figtree({
 
 const canela = localFont({
 	src: [
-		{ path: "../../public/fonts/CanelaTrial/Canela-Thin-Trial.otf", weight: "100", style: "normal" },
-		{ path: "../../public/fonts/CanelaTrial/Canela-Light-Trial.otf", weight: "300", style: "normal" },
-		{ path: "../../public/fonts/CanelaTrial/Canela-Regular-Trial.otf", weight: "400", style: "normal" },
-		{ path: "../../public/fonts/CanelaTrial/Canela-Medium-Trial.otf", weight: "500", style: "normal" },
-		{ path: "../../public/fonts/CanelaTrial/Canela-Bold-Trial.otf", weight: "700", style: "normal" },
-		{ path: "../../public/fonts/CanelaTrial/Canela-Black-Trial.otf", weight: "900", style: "normal" },
+		{ path: "./_fonts/CanelaTrial/Canela-Thin-Trial.otf", weight: "100", style: "normal" },
+		{ path: "./_fonts/CanelaTrial/Canela-Light-Trial.otf", weight: "300", style: "normal" },
+		{ path: "./_fonts/CanelaTrial/Canela-Regular-Trial.otf", weight: "400", style: "normal" },
+		{ path: "./_fonts/CanelaTrial/Canela-Medium-Trial.otf", weight: "500", style: "normal" },
+		{ path: "./_fonts/CanelaTrial/Canela-Bold-Trial.otf", weight: "700", style: "normal" },
+		{ path: "./_fonts/CanelaTrial/Canela-Black-Trial.otf", weight: "900", style: "normal" },
 	],
 	variable: "--font-canela",
 	display: "swap",
