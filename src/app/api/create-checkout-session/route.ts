@@ -1,10 +1,8 @@
 
 import { NextRequest, NextResponse } from "next/server";
-import Stripe from "stripe";
+import { getStripe } from "@/lib/stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-04-30.basil",
-});
+const stripe = getStripe();
 
 export async function POST(req: NextRequest) {
   const { 
@@ -52,8 +50,8 @@ export async function POST(req: NextRequest) {
       // Critical: metadata for webhook processing
       metadata: {
         product_id: productId,
-        circle_space_id: circleSpaceId || process.env.CIRCLE_DEFAULT_SPACE_ID || "",
-        circle_course_id: circleCourseId || "",
+        circle_space_id: String(circleSpaceId || process.env.CIRCLE_DEFAULT_SPACE_ID || ""),
+        circle_course_id: String(circleCourseId || ""),
         zoho_contact_id: zohoContactId || "",
         source: "website",
         customer_name: name || `${firstName} ${lastName}`,

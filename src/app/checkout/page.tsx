@@ -1,37 +1,23 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-
-interface UserData {
-  email: string;
-  firstName: string;
-  lastName: string;
-  phone?: string;
-}
+import { useCheckoutStore } from "@/store/checkoutStore";
 
 export default function CheckoutPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [userData, setUserData] = useState<UserData | null>(null);
   const [addPaidReport, setAddPaidReport] = useState(false);
+  
+  const userData = useCheckoutStore((state) => state.checkoutData);
+  const clearCheckoutData = useCheckoutStore((state) => state.clearCheckoutData);
 
-  // Load user data from localStorage
+  // Redirect if no checkout data
   useEffect(() => {
-    const storedData = localStorage.getItem("checkoutData");
-    if (storedData) {
-      try {
-        const parsed = JSON.parse(storedData);
-        setUserData(parsed);
-      } catch (e) {
-        console.error("Failed to parse checkout data:", e);
-        router.push("/program"); // Redirect back if no data
-      }
-    } else {
-      // No data collected - redirect to program page
+    if (!userData) {
       router.push("/program");
     }
-  }, [router]);
+  }, [userData, router]);
 
   const handlePayment = async () => {
     if (!userData) return;
@@ -51,7 +37,7 @@ export default function CheckoutPage() {
           lastName: userData.lastName,
           phone: userData.phone,
           productId: "course_decodedlove",
-          circleSpaceId: "", // Will be filled from env on server side
+          circleSpaceId: "2422711",
           addPaidReport: addPaidReport,
           amount: addPaidReport ? 14700 : 9700, // $147 or $97
           productName: addPaidReport 
@@ -65,6 +51,9 @@ export default function CheckoutPage() {
       if (!response.ok) {
         throw new Error(data.error || "Failed to create checkout session");
       }
+
+      // Clear checkout data before redirect
+      clearCheckoutData();
 
       // Redirect to Stripe Checkout
       if (data.sessionUrl) {

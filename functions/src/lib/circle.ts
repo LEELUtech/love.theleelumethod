@@ -1,54 +1,60 @@
-/**
- * Circle API Service
- * Handles all Circle community member management and access control
- */
-
 import { configs } from "../configs/env";
 
 // Types
-export interface CircleMemberResponse {
-  id: string;
+export interface CircleMember {
+  id: number;
+  first_name: string;
+  last_name: string;
   email: string;
   name: string;
 }
 
-interface CircleMember {
-  id: string;
-  email: string;
-  name: string;
-  avatar_url?: string;
-  created_at?: string;
+interface CircleMemberNotFound {
+  success: false;
+  message: string;
+  error_details: {
+    message: string;
+  };
 }
 
-// Configuration
+interface CreateMemberResponse {
+  message: string;
+  community_member: CircleMember;
+}
+
+interface GrantAccessResponse {
+  success: boolean;
+  message: string;
+}
+
+// Config
 const getCircleConfig = () => ({
   apiKey: configs.circleApiKey || "PLACEHOLDER_API_KEY",
-  baseUrl: "https://api.circle.so/v1"
+  baseUrl: "https://app.circle.so/api/admin/v2",
 });
 
-/**
- * Make a request to Circle API
- */
-async function makeCircleRequest<T>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<T> {
+// Make Circle API request
+async function makeCircleRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const config = getCircleConfig();
   const url = `${config.baseUrl}${endpoint}`;
-  
+
   if (config.apiKey === "PLACEHOLDER_API_KEY") {
-    console.warn("⚠️ Circle API key not configured.");
     throw new Error("Circle API key not configured");
   }
-  
+
   const response = await fetch(url, {
     ...options,
     headers: {
-      "Authorization": `Bearer ${config.apiKey}`,
+      Authorization: `Bearer ${config.apiKey}`,
       "Content-Type": "application/json",
       ...options.headers,
     },
   });
+
+  // For 404 on search endpoint, return JSON (not found response)
+  if (!response.ok && response.status === 404) {
+    return response.json();
+  }
 
   if (!response.ok) {
     const errorData = await response.text();
@@ -58,104 +64,100 @@ async function makeCircleRequest<T>(
   return response.json();
 }
 
-/**
- * Find a Circle member by email
- */
+// Find member by email
 export async function findCircleMemberByEmail(email: string): Promise<CircleMember | null> {
-  try {
-    const response = await makeCircleRequest<{ community_members: CircleMember[] }>(
-      `/community_members?email=${encodeURIComponent(email)}`,
-      { method: "GET" }
-    );
+  console.log(`[Circle Search] Looking for email: ${email}`);
 
-    if (response.community_members && response.community_members.length > 0) {
-      return response.community_members[0];
-    }
+  const response = await makeCircleRequest<CircleMember | CircleMemberNotFound>(
+    `/community_members/search?email=${encodeURIComponent(email)}`,
+    { method: "GET" },
+  );
+
+  console.log("[Circle Search] Response:", JSON.stringify(response));
+
+  if ("success" in response && response.success === false) {
+    console.log("[Circle Search] Not found");
     return null;
-  } catch (error) {
-    console.error("Error finding Circle member:", error);
-    throw error;
   }
+
+  return response as CircleMember;
 }
 
-/**
- * Create a new Circle member with magic link
- */
-export async function createCircleMember(email: string, name: string): Promise<CircleMemberResponse> {
-  try {
-    const response = await makeCircleRequest<{ community_member: CircleMemberResponse }>(
-      "/community_members",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          email,
-          name,
-          skip_invitation: false,
-          send_magic_link: true,
-        }),
-      }
-    );
-    return response.community_member;
-  } catch (error) {
-    console.error("Error creating Circle member:", error);
-    throw error;
-  }
+// Create new member
+export async function createCircleMember(email: string, name: string): Promise<CircleMember> {
+  console.log(`[Circle] Creating member with email: ${email}, name: ${name}`);
+  const response = await makeCircleRequest<CreateMemberResponse>("/community_members", {
+    method: "POST",
+    body: JSON.stringify({
+      email,
+      name,
+      skip_invitation: false,
+    }),
+  });
+  console.log(`[Circle] Member created: ${response.community_member.id}`);
+  return response.community_member;
 }
 
-/**
- * Grant access to a Circle space
- */
-export async function grantCircleSpaceAccess(memberId: string, spaceId: string): Promise<void> {
-  try {
-    await makeCircleRequest(
-      "/space_members",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          community_member_id: memberId,
-          space_id: spaceId,
-        }),
-      }
-    );
-    console.log(`✅ Granted access to space: ${spaceId}`);
-  } catch (error) {
-    console.error("Error granting Circle access:", error);
-    throw error;
-  }
+// Grant space access
+export async function grantCircleSpaceAccess(email: string, spaceId: string): Promise<void> {
+  const response = await makeCircleRequest<GrantAccessResponse>("/space_members", {
+    method: "POST",
+    body: JSON.stringify({
+      email,
+      space_id: parseInt(spaceId),
+    }),
+  });
+  console.log(`[Circle] ${response.message}`);
 }
 
-/**
- * Main function: Process Circle access (find/create member + grant access)
- * This is the primary function called from webhooks
- */
+// Grant course access
+export async function grantCircleCourseAccess(email: string, courseId: string): Promise<void> {
+  const response = await makeCircleRequest<GrantAccessResponse>("/course_members", {
+    method: "POST",
+    body: JSON.stringify({
+      email,
+      course_id: parseInt(courseId),
+    }),
+  });
+  console.log(`[Circle] ${response.message}`);
+}
+
+// Main: Process Circle access
 export async function processCircleAccess(
   email: string,
   name: string,
-  spaceId?: string
-): Promise<{ memberId: string; isNewMember: boolean }> {
-  console.log(`🔄 Processing Circle access for: ${email}`);
-  
-  // Step 1: Check if member exists
+  spaceId?: string,
+  courseId?: string,
+): Promise<{ memberId: number; isNewMember: boolean }> {
+  console.log(`[Circle] Processing access for: ${email}`);
+
+  // Find or create member
   let member = await findCircleMemberByEmail(email);
   let isNewMember = false;
 
-  // Step 2: Create member if doesn't exist
+  console.log("MEMBER LOG313213", member);
+
   if (!member) {
-    console.log(`➕ Creating new Circle member: ${email}`);
+    console.log(`[Circle] Member not found, creating: ${email}`);
     member = await createCircleMember(email, name);
     isNewMember = true;
   } else {
-    console.log(`✓ Member already exists: ${email} (${member.id})`);
+    console.log(`[Circle] Member exists: ${email} (${member.id})`);
   }
 
-  // Step 3: Grant access to space if provided
+  // Grant access
   if (spaceId) {
-    console.log(`🔑 Granting access to space: ${spaceId}`);
-    await grantCircleSpaceAccess(member.id, spaceId);
+    console.log(`[Circle] Granting space access to: ${email}`);
+    await grantCircleSpaceAccess(email, spaceId);
   }
 
-  console.log(`✅ Circle access completed for: ${email}`);
-  
+  if (courseId) {
+    console.log(`[Circle] Granting course access to: ${email}`);
+    await grantCircleCourseAccess(email, courseId);
+  }
+
+  console.log(`[Circle] Access completed: ${email}`);
+
   return {
     memberId: member.id,
     isNewMember,

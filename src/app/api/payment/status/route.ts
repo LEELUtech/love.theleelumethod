@@ -1,63 +1,51 @@
 import { NextRequest, NextResponse } from "next/server";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { getCircleCourseUrl } from "@/lib/circle-api";
+import { getStripe } from "@/lib/stripe";
+
+const stripe = getStripe();
 
 export async function GET(req: NextRequest) {
+  const sessionId = req.nextUrl.searchParams.get("session_id");
+
+  if (!sessionId) {
+    return NextResponse.json({ error: "session_id is required" }, { status: 400 });
+  }
+
   try {
-    const { searchParams } = new URL(req.url);
-    const sessionId = searchParams.get("session_id");
+    // Verify payment status directly with Stripe
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    const paymentStatus = session.payment_status;
 
-    if (!sessionId) {
-      return NextResponse.json(
-        { error: "Missing session_id parameter" },
-        { status: 400 }
-      );
-    }
+    // Fetch our internal payment record for Circle state
+    const paymentDoc = await getDoc(doc(db, "payments", sessionId));
+    const paymentData = paymentDoc.exists() ? paymentDoc.data() : null;
 
-    // Fetch payment record from Firestore
-    const paymentDoc = await db.collection("payments").doc(sessionId).get();
+    const circleAccessGranted = Boolean(paymentData?.circle_access_granted);
+    const circleMemberId = paymentData?.circle_member_id || "";
+    const email = paymentData?.email || session.customer_email || session.customer_details?.email || "";
+    const productId = paymentData?.product_id || session.metadata?.product_id || "";
+    const circleSpaceId = paymentData?.circle_space_id || session.metadata?.circle_space_id || "";
+    const circleCourseId = paymentData?.circle_course_id || session.metadata?.circle_course_id || "";
 
-    if (!paymentDoc.exists) {
-      // Payment record not found - might still be processing
-      return NextResponse.json({
-        payment_status: "processing",
-        circle_access_granted: false,
-        message: "Payment is being processed. Please wait a moment.",
-      });
-    }
+    // Build course URL from community URL (not using slug-based helper)
+    const communityUrl = process.env.NEXT_PUBLIC_CIRCLE_COMMUNITY_URL || "";
+    const courseUrl = communityUrl || "https://app.circle.so";
 
-    const paymentData = paymentDoc.data();
-
-    if (!paymentData) {
-      return NextResponse.json(
-        { error: "Invalid payment data" },
-        { status: 500 }
-      );
-    }
-
-    // Get Circle course URL
-    const courseUrl = paymentData.circle_space_id 
-      ? getCircleCourseUrl(paymentData.circle_space_id)
-      : process.env.NEXT_PUBLIC_CIRCLE_COMMUNITY_URL || "";
-
-    return NextResponse.json({
-      payment_status: paymentData.payment_status || "unknown",
-      circle_access_granted: paymentData.circle_access_granted || false,
-      circle_member_id: paymentData.circle_member_id || "",
-      email: paymentData.email || "",
-      product_id: paymentData.product_id || "",
+    const responseData = {
+      payment_status: paymentStatus,
+      circle_access_granted: circleAccessGranted,
+      circle_member_id: circleMemberId,
+      email,
+      product_id: productId,
       course_url: courseUrl,
-      created_at: paymentData.created_at?.toDate?.()?.toISOString() || "",
-    });
+    };
+
+    console.log("[Payment Status]", responseData);
+    return NextResponse.json(responseData);
   } catch (error) {
     console.error("Error fetching payment status:", error);
-    return NextResponse.json(
-      { 
-        error: "Failed to fetch payment status",
-        payment_status: "error",
-        circle_access_granted: false,
-      },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch payment status" }, { status: 500 });
   }
 }

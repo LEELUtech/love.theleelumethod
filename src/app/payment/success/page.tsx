@@ -29,26 +29,25 @@ function PaymentSuccessContent() {
     let attempts = 0;
     const maxAttempts = 30; // 30 attempts * 2 seconds = 1 minute max
 
-    // Polling function
     const checkStatus = async () => {
       try {
-        const res = await fetch(`/api/payment/status?session_id=${sessionId}`);
-        const data = await res.json();
-        
+        const response = await fetch(`/api/payment/status?session_id=${sessionId}`);
+        if (!response.ok) {
+          throw new Error("Status request failed");
+        }
+        const data: PaymentStatus = await response.json();
         setStatus(data);
 
-        // If Circle access is granted or error occurred - stop polling
-        if (data.circle_access_granted || data.payment_status === "error") {
+        const ready = data.circle_access_granted && data.payment_status === "paid";
+        if (ready) {
           setLoading(false);
           return;
         }
 
-        // If still processing and haven't reached max attempts - continue polling
         attempts++;
         if (attempts < maxAttempts) {
-          setTimeout(checkStatus, 2000); // Check again in 2 seconds
+          setTimeout(checkStatus, 2000);
         } else {
-          // Timeout reached
           setStatus({
             ...data,
             error: "Processing is taking longer than expected. Please check your email for access link."
@@ -57,16 +56,15 @@ function PaymentSuccessContent() {
         }
       } catch (error) {
         console.error("Error fetching payment status:", error);
-        setStatus({ 
-          payment_status: "error", 
+        setStatus({
+          payment_status: "error",
           circle_access_granted: false,
-          error: "Failed to fetch payment status"
+          error: "Failed to fetch payment status",
         });
         setLoading(false);
       }
     };
 
-    // Start polling
     checkStatus();
   }, [sessionId]);
 
@@ -197,17 +195,23 @@ function PaymentSuccessContent() {
                 </div>
 
                 {/* Primary CTA */}
-                <a
-                  href={status.course_url || "#"}
-                  className="btn-pill w-full inline-flex items-center justify-center mb-4"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span className="text-xl">🚀 Enter the Course</span>
-                  <span aria-hidden className="btn-pill__icon text-2xl">
-                    →
-                  </span>
-                </a>
+                {status.course_url && status.course_url !== "#" ? (
+                  <a
+                    href={status.course_url}
+                    className="btn-pill w-full inline-flex items-center justify-center mb-4"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span className="text-xl">🚀 Enter the Course</span>
+                    <span aria-hidden className="btn-pill__icon text-2xl">
+                      →
+                    </span>
+                  </a>
+                ) : (
+                  <div className="text-center py-4 text-gray-500">
+                    <p>Course URL will be available shortly. Check your email for the access link!</p>
+                  </div>
+                )}
 
                 {/* Info Box */}
                 <div className="bg-blue-50 rounded-xl p-6 mb-6 border border-blue-200">
@@ -216,15 +220,15 @@ function PaymentSuccessContent() {
                     First Time Accessing?
                   </h4>
                   <p className="text-blue-800 text-sm mb-3">
-                    If you&apos;re not logged in automatically, check your email for a secure 
-                    magic link that will log you in instantly - no password needed!
+                    Check your email for an invitation link. You&apos;ll be asked to create a 
+                    password on your first login - after that, you can access the course anytime!
                   </p>
                   <button
                     onClick={handleResendLink}
                     disabled={resendingLink}
                     className="text-blue-600 hover:text-blue-800 font-medium text-sm underline disabled:opacity-50"
                   >
-                    {resendingLink ? "Sending..." : "📧 Resend Access Link"}
+                    {resendingLink ? "Sending..." : "📧 Resend Invitation Email"}
                   </button>
                 </div>
 
