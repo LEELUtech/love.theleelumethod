@@ -214,23 +214,6 @@ function PaymentSuccessContent() {
                 )}
 
                 {/* Info Box */}
-                <div className="bg-blue-50 rounded-xl p-6 mb-6 border border-blue-200">
-                  <h4 className="font-bold text-blue-900 mb-2 flex items-center gap-2">
-                    <span>ℹ️</span>
-                    First Time Accessing?
-                  </h4>
-                  <p className="text-blue-800 text-sm mb-3">
-                    Check your email for an invitation link. You&apos;ll be asked to create a 
-                    password on your first login - after that, you can access the course anytime!
-                  </p>
-                  <button
-                    onClick={handleResendLink}
-                    disabled={resendingLink}
-                    className="text-blue-600 hover:text-blue-800 font-medium text-sm underline disabled:opacity-50"
-                  >
-                    {resendingLink ? "Sending..." : "📧 Resend Invitation Email"}
-                  </button>
-                </div>
 
                 {/* Details */}
                 <div className="text-sm text-gray-600 space-y-2 bg-gray-50 rounded-xl p-4">

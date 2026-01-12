@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { getCircleCourseUrl } from "@/lib/circle-api";
 import { getStripe } from "@/lib/stripe";
 
 const stripe = getStripe();
@@ -26,8 +25,6 @@ export async function GET(req: NextRequest) {
     const circleMemberId = paymentData?.circle_member_id || "";
     const email = paymentData?.email || session.customer_email || session.customer_details?.email || "";
     const productId = paymentData?.product_id || session.metadata?.product_id || "";
-    const circleSpaceId = paymentData?.circle_space_id || session.metadata?.circle_space_id || "";
-    const circleCourseId = paymentData?.circle_course_id || session.metadata?.circle_course_id || "";
 
     // Build course URL from community URL (not using slug-based helper)
     const communityUrl = process.env.NEXT_PUBLIC_CIRCLE_COMMUNITY_URL || "";

@@ -1,5 +1,5 @@
 "use client";
-import CompatibilityReportModalButton from "@/components/ui/buttons/CompatibilityReportModalButton";
+import CompatibilityReportModalButton from "@/components/ui/buttons/CompatibilityReportButton";
 import Link from "next/link";
 
 export default function PaymentCancelPage() {

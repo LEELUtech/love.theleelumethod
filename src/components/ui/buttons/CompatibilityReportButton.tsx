@@ -4,19 +4,29 @@ import { useRouter } from "next/navigation";
 import { useCompatibilityReport } from "@/hooks/useCompatibilityReport";
 import PillButton from "@/components/ui/buttons/PillButton";
 
-interface CompatibilityReportModalButtonProps {
+interface CompatibilityReportButtonProps {
 	text?: string;
 	className?: string;
+	showArrow?: boolean;
 }
 
-export default function CompatibilityReportModalButton({ text = "Get Free Report", className }: CompatibilityReportModalButtonProps) {
+export default function CompatibilityReportButton({
+	text = "Get Free Report",
+	className,
+	showArrow,
+}: CompatibilityReportButtonProps) {
 	const router = useRouter();
 	const { handleCompatibilityReport } = useCompatibilityReport();
-	
+
 	return (
 		<CompatibilityModal
 			trigger={(open) => (
-				<PillButton onClick={open} type="button" className={className}>
+				<PillButton
+					onClick={open}
+					type="button"
+					className={className}
+					showArrow={showArrow}
+				>
 					<span>{text}</span>
 				</PillButton>
 			)}

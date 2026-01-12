@@ -1,4 +1,4 @@
-import CompatibilityReportModalButton from "@/components/ui/buttons/CompatibilityReportModalButton";
+import CompatibilityReportModalButton from "@/components/ui/buttons/CompatibilityReportButton";
 
 export default function ReportsPage() {
 	return (

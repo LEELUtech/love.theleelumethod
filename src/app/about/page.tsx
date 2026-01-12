@@ -1,4 +1,4 @@
-import CompatibilityReportModalButton from "@/components/ui/buttons/CompatibilityReportModalButton";
+import CompatibilityReportModalButton from "@/components/ui/buttons/CompatibilityReportButton";
 import FreeQuizButton from "@/components/ui/buttons/FreeQuizButton";
 import JoinProgramButton from "@/components/ui/buttons/JoinProgramButton";
 

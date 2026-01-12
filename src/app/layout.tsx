@@ -1,6 +1,5 @@
 import localFont from "next/font/local";
-import { Figtree, Inter, Playfair_Display } from "next/font/google";
-import Header from "@/components/ui/header";
+import { Figtree, Inter, Lato, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -14,6 +13,19 @@ const playfair = Playfair_Display({
 	subsets: ["latin"],
 	variable: "--font-playfair",
 	display: "swap",
+});
+
+const lato = Lato({
+  weight: [
+    "100",
+    "300",
+    "400", 
+    "700", 
+    "900"  
+  ],
+  subsets: ["latin"],
+  variable: "--font-lato",
+  display: "swap",
 });
 
 const figtree = Figtree({
@@ -49,10 +61,9 @@ export default function RootLayout({
 	return (
 		<html
 			lang="en"
-			className={`${inter.variable} ${playfair.variable} ${figtree.variable} ${canela.variable}`}
+			className={`${inter.variable} ${playfair.variable} ${figtree.variable} ${lato.variable} ${canela.variable}`}
 		>
 			<body className="antialiased">
-				<Header />
 				{children}
 			</body>
 		</html>
