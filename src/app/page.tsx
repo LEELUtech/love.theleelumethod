@@ -7,7 +7,7 @@ import MasterclassSection from "@/components/sections/MasterclassSection";
 import RelationshipProtocolSection from "@/components/sections/RelationshipProtocolSection";
 import AboutSection from "@/components/sections/AboutSection";
 import Footer from "@/components/ui/Footer";
-import Header from "@/components/ui/header";
+import Header from "@/components/ui/Header";
 
 export default function HomePage() {
 	return (

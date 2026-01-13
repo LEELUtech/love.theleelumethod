@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import FreeQuizButton from "@/components/ui/buttons/FreeQuizButton";
 import CompatibilityReportButton from "@/components/ui/buttons/CompatibilityReportButton";
-import Header from "@/components/ui/header";
+import Header from "@/components/ui/Header";
 
 interface ResourceCard {
 	title: string;
@@ -52,21 +52,28 @@ export function ResourceCardsSection() {
 		<section className="bg-brand-blush text-brand-deep">
 			<Header />
 
-			<div className="max-w-[1224px] mx-auto mt-[80px]">
-				<h1 className="text-h1 font-canela mb-12 font-thin">Resources</h1>
+			<div className="max-w-[1224px] mx-auto mt-10 md:mt-16 lg:mt-[80px] px-4 md:px-6 lg:px-8">
+				<h1 className="text-h1 font-canela mb-8 md:mb-10 lg:mb-12 font-thin">Resources</h1>
 			</div>
 
-			<div className="container pb-[112px]">
-				<div className="grid gap-20 md:grid-cols-3">
+			<div className="container pb-16 md:pb-20 lg:pb-[112px] px-4 md:px-6 lg:px-8">
+				<div className="grid gap-12 md:gap-16 lg:gap-20 md:grid-cols-2 lg:grid-cols-3">
 					{resources.map((item) => (
 						<article key={item.title} className="flex flex-col">
-							<div className="relative mb-8 overflow-hidden min-w-[336px] min-h-[322px]">
-								<Image src={item.imageSrc} alt={item.imageAlt} fill />
+							<div className="relative mb-6 md:mb-8 overflow-hidden w-full aspect-[336/322]">
+								<Image
+									src={item.imageSrc}
+									alt={item.imageAlt}
+									fill
+									quality={100}
+									sizes="(min-width:1024px) 33vw, (min-width:768px) 50vw, 100vw"
+									className="object-cover"
+								/>
 							</div>
-							<h3 className="text-[32px] font-light leading-[100%] font-canela mb-4 text-brand-deep">
+							<h3 className="text-[28px] md:text-[32px] font-light leading-[100%] font-canela mb-3 md:mb-4 text-brand-deep">
 								{item.title}
 							</h3>
-							<p className="text-body text-[#5A5757] mb-8 font-lato font-medium leading-[26px] tracking-[0.03em]">
+							<p className="text-body text-[#5A5757] mb-6 md:mb-8 font-lato font-medium leading-[26px] tracking-[0.03em]">
 								{item.description}
 							</p>
 							<div className="mt-auto">

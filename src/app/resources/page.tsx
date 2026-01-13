@@ -7,8 +7,8 @@ export default function ResourcesPage() {
 	return (
 		<>
 			<ResourceCardsSection />
-			{/* <MasterclassSection /> */}
-			{/* <Footer /> */}
+			<MasterclassSection />
+			<Footer />
 		</>
 	);
 }
