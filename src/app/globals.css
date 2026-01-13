@@ -12,11 +12,11 @@
 	}
 
 	.btn-pill:active {
-		@apply translate-y-0 shadow-[0_8px_24px_rgba(0,0,0,0.24)];
+		@apply translate-y-0;
 	}
 
 	.btn-pill:disabled {
-		@apply opacity-70 cursor-not-allowed translate-y-0 shadow-[0_6px_18px_rgba(0,0,0,0.2)];
+		@apply opacity-70 cursor-not-allowed translate-y-0;
 	}
 
 	.btn-pill__icon {
@@ -25,20 +25,20 @@
 }
 
 body {
-  font-size: 17px;
-  font-family: var(--font-lato), var(--font-inter), Arial, sans-serif;
+	font-size: 17px;
+	font-family: var(--font-lato), var(--font-inter), Arial, sans-serif;
 }
 
 h1 {
-  font-size: 60px;
-  font-family: var(--font-canela), var(--font-playfair), serif;
-  font-weight: 400;
-  line-height: 1.1;
+	font-size: 60px;
+	font-family: var(--font-canela), var(--font-playfair), serif;
+	font-weight: 400;
+	line-height: 1.1;
 }
 
 h2 {
-  font-size: 32px;
-  font-family: var(--font-canela), var(--font-playfair), serif;
-  font-weight: 400;
-  line-height: 1.2;
+	font-size: 32px;
+	font-family: var(--font-canela), var(--font-playfair), serif;
+	font-weight: 400;
+	line-height: 1.2;
 }

@@ -77,7 +77,11 @@ export function ResourceCardsSection() {
 								{item.description}
 							</p>
 							<div className="mt-auto">
-								{item.ctaType === "quiz" ? (
+								{item.title === "7 Secrets to Mend a Broken Heart" ? (
+									<a href="/resources/secrets" className="w-full justify-center rounded-full bg-brand-primary px-5 py-3 text-brand-white text-cta leading-[173%] font-medium uppercase tracking-[1.5px] hover:bg-[#E13954] flex items-center text-center">
+										{item.cta}
+									</a>
+								) : item.ctaType === "quiz" ? (
 									<FreeQuizButton
 										text={item.cta}
 										className="w-full justify-center rounded-full bg-brand-primary px-5 py-3 text-brand-white text-cta leading-[173%] font-medium uppercase tracking-[1.5px] hover:bg-[#E13954]"
