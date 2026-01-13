@@ -12,7 +12,7 @@ export default function HeyImLilySection() {
 					{/* Left side - Image */}
 				<div className="relative w-full max-w-[400px] md:max-w-[480px] lg:max-w-[551px] mx-auto lg:mx-0">
 					{/* Red circle badge with logo */}
-					<div className="absolute left-[-30px] top-[-40px] md:left-[-40px] md:top-[-50px] lg:top-[-60px] lg:left-[-60px] flex items-center justify-center bg-[#C4334F] rounded-[300px] w-[80px] h-[100px] md:w-[100px] md:h-[126px] lg:w-[134px] lg:h-[168px] z-10">
+					<div className="absolute left-[-10px] top-[-30px] md:left-[-40px] md:top-[-50px] lg:top-[-60px] lg:left-[-60px] flex items-center justify-center bg-[#C4334F] rounded-[300px] w-[80px] h-[100px] md:w-[100px] md:h-[126px] lg:w-[134px] lg:h-[168px] z-10">
 						<Image
 							src="/icons/ornament_2.svg"
 							alt=""
