@@ -10,12 +10,28 @@ module.exports = {
     container: {
       center: true,
       screens: {
-        '2xl': '1200px',
+        '2xl': '1224px',
       },
     },
     extend: {
+      colors: {
+        brand: {
+          deep: '#3C0606',
+          primary: '#B02F44',
+          blush: '#F2E1E2',
+          white: '#FFFFFF',
+          black: '#000000',
+        },
+      },
+      fontSize: {
+        h1: ['60px', { lineHeight: '1.1', fontWeight: '600' }],
+        h2: ['32px', { lineHeight: '1.2', fontWeight: '600' }],
+        body: ['17px', { lineHeight: '1.6' }],
+        cta: ['15px', { lineHeight: '1.6', letterSpacing: '0.01em' }],
+      },
       fontFamily: {
         sans: ['var(--font-inter)', 'sans-serif'],
+        lato: ['var(--font-lato)', 'sans-serif'],
         serif: ['var(--font-playfair)', 'serif'],
         inter: ['var(--font-inter)', 'sans-serif'],
         figtree: ['var(--font-figtree)', 'sans-serif'],

@@ -1,5 +1,5 @@
 import FreeQuizButton from "@/components/ui/buttons/FreeQuizButton";
-import CompatibilityReportModalButton from "@/components/ui/buttons/CompatibilityReportModalButton";
+import CompatibilityReportModalButton from "@/components/ui/buttons/CompatibilityReportButton";
 import JoinProgramButton from "@/components/ui/buttons/JoinProgramButton";
 
 export default function FreebiesPage() {

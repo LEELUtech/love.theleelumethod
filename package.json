@@ -32,7 +32,8 @@
 		"swiper": "^11.2.10",
 		"swr": "^2.3.8",
 		"tailwind-merge": "^3.4.0",
-		"tailwindcss-animate": "^1.0.7"
+		"tailwindcss-animate": "^1.0.7",
+		"zustand": "^5.0.10"
 	},
 	"devDependencies": {
 		"@bn-digital/vault-env": "^1.5.6",

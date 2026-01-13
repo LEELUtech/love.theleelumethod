@@ -1,4 +1,4 @@
-import CompatibilityReportModalButton from "@/components/ui/buttons/CompatibilityReportModalButton";
+import CompatibilityReportModalButton from "@/components/ui/buttons/CompatibilityReportButton";
 import FreeQuizButton from "@/components/ui/buttons/FreeQuizButton";
 import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton";
 import RelationshipTriageCard from "@/components/sections/RelationshipTriageCard";
@@ -77,7 +77,7 @@ export default function RelationshipTriageSection() {
 
 					<RelationshipTriageCard
 						backgroundClass="bg-[#fde7df]"
-						className="max-h-[765px] h-[1000px] pt-[70px]"
+						className="max-h-[765px] h-[1500px] pt-[70px]"
 						icon={<SparkIcon />}
 						title="I AM READY TO FIX IT"
 						cta={<WebinarModalButton text="Register to Webinar" className="text-center w-full" />}
