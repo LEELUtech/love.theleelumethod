@@ -8,31 +8,38 @@ export default function SecretsHeroSection() {
 			style={{ backgroundImage: "url(/images/sand-bg.jpg)" }}
 		>
 			<Header />
-		<div className="container pt-8 pb-16 md:pt-12 md:pb-20 lg:pt-16 lg:pb-[112px]">
-			<div className="relative flex flex-col items-center justify-center w-full text-center gap-4 md:gap-5 lg:gap-6">
-			<div className="relative flex flex-col items-center gap-3 md:gap-4 mt-4 md:mt-5 lg:mt-6">
-				{/* <div className="h-1 w-24 border-t border-[#C8B4A8]" aria-hidden /> */}
-				<div className="relative w-[180px] h-[200px] md:w-[220px] md:h-[240px] lg:w-[268px] lg:h-[290px]">
-						<Image
-							src="/images/resources-section-1.png"
-							alt="Woman smiling in a red sweater"
-							fill
-							className="object-cover"
-							priority
-							quality={100}
-						/>
-						{/* Ornament overlaps the top image */}
-						<div className="absolute left-1/2 -translate-x-1/2 bottom-[-25px] md:bottom-[-30px] lg:bottom-[-35px] flex items-center justify-center bg-[#C4334F] rounded-[28px] md:rounded-[32px] lg:rounded-[36px] w-[56px] h-[80px] md:w-[65px] md:h-[90px] lg:w-[74px] lg:h-[102px] z-10">
+			<div className="container pt-8 pb-16 md:pt-12 md:pb-20 lg:pt-16 lg:pb-[112px]">
+				<div className="relative flex flex-col items-center justify-center w-full text-center gap-4 md:gap-5 lg:gap-6">
+					<div className="relative flex flex-col items-center gap-3 md:gap-4 mt-4 md:mt-5 lg:mt-6">
+						<div className="relative">
 							<Image
-								src="/leelu_logo.svg"
+								src="/icons/decorative_arc.svg"
 								alt=""
-								width={46}
-								height={46}
-								className="filter invert"
+								width={558}
+								height={197}
+								className="max-w-none absolute left-[-55px] top-[-30px] md:left-[-95px] md:top-[-42px] lg:left-[-135px] lg:top-[-55px] z-10 w-[280px] md:w-[400px] lg:w-[558px]"
 							/>
+							<div className="relative w-[180px] h-[200px] md:w-[220px] md:h-[240px] lg:w-[288px] lg:h-[290px]">
+								<Image
+									src="/images/resources-section-1.png"
+									alt="Woman smiling in a red sweater"
+									fill
+									priority
+									quality={100}
+								/>
+								{/* Ornament overlaps the top image */}
+								<div className="absolute left-1/2 -translate-x-1/2 bottom-[-25px] md:bottom-[-30px] lg:bottom-[-35px] flex items-center justify-center bg-[#C4334F] rounded-[28px] md:rounded-[32px] lg:rounded-[36px] w-[56px] h-[80px] md:w-[65px] md:h-[90px] lg:w-[74px] lg:h-[102px] z-10">
+									<Image
+										src="/leelu_logo.svg"
+										alt=""
+										width={46}
+										height={46}
+										className="filter invert"
+									/>
+								</div>
+							</div>
 						</div>
 					</div>
-				</div>
 
 					<div className="mt-6">
 						<h1 className="font-canela font-light leading-[100%] text-black">
