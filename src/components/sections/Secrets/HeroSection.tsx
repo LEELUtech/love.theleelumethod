@@ -66,7 +66,7 @@ export default function SecretsHeroSection() {
 						/>
 						<button
 							type="button"
-							className="w-full mt-6 rounded-full bg-[#C4334F] text-white font-medium font-lato text-[15px] tracking-[0.08em] uppercase py-4 hover:bg-[#b12d46] transition-colors"
+							className="w-full mt-6 rounded-full bg-brand-primary text-white font-medium font-lato text-[15px] tracking-[0.08em] uppercase py-4 hover:bg-[#E13954] transition-colors"
 						>
 							Download the free guide
 						</button>

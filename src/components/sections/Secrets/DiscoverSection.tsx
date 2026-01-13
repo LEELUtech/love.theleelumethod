@@ -157,7 +157,7 @@ export default function DiscoverSection() {
 					</p>
 					<button
 						type="button"
-						className="py-4 px-[73px] rounded-full bg-brand-primary text-white font-medium font-lato text-[15px] tracking-[0.08em] uppercase hover:bg-[#E13954] transition-colors"
+						className="py-4 px-[40px] md:px-[60px] lg:px-[73px] rounded-full bg-brand-primary text-white font-medium font-lato text-[15px] tracking-[0.08em] uppercase hover:bg-[#E13954] transition-colors"
 					>
 						Download the free guide
 					</button>
