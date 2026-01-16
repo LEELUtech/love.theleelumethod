@@ -1,5 +1,5 @@
 import localFont from "next/font/local";
-import { Figtree, Inter, Lato, Playfair_Display } from "next/font/google";
+import { Figtree, Inter, Lato, Marcellus, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -35,6 +35,13 @@ const figtree = Figtree({
 	display: "swap",
 });
 
+const marcellus = Marcellus({
+	weight: ["400", ],
+	subsets: ["latin"],
+	variable: "--font-marcellus",
+	display: "swap",
+});
+
 const canela = localFont({
 	src: [
 		{ path: "./_fonts/CanelaTrial/Canela-Thin-Trial.otf", weight: "100", style: "normal" },
@@ -61,7 +68,7 @@ export default function RootLayout({
 	return (
 		<html
 			lang="en"
-			className={`${inter.variable} ${playfair.variable} ${figtree.variable} ${lato.variable} ${canela.variable}`}
+			className={`${inter.variable} ${playfair.variable} ${figtree.variable} ${lato.variable} ${marcellus.variable} ${canela.variable}`}
 		>
 			<body className="antialiased">
 				{children}

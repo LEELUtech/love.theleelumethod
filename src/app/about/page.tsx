@@ -1,19 +1,23 @@
-import CompatibilityReportModalButton from "@/components/ui/buttons/CompatibilityReportButton";
-import FreeQuizButton from "@/components/ui/buttons/FreeQuizButton";
-import JoinProgramButton from "@/components/ui/buttons/JoinProgramButton";
+import CredentialsSection from "@/components/sections/About/CredentialsSection";
+import HeroSection from "@/components/sections/About/HeroSection";
+import StopGuessingSection from "@/components/sections/About/StopGuessingSection";
+import TheFractureAndLaboratorySection from "@/components/sections/About/TheFractureAndLaboratorySection";
+import ThePivotAndAccelerantSection from "@/components/sections/About/ThePivotAndAccelerantSection";
+import TheSynthesisSection from "@/components/sections/About/TheSynthesisSection";
+import Footer from "@/components/ui/Footer";
 
-export default function AboutPage() {
+const AboutPage = () => {
 	return (
-		<main className="max-w-2xl mx-auto py-12 px-4 space-y-6">
-			<header className="space-y-2 text-center">
-				<h1 className="text-3xl font-bold">About</h1>
-				<p className="text-zinc-600">This is the about page.</p>
-			</header>
-			<section className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-				<CompatibilityReportModalButton />
-				<JoinProgramButton />
-				<FreeQuizButton />
-			</section>
+		<main>
+			<HeroSection />
+			<TheFractureAndLaboratorySection />
+			<ThePivotAndAccelerantSection />
+			<TheSynthesisSection />
+			<CredentialsSection />
+			<StopGuessingSection />
+			<Footer />
 		</main>
 	);
-}
+};
+
+export default AboutPage;
