@@ -5,7 +5,7 @@ export default function SecretsHeroSection() {
 	return (
 		<section
 			className="relative bg-cover bg-center bg-no-repeat"
-			style={{ backgroundImage: "url(/images/sand-bg.jpg)" }}
+			style={{ backgroundImage: "url(/images/bg/sand-bg.jpg)" }}
 		>
 			<Header />
 			<div className="container pt-8 pb-16 md:pt-12 md:pb-20 lg:pt-16 lg:pb-[112px]">
