@@ -5,7 +5,7 @@ import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton";
 export function MasterclassSection() {
 	const ornamentIcon = (
 		<Image
-			src="/icons/ornament-1.svg"
+			src="/icons/ornament_1.svg"
 			alt=""
 			width={24}
 			height={24}
