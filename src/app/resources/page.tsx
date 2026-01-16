@@ -5,10 +5,10 @@ import Footer from "@/components/ui/Footer";
 
 export default function ResourcesPage() {
 	return (
-		<>
+		<main>
 			<ResourceCardsSection />
 			<MasterclassSection />
 			<Footer />
-		</>
+		</main>
 	);
 }

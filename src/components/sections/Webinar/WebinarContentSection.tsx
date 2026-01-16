@@ -24,14 +24,13 @@ const WebinarContentSection = () => {
 	return (
 		<section className="relative bg-[#f5e8e8] py-12 md:py-16 lg:py-32">
 			{/* Background Image */}
-			<div className="absolute inset-0 -z-[-1] overflow-hidden">
+			<div className="absolute inset-0 z-[-1] overflow-hidden">
 				<Image
 					src="/images/bg/webinar_content_bg.png"
 					alt=""
 					fill
 					priority
 					quality={100}
-					className="object-cover"
 				/>
 			</div>
 

@@ -37,6 +37,7 @@ module.exports = {
         figtree: ['var(--font-figtree)', 'sans-serif'],
         playfair: ['var(--font-playfair)', 'serif'],
         canela: ['var(--font-canela)', 'serif'],
+        marcellus: ['var(--font-marcellus)', 'serif'],
         display: ['var(--font-canela)', 'var(--font-playfair)', 'serif'],
       },
     },
