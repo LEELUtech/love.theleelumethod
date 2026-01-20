@@ -2,7 +2,7 @@ import { onCall } from "firebase-functions/v2/https";
 import { createTransport } from "nodemailer";
 import { storage } from "../configs/firebase";
 import { configs } from "../configs/env";
-import { calculateCompatibility } from "../utils/free-report/free-report.service";
+import { calculateCompatibility } from "../utils/compatibility-report/compatibility-report.service";
 
 // Webinar CTA URL
 const WEBINAR_URL = "https://leelutech.ewebinar.com/webinar/decoded-love-22610";
