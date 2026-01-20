@@ -1,5 +1,5 @@
-import { POWER_TABLE, COMPATIBILITY_RANGES } from "./free-report.constants";
-import { parseBirthDate, reduceTo22 } from "./free-report.utils";
+import { POWER_TABLE, COMPATIBILITY_RANGES } from "./compatibility-report.constants";
+import { parseBirthDate, reduceTo22 } from "./compatibility-report.utils";
 
 export type CompatibilityType =
   | "Revolution"

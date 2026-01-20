@@ -1,73 +1,93 @@
-
 import { NextRequest, NextResponse } from "next/server";
-import { getStripe } from "@/lib/stripe";
+import { db } from "@/lib/firebase"; // Firestore instance
+import { collection, doc, getDoc } from "firebase/firestore";
+import Stripe from "stripe";
 
-const stripe = getStripe();
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
+	apiVersion: "2025-04-30.basil",
+});
 
 export async function POST(req: NextRequest) {
-  const { 
-    email, 
-    name,
-    firstName,
-    lastName,
-    phone,
-    productId = "course_decodedlove",
-    circleSpaceId,
-    circleCourseId,
-    zohoContactId,
-    addPaidReport = false,
-    amount = 9700, // Default $97.00 in cents
-    productName = "Decoded Love Course"
-  } = await req.json();
-  
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || req.nextUrl.origin;
+	try {
+		const body = await req.json();
+		const { email, productType, birthDate1, birthDate2 } = body;
 
-  try {
-    // Build line items
-    const lineItems = [
-      {
-        price_data: {
-          currency: "usd",
-          unit_amount: amount,
-          product_data: {
-            name: productName,
-            description: "Access to Decoded Love Course with lifetime updates",
-          },
-        },
-        quantity: 1,
-      },
-    ];
+		// Validate required fields
+		if (!email || !productType) {
+			return NextResponse.json(
+				{ error: "Missing required fields" },
+				{ status: 400 },
+			);
+		}
 
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      line_items: lineItems,
-      mode: "payment",
-      customer_email: email ?? "",
-      billing_address_collection: "required",
-      phone_number_collection: {
-        enabled: true,
-      },
-      // Critical: metadata for webhook processing
-      metadata: {
-        product_id: productId,
-        circle_space_id: String(circleSpaceId || process.env.CIRCLE_DEFAULT_SPACE_ID || ""),
-        circle_course_id: String(circleCourseId || ""),
-        zoho_contact_id: zohoContactId || "",
-        source: "website",
-        customer_name: name || `${firstName} ${lastName}`,
-        customer_first_name: firstName || "",
-        customer_last_name: lastName || "",
-        customer_phone: phone || "",
-        add_paid_report: addPaidReport.toString(),
-      },
-      success_url: `${baseUrl}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${baseUrl}/payment/cancel`,
-    });
-    return NextResponse.json({ sessionId: session.id, sessionUrl: session.url });
-  } catch (error) {
-    return NextResponse.json(
-      { error: (error as Error).message || "Something went wrong" },
-      { status: 500 },
-    );
-  }
+		// Additional validation for compatibility_report
+		if (
+			productType === "compatibility_report" &&
+			(!birthDate1 || !birthDate2)
+		) {
+			return NextResponse.json(
+				{ error: "Missing birth dates for compatibility report" },
+				{ status: 400 },
+			);
+		}
+
+		// Fetch product data from Firestore
+		const productDocRef = doc(collection(db, "offerings"), productType);
+		const productDoc = await getDoc(productDocRef);
+		if (!productDoc.exists) {
+			return NextResponse.json({ error: "Product not found" }, { status: 404 });
+		}
+
+		const product = productDoc.data();
+
+		if (!product) {
+			return NextResponse.json(
+				{ error: "Product data is undefined" },
+				{ status: 500 },
+			);
+		}
+
+		// Log product data for debugging
+		console.log("Fetched product data:", product);
+
+		// Ensure currency is defined, fallback to 'USD'
+		const currency = product.currency || "USD";
+
+		// Create Stripe Checkout Session
+		const session = await stripe.checkout.sessions.create({
+			payment_method_types: ["card"],
+			line_items: [
+				{
+					price_data: {
+						currency: currency, // Use the validated or fallback currency
+						product_data: {
+							name: product.name,
+							description: product.description,
+						},
+						unit_amount: product.price,
+					},
+					quantity: 1,
+				},
+			],
+			mode: "payment",
+			success_url: `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
+			cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/payment/cancel`,
+			customer_email: email,
+			metadata: {
+				product_type: productType,
+				...(productType === "compatibility_report" && {
+					birth_date_1: birthDate1,
+					birth_date_2: birthDate2,
+				}),
+			},
+		});
+
+		return NextResponse.json({ url: session.url });
+	} catch (error) {
+		console.error("Error creating checkout session:", error);
+		return NextResponse.json(
+			{ error: "Failed to create checkout session" },
+			{ status: 500 },
+		);
+	}
 }
