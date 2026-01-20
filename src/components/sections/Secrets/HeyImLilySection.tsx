@@ -25,7 +25,7 @@ export default function HeyImLilySection() {
 					{/* Main image with rounded corners */}
 					<div className="relative w-full aspect-[551/748] rounded-[24px] md:rounded-[32px] lg:rounded-[40px] overflow-hidden">
 							<Image
-								src="/images/lily_2.png"
+								src="/images/lily/lily_2.png"
 								alt="Lily"
 								fill
 								quality={100}
@@ -36,7 +36,7 @@ export default function HeyImLilySection() {
 
 					{/* Right side - Content */}
 					<div className="flex flex-col">
-						<h1 className="font-canela font-light mb-4 md:mb-6 lg:mb-8 leading-tight text-black text-[32px] md:text-[44px] lg:text-[52px]">
+						<h1 className="font-canela font-thin mb-4 md:mb-6 lg:mb-8 leading-tight text-black text-[60px] md:text-[44px] lg:font-light lg:text-[52px]">
 							Hey, I&apos;m Lily
 						</h1>
 

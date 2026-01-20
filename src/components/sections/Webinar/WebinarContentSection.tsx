@@ -6,8 +6,9 @@ import TestimonialsCarousel from "@/components/ui/TestimonialsCarousel";
 const CARD_CONTENT = [
 	{
 		title: "The Emotional Level",
-		img: "/images/webinar_decor_up.png",
+		img: "/images/webinar/webinar_decor_up.png",
 		text: "How you show up in relationships. Your reactions, attachment patterns, and behaviors. Where anxiety, avoidance, abandonment fear, and control live.",
+		icon: "/icons/ornament_7.svg",
 	},
 	{
 		title: "The Identity Level",
@@ -15,16 +16,17 @@ const CARD_CONTENT = [
 	},
 	{
 		title: "The Subconscius Level",
-		img: "/images/webinar_decor_down.png",
+		img: "/images/webinar/webinar_decor_down.png",
 		text: 'Deepest. Your inherited "love script" from childhood and past relationships. The hidden code shaping your identity and recreating familiar dynamics—even painful ones.',
+		icon: "/icons/ornament_8.svg",
 	},
 ];
 
 const WebinarContentSection = () => {
 	return (
-		<section className="relative bg-[#f5e8e8] py-12 md:py-16 lg:py-32">
+		<section className="relative bg-[#f5e8e8] pt-12 pb-[120px] md:py-16 lg:py-32">
 			{/* Background Image */}
-			<div className="absolute inset-0 z-[-1] overflow-hidden">
+			<div className="absolute inset-0 z-[0] overflow-hidden">
 				<Image
 					src="/images/bg/webinar_content_bg.png"
 					alt=""
@@ -35,9 +37,9 @@ const WebinarContentSection = () => {
 			</div>
 
 			{/* Carousel */}
-			<TestimonialsCarousel className="absolute z-20 top-[-70px] md:top-[-90px] lg:top-[-110px]" />
+			<TestimonialsCarousel className="absolute z-20 top-[-140px] md:top-[-90px] lg:top-[-110px]" />
 
-			<div className="container px-4 relative z-10 mt-[180px] md:mt-[220px] lg:mt-[250px]">
+			<div className="container px-4 relative z-10 mt-[170px] md:mt-[220px] lg:mt-[250px]">
 				{/* FIRST BLOCK */}
 				<div
 					className="
@@ -47,31 +49,31 @@ const WebinarContentSection = () => {
 		gap-12 md:gap-10 lg:gap-20
 
 		/* MARGINS */
-		mb-[200px] md:mb-[300px] lg:mb-[300px]
+		mb-[300px] md:mb-[300px] lg:mb-[300px]
 	"
 				>
 					{/* IMAGE */}
 					<div className="w-full md:w-1/2 flex justify-center">
 						<div
 							className="
-				relative overflow-hidden
+				relative overflow-hidden rounded-[60px]
 
 				/* MOBILE */
-				w-full max-w-[280px] aspect-[496/834]
+				w-full max-w-[360px] h-[459px]
 
 				/* TABLET */
 				md:max-w-[360px]
 
 				/* DESKTOP (UNTOUCHED) */
-				lg:max-w-none lg:w-[496px] lg:h-[833px] lg:aspect-auto
+				lg:max-w-none lg:w-[496px] lg:h-[833px]
 			"
 						>
 							<Image
-								src="/images/webinar_content_girl.png"
+								src="/images/woman-sitting-windowsill.png"
 								alt="Woman sitting by window"
 								fill
 								quality={100}
-								className="object-cover"
+								objectFit="cover"
 							/>
 						</div>
 					</div>
@@ -83,11 +85,11 @@ const WebinarContentSection = () => {
 				font-canela font-thin text-brand-deep tracking-normal leading-[100%]
 
 				/* MOBILE */
-				text-[28px]
-				mb-6
+				text-[48px]
+				mb-[40px]
 
 				/* TABLET */
-				md:text-[38px]
+				md:text-[48px]
 				md:mb-8
 
 				/* DESKTOP */
@@ -107,11 +109,11 @@ const WebinarContentSection = () => {
 				font-lato font-medium text-[#5A5757] tracking-[0.02em]
 
 				/* MOBILE */
-				text-[14px]
+				text-[17px]
 				leading-[22px]
 
 				/* TABLET */
-				md:text-[15px]
+				md:text-[17px]
 				md:leading-[24px]
 
 				/* DESKTOP */
@@ -154,8 +156,8 @@ const WebinarContentSection = () => {
 					font-thin font-canela text-brand-deep leading-[110%]
 
 					/* MOBILE */
-					text-[20px]
-					mt-8
+					text-[32px]
+					mt-10
 
 					/* TABLET */
 					md:text-[24px]
@@ -184,7 +186,7 @@ const WebinarContentSection = () => {
 							absolute left-1/2 -translate-x-1/2 z-0
 
 							/* MOBILE */
-							top-[-120px] w-[200px]
+							top-[-220px] w-[350px]
 
 							/* TABLET */
 							md:top-[-160px] md:w-[300px]
@@ -205,8 +207,8 @@ const WebinarContentSection = () => {
 						className="
 							relative z-10 font-canela font-thin tracking-normal text-brand-deep mb-4 leading-[100%]
 
-							text-[30px]
-							md:text-[44px]
+							text-[48px]
+							md:text-[48px]
 							lg:text-[60px]
 						"
 					>
@@ -238,9 +240,9 @@ const WebinarContentSection = () => {
 										bg-white rounded-[32px] text-center flex flex-col items-center justify-center
 
 										/* MOBILE */
-										w-full max-w-[350px]
-										min-h-[260px]
-										p-6
+										w-full max-w-[361px]
+										min-h-[497px]
+										p-1
 
 										/* TABLET */
 										md:max-w-[600px]
@@ -255,14 +257,32 @@ const WebinarContentSection = () => {
 									"
 						>
 							{card.img && (
-								<Image src={card.img} alt="" width={139} height={139} />
+								<div className="relative w-[139px] h-[139px] mb-4">
+									{/* Main image */}
+									<Image
+										src={card.img}
+										alt=""
+										fill
+									/>
+
+									{/* Center icon */}
+									{card.icon && (
+										<Image
+											src={card.icon}
+											alt=""
+											width={90}
+											height={90}
+											className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+										/>
+									)}
+								</div>
 							)}
 
 							<h4
 								className="
-									font-canela font-light text-brand-black mb-3
+									font-canela font-normal md:font-light text-brand-black mb-3
 
-									text-[26px]
+									text-[48px]
 									md:text-[40px]
 									lg:text-[60px]
 								"
@@ -272,10 +292,10 @@ const WebinarContentSection = () => {
 
 							<p
 								className="
-									font-lato text-[#5A5757] leading-relaxed max-w-[680px]
+									font-lato text-[#5A5757] font-normal leading-relaxed max-w-[680px]
 
-									text-[14px]
-									md:text-[16px]
+									text-[17px]
+									md:text-[17px]
 									lg:text-[18px]
 								"
 							>

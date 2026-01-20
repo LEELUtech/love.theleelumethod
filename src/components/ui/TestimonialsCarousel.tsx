@@ -44,13 +44,13 @@ const TestimonialsCarousel = ({ className }: { className?: string }) => {
 								flex flex-col justify-between
 
 								/* MOBILE */
-								w-[280px]
-								min-h-[220px]
+								w-[340px]
+								min-h-[282px]
 								p-5
 
 								/* TABLET */
-								md:w-[330px]
-								md:min-h-[250px]
+								md:w-[340px]
+								md:min-h-[282px]
 								md:p-6
 
 								/* DESKTOP (UNCHANGED LOOK) */

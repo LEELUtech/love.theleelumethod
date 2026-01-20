@@ -1,6 +1,6 @@
 import DiscoverSection from "@/components/sections/Secrets/DiscoverSection";
 import SecretsHeroSection from "@/components/sections/Secrets/HeroSection";
-import HeyImLilySection from "@/components/sections/Secrets/HeyImLilySection";
+import WebinarHeyImLilySection from "@/components/sections/Webinar/WebinarHeyImLilySection"
 import Footer from "@/components/ui/Footer";
 
 export default function SecretsResourcePage() {
@@ -8,7 +8,7 @@ export default function SecretsResourcePage() {
 		<main>
 			<SecretsHeroSection />
 			<DiscoverSection />
-			<HeyImLilySection />
+			<WebinarHeyImLilySection />
 			<Footer />
 		</main>
 	);

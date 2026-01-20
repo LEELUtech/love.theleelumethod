@@ -1,9 +1,10 @@
 import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton";
 import Image from "next/image";
+import Link from "next/link";
 
 const TheFractureAndLaboratorySection = () => {
 	return (
-		<section className="relative py-[112px]">
+		<section className="relative py-[80px] lg:py-[112px] overflow-hidden">
 			{/* Background Image */}
 			<div className="absolute inset-0 z-[-1] overflow-hidden">
 				<Image
@@ -18,20 +19,24 @@ const TheFractureAndLaboratorySection = () => {
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
 					{/* Left Column - Image */}
 					<div className="flex justify-center">
-						<div className="relative w-[551px] h-[748px] rounded-lg">
+						<div className="relative mb-[60px] md:mb-0 lg:mb-0 w-[360px] h-[459px] lg:w-[551px] lg:h-[748px] rounded-lg">
 							<Image
-								src="/images/about/fracture_section.png" // Replace with actual image path
+								src="/images/about/fracture_section.png"
 								alt="Person sitting with a laptop"
-								layout="fill"
+								fill
+								priority
+								quality={100}
+								className="rounded-lg"
 							/>
-							<div className="absolute flex bottom-[-30px] left-[-60px] items-center justify-center bg-[#d8ac9e] rounded-[300px] w-[80px] h-[100px] md:w-[100px] md:h-[126px] lg:w-[123px] lg:h-[155px] z-10">
-								<Image
-									src="/leelu_logo.svg"
-									alt=""
-									width={75}
-									height={75}
-									className="filter brightness-0 invert"
-								/>
+							<div className="absolute flex bottom-[-30px] left-[-10px] lg:left-[-30px] items-center justify-center bg-[#d8ac9e] rounded-[300px] w-[80px] h-[100px] md:w-[100px] md:h-[126px] lg:w-[123px] lg:h-[155px] z-10">
+								<div className=" relative w-[55px] h-[55px] lg:w-[75px] lg:h-[75px]">
+									<Image
+										src="/leelu_logo.svg"
+										alt=""
+										fill
+										className="absolute filter brightness-0 invert"
+									/>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -56,71 +61,115 @@ const TheFractureAndLaboratorySection = () => {
 							be calculated.
 						</p>
 
-						<p className="font-thin font-canela text-[28px] leading-[130%] text-brand-deep mb-[30px]">
+						<p className="font-thin font-canela text-[28px] leading-[130%] text-brand-deep lg:mb-[30px] md:mb-[30px] mb-[30px]">
 							That session was the spark that lit my path into the world of
 							numerology.
 						</p>
-						<WebinarModalButton
-							showArrow={false}
-							text="START THE DECODE"
-							className="
-								justify-center gap-3 font-medium tracking-[0.1em]
-								text-[15px] leading-[26px] py-4 px-10 md:px-20 lg:px-22
-								bg-brand-black hover:bg-[#333333] uppercase
-							"
-						/>
+						<Link
+							className="btn-pill justify-center gap-3 font-medium tracking-[0.1em]
+						rounded-[50px] text-center
+						text-[15px] leading-[26px] py-4
+						px-5
+						bg-brand-black text-brand-white hover:bg-[#333333] uppercase order-2 lg:order-2 font-lato lg:max-w-[350px] w-full mx-auto lg:mx-0 mb-[24px] lg:mb-0"
+							href="/decode"
+						>
+							START THE DECODE
+						</Link>
 					</div>
 				</div>
 
 				{/* The Laboratory Section */}
-				<div className="mt-[400px] relative">
-					<div className="flex flex-row items-center justify-center absolute top-[-300px] left-[90px]">
-						<Image
-							src="/icons/ornament_3.svg"
-							alt=""
-							width={238}
-							height={249}
-							className="filter brightness-0 invert"
-							style={{
-								maskImage:
-									"linear-gradient(to bottom, black 0%, black 30%, transparent 100%)",
-								WebkitMaskImage:
-									"linear-gradient(to bottom, black 0%, black 30%, transparent 100%)",
-								filter: "brightness(200%)",
-							}}
-						/>
+				<div className="lg:mt-[400px] mt-[300px] relative">
+					<div
+						className="
+    absolute z-0
+    left-1/2 -translate-x-1/2
+    top-[-180px]
+    md:top-[-180px]
+    lg:top-[-300px]
 
-						<Image
-							src="/icons/ornament_2.svg"
-							alt=""
-							width={512}
-							height={524}
-							className="filter brightness-0 invert"
-							style={{
-								maskImage:
-									"linear-gradient(to bottom, black 0%, transparent 80%)",
-								WebkitMaskImage:
-									"linear-gradient(to bottom, black 0%, transparent 80%)",
-								filter: "brightness(200%)",
-							}}
-						/>
+    flex flex-row items-center justify-center gap-[130px]
+    pointer-events-none
+  "
+					>
+						{/* LEFT ornament */}
+						<div
+							className="
+      relative
+      w-[180px] h-[180px]
+      lg:w-[238px] lg:h-[249px]
 
-						<Image
-							src="/icons/ornament_5.svg"
-							alt=""
-							width={259}
-							height={242}
-							className="filter brightness-0 invert"
-							style={{
-								maskImage:
-									"linear-gradient(to bottom, black 0%, black 30%, transparent 100%)",
-								WebkitMaskImage:
-									"linear-gradient(to bottom, black 0%, black 30%, transparent 100%)",
-								filter: "brightness(200%)",
-							}}
-						/>
+      translate-x-[250px] translate-y-[80px]
+      md:translate-x-[120px] md:translate-y-[50px]
+      lg:translate-x-[125px] lg:translate-y-[60px]
+    "
+						>
+							<Image
+								src="/icons/ornament_3.svg"
+								alt=""
+								fill
+								className="absolute filter brightness-0 invert"
+								style={{
+									maskImage:
+										"linear-gradient(to bottom, black 0%, black 10%, transparent 90%)",
+									WebkitMaskImage:
+										"linear-gradient(to bottom, black 0%, black 10%, transparent 90%)",
+									filter: "brightness(200%)",
+								}}
+							/>
+						</div>
+
+						{/* CENTER ornament */}
+						<div
+							className="
+      relative
+      w-[261px] h-[266px]
+      lg:w-[512px] lg:h-[524px]
+    "
+						>
+							<Image
+								src="/icons/ornament_2.svg"
+								alt=""
+								fill
+								className="absolute filter brightness-0 invert"
+								style={{
+									maskImage:
+										"linear-gradient(to bottom, black 0%, transparent 80%)",
+									WebkitMaskImage:
+										"linear-gradient(to bottom, black 0%, transparent 80%)",
+									filter: "brightness(200%)",
+								}}
+							/>
+						</div>
+
+						{/* RIGHT ornament */}
+						<div
+							className="
+      relative
+      w-[180px] h-[180px]
+      lg:w-[259px] lg:h-[242px]
+
+      -translate-x-[250px] translate-y-[90px]
+      md:-translate-x-[120px] md:translate-y-[50px]
+      lg:-translate-x-[120px] lg:translate-y-[60px]
+    "
+						>
+							<Image
+								src="/icons/ornament_5.svg"
+								alt=""
+								fill
+								className="absolute filter brightness-0 invert"
+								style={{
+									maskImage:
+										"linear-gradient(to bottom, black 0%, black 20%, transparent 100%)",
+									WebkitMaskImage:
+										"linear-gradient(to bottom, black 0%, black 20%, transparent 100%)",
+									filter: "brightness(200%)",
+								}}
+							/>
+						</div>
 					</div>
-					<h2 className="font-thin text-[112px] leading-[100%] font-canela text-brand-deep mb-8 text-center">
+					<h2 className="relative font-thin text-[60px] lg:text-[112px] leading-[130%] font-canela text-brand-deep mb-8 text-center z-10">
 						The Laboratory
 					</h2>
 					<p className="text-body font-lato leading-[26px] mb-6 text-center text-[#5A5757] max-w-[903px] mx-auto">
@@ -133,7 +182,7 @@ const TheFractureAndLaboratorySection = () => {
 						I turned the company into a testing ground for applied numerology,
 						hiring 15 clinical psychologists to work alongside me.
 					</p>
-					<p className="text-body font-lato leading-[26px] mb-2 text-center text-[#5A5757] max-w-[903px] mx-auto italic">
+					<p className="text-body font-lato leading-[26px] mb-6 lg:mb-2 text-center text-[#5A5757] max-w-[903px] mx-auto italic">
 						For each candidate, we ran two tracks:
 					</p>
 					<p className="font-thin font-canela text-brand-deep text-[32px] leading-[100%] tracking-normal max-w-[903px] mx-auto text-center mb-8">
@@ -141,9 +190,9 @@ const TheFractureAndLaboratorySection = () => {
 						numerology-based profiling.
 					</p>
 					<p className="font-thin font-canela text-brand-deep text-[32px] leading-[100%] tracking-normal max-w-[903px] mx-auto text-center mb-8">
-						<span className="font-normal">The results were undeniable.</span> Numerology didn’t just
-						match the psychological profiles—it predicted behavioral traits
-						psychologists missed in 75% of cases.
+						<span className="font-normal">The results were undeniable.</span>{" "}
+						Numerology didn’t just match the psychological profiles—it predicted
+						behavioral traits psychologists missed in 75% of cases.
 					</p>
 				</div>
 			</div>

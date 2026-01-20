@@ -51,7 +51,7 @@ export default function Footer() {
 	return (
 		<footer className="bg-white py-8 md:py-12 lg:py-16 px-4 md:px-6 lg:px-8">
 			<div className="container mx-auto">
-				<span className="inline-block w-10 h-10 md:w-12 md:h-12 relative">
+				<span className="inline-block w-[57px] h-[57px] md:w-12 md:h-12 relative mb-[12px] lg:mb-[12px]">
 					<Image
 						src="/leelu_logo.svg"
 						alt="Lily Chystofat Logo"
@@ -60,20 +60,122 @@ export default function Footer() {
 						priority
 					/>
 				</span>
-				<div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-8 md:gap-10 lg:gap-0">
-					{/* Brand Section */}
-					<div className="lg:col-span-2">
-						<div className="mt-4 text-[28px] md:text-[32px] leading-[100%]">
+				<div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-10 lg:gap-0">
+					<div className="order-2 lg:order-2">
+						<div className="grid grid-cols-2 gap-x-14 gap-y-12 sm:flex sm:flex-row sm:gap-12 md:gap-16 lg:gap-[68px]">
+							{/* Offers */}
+							<div className="min-w-[130px]">
+								<h4 className="text-[32px] md:text-[32px] font-canela font-thin text-black mb-4 md:mb-6 leading-[130%]">
+									Offers
+								</h4>
+								<ul className="space-y-2">
+									<li>
+										<Link
+											href="/programs"
+											className="text-[11px] font-lato font-medium leading-6 tracking-widest text-black uppercase"
+										>
+											Programs
+										</Link>
+									</li>
+									<li>
+										<Link
+											href="/freebies"
+											className="text-[11px] font-lato font-medium leading-6 tracking-widest text-black uppercase"
+										>
+											Freebies
+										</Link>
+									</li>
+									<li>
+										<Link
+											href="/community"
+											className="text-[11px] font-lato font-medium leading-6 tracking-widest text-black uppercase"
+										>
+											Community
+										</Link>
+									</li>
+									<li>
+										<Link
+											href="/1-on-1"
+											className="text-[11px] font-lato font-medium leading-6 tracking-widest text-black uppercase"
+										>
+											1-on-1
+										</Link>
+									</li>
+								</ul>
+							</div>
+
+							{/* Learn more */}
+							<div className="min-w-[130px]">
+								<h4 className="text-[32px] md:text-[32px] font-canela font-thin text-black mb-4 md:mb-6 leading-[130%]">
+									Learn more
+								</h4>
+								<ul className="space-y-2">
+									<li>
+										<Link
+											href="/about"
+											className="text-[11px] font-lato font-medium leading-6 tracking-widest text-black uppercase"
+										>
+											About
+										</Link>
+									</li>
+									<li>
+										<Link
+											href="/leelu"
+											className="text-[11px] font-lato font-medium leading-6 tracking-widest text-black uppercase"
+										>
+											Leelu
+										</Link>
+									</li>
+									<li>
+										<Link
+											href="/transformations"
+											className="text-[11px] font-lato font-medium leading-6 tracking-widest text-black uppercase"
+										>
+											Client stories
+										</Link>
+									</li>
+								</ul>
+							</div>
+
+							<div className="min-w-[130px] col-span-2 sm:col-span-1">
+								<h4 className="text-[32px] md:text-[32px] font-canela font-thin text-black mb-4 md:mb-6 leading-[130%]">
+									Support
+								</h4>
+								<ul className="space-y-2">
+									<li>
+										<Link
+											href="/contact"
+											className="text-[11px] font-lato font-medium leading-6 tracking-widest text-black uppercase"
+										>
+											Contact
+										</Link>
+									</li>
+									<li>
+										<Link
+											href="/legal"
+											className="text-[11px] font-lato font-medium leading-6 tracking-widest text-black uppercase"
+										>
+											Legal
+										</Link>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+
+					<div className="order-1 lg:order-1">
+						<div className=" text-[32px] md:text-[32px] leading-[130%]">
 							<span className="font-medium font-canela tracking-tight mr-1">
 								LILY
 							</span>
 							<span className="font-canela font-light">CHYSTOFAT</span>
 						</div>
+
 						<p className="mt-2 text-gray-600 font-medium font-lato leading-6 text-[11px] uppercase max-w-xs">
 							Descriptive line about what your company does. Tagline.
 						</p>
 
-						<div className="flex items-center gap-4 pt-8 md:pt-10 lg:pt-[56px]">
+						<div className="flex items-center gap-4 mt-8 lg:mt-[56px]">
 							<Link
 								href="https://instagram.com"
 								target="_blank"
@@ -90,107 +192,6 @@ export default function Footer() {
 							>
 								<XIcon />
 							</Link>
-						</div>
-					</div>
-
-					<div className="flex flex-col sm:flex-row gap-8 sm:gap-12 md:gap-16 lg:gap-[68px]">
-						{/* Offers */}
-						<div className="min-w-[130px]">
-							<h4 className="text-[28px] md:text-[32px] font-canela font-thin text-black mb-4 md:mb-6 leading-[100%]">
-								Offers
-							</h4>
-							<ul className="space-y-2">
-								<li>
-									<Link
-										href="/programs"
-										className="text-[11px] font-lato font-medium leading-6 tracking-widest text-black transition-colors uppercase"
-									>
-										Programs
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/freebies"
-										className="text-[11px] font-lato font-medium leading-6 tracking-widest text-black transition-colors uppercase"
-									>
-										Freebies
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/community"
-										className="text-[11px] font-lato font-medium leading-6 tracking-widest text-black transition-colors uppercase"
-									>
-										Community
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/1-on-1"
-										className="text-[11px] font-lato font-medium leading-6 tracking-widest text-black transition-colors uppercase"
-									>
-										1-on-1
-									</Link>
-								</li>
-							</ul>
-						</div>
-
-						{/* Learn more */}
-						<div className="min-w-[130px]">
-							<h4 className="text-[28px] md:text-[32px] font-canela font-thin text-black mb-4 md:mb-6 leading-[100%]">
-								Learn more
-							</h4>
-							<ul className="space-y-1.5">
-								<li>
-									<Link
-										href="/about"
-										className="text-[11px] font-lato font-medium leading-6 tracking-widest text-black transition-colors uppercase"
-									>
-										About
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/leelu"
-										className="text-[11px] font-lato font-medium leading-6 tracking-widest text-black transition-colors uppercase"
-									>
-										Leelu
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/transformations"
-										className="text-[11px] font-lato font-medium leading-6 tracking-widest text-black transition-colors uppercase"
-									>
-										Client stories
-									</Link>
-								</li>
-							</ul>
-						</div>
-
-						{/* Support */}
-						<div className="min-w-[130px]">
-							<h4 className="text-[28px] md:text-[32px] font-canela font-thin text-black mb-4 md:mb-6 leading-[100%]">
-								Support
-							</h4>
-							<ul className="space-y-1.5">
-								<li>
-									<Link
-										href="/contact"
-										className="text-[11px] font-lato font-medium leading-6 tracking-widest text-black transition-colors uppercase"
-									>
-										Contact
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/legal"
-										className="text-[11px] font-lato font-medium leading-6 tracking-widest text-black transition-colors uppercase"
-									>
-										Legal
-									</Link>
-								</li>
-							</ul>
 						</div>
 					</div>
 				</div>

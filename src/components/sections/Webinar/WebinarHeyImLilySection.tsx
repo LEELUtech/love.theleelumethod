@@ -22,7 +22,7 @@ export default function WebinarHeyImLilySection() {
 						{/* Main image with rounded corners */}
 						<div className="relative w-full aspect-[551/748] rounded-[24px] md:rounded-[32px] lg:rounded-[40px] overflow-hidden">
 							<Image
-								src="/images/lily_2.png"
+								src="/images/lily/lily_2.png"
 								alt="Lily"
 								fill
 								quality={100}
@@ -33,19 +33,19 @@ export default function WebinarHeyImLilySection() {
 
 					{/* Right side - Content */}
 					<div className="flex flex-col">
-						<h1 className="font-canela font-thin mb-4 md:mb-6 lg:mb-8 leading-tight text-brand-deep text-[32px] md:text-[44px] lg:text-[60px]">
+						<h1 className="font-canela font-thin mb-8 md:mb-8 lg:mb-8 leading-	[130%] text-brand-deep text-[60px] md:text-[60px] lg:text-[60px]">
 							Hey, I&apos;m Lily
 						</h1>
 
-						<div className="space-y-3 md:space-y-4 lg:space-y-5 mb-6 md:mb-8 lg:mb-10">
-							<p className="text-[#5A5757] font-lato text-[14px] md:text-[15px] lg:text-body leading-[24px] md:leading-[26px] lg:leading-[28px]">
+						<div className="space-y-8 md:space-y-8 lg:space-y-8 mb-8 md:mb-8 lg:mb-10">
+							<p className="text-[#5A5757] font-lato text-[17px] md:text-[17px] lg:text-body leading-[24px] md:leading-[26px] lg:leading-[28px]">
 								My work began the moment my life broke open—through divorce,
 								betrayal, and patterns I couldn&apos;t think my way out of. What
 								I discovered on my way back to myself became the foundation of
 								the system I now teach.
 							</p>
 
-							<p className="text-[#5A5757] font-lato text-[14px] md:text-[15px] lg:text-body leading-[24px] md:leading-[26px] lg:leading-[28px]">
+							<p className="text-[#5A5757] font-lato text-[17px] md:text-[17px] lg:text-body leading-[24px] md:leading-[26px] lg:leading-[28px]">
 								Before guiding women in love, I ran a high-stakes HR firm
 								alongside psychologists, where I learned how one misaligned
 								relationship could quietly derail a woman&apos;s entire life.
@@ -57,15 +57,7 @@ export default function WebinarHeyImLilySection() {
 								and the roots of their relational struggles.
 							</p>
 
-							{/* <p className="text-[#5A5757] font-lato text-[14px] md:text-[15px] lg:text-body leading-[24px] md:leading-[26px] lg:leading-[28px]">
-								My studies took me across seven countries, blending Eastern
-								energetic wisdom, advanced profiling training, and intuitive
-								feminine insight into LeeluTech—a framework that has helped
-								thousands of women understand compatibility, emotional patterns,
-								and the roots of their relational struggles.
-							</p> */}
-
-							<p className="text-[#5A5757] font-lato text-[14px] md:text-[15px] lg:text-body leading-[24px] md:leading-[26px] lg:leading-[28px]">
+							<p className="text-[#5A5757] font-lato text-[17px] md:text-[17px] lg:text-body leading-[24px] md:leading-[26px] lg:leading-[28px]">
 								I teach feminine identity because I lived its absence. I know
 								what it feels like to overfunction, harden, and carry everything
 								alone—and I know the freedom that comes from healing those
@@ -77,13 +69,13 @@ export default function WebinarHeyImLilySection() {
 		font-canela font-thin text-brand-deep tracking-normal
 
 		/* MOBILE */
-		text-[24px] leading-[110%]
+		text-[32px] leading-[130%]
 
 		/* TABLET */
-		md:text-[26px] md:leading-[110%]
+		md:text-[32px] md:leading-[130%]
 
 		/* DESKTOP */
-		lg:text-[32px] lg:leading-[100%]
+		lg:text-[32px] lg:leading-[130%]
 	"
 							>
 								Today, my work helps women break relationship loops, feel

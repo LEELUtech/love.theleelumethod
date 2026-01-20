@@ -1,3 +1,4 @@
+import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
 import Header from "@/components/ui/Header";
 import Image from "next/image";
 
@@ -11,47 +12,52 @@ export default function SecretsHeroSection() {
 			<div className="container pt-8 pb-16 md:pt-12 md:pb-20 lg:pt-16 lg:pb-[112px]">
 				<div className="relative flex flex-col items-center justify-center w-full text-center gap-4 md:gap-5 lg:gap-6">
 					<div className="relative flex flex-col items-center gap-3 md:gap-4 mt-4 md:mt-5 lg:mt-6">
-						<div className="relative">
+						<div className="relative w-[278px] h-[290px] md:w-[220px] md:h-[240px] lg:w-[288px] lg:h-[290px]">
 							<Image
-								src="/icons/decorative_arc.svg"
-								alt=""
-								width={558}
-								height={197}
-								className="max-w-none absolute left-[-55px] top-[-30px] md:left-[-95px] md:top-[-42px] lg:left-[-135px] lg:top-[-55px] z-10 w-[280px] md:w-[400px] lg:w-[558px]"
+								src="/images/resources-section-1.png"
+								alt="Woman smiling in a red sweater"
+								fill
+								priority
+								quality={100}
 							/>
-							<div className="relative w-[180px] h-[200px] md:w-[220px] md:h-[240px] lg:w-[288px] lg:h-[290px]">
+							<ArcAutoOnce
+								className="absolute inset-0 -z-0 -translate-y-[15%] pointer-events-none -translate-x-[2%]"
+								endAt={0.9}
+								flightStart={0.2}
+								durMs={1500}
+								startDelayMs={500}
+								arrowRotateDeg={254}
+								arrowScale={0.8}
+								arrowCenterX={6.5}
+								arrowCenterY={-6}
+								arrowOffsetY={3}
+								arcRx={220}
+								arcRy={208}
+							/>
+							{/* Ornament overlaps the top image */}
+							<div className="absolute left-1/2 -translate-x-1/2 bottom-[-25px] md:bottom-[-30px] lg:bottom-[-35px] flex items-center justify-center bg-[#C4334F] rounded-[300px] md:rounded-[300px] lg:rounded-[300px] w-[74px] h-[102px] md:w-[74px] md:h-[102px] lg:w-[74px] lg:h-[102px] z-10">
 								<Image
-									src="/images/resources-section-1.png"
-									alt="Woman smiling in a red sweater"
-									fill
-									priority
-									quality={100}
+									src="/leelu_logo.svg"
+									alt=""
+									width={46}
+									height={46}
+									className="filter invert"
 								/>
-								{/* Ornament overlaps the top image */}
-								<div className="absolute left-1/2 -translate-x-1/2 bottom-[-25px] md:bottom-[-30px] lg:bottom-[-35px] flex items-center justify-center bg-[#C4334F] rounded-[28px] md:rounded-[32px] lg:rounded-[36px] w-[56px] h-[80px] md:w-[65px] md:h-[90px] lg:w-[74px] lg:h-[102px] z-10">
-									<Image
-										src="/leelu_logo.svg"
-										alt=""
-										width={46}
-										height={46}
-										className="filter invert"
-									/>
-								</div>
 							</div>
 						</div>
 					</div>
 
-					<div className="mt-6">
-						<h1 className="font-canela font-light leading-[100%] text-black">
+					<div className="mt-6 px-4 md:px-0">
+						<h1 className="font-canela text-[48px] lg:text-[60px] font-light leading-[130%] text-black">
 							<span className="text-[#BD2E45] italic mr-2">7 Secrets</span> to
 							Mend a Broken Heart
 						</h1>
-						<p className="text-base mt-3 md:text-lg text-[#5A5757] font-lato font-medium leading-[26px]">
+						<p className="text-body mt-3 md:text-lg text-[#5A5757] font-lato font-medium leading-[26px]">
 							This guide gives you 7 evidence-based strategies to reclaim your
 							nervous system and your life.
 						</p>
 					</div>
-					<form className="w-full max-w-[340px] md:max-w-[360px] lg:max-w-[384px] px-4 md:px-0">
+					<form className="w-full md:max-w-[360px] lg:max-w-[384px] px-4 md:px-0">
 						<input
 							type="text"
 							name="firstName"
