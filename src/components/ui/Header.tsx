@@ -11,7 +11,7 @@ const NAV_LINKS = [
 	{ href: "/about", label: "About" },
 ] as const;
 
-export default function Header() {
+export default function Header({ className }: { className?: string }) {
 	const [open, setOpen] = useState(false);
 
 	// ESC + lock scroll while menu open
@@ -34,7 +34,9 @@ export default function Header() {
 	// optional: close on route click already handled by onClick
 
 	return (
-		<header className="relative py-4 md:py-5 lg:py-[21px] px-4 md:px-8 lg:px-[56px] bg-transparent z-50">
+		<header
+			className={`relative py-4 md:py-5 lg:py-[21px] px-4 md:px-8 lg:px-[56px] bg-transparent z-50 ${className ?? ""}`}
+		>
 			<nav className="flex items-center justify-between md:justify-between lg:justify-between w-full">
 				{/* Logo */}
 				<Link
@@ -85,24 +87,24 @@ export default function Header() {
 						{/* Top */}
 						<span
 							className={[
-								"absolute left-0 top-[5px] w-6 h-[2px] bg-[#6F4C40] origin-center transition-transform duration-200",
-								open ? "translate-y-[7px] rotate-45" : "translate-y-0 rotate-0",
+								"absolute left-0 top-[5px] w-5 h-[2px] bg-brand-black origin-center transition-transform duration-200",
+								// open ? "translate-y-[7px] rotate-45" : "translate-y-0 rotate-0",
 							].join(" ")}
 						/>
 						{/* Middle */}
 						<span
 							className={[
-								"absolute left-0 top-[12px] w-6 h-[2px] bg-[#6F4C40] transition-opacity duration-200",
-								open ? "opacity-0" : "opacity-100",
+								"absolute left-0 top-[12px] w-5 h-[2px] bg-brand-black transition-opacity duration-200",
+								// open ? "opacity-0" : "opacity-100",
 							].join(" ")}
 						/>
 						{/* Bottom */}
 						<span
 							className={[
-								"absolute left-0 top-[19px] w-6 h-[2px] bg-[#6F4C40] origin-center transition-transform duration-200",
-								open
-									? "-translate-y-[7px] -rotate-45"
-									: "translate-y-0 rotate-0",
+								"absolute left-0 top-[19px] w-5 h-[2px] bg-brand-black origin-center transition-transform duration-200",
+								// open
+								// 	? "-translate-y-[7px] -rotate-45"
+								// 	: "translate-y-0 rotate-0",
 							].join(" ")}
 						/>
 					</div>
@@ -113,44 +115,74 @@ export default function Header() {
 			<AnimatePresence>
 				{open && (
 					<motion.div
-						className="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center gap-10"
+						className="fixed inset-0 z-[60]"
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
 						transition={{ duration: 0.18 }}
 					>
-						{/* optional: subtle background scale-in without changing visuals */}
-						<motion.div
-							className="absolute inset-0"
-							initial={{ scale: 0.98 }}
-							animate={{ scale: 1 }}
-							exit={{ scale: 0.98 }}
-							transition={{ duration: 0.18, ease: "easeOut" }}
+						{/* Backdrop (dark area on the right) */}
+						<motion.button
+							type="button"
+							aria-label="Close menu"
+							onClick={() => setOpen(false)}
+							className="absolute inset-0 bg-black/40"
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							exit={{ opacity: 0 }}
+							transition={{ duration: 0.18 }}
 						/>
 
-						<div className="relative z-10 flex flex-col items-center justify-center gap-10">
-							{NAV_LINKS.map((link, idx) => (
-								<motion.div
-									key={link.href}
-									initial={{ opacity: 0, y: 12 }}
-									animate={{ opacity: 1, y: 0 }}
-									exit={{ opacity: 0, y: 12 }}
-									transition={{
-										duration: 0.22,
-										ease: "easeOut",
-										delay: 0.05 + idx * 0.06,
-									}}
+						{/* Panel */}
+						<motion.aside
+							className="absolute left-0 top-0 h-full w-[80%] max-w-[380px] bg-[#FFF3F0] px-6 pt-8"
+							initial={{ x: "-100%" }}
+							animate={{ x: 0 }}
+							exit={{ x: "-100%" }}
+							transition={{ duration: 0.22, ease: "easeOut" }}
+						>
+							{/* Top row: logo + close */}
+							<div className="flex items-center justify-between">
+								<Link
+									href="/"
+									onClick={() => setOpen(false)}
+									className="font-canela flex items-center gap-3"
 								>
+									<span className="inline-block w-7 h-7 relative flex-shrink-0">
+										<Image
+											src="/leelu_logo.svg"
+											alt="Lily Chystofat Logo"
+											fill
+											className="object-contain"
+											priority
+										/>
+									</span>
+
+									<div className="whitespace-nowrap leading-[100%]">
+										<span className="font-medium tracking-tight mr-1 text-[24px] text-brand-black">
+											LILY
+										</span>
+										<span className="font-thin text-[24px] text-brand-black">CHYSTOFAT</span>
+									</div>
+								</Link>
+
+						
+							</div>
+
+							{/* Links */}
+							<nav className="mt-14 flex flex-col gap-6">
+								{NAV_LINKS.map((link) => (
 									<Link
+										key={link.href}
 										href={link.href}
 										onClick={() => setOpen(false)}
-										className="text-[28px] font-canela text-[#6F4C40]"
+										className="uppercase font-lato text-[#6F4C40] text-[16px] tracking-[3px] font-medium"
 									>
 										{link.label}
 									</Link>
-								</motion.div>
-							))}
-						</div>
+								))}
+							</nav>
+						</motion.aside>
 					</motion.div>
 				)}
 			</AnimatePresence>
