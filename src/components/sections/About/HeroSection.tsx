@@ -5,11 +5,11 @@ import Link from "next/link";
 
 const HeroSection = () => {
 	return (
-		<section className="relative bg-brand-white pb-[80px] lg:pb-[142px]">
+		<section className="relative bg-brand-white lg:pb-[142px]">
 			<Header />
-			<div className="container flex flex-col lg:flex-row items-center justify-between gap-12 mt-[80px]">
+			<div className="container flex flex-col lg:flex-row items-center justify-between lg:gap-12 gap-0 mt-[80px]">
 				{/* Text Content */}
-				<div className="lg:w-1/2 flex flex-col max-w-[549px] order-2">
+				<div className="lg:w-1/2 xs:relative xs:top-[-60px] flex flex-col max-w-[549px] order-2">
 					<h1 className="font-canela font-thin text-brand-deep mb-12 leading-[100%] tracking-normal text-[48px] lg:text-[60px] text-center lg:text-left">
 						I am Lily Chystofat.
 					</h1>
