@@ -44,7 +44,6 @@ export default function CheckoutFormSection() {
 							</p>
 						</div>
 
-						{/* Ornament: показываем на планшете тоже */}
 						<div className="relative hidden md:block h-[160px] w-[154px] lg:h-[200px] lg:w-[192px]">
 							<Image src="/icons/checkout_ornament_pink.svg" alt="" fill />
 						</div>
@@ -92,7 +91,6 @@ export default function CheckoutFormSection() {
 								We accept
 							</p>
 
-							{/* на планшете лучше переносить бренды */}
 							<div className="mt-2 flex flex-wrap items-center gap-3">
 								<CardBrand label="visa" />
 								<CardBrand label="mastercard" />
