@@ -221,7 +221,7 @@ const TriageSection = () => {
 
 						{/* Card 2 (raised on lg only) */}
 						<div className="max-w-[392px] w-full rounded-[24px] bg-brand-white backdrop-blur-md px-[25px] py-[47px] shadow-[0_4px_20px_rgba(0,0,0,0.05)] flex flex-col lg:-translate-y-10">
-							<h2 className="text-center text-[38px] lg:text-[42px] font-thin text-brand-deep mb-[34px]">
+							<h2 className="text-center text-[38px] lg:text-[40px] font-thin text-brand-deep mb-[34px]">
 								I am Ready to <span className="font-light">Fix it</span>
 							</h2>
 
@@ -264,8 +264,8 @@ const TriageSection = () => {
 
 						{/* Card 3 */}
 						<div className="max-w-[392px] w-full rounded-[24px] bg-brand-white backdrop-blur-md px-[25px] py-[47px] shadow-[0_4px_20px_rgba(0,0,0,0.05)] flex flex-col md:col-span-2 md:max-w-[820px] lg:col-span-1 lg:max-w-[392px]">
-							<h2 className="text-center text-[38px] lg:text-[42px] font-thin text-brand-deep mb-[34px]">
-								I am Done <span className="font-light">Guessing</span>
+							<h2 className="text-center text-[38px] lg:text-[38px] font-thin text-brand-deep mb-[34px]">
+								I am <span className="font-light">Done Guessing</span>
 							</h2>
 
 							<p className="text-[20px] font-normal font-canela mb-[20px]">

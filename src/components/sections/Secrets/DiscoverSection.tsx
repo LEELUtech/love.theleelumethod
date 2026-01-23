@@ -14,7 +14,7 @@ export default function DiscoverSection() {
 				/>
 			</div>
 
-			<div className="container px-4 relative z-10">
+			<div className="container relative z-10">
 				{/* Header with image */}
 				<div className="flex flex-col items-center mb-8 md:mb-10 lg:mb-12">
 					<div className="relative w-[361px] min-h-[379px] md:w-[361px] md:h-[379px] lg:w-[356px] lg:h-[384px] mb-8">

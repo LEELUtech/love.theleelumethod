@@ -7,7 +7,7 @@ export default function HeyImLilySection() {
 			className="bg-brand-white py-12 md:py-16 lg:py-[160px]"
 			
 		>
-			<div className="container px-4">
+			<div className="container">
 				<div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10 lg:gap-12 items-center">
 					{/* Left side - Image */}
 				<div className="relative w-full max-w-[400px] md:max-w-[480px] lg:max-w-[551px] mx-auto lg:mx-0">

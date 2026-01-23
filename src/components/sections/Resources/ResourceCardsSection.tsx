@@ -61,7 +61,7 @@ export function ResourceCardsSection() {
 				</h1>
 			</div>
 
-			<div className="container pb-16 md:pb-20 lg:pb-[112px] px-4 md:px-6 lg:px-8">
+			<div className="container pb-16 md:pb-20 lg:pb-[112px]">
 				<div className="grid gap-12 md:gap-16 lg:gap-20 md:grid-cols-2 lg:grid-cols-3">
 					{resources.map((item) => (
 						<article key={item.title} className="flex flex-col px-[12px] lg:px-0">

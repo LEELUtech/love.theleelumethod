@@ -10,7 +10,7 @@ export function MasterclassSection() {
 
 	return (
 		<section className="bg-brand-white text-brand-deep pt-16 pb-20 md:pt-24 md:pb-28 lg:pt-[112px] lg:pb-[160px]">
-			<div className="container px-4 flex flex-col-reverse md:flex-row items-center justify-between gap-10 md:gap-12 lg:gap-16 overflow-hidden">
+			<div className="container flex flex-col-reverse md:flex-row items-center justify-between gap-10 md:gap-12 lg:gap-16 overflow-hidden">
 				<div className="order-1 md:order-1 w-full md:max-w-[520px]">
 					<p className="font-canela hidden md:block lg:block font-light text-[32px] leading-[100%] tracking-normal text-black mb-6">
 						Free live masterclass
