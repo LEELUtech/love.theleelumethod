@@ -1,5 +1,6 @@
+import Button from "@/components/ui/Button"
 import Image from "next/image";
-import Link from "next/link"
+import Link from "next/link";
 import React from "react";
 
 export default function ChooseYourPathSection() {
@@ -87,28 +88,26 @@ export default function ChooseYourPathSection() {
 								</p>
 
 								<p className="font-lato font-normal text-[#5A5757] text-[14px] leading-[26px] tracking-normal">
-									You’re not in crisis—you’re in clarity mode. You’ve done enough
-									therapy, coaching, or self-work to know what you need to shift.
-									You just need the specific steps to do it. You’re comfortable
-									moving independently; you trust your own discipline, and you’d
-									rather move at your own pace than wait for scheduled calls. You
-									need the blueprint, not a guide holding your hand through it.
+									You’re not in crisis—you’re in clarity mode. You’ve done
+									enough therapy, coaching, or self-work to know what you need
+									to shift. You just need the specific steps to do it. You’re
+									comfortable moving independently; you trust your own
+									discipline, and you’d rather move at your own pace than wait
+									for scheduled calls. You need the blueprint, not a guide
+									holding your hand through it.
 								</p>
 							</div>
 						</div>
 
 						<div className="mt-auto">
-							<Link
-								className="
-									w-full inline-flex items-center justify-center
-									rounded-full bg-brand-primary hover:bg-[#9f3445]
-									text-white font-lato font-medium uppercase tracking-[1.6px]
-									text-[15px] px-6 py-4
-								"
+							<Button
+								variant="primary"
+								size="md"
+								className="w-full xs:text-[12px]"
 								href="/programs/self-guided-transformation"
 							>
 								BEGIN THE PROTOCOL
-							</Link>
+							</Button>
 						</div>
 					</div>
 
@@ -136,17 +135,17 @@ export default function ChooseYourPathSection() {
 
 								<div className="space-y-4">
 									<p className="font-lato font-normal text-[#5A5757] text-[14px] leading-[26px] tracking-normal">
-										• Written Compatibility Analysis (by personally reviewing your
-										numerological code against your partner’s—identifying friction
-										points, communication blind spots, and your hidden
+										• Written Compatibility Analysis (by personally reviewing
+										your numerological code against your partner’s—identifying
+										friction points, communication blind spots, and your hidden
 										compatibility levers; delivered within 5 business days)
 									</p>
 
 									<p className="font-lato font-normal text-[#5A5757] text-[14px] leading-[26px] tracking-normal">
-										• Private Strategy Session (90 minutes): A deep diagnostic call
-										where Lily applies the system to your specific situation,
-										helps you understand the root pattern, and scripts your next
-										moves
+										• Private Strategy Session (90 minutes): A deep diagnostic
+										call where Lily applies the system to your specific
+										situation, helps you understand the root pattern, and
+										scripts your next moves
 									</p>
 								</div>
 							</div>
@@ -165,18 +164,14 @@ export default function ChooseYourPathSection() {
 						</div>
 
 						<div className="mt-auto">
-							<Link
+							<Button
+								variant="primary"
+								size="md"
+								className="w-full xs:text-[12px]"
 								href="/programs/guided-breakthrough"
-								className="
-									w-full inline-flex items-center justify-center
-									rounded-full bg-brand-primary hover:bg-[#9f3445]
-									text-white font-lato font-medium uppercase tracking-[1.6px]
-									text-[14px] px-6 py-4
-									transition-colors
-								"
 							>
 								GET PERSONALIZED SUPPORT
-							</Link>
+							</Button>
 						</div>
 					</div>
 
@@ -214,36 +209,34 @@ export default function ChooseYourPathSection() {
 									</p>
 
 									<p className="font-lato font-normal text-[#5A5757] text-[14px] leading-[26px] tracking-normal">
-										• Priority review of all materials, assignments, and personal
-										situations as they arise
+										• Priority review of all materials, assignments, and
+										personal situations as they arise
 									</p>
 
 									<p className="font-lato font-normal text-[#5A5757] text-[14px] leading-[26px] tracking-normal">
-										• Custom Relationship Action Plan — a written strategic roadmap
-										based on your unique code, crisis point, and desired outcome
+										• Custom Relationship Action Plan — a written strategic
+										roadmap based on your unique code, crisis point, and desired
+										outcome
 									</p>
 
 									<p className="font-lato font-normal text-[#5A5757] text-[14px] leading-[26px] tracking-normal">
-										• Partner Profile Add-On: If your partner is willing, Lily will
-										include him in one joint session to accelerate alignment
+										• Partner Profile Add-On: If your partner is willing, Lily
+										will include him in one joint session to accelerate
+										alignment
 									</p>
 								</div>
 							</div>
 						</div>
 
 						<div className="mt-auto">
-							<Link
+							<Button
+								variant="primary"
+								size="md"
+								className="w-full xs:text-[12px]"
 								href="/programs/vip-immersion"
-								className="
-									w-full inline-flex items-center justify-center
-									rounded-full bg-brand-primary hover:bg-[#9f3445]
-									text-white font-lato font-medium uppercase tracking-[1.6px]
-									text-[15px] px-6 py-4
-									transition-colors
-								"
 							>
 								APPLY FOR VIP ACCESS
-							</Link>
+							</Button>
 						</div>
 					</div>
 				</div>

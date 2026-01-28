@@ -1,10 +1,31 @@
 "use client";
 
 import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
+import Button from "@/components/ui/Button"
+import { formatPriceFromCents } from "@/helpers";
+import useProductStore from "@/store/useProductStore";
+import { VIP_IMMERSION } from "@/utils/constants";
 import Image from "next/image";
 import React from "react";
 
 export default function CostOfWaitingSection() {
+	const productId = VIP_IMMERSION;
+
+	const product = useProductStore((s) => s.getProduct(productId));
+	const loading = useProductStore((s) => s.isLoading(productId));
+	const fetchProduct = useProductStore((s) => s.fetchProduct);
+
+	React.useEffect(() => {
+		if (!product && !loading) fetchProduct(productId);
+	}, [product, loading, fetchProduct, productId]);
+
+	const priceLabel =
+		!loading && product
+			? formatPriceFromCents(product.price, {
+					currency: product.currency ?? "USD",
+					showCents: false,
+				})
+			: "...";
 	return (
 		<section className="relative lg:pb-[166px] pb-[80px]">
 			<div className="container">
@@ -164,7 +185,7 @@ export default function CostOfWaitingSection() {
 										src="/leelu_logo.svg"
 										alt=""
 										fill
-										   className="filter brightness-0 invert"
+										className="filter brightness-0 invert"
 									/>
 								</div>
 							</div>
@@ -174,25 +195,16 @@ export default function CostOfWaitingSection() {
 					{/* HERE */}
 
 					<p className="lg:mt-[124px] mt-[84px] font-canela font-thin text-brand-black text-[48px] lg:text-[60px]">
-						Investment: $4,997
+						Investment: {priceLabel}
 					</p>
 
-					<button
-						type="button"
-						className="
-							mt-6
-							inline-flex items-center justify-center
-							rounded-full bg-brand-primary hover:bg-[#E13954]
-							text-white font-lato font-medium uppercase tracking-[1.6px]
-							text-[13px] md:text-[14px]
-							px-10 md:px-12 py-4
-							transition-colors
-							w-full
-							lg:w-[33%]
-						"
+					<Button
+						variant="primary"
+						size="md"
+						className="w-full lg:w-[30%] xs:text-[12px] mt-[32px]"
 					>
 						APPLY FOR VIP ACCESS
-					</button>
+					</Button>
 
 					<p className="font-lato text-body font-normal text-[#757986] mt-[21px]">
 						(3 spots available per month due to the depth of personal

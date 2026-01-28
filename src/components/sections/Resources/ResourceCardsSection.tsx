@@ -1,8 +1,8 @@
 import React from "react";
 import Image from "next/image";
-import FreeQuizButton from "@/components/ui/buttons/FreeQuizButton";
-import CompatibilityReportButton from "@/components/ui/buttons/CompatibilityReportButton";
 import Header from "@/components/ui/Header";
+import Button from "@/components/ui/Button";
+import { QUIZ_URL } from "@/utils/constants"
 
 interface ResourceCard {
 	title: string;
@@ -11,7 +11,7 @@ interface ResourceCard {
 	href?: string;
 	imageAlt: string;
 	imageSrc: string;
-	ctaType?: "link" | "quiz" | "compatibility";
+	ctaType?: "compatibility" | "quiz" | "secrets";
 }
 
 const resources: ResourceCard[] = [
@@ -21,7 +21,7 @@ const resources: ResourceCard[] = [
 			"This guide gives you 7 evidence-based strategies to reclaim your nervous system and your life.",
 		cta: "Download free guide",
 		href: "#",
-		ctaType: "compatibility",
+		ctaType: "secrets",
 		imageAlt: "Woman smiling in a red sweater",
 		imageSrc: "/images/resources/resources-section-1.png",
 	},
@@ -29,7 +29,7 @@ const resources: ResourceCard[] = [
 		title: "The Compatibility Report",
 		description:
 			"This guide gives you 7 evidence-based strategies to reclaim your nervous system and your life.",
-		cta: "Get free report",
+		cta: "GET THE REPORT",
 		href: "#",
 		ctaType: "compatibility",
 		imageAlt: "Hands holding each other",
@@ -64,7 +64,10 @@ export function ResourceCardsSection() {
 			<div className="container pb-16 md:pb-20 lg:pb-[112px]">
 				<div className="grid gap-12 md:gap-16 lg:gap-20 md:grid-cols-2 lg:grid-cols-3">
 					{resources.map((item) => (
-						<article key={item.title} className="flex flex-col px-[12px] lg:px-0">
+						<article
+							key={item.title}
+							className="flex flex-col px-[12px] lg:px-0"
+						>
 							<div className="relative mb-8 md:mb-8 overflow-hidden w-full aspect-[336/322]">
 								<Image
 									src={item.imageSrc}
@@ -75,40 +78,41 @@ export function ResourceCardsSection() {
 									className="object-cover"
 								/>
 							</div>
-							<h3 className="text-[32px] md:text-[32px] font-light leading-[100%] font-canela mb-4 md:mb-4 text-brand-deep">
+							<h3 className="text-[32px] md:text-[30px] font-light leading-[100%] font-canela mb-4 md:mb-4 text-brand-deep">
 								{item.title}
 							</h3>
 							<p className="text-body text-[#5A5757] mb-6 md:mb-8 font-lato font-medium leading-[26px] tracking-[0.03em]">
 								{item.description}
 							</p>
 							<div className="mt-auto">
-								{item.title === "7 Secrets to Mend a Broken Heart" ? (
-									<a
+								{item.ctaType === "secrets" ? (
+									<Button
+										variant="primary"
+										size="md"
+										className="w-full py-[12px]"
 										href="/resources/secrets"
-										className="w-full justify-center rounded-full bg-brand-primary px-5 py-3 text-brand-white text-cta leading-[173%] font-medium uppercase tracking-[1.5px] hover:bg-[#E13954] flex items-center text-center"
 									>
 										{item.cta}
-									</a>
-								) : item.ctaType === "quiz" ? (
-									<FreeQuizButton
-										text={item.cta}
-										className="w-full justify-center rounded-full bg-brand-primary px-5 py-3 text-brand-white text-cta leading-[173%] font-medium uppercase tracking-[1.5px] hover:bg-[#E13954]"
-										showArrow={false}
-									/>
+									</Button>
 								) : item.ctaType === "compatibility" ? (
-									<CompatibilityReportButton
-										text={item.cta}
-										className="w-full justify-center rounded-full bg-brand-primary px-5 py-3 text-brand-white text-cta 
-										leading-[173%] font-medium uppercase tracking-[1.5px] hover:bg-[#E13954]"
-										showArrow={false}
-									/>
-								) : (
-									<CompatibilityReportButton
-										text={item.cta}
-										className="w-full justify-center rounded-full bg-brand-primary px-5 py-3 text-brand-white text-cta leading-[173%] font-medium uppercase tracking-[1.5px] hover:bg-[#E13954]"
-										showArrow={false}
-									/>
-								)}
+									<Button
+										variant="primary"
+										size="md"
+										className="w-full py-[12px]"
+										href="/resources/compatibility-report"
+									>
+										{item.cta}
+									</Button>
+								) : item.ctaType === "quiz" ? (
+									<Button
+										variant="primary"
+										size="md"
+										className="w-full py-[12px]"
+										href={QUIZ_URL}
+									>
+										{item.cta}
+									</Button>
+								) : null}
 							</div>
 						</article>
 					))}

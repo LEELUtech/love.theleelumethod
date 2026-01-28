@@ -1,3 +1,4 @@
+import Button from "@/components/ui/Button";
 import Image from "next/image";
 import React from "react";
 
@@ -5,9 +6,15 @@ type MiniCard = { title: string; text: string };
 type Module = { title: string; text: string; accent?: "red" | "gold" | "none" };
 
 const MINI_CARDS: MiniCard[] = [
-	{ title: "WHY", text: 'Is your "Inner Devil" triggered\nby specific archetypes?' },
+	{
+		title: "WHY",
+		text: 'Is your "Inner Devil" triggered\nby specific archetypes?',
+	},
 	{ title: "WHAT", text: "Is the mathematical root of your\nconflict?" },
-	{ title: "HOW", text: "Do you shift the power dynamic\nwithout saying a word?" },
+	{
+		title: "HOW",
+		text: "Do you shift the power dynamic\nwithout saying a word?",
+	},
 ];
 
 const PHASE_1: Module[] = [
@@ -94,7 +101,9 @@ function ModuleCard({ title, text, accent = "red" }: Module) {
 				{accent !== "none" && (
 					<div className="relative w-[26px] h-[33px] shrink-0">
 						<Image
-							src={accent === "red" ? "/icons/red_star.svg" : "/icons/necktie.svg"}
+							src={
+								accent === "red" ? "/icons/red_star.svg" : "/icons/necktie.svg"
+							}
 							alt=""
 							fill
 							priority
@@ -119,7 +128,12 @@ export default function ModulesSection() {
 		<section className="relative overflow-hidden">
 			{/* Background for whole section */}
 			<div className="absolute inset-0 -z-10">
-				<Image src="/images/programs/modules_section_bg.png" alt="" fill priority />
+				<Image
+					src="/images/programs/modules_section_bg.png"
+					alt=""
+					fill
+					priority
+				/>
 			</div>
 
 			<div className="container">
@@ -175,7 +189,8 @@ export default function ModulesSection() {
 									fill
 									className="absolute filter brightness-0 invert"
 									style={{
-										maskImage: "linear-gradient(to bottom, black 0%, transparent 80%)",
+										maskImage:
+											"linear-gradient(to bottom, black 0%, transparent 80%)",
 										WebkitMaskImage:
 											"linear-gradient(to bottom, black 0%, transparent 80%)",
 										filter: "brightness(200%)",
@@ -213,35 +228,33 @@ export default function ModulesSection() {
 					</div>
 
 					<h2 className="mt-16 font-canela font-thin text-brand-deep text-[48px] md:text-[48px] lg:text-[48px] leading-[120%] max-w-[860px] mx-auto">
-						<span className="text-brand-primary">The LeeluTech system </span> answers
-						the questions
+						<span className="text-brand-primary">The LeeluTech system </span>{" "}
+						answers the questions
 						<br />
 						traditional therapy circles for years:
 					</h2>
 
 					<div className="mt-10 lg:mt-12 grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 max-w-[980px] mx-auto">
 						{MINI_CARDS.map((c, idx) => (
-							<div key={c.title} className={idx === 1 ? "md:-translate-y-6 lg:-translate-y-8" : ""}>
+							<div
+								key={c.title}
+								className={
+									idx === 1 ? "md:-translate-y-6 lg:-translate-y-8" : ""
+								}
+							>
 								<MiniWhyCard {...c} />
 							</div>
 						))}
 					</div>
 
-					<button
-						type="button"
-						className="
-							mt-10
-							w-full md:w-auto
-							inline-flex items-center justify-center gap-3
-							rounded-full bg-brand-primary hover:bg-[#9f3445]
-							px-8 md:px-10 lg:px-24 py-4
-							text-white font-lato font-medium uppercase tracking-[1.6px]
-							text-[13px] md:text-[14px]
-							shadow-[0_12px_30px_rgba(0,0,0,0.10)]
-						"
+					<Button
+						variant="primary"
+						size="md"
+						className="w-full lg:w-[28%] xs:text-[12px]"
+						href="#checkout"
 					>
 						INITIATE THE PROTOCOL
-					</button>
+					</Button>
 				</div>
 
 				{/* ====== MODULES BLOCK ====== */}
@@ -254,8 +267,8 @@ export default function ModulesSection() {
 					</h2>
 
 					<p className="mt-6 md:mt-8 text-center font-lato text-brand-deep text-[24px] md:text-[24px] lg:leading-[26px] leading-[150%]">
-						This is not a lecture series. It is a step-by-step reconfiguration of
-						your relationship architecture.
+						This is not a lecture series. It is a step-by-step reconfiguration
+						of your relationship architecture.
 					</p>
 
 					{/* ================= PHASE 1 ================= */}
@@ -275,7 +288,14 @@ export default function ModulesSection() {
 
 							<div className="mt-4 relative w-full max-w-[420px] mx-auto lg:mx-0">
 								<div className="relative w-full aspect-[420/338]">
-									<Image src="/images/programs/phase_1.png" alt="Phase 1" fill priority quality={100} className="object-cover" />
+									<Image
+										src="/images/programs/phase_1.png"
+										alt="Phase 1"
+										fill
+										priority
+										quality={100}
+										className="object-cover"
+									/>
 								</div>
 
 								<div className="absolute left-[2%] bottom-[2%] h-[64px] w-[64px] md:h-[81px] md:w-[81px] rounded-full bg-brand-primary flex items-center justify-center">
@@ -401,7 +421,8 @@ export default function ModulesSection() {
 								fill
 								className="absolute filter brightness-0 invert"
 								style={{
-									maskImage: "linear-gradient(to bottom, black 0%, transparent 80%)",
+									maskImage:
+										"linear-gradient(to bottom, black 0%, transparent 80%)",
 									WebkitMaskImage:
 										"linear-gradient(to bottom, black 0%, transparent 80%)",
 									filter: "brightness(200%)",
@@ -413,20 +434,14 @@ export default function ModulesSection() {
 							Reconfigure your relationship architecture.
 						</h3>
 
-						<button
-							type="button"
-							className="
-								relative z-10
-								mt-8 md:mt-[36px]
-								inline-flex items-center justify-center
-								rounded-full bg-brand-primary hover:bg-[#9f3445]
-								px-10 md:px-16 lg:px-24 py-4
-								text-white font-lato font-medium uppercase tracking-[1.6px]
-								text-[13px] md:text-[14px]
-							"
+						<Button
+							variant="primary"
+							size="md"
+							className="w-full lg:w-[38%] xs:text-[12px] mt-[32px]"
+							href="#checkout"
 						>
 							INITIATE THE PROTOCOL
-						</button>
+						</Button>
 					</div>
 				</div>
 			</div>

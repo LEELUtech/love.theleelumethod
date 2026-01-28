@@ -1,4 +1,5 @@
 import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
+import Button from "@/components/ui/Button"
 import Header from "@/components/ui/Header";
 import Image from "next/image";
 import Link from "next/link";
@@ -25,16 +26,14 @@ const HeroSection = () => {
 						cracked.
 					</p>
 
-					<Link
-						className="btn-pill justify-center gap-3 font-medium tracking-[0.1em]
-						rounded-[50px] text-center
-						text-[15px] leading-[26px] py-4
-						px-5
-						bg-brand-black text-brand-white hover:bg-[#333333] uppercase order-2 lg:order-2 font-lato lg:max-w-[350px] w-full mx-auto lg:mx-0 mb-[24px] lg:mb-0"
-						href="/decode"
+					<Button
+						variant="dark"
+						size="md"
+						className="w-full lg:w-[55%] order-2"
+						href="#checkout"
 					>
 						START THE DECODE
-					</Link>
+					</Button>
 				</div>
 
 				{/* Image Content */}

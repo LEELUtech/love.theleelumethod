@@ -1,3 +1,4 @@
+import Button from "@/components/ui/Button"
 import Header from "@/components/ui/Header";
 import Image from "next/image";
 import React from "react";
@@ -124,28 +125,14 @@ const HeroSection = () => {
 					</p>
 
 					{/* CTA */}
-					<button
-						type="button"
-						className="
-              order-1 md:order-2
-              mt-8
-              inline-flex items-center justify-center
-              rounded-full
-              bg-brand-primary hover:bg-[#9f3445]
-              text-white
-              font-lato font-medium uppercase
-              tracking-[1.6px]
-              text-[15px]
-              xs:w-full
-              px-10 py-4
-              md:w-auto md:min-w-[420px] md:px-16 md:py-4
-              lg:px-32 lg:py-4
-              shadow-[0_10px_28px_rgba(0,0,0,0.10)]
-              transition-colors
-            "
+					<Button
+						variant="primary"
+						size="md"
+						className="w-full lg:w-[32%] xs:text-[12px] mt-[32px]"
+						href="#checkout"
 					>
 						ENROLL NOW
-					</button>
+					</Button>
 				</div>
 			</div>
 		</section>

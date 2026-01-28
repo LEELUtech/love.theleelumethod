@@ -1,3 +1,4 @@
+import Button from "@/components/ui/Button"
 import Image from "next/image";
 
 export default function DiscoverSection() {
@@ -140,7 +141,7 @@ export default function DiscoverSection() {
 							</div>
 							<div className="bg-white rounded-[16px] md:rounded-[18px] lg:rounded-[20px] px-[50px] py-12 md:py-8 lg:py-12 w-full min-h-[240px] md:min-h-[280px] lg:h-[301px] flex flex-col">
 								<h3 className="font-canela text-[32px] md:text-[32px] lg:text-[32px] mb-5 md:mb-3.5 lg:mb-4 text-black font-light leading-[100%]">
-									The Re-Entry Strategy
+									Re-Entry Strategy
 								</h3>
 								<p className="text-[#5A5757] font-medium text-body font-lato leading-[22px] md:leading-[24px] lg:leading-[26px]">
 									How to step back into the world without getting triggered,
@@ -157,12 +158,13 @@ export default function DiscoverSection() {
 						This guide gives you 7 evidence-based strategies to reclaim your
 						nervous system and your life.
 					</p>
-					<button
-						type="button"
-						className="py-4 w-full px-[40px] md:px-[60px] lg:px-[73px] rounded-full bg-brand-primary text-white font-medium font-lato text-[15px] tracking-[0.08em] uppercase hover:bg-[#E13954] transition-colors"
+					<Button
+						variant="primary"
+						size="md"
+						className="w-full mt-[16px] md:w-[45%] md:mt-[66px]"
 					>
-						Download the free guide
-					</button>
+						ACCESS THE FREE GUIDE
+					</Button>
 				</div>
 			</div>
 		</section>

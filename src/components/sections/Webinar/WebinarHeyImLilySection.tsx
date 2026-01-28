@@ -1,4 +1,5 @@
-import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton";
+import Button from "@/components/ui/Button"
+import { WEBINAR_URL } from "@/utils/constants"
 import Image from "next/image";
 
 export default function WebinarHeyImLilySection() {
@@ -66,17 +67,17 @@ export default function WebinarHeyImLilySection() {
 
 							<p
 								className="
-		font-canela font-thin text-brand-deep tracking-normal
+								font-canela font-thin text-brand-deep tracking-normal
 
-		/* MOBILE */
-		text-[32px] leading-[130%]
+								/* MOBILE */
+								text-[32px] leading-[130%]
 
-		/* TABLET */
-		md:text-[32px] md:leading-[130%]
+								/* TABLET */
+								md:text-[32px] md:leading-[130%]
 
-		/* DESKTOP */
-		lg:text-[32px] lg:leading-[130%]
-	"
+								/* DESKTOP */
+								lg:text-[32px] lg:leading-[130%]
+								"
 							>
 								Today, my work helps women break relationship loops, feel
 								emotionally safe, and finally experience the partnership they’ve
@@ -85,11 +86,14 @@ export default function WebinarHeyImLilySection() {
 							</p>
 						</div>
 
-						<WebinarModalButton
-							text="Save my seat"
-							showArrow={false}
-							className="w-full md:w-auto py-4 px-[60px] md:px-[80px] lg:px-[105px] rounded-full bg-brand-primary text-white font-medium font-lato text-[15px] tracking-[0.08em] uppercase hover:bg-[#E13954] transition-colors md:mx-auto"
-						/>
+						<Button
+							variant="primary"
+							size="md"
+							className="w-full md:w-[55%]"
+							href={WEBINAR_URL}
+						>
+							CLAIM YOUR FREE GUIDE
+						</Button>
 					</div>
 				</div>
 			</div>

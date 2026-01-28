@@ -1,4 +1,5 @@
 import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
+import Button from "@/components/ui/Button";
 import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton";
 import Image from "next/image";
 import React from "react";
@@ -177,13 +178,9 @@ export default function DecodedLoveCohortSection() {
 						healthy connection, and ending the cycle of disappointment.
 					</p>
 
-					<WebinarModalButton
-						showArrow={false}
-						text="Save My Seat"
-						icon={ornamentIcon}
-						iconPosition="left"
-						className="w-full mt-[80px] md:w-auto justify-center gap-3 font-medium text-[18px] leading-[26px] py-4 px-8 md:px-10 lg:px-[85px] bg-brand-black hover:bg-[#333333] uppercase"
-					/>
+					<Button variant="dark" leftIcon={ornamentIcon} leftIconBg="transparent" size="md" className="w-full lg:w-[35%] xs:text-[12px] mt-[32px]">
+						Save My Seat
+					</Button>
 				</div>
 
 				{/* Divider */}

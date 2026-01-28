@@ -1,4 +1,6 @@
+import Button from "@/components/ui/Button"
 import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton";
+import { WEBINAR_URL } from "@/utils/constants"
 import Image from "next/image";
 
 export default function HeyImLilySection() {
@@ -85,11 +87,14 @@ export default function HeyImLilySection() {
 							</p>
 						</div>
 
-						<WebinarModalButton
-							text="ACCESS THE PROTOCOL"
-							showArrow={false}
-							className="py-4 lg:w-fit lg:px-[111px] px-10 w-full rounded-full bg-brand-primary text-white font-medium font-lato text-[15px] tracking-[0.08em] uppercase hover:bg-[#E13954] transition-colors"
-						/>
+						<Button
+							variant="primary"
+							size="md"
+							className="w-full lg:w-[60%] xs:text-[12px]"
+							href={WEBINAR_URL}
+						>
+							ACCESS THE PROTOCOL
+						</Button>
 					</div>
 				</div>
 			</div>

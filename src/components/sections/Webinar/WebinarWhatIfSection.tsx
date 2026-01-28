@@ -2,6 +2,8 @@ import React from "react";
 import Image from "next/image";
 import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton";
 import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
+import Button from "@/components/ui/Button"
+import { WEBINAR_URL } from "@/utils/constants"
 
 const WebinarWhatIfSection = () => {
 	return (
@@ -294,18 +296,14 @@ const WebinarWhatIfSection = () => {
 					</div>
 
 					<div className="flex justify-center">
-						<WebinarModalButton
-							showArrow={false}
-							text="REGISTER NOW"
-							className="
-									w-full md:w-auto justify-center gap-3 font-medium tracking-[0.1em]
-									text-[15px] leading-[26px] py-4 px-10 md:px-16
-									bg-brand-primary hover:bg-[#E13954] uppercase rounded-full
-
-									/* DESKTOP */
-									lg:px-[106px]
-								"
-						/>
+						<Button
+							variant="primary"
+							size="md"
+							className="w-full md:w-[30%]"
+							href={WEBINAR_URL}
+						>
+							REGISTER NOW
+						</Button>
 					</div>
 				</div>
 			</div>

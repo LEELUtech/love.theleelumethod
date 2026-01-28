@@ -1,5 +1,6 @@
 "use client";
 
+import Button from "@/components/ui/Button"
 import Image from "next/image";
 import React from "react";
 
@@ -39,29 +40,22 @@ export default function ItWorkedForMeSection() {
 						</p>
 
 						<p className="mt-6 font-canela font-light text-brand-deep leading-[130%] text-[28px] md:text-[30px] lg:text-[32px]">
-							The system works because it&apos;s based on mathematical pattern recognition, not intuition. 
+							The system works because it&apos;s based on mathematical pattern
+							recognition, not intuition.
 						</p>
 
 						<p className="mt-6 font-canela font-light text-brand-deep leading-[130%] text-[28px] md:text-[30px] lg:text-[32px]">
-							Your relationship isn&apos;t broken. You&apos;re just running corrupted code.
+							Your relationship isn&apos;t broken. You&apos;re just running
+							corrupted code.
 						</p>
 
-						<button
-							type="button"
-							className="
-								mt-[45px]
-								inline-flex items-center justify-center
-								rounded-full bg-brand-primary hover:bg-[#E13954]
-								text-white font-lato font-medium uppercase tracking-[1.6px]
-								text-[13px] md:text-[15px]
-								px-10 md:px-12 py-4
-								transition-colors
-								w-full
-								lg:w-[80%]
-							"
+						<Button
+							variant="primary"
+							size="md"
+							className="w-full lg:w-[70%] xs:text-[12px] mt-[32px]"
 						>
 							APPLY FOR VIP ACCESS
-						</button>
+						</Button>
 					</div>
 
 					{/* RIGHT */}

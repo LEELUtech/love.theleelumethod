@@ -1,34 +1,44 @@
-"use client";
-import { useRouter } from "next/navigation";
-import UserDataModal from "@/components/ui/modals/UserDataModal";
-import PillButton from "@/components/ui/buttons/PillButton";
-import { useCheckoutStore } from "@/store/checkoutStore";
+// "use client";
+// import { useRouter } from "next/navigation";
+// import UserDataModal from "@/components/ui/modals/UserDataModal";
+// import PillButton from "@/components/ui/buttons/PillButton";
+// import { useCheckoutStore } from "@/store/useCheckoutStore";
 
-interface JoinProgramButtonProps {
-	text?: string;
-}
+// interface JoinProgramButtonProps {
+// 	text?: string;
+// }
 
-export default function JoinProgramButton({ text = "Join Program" }: JoinProgramButtonProps) {
-	const router = useRouter();
-	const setCheckoutData = useCheckoutStore((state) => state.setCheckoutData);
+// export default function JoinProgramButton({ text = "Join Program" }: JoinProgramButtonProps) {
+// 	const router = useRouter();
+// 	const setCheckoutData = useCheckoutStore((state) => state.setCheckoutData);
 
-	const handleSuccess = (values: any) => {
-		// Save user data to Zustand store
-		setCheckoutData(values);
+// 	const handleSuccess = (values: any) => {
+// 		// Save user data to Zustand store
+// 		setCheckoutData(values);
 		
-		// Redirect to checkout
-		router.push("/checkout");
-	};
+// 		// Redirect to checkout
+// 		router.push("/checkout");
+// 	};
 
+// 	return (
+// 		<UserDataModal
+// 			trigger={(open) => (
+// 				<PillButton onClick={open} type="button">
+// 					<span>{text}</span>
+// 				</PillButton>
+// 			)}
+// 			title="Join Program"
+// 			onSuccess={handleSuccess}
+// 		/>
+// 	);
+// }
+
+import React from 'react'
+
+const JoinProgramButton = () => {
 	return (
-		<UserDataModal
-			trigger={(open) => (
-				<PillButton onClick={open} type="button">
-					<span>{text}</span>
-				</PillButton>
-			)}
-			title="Join Program"
-			onSuccess={handleSuccess}
-		/>
-	);
+		<div>JoinProgramButton</div>
+	)
 }
+
+export default JoinProgramButton
