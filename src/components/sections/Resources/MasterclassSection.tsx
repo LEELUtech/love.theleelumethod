@@ -2,6 +2,8 @@ import React from "react";
 import Image from "next/image";
 import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton";
 import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
+import Button from "@/components/ui/Button"
+import { WEBINAR_URL } from "@/utils/constants"
 
 export function MasterclassSection() {
 	const ornamentIcon = (
@@ -27,20 +29,6 @@ export function MasterclassSection() {
 						<p className="font-canela text-body font-normal leading-[26px] text-[#5A5757] mb-6 text-center md:text-left lg:text-left">
 							What you’ll walk away with:
 						</p>
-						{/* <ul className="space-y-2 list-disc pl-8 font-lato text-body font-medium leading-[26px] text-[#5A5757]">
-							<li>
-								Why you don&apos;t attract who you want—you attract who you are
-								on the inside.
-							</li>
-							<li>
-								How your subconscious &quot;love script&quot; keeps recreating
-								the same breakup in a different body.
-							</li>
-							<li>
-								Why compatibility isn&apos;t chemistry—it&apos;s math—and how to
-								stop wasting years on the wrong men.
-							</li>
-						</ul> */}
 						<ul className="list-none pl-2 md:pl-8 font-lato text-body font-medium leading-[26px] space-y-4 text-[#5A5757]">
 							<li className="flex gap-2 items-start">
 								<div className="w-4 h-4 pt-2 flex-shrink-0">
@@ -91,13 +79,14 @@ export function MasterclassSection() {
 							</li>
 						</ul>
 					</div>
-					<WebinarModalButton
-						showArrow={false}
-						text="Save My Seat"
-						icon={ornamentIcon}
-						iconPosition="left"
-						className="w-full md:w-auto justify-center gap-3 font-medium text-[18px] leading-[26px] py-4 px-8 md:px-10 lg:px-[85px] bg-brand-primary hover:bg-[#E13954] uppercase"
-					/>
+					<Button
+						variant="primary"
+						size="md"
+						className="w-full md:w-[60%]"
+						href={WEBINAR_URL}
+					>
+						Save My Seat
+					</Button>
 				</div>
 				<div className="order-2 md:order-2 flex pt-4 md:pt-0 lg:pt-0 justify-center w-full">
 					<div className="relative w-full max-w-[642px]  aspect-[642/466]">

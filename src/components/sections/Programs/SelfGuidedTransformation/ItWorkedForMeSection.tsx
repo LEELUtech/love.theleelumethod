@@ -1,5 +1,6 @@
 "use client";
 
+import Button from "@/components/ui/Button"
 import Image from "next/image";
 import React from "react";
 
@@ -23,8 +24,7 @@ export default function ItWorkedForMeSection() {
 					{/* LEFT */}
 					<div className="lg:max-w-[492px] lg:order-1 order-2 md:mx-auto lg:mx-0">
 						<h2 className="font-canela font-thin text-brand-deep leading-[130%] text-[60px] md:text-[78px] lg:text-[112px]">
-							It Worked{" "}
-							<br className="hidden lg:block" />
+							It Worked <br className="hidden lg:block" />
 							For Me
 						</h2>
 
@@ -40,22 +40,13 @@ export default function ItWorkedForMeSection() {
 							right one— I engineered it.
 						</p>
 
-						<button
-							type="button"
-							className="
-								mt-[45px]
-								inline-flex items-center justify-center
-								rounded-full bg-brand-primary hover:bg-[#E13954]
-								text-white font-lato font-medium uppercase tracking-[1.6px]
-								text-[13px] md:text-[15px]
-								px-10 md:px-12 py-4
-								transition-colors
-								w-full
-								lg:w-[70%]
-							"
+						<Button
+							variant="primary"
+							size="md"
+							className="w-full lg:w-[70%] xs:text-[12px] mt-[32px]"
 						>
 							BEGIN THE PROTOCOL
-						</button>
+						</Button>
 					</div>
 
 					{/* RIGHT */}
@@ -73,7 +64,6 @@ export default function ItWorkedForMeSection() {
 									/>
 								</div>
 							</div>
-
 						</div>
 					</div>
 				</div>

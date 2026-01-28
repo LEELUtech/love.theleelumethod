@@ -1,4 +1,5 @@
 import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
+import Button from "@/components/ui/Button"
 import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton";
 import Image from "next/image";
 import React from "react";
@@ -108,7 +109,8 @@ const RelationShipProtocolSection = () => {
 					{/* Cards (ONLY tablet tweaks) */}
 					<div className="w-full grid gap-8 md:gap-6 lg:gap-5 lg:grid-cols-3 mb-12 lg:mt-[100px] mt-[50px]">
 						{/* Card 1 */}
-						<div className="rounded-[16px] w-full bg-[#FFF8F8] backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.1)]
+						<div
+							className="rounded-[16px] w-full bg-[#FFF8F8] backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.1)]
               px-[56px] py-[48px]
               md:px-8 md:py-8
               text-left"
@@ -122,7 +124,8 @@ const RelationShipProtocolSection = () => {
 						</div>
 
 						{/* Card 2 (raised ONLY on desktop) */}
-						<div className="rounded-[16px] w-full bg-[#FFF8F8] backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.1)]
+						<div
+							className="rounded-[16px] w-full bg-[#FFF8F8] backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.1)]
               px-[56px] py-[48px]
               md:px-8 md:py-8
               text-left
@@ -137,7 +140,8 @@ const RelationShipProtocolSection = () => {
 						</div>
 
 						{/* Card 3 */}
-						<div className="rounded-[16px] w-full bg-[#FFF8F8] backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.1)]
+						<div
+							className="rounded-[16px] w-full bg-[#FFF8F8] backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.1)]
               px-[56px] py-[48px]
               md:px-8 md:py-8
               text-left"
@@ -156,13 +160,15 @@ const RelationShipProtocolSection = () => {
 						We don&apos;t just patch the relationship. We rewrite the code.
 					</p>
 
-					<WebinarModalButton
-						showArrow={false}
-						text="VIEW THE CURRICULUM"
-						icon={ornamentIcon}
-						iconPosition="left"
-						className="w-full mt-[10px] md:w-auto justify-center gap-3 font-medium text-[18px] leading-[26px] py-4 px-8 md:px-10 lg:px-[45px] bg-brand-black hover:bg-[#333333] uppercase"
-					/>
+					<Button
+						variant="dark"
+						leftIcon={ornamentIcon}
+						leftIconBg="transparent"
+						size="md"
+						className="w-full lg:w-fit xs:text-[12px] mt-[32px]"
+					>
+						VIEW THE CURRICULUM
+					</Button>
 				</div>
 			</div>
 		</section>

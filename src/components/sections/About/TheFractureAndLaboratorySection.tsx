@@ -1,3 +1,4 @@
+import Button from "@/components/ui/Button";
 import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton";
 import Image from "next/image";
 import Link from "next/link";
@@ -65,16 +66,14 @@ const TheFractureAndLaboratorySection = () => {
 							That session was the spark that lit my path into the world of
 							numerology.
 						</p>
-						<Link
-							className="btn-pill justify-center gap-3 font-medium tracking-[0.1em]
-						rounded-[50px] text-center
-						text-[15px] leading-[26px] py-4
-						px-5
-						bg-brand-black text-brand-white hover:bg-[#333333] uppercase order-2 lg:order-2 font-lato lg:max-w-[350px] w-full mx-auto lg:mx-0 mb-[24px] lg:mb-0"
-							href="/decode"
+						<Button
+							variant="dark"
+							size="md"
+							className="w-full lg:w-[60%]"
+							href="#checkout"
 						>
 							START THE DECODE
-						</Link>
+						</Button>
 					</div>
 				</div>
 

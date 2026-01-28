@@ -1,4 +1,5 @@
 import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
+import Button from "@/components/ui/Button"
 import Image from "next/image";
 import React from "react";
 
@@ -146,28 +147,13 @@ const HeroSection = () => {
 					</p>
 
 					{/* CTA */}
-					<button
-						type="button"
-						className="
-							order-1 md:order-2
-							mt-4
-							lg:mt-[48px]
-							inline-flex items-center justify-center
-							rounded-full
-							bg-brand-primary hover:bg-[#E13954]
-							text-white
-							font-lato font-medium uppercase
-							tracking-[1.6px]
-							text-[15px]
-							xs:w-full
-							px-10 py-4
-							md:w-auto md:min-w-[420px] md:px-16 md:py-4
-							lg:px-32 lg:py-4
-							transition-colors
-						"
+					<Button
+						variant="primary"
+						size="md"
+						className="w-full lg:w-[30%] xs:text-[12px] mt-[32px]"
 					>
 						ENROLL NOW
-					</button>
+					</Button>
 				</div>
 			</div>
 		</section>

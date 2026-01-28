@@ -64,3 +64,27 @@ export const clearUserFormStorage = () => {
     console.warn("Failed to clear user form data", e);
   }
 };
+
+export function formatPriceFromCents(
+  cents: number,
+  options?: {
+    currency?: string;
+    showCents?: boolean;
+    locale?: string;
+  }
+) {
+  const {
+    currency = "USD",
+    showCents = false,
+    locale = "en-US",
+  } = options || {};
+
+  const value = cents / 100;
+
+  return value.toLocaleString(locale, {
+    style: "currency",
+    currency,
+    minimumFractionDigits: showCents ? 2 : 0,
+    maximumFractionDigits: showCents ? 2 : 0,
+  });
+}

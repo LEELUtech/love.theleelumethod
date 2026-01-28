@@ -4,15 +4,15 @@ import { configs } from "../configs/env";
 import { getStorage } from "firebase-admin/storage";
 
 export const sendEmail = onCall(async (req) => {
-  const { firstname, email } = req.data || {};
+  const { firstName, email } = req.data || {};
 
-  if (!firstname || !email) {
-    throw new Error("Missing required fields: firstname, email");
+  if (!firstName || !email) {
+    throw new Error("Missing required fields: firstName, email");
   }
 
   const storage = getStorage();
   const bucket = storage.bucket();
-  const filePath = `pdfs/${firstname}_report.pdf`;
+  const filePath = "pdf/battle/battle.pdf";
   const file = bucket.file(filePath);
 
   const [pdfBuffer] = await file.download();
@@ -25,15 +25,15 @@ export const sendEmail = onCall(async (req) => {
     },
   });
 
-  const subject = "Your Personalized PDF";
+  const subject = "Your free guide: 7 Secrets to Mend a Broken Heart";
   const html = `
-    <div style="font-family: Arial, sans-serif;">
-      <p>Hi ${firstname},</p>
-      <p>Thank you for using our service. Attached is your personalized PDF.</p>
-      <p>Best regards,</p>
-      <p>The Team</p>
-    </div>
-  `;
+      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+        <p>Hi ${firstName},</p>
+        <p>Thanks for downloading our free guide.</p>
+        <p>Your PDF <b>“7 Secrets to Mend a Broken Heart”</b> is attached to this email.</p>
+        <p>Wishing you all the best,<br/>The Team</p>
+      </div>
+    `;
 
   await transporter.sendMail({
     from: configs.email,
@@ -42,7 +42,7 @@ export const sendEmail = onCall(async (req) => {
     html,
     attachments: [
       {
-        filename: `${firstname}_report.pdf`,
+        filename: "7_secrets_to_mend_a_broken_heart.pdf",
         content: pdfBuffer,
         contentType: "application/pdf",
       },

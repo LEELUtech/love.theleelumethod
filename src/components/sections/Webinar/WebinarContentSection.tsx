@@ -2,6 +2,8 @@ import React from "react";
 import Image from "next/image";
 import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton";
 import TestimonialsCarousel from "@/components/ui/TestimonialsCarousel";
+import Button from "@/components/ui/Button"
+import { WEBINAR_URL } from "@/utils/constants"
 
 const CARD_CONTENT = [
 	{
@@ -259,11 +261,7 @@ const WebinarContentSection = () => {
 							{card.img && (
 								<div className="relative w-[139px] h-[139px] mb-4">
 									{/* Main image */}
-									<Image
-										src={card.img}
-										alt=""
-										fill
-									/>
+									<Image src={card.img} alt="" fill />
 
 									{/* Center icon */}
 									{card.icon && (
@@ -307,19 +305,14 @@ const WebinarContentSection = () => {
 
 				{/* CTA BUTTON */}
 				<div className="flex justify-center w-full">
-					<WebinarModalButton
-						showArrow={false}
-						text="Reserve My Spot"
-						className="
-							w-full max-w-[350px]
-							md:max-w-[600px]
-							lg:max-w-[904px]
-
-							justify-center gap-3 font-medium tracking-[0.1em]
-							text-[15px] leading-[26px] py-4 px-10 md:px-20 lg:px-32
-							bg-brand-primary hover:bg-[#E13954] uppercase
-						"
-					/>
+					<Button
+						variant="primary"
+						size="md"
+						className="w-full md:w-[76%] py-[12px]"
+						href={WEBINAR_URL}
+					>
+						Reserve My Spot
+					</Button>
 				</div>
 			</div>
 		</section>

@@ -1,5 +1,5 @@
 export function parseBirthDate(date: string) {
-  const [day, , year] = date.split(".");
+  const [day, , year] = date.split("/");
   return {
     daySum: day.split("").reduce((s, d) => s + Number(d), 0),
     yearSum: year.split("").reduce((s, d) => s + Number(d), 0),

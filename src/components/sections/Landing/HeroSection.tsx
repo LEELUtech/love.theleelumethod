@@ -1,3 +1,4 @@
+import Button from "@/components/ui/Button"
 import Header from "@/components/ui/Header";
 import Link from "next/link";
 import React from "react";
@@ -17,7 +18,9 @@ const HeroSection = () => {
 				<div className="relative w-full h-[360px] md:h-[460px]">
 					<div
 						className="absolute inset-0 bg-cover bg-right"
-						style={{ backgroundImage: "url(/images/landing/hero_section_bg.png)" }}
+						style={{
+							backgroundImage: "url(/images/landing/hero_section_bg.png)",
+						}}
 					/>
 
 					{/* Overlay Card */}
@@ -38,19 +41,15 @@ const HeroSection = () => {
 								you’ve been dancing without knowing the steps.
 							</p>
 
-							<Link
-								href="/decode"
-								className="btn-pill mb-[24px] justify-center gap-3 font-medium tracking-[0.1em]
-								rounded-[50px] text-center
-								text-[15px] leading-[26px] py-4
-								px-2
-								bg-brand-black text-brand-white hover:bg-[#333333] uppercase font-lato
-								w-full md:max-w-[420px] mx-auto"
+							<Button
+								variant="dark"
+								size="md"
+								className="w-full xs:text-[12px]"
 							>
 								START THE DECODE
-							</Link>
+							</Button>
 
-							<p className="text-[#5A5757] text-sm md:text-[14px] leading-[24px] md:leading-[26px]">
+							<p className="text-[#5A5757] text-sm md:text-[14px] leading-[24px] md:leading-[26px] mt-[32px]">
 								I am Lily Chystofat and I have used my proprietary numerological
 								system, LeeluTech, to decode the mechanics of human connection
 								across thousands of sessions. I reveal the hidden choreography
@@ -89,16 +88,13 @@ const HeroSection = () => {
 							clarity.
 						</p>
 
-						<Link
-							className="btn-pill justify-center gap-3 font-medium tracking-[0.1em]
-							rounded-[50px] text-center
-							text-[15px] leading-[26px] py-4
-							px-2
-							bg-brand-black text-brand-white hover:bg-[#333333] uppercase font-lato lg:max-w-[320px] w-full mx-auto lg:mx-0"
-							href="/decode"
-						>
-							START THE DECODE
-						</Link>
+							<Button
+								variant="dark"
+								size="md"
+								className="w-full lg:w-[65%] xs:text-[12px]"
+							>
+								START THE DECODE
+							</Button>
 					</div>
 				</div>
 			</div>

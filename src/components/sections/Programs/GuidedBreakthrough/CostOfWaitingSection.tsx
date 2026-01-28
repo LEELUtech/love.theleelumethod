@@ -1,10 +1,32 @@
 "use client";
 
 import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
+import Button from "@/components/ui/Button"
+import { formatPriceFromCents } from "@/helpers";
+import useProductStore from "@/store/useProductStore";
+import { GUIDED_BREAKTHROUGH } from "@/utils/constants";
 import Image from "next/image";
 import React from "react";
 
 export default function CostOfWaitingSection() {
+	const productId = GUIDED_BREAKTHROUGH;
+
+	// product store
+	const product = useProductStore((s) => s.getProduct(productId));
+	const loading = useProductStore((s) => s.isLoading(productId));
+	const fetchProduct = useProductStore((s) => s.fetchProduct);
+
+	React.useEffect(() => {
+		if (!product && !loading) fetchProduct(productId);
+	}, [product, loading, fetchProduct, productId]);
+
+	const priceLabel =
+		!loading && product
+			? formatPriceFromCents(product.price, {
+					currency: product.currency ?? "USD",
+					showCents: false,
+				})
+			: "...";
 	return (
 		<section className="relative lg:pb-[166px] pb-[80px]">
 			<div className="container">
@@ -75,10 +97,10 @@ export default function CostOfWaitingSection() {
 
 					{/* Subheading */}
 					<p className="font-normal font-lato text-[17px] lg:text-[17px] leading-[130%] text-[#5A5757] mb-6 lg:mb-8 text-center">
-						Six more months of &quot;should I stay or should I go?&quot; Six more months
-						of second-guessing every conversation. Six more months watching
-						other women build the relationships you want while you&apos;re stuck
-						analyzing why yours doesn&apos;t work.
+						Six more months of &quot;should I stay or should I go?&quot; Six
+						more months of second-guessing every conversation. Six more months
+						watching other women build the relationships you want while
+						you&apos;re stuck analyzing why yours doesn&apos;t work.
 					</p>
 
 					{/* Text (tablet only smaller) */}
@@ -98,25 +120,16 @@ export default function CostOfWaitingSection() {
 					</p>
 
 					<p className="mt-[57px] font-canela font-thin text-brand-black text-[48px] lg:text-[60px]">
-						Investment: $1,700
+						Investment: {priceLabel}
 					</p>
 
-					<button
-						type="button"
-						className="
-							mt-6
-							inline-flex items-center justify-center
-							rounded-full bg-brand-primary hover:bg-[#E13954]
-							text-white font-lato font-medium uppercase tracking-[1.6px]
-							text-[13px] md:text-[14px]
-							px-10 md:px-12 py-4
-							transition-colors
-							w-full
-							lg:w-[33%]
-						"
+					<Button
+						variant="primary"
+						size="md"
+						className="w-full lg:w-[30%] xs:text-[12px] mt-[32px]"
 					>
 						GET PERSONALIZED SUPPORT
-					</button>
+					</Button>
 				</div>
 			</div>
 		</section>

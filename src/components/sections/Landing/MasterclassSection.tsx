@@ -2,6 +2,8 @@ import React from "react";
 import Image from "next/image";
 import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton";
 import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
+import Button from "@/components/ui/Button";
+import { WEBINAR_URL } from "@/utils/constants"
 
 export function MasterclassSection() {
 	const ornamentIcon = (
@@ -39,7 +41,8 @@ export function MasterclassSection() {
 									/>
 								</div>
 								<span>
-									Your identity-level programming that determines partner selection and how to rewire it.
+									Your identity-level programming that determines partner
+									selection and how to rewire it.
 								</span>
 							</li>
 
@@ -54,7 +57,8 @@ export function MasterclassSection() {
 									/>
 								</div>
 								<span>
-									How early attachment imprints create repetitive relationship dynamics across different partners.
+									How early attachment imprints create repetitive relationship
+									dynamics across different partners.
 								</span>
 							</li>
 
@@ -69,18 +73,15 @@ export function MasterclassSection() {
 									/>
 								</div>
 								<span>
-									Why attraction follows algorithmic patterns—and how to stop investing in incompatible men.
+									Why attraction follows algorithmic patterns—and how to stop
+									investing in incompatible men.
 								</span>
 							</li>
 						</ul>
 					</div>
-					<WebinarModalButton
-						showArrow={false}
-						text="Save My Seat"
-						// icon={ornamentIcon}
-						// iconPosition="left"
-						className="w-full md:w-auto justify-center gap-3 font-medium text-[15px] leading-[26px] py-4 px-8 md:px-10 lg:px-[111px] bg-brand-black hover:bg-[#333333] uppercase"
-					/>
+					<Button variant="dark" size="md" className="w-full lg:w-[60%] xs:text-[12px]" href={WEBINAR_URL}>
+						Save My Seat
+					</Button>
 				</div>
 				<div className="order-2 md:order-2 flex pt-4 md:pt-0 lg:pt-0 justify-center w-full">
 					<div className="relative w-full max-w-[642px]  aspect-[642/466]">

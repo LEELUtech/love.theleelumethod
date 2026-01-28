@@ -17,7 +17,7 @@ export default function SelfGuidedTransformationPage() {
 			<ItWorkedForMeSection />
 			<CostOfWaitingSection />
 			<CheckoutFormSection />
-			<Footer className="lg:pt-[200px]"/>
+			<Footer className="lg:pt-[200px]" />
 		</main>
 	);
 }

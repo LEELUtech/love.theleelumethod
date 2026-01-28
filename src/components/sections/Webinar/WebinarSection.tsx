@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
-import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton";
 import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
+import Button from "@/components/ui/Button"
 
 const WebinarSection = () => {
 	return (
@@ -14,7 +14,7 @@ const WebinarSection = () => {
 			<div className="font-light lg:hidden transition text-[20px] md:text-[22px] lg:text-[24px] leading-[100%] font-canela flex items-center gap-2 md:gap-2.5 lg:gap-3 text-brand-black mb-[32px] justify-center md:justify-start mt-[50px]">
 				<span className=" w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 relative flex-shrink-0 lg:hidden">
 					<Image
-						src="/leelu_logo.svg" 
+						src="/leelu_logo.svg"
 						alt="Lily Chystofat Logo"
 						fill
 						className="object-contain"
@@ -118,11 +118,14 @@ const WebinarSection = () => {
 						</div>
 
 						<div className="order-1 md:order-2">
-							<WebinarModalButton
-								showArrow={false}
-								text="Save My Seat"
-								className="w-full md:w-auto justify-center gap-3 font-medium tracking-[0.1em] text-[15px] leading-[26px] py-4 px-8 md:px-[80px] lg:px-[111px] bg-brand-primary hover:bg-[#E13954] uppercase"
-							/>
+							<Button
+								variant="primary"
+								size="md"
+								className="w-full md:w-[65%] py-[12px]"
+								href="/resources/secrets"
+							>
+								Save My Seat
+							</Button>
 						</div>
 					</div>
 				</div>

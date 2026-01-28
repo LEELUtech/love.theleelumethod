@@ -1,5 +1,6 @@
 "use client";
 
+import Button from "@/components/ui/Button"
 import Image from "next/image";
 import React from "react";
 
@@ -28,15 +29,21 @@ export default function ItWorkedForMeSection() {
 						</h2>
 
 						<p className="mt-6 font-lato text-[#5A5757] leading-[26px] text-[17px] md:text-[18px] md:leading-[28px]">
-							I&apos;m not teaching theory. I&apos;m teaching the system I used to decode my own relationship.
+							I&apos;m not teaching theory. I&apos;m teaching the system I used
+							to decode my own relationship.
 						</p>
 
 						<p className="mt-6 font-lato text-[#5A5757] leading-[26px] text-[17px] md:text-[18px] md:leading-[28px]">
-							When I met Don, I ran his chart before our second date. I knew his Hidden Desire, his friction points, and exactly how to position myself as his sanctuary—not his project.
+							When I met Don, I ran his chart before our second date. I knew his
+							Hidden Desire, his friction points, and exactly how to position
+							myself as his sanctuary—not his project.
 						</p>
 
 						<p className="mt-6 font-lato text-[#5A5757] leading-[26px] text-[17px] md:text-[18px] md:leading-[28px]">
-							Four years later, we&apos;re building a life most people don&apos;t believe is possible. Not because we&apos;re &quot;lucky&quot; or &quot;soulmates&quot;—because we speak the same behavioral language.
+							Four years later, we&apos;re building a life most people
+							don&apos;t believe is possible. Not because we&apos;re
+							&quot;lucky&quot; or &quot;soulmates&quot;—because we speak the
+							same behavioral language.
 						</p>
 
 						<p className="mt-6 font-canela font-light text-brand-deep leading-[130%] text-[28px] md:text-[30px] lg:text-[32px]">
@@ -45,25 +52,17 @@ export default function ItWorkedForMeSection() {
 						</p>
 
 						<p className="mt-6 font-canela font-light text-brand-deep leading-[130%] text-[28px] md:text-[30px] lg:text-[32px]">
-							Your relationship isn&apos;t doomed. Your code just needs debugging.
+							Your relationship isn&apos;t doomed. Your code just needs
+							debugging.
 						</p>
 
-						<button
-							type="button"
-							className="
-								mt-[45px]
-								inline-flex items-center justify-center
-								rounded-full bg-brand-primary hover:bg-[#E13954]
-								text-white font-lato font-medium uppercase tracking-[1.6px]
-								text-[13px] md:text-[15px]
-								px-10 md:px-12 py-4
-								transition-colors
-								w-full
-								lg:w-[80%]
-							"
+						<Button
+							variant="primary"
+							size="md"
+							className="w-full lg:w-[70%] xs:text-[12px] mt-[32px]"
 						>
 							GET PERSONALIZED SUPPORT
-						</button>
+						</Button>
 					</div>
 
 					{/* RIGHT */}

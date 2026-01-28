@@ -4,7 +4,31 @@ import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
 import Image from "next/image";
 import React from "react";
 
+import useProductStore from "@/store/useProductStore";
+import { PROTOCOL_ESSENTIALS } from "@/utils/constants";
+import { formatPriceFromCents } from "@/helpers";
+import Button from "@/components/ui/Button"
+
 export default function CostOfWaitingSection() {
+	const productId = PROTOCOL_ESSENTIALS;
+
+	// product store
+	const product = useProductStore((s) => s.getProduct(productId));
+	const loading = useProductStore((s) => s.isLoading(productId));
+	const fetchProduct = useProductStore((s) => s.fetchProduct);
+
+	React.useEffect(() => {
+		if (!product && !loading) fetchProduct(productId);
+	}, [product, loading, fetchProduct, productId]);
+
+	const priceLabel =
+		!loading && product
+			? formatPriceFromCents(product.price, {
+					currency: product.currency ?? "USD",
+					showCents: false,
+				})
+			: "...";
+
 	return (
 		<section className="relative lg:pb-[166px] pb-[80px]">
 			<div className="container">
@@ -81,7 +105,6 @@ export default function CostOfWaitingSection() {
 						could have avoided.
 					</p>
 
-					{/* Text (tablet only smaller) */}
 					<p className="font-canela text-[32px] font-thin lg:text-[32px] leading-[130%] text-brand-deep mb-6 lg:mb-12 mx-auto text-center">
 						The average divorce costs $15,000-$30,000. Two months of weekly
 						therapy costs $1,600-$3,200. This system costs less than 5 therapy
@@ -89,19 +112,8 @@ export default function CostOfWaitingSection() {
 						will.
 					</p>
 
-
-					<div
-						className="
-						relative mx-auto my-[26px]
-                w-[8px] h-[66px]
-              "
-					>
-						<Image
-							src="/icons/yellow_stick.svg"
-							alt=""
-							fill
-							quality={100}
-						/>
+					<div className="relative mx-auto my-[26px] w-[8px] h-[66px]">
+						<Image src="/icons/yellow_stick.svg" alt="" fill quality={100} />
 					</div>
 
 					<p className="mt-8 font-canela font-normal text-brand-deep text-[32px] leading-[1.6]">
@@ -112,25 +124,16 @@ export default function CostOfWaitingSection() {
 					</p>
 
 					<p className="mt-[57px] font-canela font-thin text-brand-black text-[48px] lg:text-[60px]">
-						Investment: $697
+						Investment: {priceLabel}
 					</p>
 
-					<button 
-						type="button"
-						className="
-							mt-6
-							inline-flex items-center justify-center
-							rounded-full bg-brand-primary hover:bg-[#E13954]
-							text-white font-lato font-medium uppercase tracking-[1.6px]
-							text-[13px] md:text-[14px]
-							px-10 md:px-12 py-4
-							transition-colors
-							w-full
-							lg:w-[33%]
-						"
+					<Button
+						variant="primary"
+						size="md"
+						className="w-full lg:w-[30%] xs:text-[12px] mt-[32px]"
 					>
 						BEGIN THE PROTOCOL
-					</button>
+					</Button>
 				</div>
 			</div>
 		</section>

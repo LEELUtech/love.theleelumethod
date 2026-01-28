@@ -1,3 +1,4 @@
+import Button from "@/components/ui/Button"
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -169,16 +170,14 @@ export default function BlindSpotSection() {
 							I would never have thought that such things as personal
 							relationships and family lineage could be connected. “
 						</p>
-						<Link
-							className="btn-pill justify-center gap-3 font-medium tracking-[0.1em]
-						rounded-[50px] text-center
-						text-[15px] leading-[26px] py-4
-						px-5
-						bg-brand-primary text-brand-white hover:bg-[#E13954] uppercase order-2 lg:order-2 font-lato lg:max-w-[350px] w-full mx-auto lg:mx-0 mb-[24px] lg:mb-0"
-							href="/decode"
+						<Button
+							variant="primary"
+							size="md"
+							className="w-full lg:w-[80%] xs:text-[12px]"
+							href="#checkout"
 						>
 							READ MORE STORIES
-						</Link>
+						</Button>
 					</div>
 				</div>
 			</div>

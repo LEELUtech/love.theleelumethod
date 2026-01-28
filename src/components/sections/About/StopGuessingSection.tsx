@@ -1,4 +1,5 @@
 import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
+import Button from "@/components/ui/Button"
 import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton";
 import Image from "next/image";
 
@@ -90,12 +91,14 @@ const StopGuessingSection = () => {
 						We rewrite the code.
 					</p>
 
-					<button
-						type="button"
-						className="w-full mt-6 rounded-full bg-brand-primary text-white font-medium font-lato text-[15px] tracking-[0.08em] uppercase py-4 hover:bg-[#E13954] transition-colors md:max-w-fit md:px-[38px]"
+					<Button
+						variant="primary"
+						size="md"
+						className="w-full lg:w-[40%] xs:text-[12px]"
+						href="#checkout"
 					>
 						Access your Operating Manual
-					</button>
+					</Button>
 				</div>
 			</div>
 		</section>

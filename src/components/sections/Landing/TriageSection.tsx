@@ -1,4 +1,6 @@
+import Button from "@/components/ui/Button";
 import FreeQuizButton from "@/components/ui/buttons/FreeQuizButton";
+import { QUIZ_URL, WEBINAR_URL } from "@/utils/constants"
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -72,16 +74,13 @@ const TriageSection = () => {
 							I would never have thought that such things as personal
 							relationships and family lineage could be connected. “
 						</p>
-						<Link
-							className="btn-pill justify-center gap-3 font-medium tracking-[0.1em]
-						rounded-[50px] text-center
-						text-[15px] leading-[26px] py-4
-						px-5
-						bg-brand-black text-brand-white hover:bg-[#333333] uppercase order-2 lg:order-2 font-lato lg:max-w-[350px] w-full mx-auto lg:mx-0 mb-[24px] lg:mb-0"
-							href="/decode"
+						<Button
+							variant="dark"
+							size="md"
+							className="w-full lg:w-[85%] xs:text-[12px]"
 						>
 							READ MORE STORIES
-						</Link>
+						</Button>
 					</div>
 				</div>
 
@@ -212,11 +211,14 @@ const TriageSection = () => {
 								The Truth: What his behavior is actually saying.
 							</p>
 
-							<FreeQuizButton
-								text={"TAKE THE QUIZ"}
-								className="mt-auto w-full justify-center rounded-full bg-brand-black px-5 py-3 text-brand-white text-cta leading-[173%] font-medium uppercase tracking-[1.5px] hover:bg-[#333333]"
-								showArrow={false}
-							/>
+							<Button
+								variant="dark"
+								size="md"
+								className="w-full xs:text-[12px] mt-auto"
+								href={QUIZ_URL}
+							>
+								TAKE THE QUIZ
+							</Button>
 						</div>
 
 						{/* Card 2 (raised on lg only) */}
@@ -255,11 +257,14 @@ const TriageSection = () => {
 								stop over-functioning and inspire his loyalty.
 							</p>
 
-							<FreeQuizButton
-								text={"REGISTER FOR WEBINAR"}
-								className="mt-auto w-full justify-center rounded-full bg-brand-black px-5 py-3 text-brand-white text-cta leading-[173%] font-medium uppercase tracking-[1.5px] hover:bg-[#333333]"
-								showArrow={false}
-							/>
+							<Button
+								variant="dark"
+								size="md"
+								className="w-full xs:text-[12px] mt-auto"
+								href={WEBINAR_URL}
+							>
+								REGISTER FOR WEBINAR 
+							</Button>
 						</div>
 
 						{/* Card 3 */}
@@ -289,11 +294,14 @@ const TriageSection = () => {
 								Not hope. The algorithm.
 							</p>
 
-							<FreeQuizButton
-								text={"GET MY ANALYSIS"}
-								className="mt-auto w-full justify-center rounded-full bg-brand-black px-5 py-3 text-brand-white text-cta leading-[173%] font-medium uppercase tracking-[1.5px] hover:bg-[#333333]"
-								showArrow={false}
-							/>
+							<Button
+								variant="dark"
+								size="md"
+								className="w-full xs:text-[12px] mt-auto"
+								href="/resources/compatibility-report"
+							>
+								GET MY ANALYSIS
+							</Button>
 						</div>
 					</div>
 				</div>
