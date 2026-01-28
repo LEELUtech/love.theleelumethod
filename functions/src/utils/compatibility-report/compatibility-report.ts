@@ -1,14 +1,21 @@
 import { createTransport } from "nodemailer";
 import { storage } from "../../configs/firebase";
-import { calculateCompatibility } from "./compatibility-report.service"
+import { calculateCompatibility } from "./compatibility-report.service";
 import Stripe from "stripe";
 import { configs } from "../../configs/env";
 
-export async function handleCompatibilityReport(session: Stripe.Checkout.Session) {
-  const email = session.customer_email || session.customer_details?.email;
-  const birthDate1 = session.metadata?.birth_date_1;
-  const birthDate2 = session.metadata?.birth_date_2;
+export async function handleCompatibilityReport(pi: Stripe.PaymentIntent) {
+  const email = pi.metadata?.email || pi.receipt_email || "";
+  const birthDate1 = pi.metadata?.birth_date_1 || "";
+  const birthDate2 = pi.metadata?.birth_date_2 || "";
 
+  console.log("PI METADATA DEBUG:", {
+    emailFromMetadata: pi.metadata?.email,
+    receiptEmail: pi.receipt_email,
+    birth_date_1: pi.metadata?.birth_date_1,
+    birth_date_2: pi.metadata?.birth_date_2,
+    fullMetadata: pi.metadata,
+  });
   if (!email || !birthDate1 || !birthDate2) {
     throw new Error("Missing required fields for compatibility report");
   }

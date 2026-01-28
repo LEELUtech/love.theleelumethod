@@ -1,10 +1,12 @@
+// functions/src/webhooks/stripeCircleWebhook.ts
 import { onRequest } from "firebase-functions/v2/https";
+import Stripe from "stripe";
 import { db } from "../configs/firebase";
 import { configs } from "../configs/env";
-import Stripe from "stripe";
-import { handleCompatibilityReport } from "../utils/compatibility-report/compatibility-report"
+import { handleCompatibilityReport } from "../utils/compatibility-report/compatibility-report";
 
 let stripe: Stripe | null = null;
+
 const getStripeClient = () => {
   if (!stripe) {
     if (!configs.stripeSecretKeyTest) {
@@ -17,46 +19,17 @@ const getStripeClient = () => {
   return stripe;
 };
 
-// // Handler for Circle Access (existing packages)
-// async function handleCircleAccess(session: Stripe.Checkout.Session) {
-//   const email = session.customer_email || session.customer_details?.email;
-//   const name = session.metadata?.customer_name || session.customer_details?.name || "Customer";
-//   const circleSpaceId = session.metadata?.circle_space_id || "";
-//   const circleCourseId = session.metadata?.circle_course_id || "";
-
-//   if (!email) {
-//     throw new Error("Missing email for Circle access");
-//   }
-
-//   console.log("🎯 Processing Circle access for:", email);
-
-//   let circleMemberId: string | number = "";
-//   let circleAccessGranted = false;
-
-//   const circleTarget = circleSpaceId || circleCourseId;
-//   if (circleTarget) {
-//     try {
-//       const result = await processCircleAccess(email, name, circleSpaceId, circleCourseId);
-//       circleMemberId = result.memberId.toString();
-//       circleAccessGranted = true;
-//       console.log(`✅ Circle access granted: ${circleMemberId}`);
-//     } catch (circleError: unknown) {
-//       console.error("❌ Circle processing failed:", circleError);
-//       circleAccessGranted = false;
-
-//       if (circleError instanceof Error) {
-//         console.error("Circle error details:", circleError.message);
-//       }
-//     }
-//   }
-
-//   return {
-//     circle_member_id: circleMemberId,
-//     circle_access_granted: circleAccessGranted,
-//     circle_space_id: circleSpaceId,
-//     circle_course_id: circleCourseId,
-//   };
-// }
+type PIProcessedDoc = {
+  stripe_payment_intent_id: string;
+  stripe_event_id: string;
+  email: string;
+  product_type: string;
+  amount: number | null;
+  currency: string | null;
+  status: string;
+  created_at: FirebaseFirestore.Timestamp | Date;
+  processed_at: FirebaseFirestore.Timestamp | Date;
+};
 
 export const stripeCircleWebhook = onRequest(
   {
@@ -64,115 +37,132 @@ export const stripeCircleWebhook = onRequest(
     region: "us-central1",
   },
   async (req, res) => {
-    console.log("🎯 Stripe Circle Webhook - Request received!");
-    console.log("Method:", req.method);
+    console.log("🎯 Stripe Webhook - Request received!", { method: req.method });
+
+    // Stripe sends POST
+    if (req.method !== "POST") {
+      res.status(405).send("Method Not Allowed");
+      return;
+    }
 
     const sig = req.headers["stripe-signature"];
     const rawBody = req.rawBody;
+
+    if (!rawBody || !sig || !configs.stripeCircleWebhookSecret) {
+      console.error("❌ Missing required webhook data:", {
+        hasRawBody: !!rawBody,
+        hasSignature: !!sig,
+        hasSecret: !!configs.stripeCircleWebhookSecret,
+      });
+      res.status(400).send("Missing required webhook data");
+      return;
+    }
+
     let event: Stripe.Event;
-
     try {
-      if (!rawBody || !sig || !configs.stripeCircleWebhookSecret) {
-        console.error("Missing required webhook data:", {
-          hasRawBody: !!req.rawBody,
-          hasSignature: !!sig,
-          hasSecret: !!configs.stripeCircleWebhookSecret,
-        });
-        res.status(400).send("Missing required webhook data");
-        return;
-      }
-
       event = getStripeClient().webhooks.constructEvent(
         rawBody,
         sig as string,
         configs.stripeCircleWebhookSecret as string,
       );
-      console.log("✅ Webhook signature verified:", event.id);
+      console.log("✅ Webhook signature verified:", event.id, event.type);
     } catch (err) {
       console.error("❌ Webhook signature verification failed:", err);
-      res.status(400).send(`Webhook Error: ${err}`);
+      res.status(400).send("Webhook signature verification failed");
       return;
     }
 
-    if (event.type !== "checkout.session.completed") {
-      console.log("ℹ️ Event type not handled:", event.type);
+    if (event.type !== "payment_intent.succeeded") {
+      console.log("ℹ️ Event ignored:", event.type);
       res.status(200).send("Event ignored");
       return;
     }
 
-    console.log("ℹ️ Event type received:", event.type);
+    const pi = event.data.object as Stripe.PaymentIntent;
 
-    // Handle checkout.session.completed
+    // Only accept succeeded (safety)
+    if (pi.status !== "succeeded") {
+      console.log("⚠️ PaymentIntent not succeeded:", { id: pi.id, status: pi.status });
+      res.status(200).send("PI not succeeded");
+      return;
+    }
 
-    const session = event.data.object as Stripe.Checkout.Session;
+    console.log("💰 Payment amount:", {
+      amount_cents: pi.amount,
+      amount_normalized: pi.amount / 100,
+      currency: pi.currency,
+    });
 
-    // Idempotency check - prevent duplicate processing
-    const paymentDoc = await db.collection("payments").doc(session.id).get();
+    // Pull all routing data from metadata
+    const productType = pi.metadata?.product_type || "";
+    const email = pi.metadata?.email || pi.receipt_email || "";
+
+    if (!productType || !email) {
+      console.error("❌ Missing metadata on PaymentIntent:", {
+        id: pi.id,
+        productType,
+        email,
+        metadata: pi.metadata,
+      });
+      res.status(400).send("Missing required metadata");
+      return;
+    }
+
+    // ✅ Idempotency: use payment_intent.id as document id
+    const paymentRef = db.collection("payments").doc(pi.id);
+    const paymentDoc = await paymentRef.get();
+
     if (paymentDoc.exists) {
-      console.log("✓ Event already processed:", session.id);
+      console.log("✓ Already processed:", pi.id);
       res.status(200).send("Already processed");
       return;
     }
 
-    // Extract common data from session
-    const email = session.customer_email || session.customer_details?.email;
-    const name = session.metadata?.customer_name || session.customer_details?.name || "Customer";
-    const productType = session.metadata?.product_type || "circle_access"; 
-
-    console.log("📧 Processing payment:", { email, name, productType });
-
-    if (!email) {
-      console.error("❌ No email found in session");
-      res.status(400).send("Missing email");
-      return;
-    }
-
-    // Check payment status
-    if (session.payment_status !== "paid") {
-      console.log("⚠️ Payment not completed:", session.payment_status);
-      res.status(200).send("Payment not completed");
-      return;
-    }
+    console.log("💳 Processing succeeded PI:", {
+      payment_intent_id: pi.id,
+      email,
+      productType,
+      amount: pi.amount,
+      currency: pi.currency,
+    });
 
     try {
-      // let processingResult: Record<string, any> = {};
-
-      // Route to appropriate handler based on product_type
+      // Route to handler
       switch (productType) {
-      case "compatibility_report":
-        // processingResult = await handleCompatibilityReport(session);
-        await handleCompatibilityReport(session);
-        break;
+        case "compatibility_report": {
+          await handleCompatibilityReport(pi);
+          break;
+        }
 
-      // case "protocol_essentials":
-      // case "guided_breakthrough":
-      // case "vip_immersion":
-      default:
-        break;
+        // case "protocol_essentials":
+        // case "guided_breakthrough":
+        // case "vip_immersion":
+        default: {
+          console.log("ℹ️ No handler for product_type:", productType);
+          break;
+        }
       }
 
-      // Save payment record to Firestore (idempotent with session.id)
-      // await db
-      //   .collection("payments")
-      //   .doc(session.id)
-      //   .set({
-      //     stripe_session_id: session.id,
-      //     stripe_payment_intent_id: session.payment_intent,
-      //     email,
-      //     name,
-      //     product_type: productType,
-      //     payment_status: session.payment_status,
-      //     amount_total: session.amount_total,
-      //     currency: session.currency,
-      //     created_at: new Date(),
-      //     processed_at: new Date(),
-      //     ...processingResult,
-      //   });
+      // Save record (idempotent)
+      const doc: PIProcessedDoc = {
+        stripe_payment_intent_id: pi.id,
+        stripe_event_id: event.id,
+        email,
+        product_type: productType,
+        amount: typeof pi.amount === "number" ? pi.amount : null,
+        currency: pi.currency ?? null,
+        status: pi.status,
+        created_at: new Date(),
+        processed_at: new Date(),
+      };
 
-      // console.log("✅ Payment record saved:", session.id);
+      await paymentRef.set(doc);
+
+      console.log("✅ Payment recorded:", pi.id);
       res.status(200).send("Success");
     } catch (error) {
       console.error("❌ Processing failed:", error);
+
       res.status(500).send("Failed to process payment");
     }
   },
