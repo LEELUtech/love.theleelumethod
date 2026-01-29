@@ -1,29 +1,29 @@
-import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton";
+import Button from "@/components/ui/Button";
 import Image from "next/image";
+import RotateOnView from "@/components/ui/RotateOnView";
 
 export default function HeyImLilySection() {
 	return (
-		<section 
-			className="bg-brand-white py-12 md:py-16 lg:py-[160px]"
-			
-		>
-			<div className="container">
+		<section className="bg-brand-white py-12 md:py-16 lg:pt-[160px]">
+			<div className="container px-4">
 				<div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10 lg:gap-12 items-center">
 					{/* Left side - Image */}
-				<div className="relative w-full max-w-[400px] md:max-w-[480px] lg:max-w-[551px] mx-auto lg:mx-0">
-					{/* Red circle badge with logo */}
-					<div className="absolute left-[-10px] top-[-30px] md:left-[-40px] md:top-[-50px] lg:top-[-60px] lg:left-[-60px] flex items-center justify-center bg-[#C4334F] rounded-[300px] w-[80px] h-[100px] md:w-[100px] md:h-[126px] lg:w-[134px] lg:h-[168px] z-10">
-						<Image
-							src="/icons/ornament_2.svg"
-							alt=""
-							width={83}
-							height={83}
-							className="filter brightness-0 invert w-[50px] h-[50px] md:w-[65px] md:h-[65px] lg:w-[83px] lg:h-[83px]"
-						/>
-					</div>
+					<div className="relative w-full max-w-[400px] md:max-w-[480px] lg:max-w-[551px] mx-auto lg:mx-0">
+						{/* Red circle badge with logo */}
+						<div className="absolute left-[-10px] top-[-30px] md:left-[-40px] md:top-[-50px] lg:top-[-60px] lg:left-[-60px] flex items-center justify-center overflow-hidden bg-[#EB4F68] before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay rounded-[300px] w-[80px] h-[100px] md:w-[100px] md:h-[126px] lg:w-[134px] lg:h-[168px] z-10">
+							<RotateOnView duration={5} amount={0.4} ease="easeOut">
+								<Image
+									src="/icons/ornament_2/ornament_2_light.svg"
+									alt=""
+									width={83}
+									height={83}
+									className="w-[65px] h-[65px] md:w-[65px] md:h-[65px] lg:w-[83px] lg:h-[83px]"
+								/>
+							</RotateOnView>
+						</div>
 
-					{/* Main image with rounded corners */}
-					<div className="relative w-full aspect-[551/748] rounded-[24px] md:rounded-[32px] lg:rounded-[40px] overflow-hidden">
+						{/* Main image with rounded corners */}
+						<div className="relative w-full aspect-[551/748] rounded-[24px] md:rounded-[32px] lg:rounded-[40px] overflow-hidden">
 							<Image
 								src="/images/lily/lily_2.png"
 								alt="Lily"
@@ -40,49 +40,45 @@ export default function HeyImLilySection() {
 							Hey, I&apos;m Lily
 						</h1>
 
-						<div className="space-y-3 md:space-y-4 lg:space-y-5 mb-6 md:mb-8 lg:mb-10">
-							<p className="text-[#5A5757] font-lato text-[14px] md:text-[15px] lg:text-body leading-[24px] md:leading-[26px] lg:leading-[28px]">
-								Lily&apos;s work began the moment her life broke open — through
-								divorce, betrayal, and patterns she couldn&apos;t think her way
-								out of. What she discovered on her way back to herself became
-								the foundation of the system she now teaches.
+						<div className="space-y-5 md:space-y-4 lg:space-y-5 mb-6 md:mb-8 lg:mb-10">
+							<p className="text-[#5A5757] font-lato text-[17px] md:text-[17px] lg:text-body leading-[24px] md:leading-[26px] lg:leading-[28px]">
+								I ran an HR firm placing candidates in sensitive, high-risk
+								roles, where a bad hire meant a security liability. Seven years
+								of profiling taught me to read human behavior as a system.
 							</p>
 
-							<p className="text-[#5A5757] font-lato text-[14px] md:text-[15px] lg:text-body leading-[24px] md:leading-[26px] lg:leading-[28px]">
-								Before guiding women in love, she ran a high-stakes HR firm
-								alongside psychologists, where she learned how one misaligned
-								relationship could quietly derail a woman&apos;s entire life.
-								This is where she began decoding human behavior like a system.
+							<p className="text-[#5A5757] font-lato text-[17px] md:text-[17px] lg:text-body leading-[24px] md:leading-[26px] lg:leading-[28px]">
+								My real work began when my own life unraveled—divorce, betrayal,
+								and patterns I couldn&apos;t think my way out of.
 							</p>
 
-							<p className="text-[#5A5757] font-lato text-[14px] md:text-[15px] lg:text-body leading-[24px] md:leading-[26px] lg:leading-[28px]">
-								Her studies took her across seven countries, blending Eastern
-								energetic wisdom, advanced profiling training, and intuitive
-								feminine insight into LifeDNA — a framework that has helped
-								thousands of women understand compatibility, emotional patterns,
-								and the roots of their relational struggles.
+							<p className="text-[#5A5757] font-lato text-[17px] md:text-[17px] lg:text-body leading-[24px] md:leading-[26px] lg:leading-[28px]">
+								Studies across seven countries, blending Eastern wisdom with
+								advanced profiling, led to LeeluTech—a proprietary numerological
+								framework that&apos;s helped over a thousand women decode
+								compatibility and relational patterns.
 							</p>
 
-							<p className="text-[#5A5757] font-lato text-[14px] md:text-[15px] lg:text-body leading-[24px] md:leading-[26px] lg:leading-[28px]">
-								Lily teaches feminine identity because she lived its absence.
-								She knows what it feels like to overfunction, harden, and carry
-								everything alone — and she knows the freedom that comes from
-								healing those patterns.
+							<p className="text-[#5A5757] font-lato text-[17px] md:text-[17px] lg:text-body leading-[24px] md:leading-[26px] lg:leading-[28px]">
+								Today, my work helps women break negative relationship loops,
+								feel emotionally safe, and finally experience the partnership
+								they&apos;ve always desired--a love where they are fully met,
+								deeply understood, and truly at home.
 							</p>
 
-							<p className="text-[#5A5757] font-lato text-[14px] md:text-[15px] lg:text-body leading-[24px] md:leading-[26px] lg:leading-[28px]">
-								Today, her work helps women break relationship loops, feel
-								emotionally safe, and finally experience the love their nervous
-								system can rest in.
+							<p className="text-brand-deep font-thin font-canela text-[32px] md:text-[32px] lg:text-[32px] leading-[130%] md:leading-[130%] lg:leading-[130%]">
+								Stop Guessing. Start Knowing.
 							</p>
 						</div>
 
 						<div>
-							<WebinarModalButton
-								text="Save my seat"
-								showArrow={false}
-								className="w-full md:w-auto py-4 px-[60px] md:px-[80px] lg:px-[105px] rounded-full bg-brand-primary text-white font-medium font-lato text-[15px] tracking-[0.08em] uppercase hover:bg-[#E13954] transition-colors"
-							/>
+							<Button
+								variant="primary"
+								size="md"
+								className="w-full lg:w-[65%] xs:text-[12px]"
+							>
+								CLAIM YOUR FREE GUIDE
+							</Button>
 						</div>
 					</div>
 				</div>

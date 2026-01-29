@@ -1,6 +1,8 @@
+import CohortLearnCards from "@/components/sections/Landing/CohortLearnCards";
 import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
 import Button from "@/components/ui/Button";
 import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton";
+import RotateOnView from "@/components/ui/RotateOnView";
 import Image from "next/image";
 import React from "react";
 
@@ -79,137 +81,149 @@ export default function DecodedLoveCohortSection() {
 		<Image src="/icons/ornament_1.svg" alt="" width={24} height={24} />
 	);
 	return (
-		<section className="relative py-16 pb-[150px] lg:pb-[200px] lg:py-24">
-			{/* Background */}
-			<div className="absolute inset-0 -z-10">
-				<Image
-					src="/images/landing/cohort_section_bg.png"
-					alt=""
-					fill
-					priority
-				/>
-			</div>
-
-			<div className="container relative mx-auto">
-				<div className="max-w-[822px]">
-					<p className="font-canela uppercase tracking-normal text-[48px] leading-[120%] lg:text-[60px] text-brand-deep font-thin mb-10 lg:mb-3">
-						THE “DECODED LOVE” LIVE COHORT
-					</p>
-
-					<p className="font-lato font-medium text-[#5A5757] text-body leading-[26px]">
-						This is not a standard “webinar”. I am not here to just motivate
-						you. I am running a live diagnostic session to demonstrate the
-						LeeluTech System in real-time. I am taking a select group of women
-						and revealing the hidden architecture of their relationships.
-					</p>
+		<>
+			<section className="relative py-16 pb-[150px] lg:pb-[200px] lg:py-24">
+				{/* Background */}
+				<div className="absolute inset-0 -z-10">
+					<Image
+						src="/images/landing/cohort_section_bg.png"
+						alt=""
+						fill
+						priority
+					/>
 				</div>
 
-				{/* Learn label */}
-				<p className="lg:mt-[153px] mt-[50px] font-canela font-normal text-[#5A5757] text-[32px]">
-					You will learn:
-				</p>
-
-				<ArcAutoOnce
-					className="xs:hidden lg:block absolute left-1/2 -translate-x-[20px] top-[450px] pointer-events-none"
-					scale={1.4}
-					// biasLeft={0.5}
-					// yUp={0.15}
-					strokeWidth={5}
-					durMs={1500}
-					arcStart={{ x: -500, y: 200 }}
-					arcEnd={{ x: 560, y: 340 }}
-					arcRx={260}
-					arcRy={190}
-					arcSweep={1}
-					arcLarge={1}
-					arrowScale={1.8}
-					arrowRotateDeg={252}
-					arrowCenterY={-5}
-					// flightStart={0.05}
-					endAt={0.7}
-				/>
-
-				{/* Cards cluster */}
-				<div className="relative mt-6">
-					{/* Desktop layout (exact like screenshot) */}
-					<div className="hidden lg:grid grid-cols-3 items-start gap-5 gap-x-5 ">
-						{/* row 1 */}
-						<div className="mt-[104px]">
-							<LearnCard {...CARDS.left} />
-						</div>
-
-						<div>
-							<LearnCard {...CARDS.top} />
-						</div>
-
-						<div className="mt-[104px]">
-							<LearnCard {...CARDS.right} />
-						</div>
-
-						{/* row 2 */}
-						<div>
-							<LearnCard {...CARDS.bottomLeft} />
-						</div>
-
-						<div className="mt-[-96px]">
-							<LearnCard {...CARDS.center} />
-						</div>
-
-						<div>
-							<LearnCard {...CARDS.bottomRight} />
-						</div>
-					</div>
-
-					{/* Mobile/Tablet layout (stack) */}
-					<div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-						<LearnCard {...CARDS.left} />
-						<LearnCard {...CARDS.bottomLeft} />
-						<LearnCard {...CARDS.top} />
-						<LearnCard {...CARDS.center} />
-						<LearnCard {...CARDS.right} />
-						<LearnCard {...CARDS.bottomRight} />
-					</div>
-				</div>
-
-				{/* Bottom CTA */}
-				<div className="lg:mt-[112px] mt-[50px] text-center">
-					<p className="font-canela font-light text-brand-deep text-[32px] leading-[36px] max-w-[884px] mx-auto">
-						Discover the 5 secrets to choosing the right partner, creating
-						healthy connection, and ending the cycle of disappointment.
-					</p>
-
-					<Button variant="dark" leftIcon={ornamentIcon} leftIconBg="transparent" size="md" className="w-full lg:w-[35%] xs:text-[12px] mt-[32px]">
-						Save My Seat
-					</Button>
-				</div>
-
-				{/* Divider */}
-				<div className="mt-[80px] h-[1px] w-full bg-brand-deep opacity-50 max-w-[1224px]" />
-
-				{/* Restrictions */}
-				<div className="mt-[80px]">
-					<p className="font-canela font-light uppercase tracking-[2.6px] text-[32px] text-brand-black mb-[40px]">
-						THE RESTRICTIONS:
-					</p>
-
-					<div className="font-lato text-[#5A5757] text-body space-y-2 max-w-[760px] leading-[130%]">
-						<p className="mb-[40px]">
-							This is not a passive recording. I review live questions and
-							calibrate the data in real-time. Because I personally calculate
-							codes for my students, I cannot host thousands of people.
+				<div className="container relative px-4 mx-auto">
+					<div className="max-w-[822px]">
+						<p className="font-canela uppercase tracking-normal text-[48px] leading-[120%] lg:text-[60px] text-brand-deep font-thin mb-10 lg:mb-3">
+							THE “DECODED LOVE” LIVE COHORT
 						</p>
 
-						<ul className="list-disc pl-5 space-y-1 text-body font-lato font-normal text-[#5A5757]">
-							<li>Session Capacity: Capped at 100 Attendees.</li>
-							<li>Next Session: [Dynamic Date: Tomorrow at 7 PM]</li>
-							<li>
-								Warning: Replays are not guaranteed. This is for women ready to
-								execute, not just watch.
-							</li>
-						</ul>
+						<p className="font-lato font-medium text-[#5A5757] text-body leading-[26px]">
+							This is not a standard “webinar”. I am not here to just motivate
+							you. I am running a live diagnostic session to demonstrate the
+							LeeluTech System in real-time. I am taking a select group of women
+							and revealing the hidden architecture of their relationships.
+						</p>
+					</div>
+
+					{/* Learn label */}
+					<p className="lg:mt-[153px] mt-[50px] font-canela font-normal text-[#5A5757] text-[32px]">
+						You will learn:
+					</p>
+
+					<ArcAutoOnce
+						className="xs:hidden lg:block absolute left-1/2 -translate-x-[20px] top-[450px] pointer-events-none"
+						scale={1.4}
+						// biasLeft={0.5}
+						// yUp={0.15}
+						strokeWidth={5}
+						durMs={1500}
+						arcStart={{ x: -500, y: 200 }}
+						arcEnd={{ x: 560, y: 340 }}
+						arcRx={260}
+						arcRy={190}
+						arcSweep={1}
+						arcLarge={1}
+						arrowScale={1.8}
+						arrowRotateDeg={252}
+						arrowCenterY={-5}
+						// flightStart={0.05}
+						endAt={0.7}
+					/>
+
+					{/* Cards cluster */}
+					<CohortLearnCards />
+					{/* Bottom CTA */}
+					<div className="lg:mt-[112px] mt-[50px] text-center">
+						<p className="font-canela font-light text-brand-deep text-[32px] leading-[36px] max-w-[884px] mx-auto">
+							Discover the 5 secrets to choosing the right partner, creating
+							healthy connection, and ending the cycle of disappointment.
+						</p>
+
+						<Button
+							variant="dark"
+							leftIcon={ornamentIcon}
+							leftIconBg="transparent"
+							size="md"
+							className="w-full lg:w-[35%] xs:text-[12px] mt-[32px]"
+						>
+							Save My Seat
+						</Button>
+					</div>
+
+					{/* Divider */}
+					<div className="mt-[80px] h-[1px] w-full bg-brand-deep opacity-50 max-w-[1224px]" />
+
+					{/* Restrictions */}
+					<div className="mt-[80px]">
+						<p className="font-canela font-light uppercase tracking-[2.6px] text-[32px] text-brand-black mb-[40px]">
+							THE RESTRICTIONS:
+						</p>
+
+						<div className="font-lato text-[#5A5757] text-body space-y-2 leading-[130%]">
+							<p className="mb-[40px]">
+								This is not a passive recording. I review live questions and
+								calibrate the data in real-time. Because I personally calculate
+								codes for my students, I cannot host thousands of people.
+							</p>
+
+							<ul className="list-disc pl-5 space-y-1 text-body font-lato font-normal text-[#5A5757]">
+								<li>Session Capacity: Capped at 100 Attendees.</li>
+								<li>Next Session: [Dynamic Date: Tomorrow at 7 PM]</li>
+								<li>
+									Warning: Replays are not guaranteed. This is for women ready
+									to execute, not just watch.
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</section>
+			<div className="relative w-full">
+				<div className="relative w-full h-[365px] lg:h-[565px]">
+					{/* wrapper только для картинки */}
+					<div className="absolute inset-0 overflow-hidden">
+						<Image
+							src="/images/lily/lily_6.jpg"
+							alt=""
+							fill
+							quality={100}
+							priority
+							className="
+					object-cover
+					scale-[2] md:scale-[2] lg:scale-[1.2]
+					object-[80%_30%] lg:object-[90%_50%] lg:-translate-x-[100px]
+				"
+						/>
+					</div>
+
+					{/* бадж НЕ внутри overflow-hidden */}
+					<div
+						className="
+				absolute left-1/2 bottom-[-40px] -translate-x-1/2
+				flex items-center justify-center overflow-hidden
+				bg-[#EB4F68]
+				before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay
+				rounded-[300px]
+				w-[80px] h-[100px]
+				md:w-[100px] md:h-[126px]
+				lg:w-[101px] lg:h-[140px]
+				z-10
+			"
+					>
+						<RotateOnView duration={5} amount={0.4} ease="easeOut">
+							<Image
+								src="/leelu_logo.svg"
+								alt=""
+								width={63}
+								height={61}
+								className="w-[51px] h-[53px] md:w-[65px] md:h-[63px] lg:w-[61px] lg:h-[63px] filter invert-[100%] brightness-[100%]"
+							/>
+						</RotateOnView>
 					</div>
 				</div>
 			</div>
-		</section>
+		</>
 	);
 }

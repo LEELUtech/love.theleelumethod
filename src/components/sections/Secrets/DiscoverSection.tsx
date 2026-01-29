@@ -1,4 +1,5 @@
-import Button from "@/components/ui/Button"
+import Button from "@/components/ui/Button";
+import RotateOnView from "@/components/ui/RotateOnView"
 import Image from "next/image";
 
 export default function DiscoverSection() {
@@ -15,25 +16,10 @@ export default function DiscoverSection() {
 				/>
 			</div>
 
-			<div className="container relative z-10">
+			<div className="container relative z-10 px-4">
 				{/* Header with image */}
 				<div className="flex flex-col items-center mb-8 md:mb-10 lg:mb-12">
 					<div className="relative w-[361px] min-h-[379px] md:w-[361px] md:h-[379px] lg:w-[356px] lg:h-[384px] mb-8">
-						{/* Decorative ornaments behind the image */}
-						<Image
-							src="/icons/ornament_2.svg"
-							alt=""
-							width={186}
-							height={186}
-							className="absolute top-[-25px] left-[-80px] md:top-[20px] md:left-[-70px] lg:top-[30px] lg:left-[-90px] z-0 w-[180px] h-[180px] md:w-[180px] md:h-[180px] lg:w-[186px] lg:h-[186px]"
-						/>
-						<Image
-							src="/icons/ornament_3.svg"
-							alt=""
-							width={192}
-							height={192}
-							className="absolute top-[-25px] right-[-80px] md:top-[20px] md:right-[-70px] lg:top-[30px] lg:right-[-95px] z-0 w-[180px] h-[180px] md:w-[184px] md:h-[184px] lg:w-[192px] lg:h-[192px]"
-						/>
 						<Image
 							src="/icons/ornament_4.svg"
 							alt=""
@@ -48,8 +34,21 @@ export default function DiscoverSection() {
 							className="relative z-10"
 							quality={100}
 						/>
+						<RotateOnView
+							className="absolute z-[10] bottom-[-120px] left-[25px] w-[298px] h-[272px] lg:w-[298px] lg:h-[272px]"
+							duration={5}
+							amount={0.4}
+							ease="easeOut"
+						>
+							<Image
+								src="/icons/ornament_14.svg"
+								alt=""
+								fill
+							/>
+						</RotateOnView>
+
 						{/* Ornament badge */}
-						<div className="absolute left-1/2 -translate-x-1/2 bottom-[-35px] md:bottom-[-30px] lg:bottom-[-35px] flex items-center justify-center bg-[#C4334F] rounded-[300px] md:rounded-[300px] lg:rounded-[300px] w-[74px] h-[102px] md:w-[74px] md:h-[102px] lg:w-[74px] lg:h-[102px] z-10">
+						<div className="absolute left-1/2 -translate-x-1/2 bottom-[-25px] md:bottom-[-30px] lg:bottom-[-35px] flex items-center justify-center rounded-[300px] overflow-hidden bg-[#EB4F68] before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay w-[74px] h-[102px] md:w-[74px] md:h-[102px] lg:w-[74px] lg:h-[102px] z-10">
 							<Image
 								src="/leelu_logo.svg"
 								alt=""
@@ -60,7 +59,7 @@ export default function DiscoverSection() {
 						</div>
 					</div>
 					<h1 className="text-center font-canela font-light leading-tight mt-4 md:mt-5 lg:mt-6 text-[42px] lowercase md:uppercase lg:uppercase md:text-[36px] lg:text-[60px]">
-						<span className="italic text-[#C4334F] font-thin text-[48px] lg:text-[60px] capitalize">
+						<span className="relative italic text-[#C4334F] font-thin text-[48px] lg:text-[60px] capitalize z-[20]">
 							Inside
 						</span>
 						<br />
@@ -78,7 +77,7 @@ export default function DiscoverSection() {
 									The Emotional Detox
 								</h3>
 								<p className="text-[#5A5757] font-medium text-body font-lato leading-[22px] md:leading-[24px] lg:leading-[26px]">
-									Why &quot;staying strong&quot; traps the tears in your body,
+									Why &quot;staying strong&quot; traps the pain in your body,
 									and the exact release protocol that allows you metabolize it
 									safely.
 								</p>
@@ -102,7 +101,7 @@ export default function DiscoverSection() {
 									The Squad Audit
 								</h3>
 								<p className="text-[#5A5757] font-medium text-body font-lato leading-[22px] md:leading-[24px] lg:leading-[26px]">
-									How to identify who&apos;s actually helping you heal vs.
+									How to identify who&apos;s actually helping you heal versus
 									who&apos;s keeping you stuck in the story, and what to do
 									about it.
 								</p>
@@ -113,7 +112,7 @@ export default function DiscoverSection() {
 								</h3>
 								<p className="text-[#5A5757] font-medium text-body font-lato leading-[22px] md:leading-[24px] lg:leading-[26px]">
 									A specific writing technique that stops the intrusive thought
-									spiral, instantly.
+									spiral. Instantly.
 								</p>
 							</div>
 							<div className="bg-white rounded-[16px] md:rounded-[18px] lg:rounded-[20px] px-[50px] py-12 md:py-8 lg:py-12 w-full min-h-[240px] md:min-h-[280px] lg:h-[301px] flex flex-col">
@@ -135,8 +134,7 @@ export default function DiscoverSection() {
 								</h3>
 								<p className="text-[#5A5757] font-medium text-body font-lato leading-[22px] md:leading-[24px] lg:leading-[26px]">
 									How to catch the &quot;I&apos;ll never love again&quot; script
-									running in your subconscious, and overwrite it before it
-									becomes your operating system.
+									running in your subconscious, and overwrite it.
 								</p>
 							</div>
 							<div className="bg-white rounded-[16px] md:rounded-[18px] lg:rounded-[20px] px-[50px] py-12 md:py-8 lg:py-12 w-full min-h-[240px] md:min-h-[280px] lg:h-[301px] flex flex-col">

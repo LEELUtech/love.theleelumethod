@@ -50,7 +50,7 @@ function XIcon() {
 export default function Footer({ className }: { className?: string }) {
 	return (
 		<footer className={`bg-white py-8 md:py-12 lg:py-16 px-4 md:px-6 lg:px-8 ${className}`}>
-			<div className="container mx-auto">
+			<div className="container mx-auto px-4">
 				<span className="inline-block w-[57px] h-[57px] md:w-12 md:h-12 relative mb-[12px] lg:mb-[12px]">
 					<Image
 						src="/leelu_logo.svg"

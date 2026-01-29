@@ -5,11 +5,13 @@ import Footer from "@/components/ui/Footer";
 import WebinarDiscoverSection from "@/components/sections/Webinar/WebinarDiscoverSection";
 import WebinarWhatIfSection from "@/components/sections/Webinar/WebinarWhatIfSection";
 import WebinarHeyImLilySection from "@/components/sections/Webinar/WebinarHeyImLilySection";
+import TestimonialsSection from "@/components/sections/Webinar/TestimonialsSection"
 
 const WebinarPage = () => {
 	return (
 		<main>
 			<WebinarSection />
+			<TestimonialsSection/>
 			<WebinarContentSection />
 			<WebinarWhatIfSection />
 			<WebinarDiscoverSection />

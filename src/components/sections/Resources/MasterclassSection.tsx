@@ -1,18 +1,17 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
-import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton";
 import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
-import Button from "@/components/ui/Button"
-import { WEBINAR_URL } from "@/utils/constants"
+import Button from "@/components/ui/Button";
+import { WEBINAR_URL } from "@/utils/constants";
+import RotateOnView from "@/components/ui/RotateOnView"
 
 export function MasterclassSection() {
-	const ornamentIcon = (
-		<Image src="/icons/ornament_1.svg" alt="" width={24} height={24} />
-	);
 
 	return (
 		<section className="bg-brand-white text-brand-deep pt-16 pb-20 md:pt-24 md:pb-28 lg:pt-[112px] lg:pb-[160px]">
-			<div className="container flex flex-col-reverse md:flex-row items-center justify-between gap-10 md:gap-12 lg:gap-16 overflow-hidden">
+			<div className="container flex flex-col-reverse md:flex-row items-center justify-between gap-10 md:gap-12 lg:gap-16 px-4 overflow-hidden">
 				<div className="order-1 md:order-1 w-full md:max-w-[520px]">
 					<p className="font-canela hidden md:block lg:block font-light text-[32px] leading-[100%] tracking-normal text-black mb-6">
 						Free live masterclass
@@ -98,6 +97,25 @@ export function MasterclassSection() {
 							quality={100}
 							sizes="(min-width:1024px) 642px, (min-width:768px) 80vw, 90vw"
 						/>
+
+						<div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+							<div className="flex items-center justify-center rounded-full bg-white shadow-[0px_6px_20px_rgba(0,0,0,0.12)] size-[86px] md:size-[96px] lg:size-[104px]">
+								<RotateOnView
+									duration={5}
+									amount={0.5}
+									className="relative size-[70px] md:size-[70px] lg:size-[80px]"
+									ease="easeOut"
+								>
+									<Image
+										src="/icons/ornament_2/ornament_2_black.svg"
+										alt=""
+										fill
+										priority
+									/>
+								</RotateOnView>
+							</div>
+						</div>
+
 						<ArcAutoOnce
 							className="absolute inset-0 -z-0 -translate-y-[35%] pointer-events-none -translate-x-[-26%]"
 							endAt={0.52}
