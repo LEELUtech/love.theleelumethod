@@ -67,7 +67,6 @@ export function StripeCardPart({
   const [error, setError] = React.useState<string | null>(null);
   const lockRef = React.useRef(false);
 
-  // ✅ card completion (это нормально держать тут — это не "валидация по каждому символу" для billing)
   const [cardComplete, setCardComplete] = React.useState(false);
   const [expComplete, setExpComplete] = React.useState(false);
   const [cvcComplete, setCvcComplete] = React.useState(false);
@@ -83,7 +82,7 @@ export function StripeCardPart({
     !cardError;
 
   const onPay = async () => {
-    // ✅ 1) запускаем валидацию ТОЛЬКО при клике
+
     const ok = onSubmitAttempt();
     if (!ok) {
       setError("Please fill in all required billing fields.");
@@ -92,7 +91,7 @@ export function StripeCardPart({
 
     if (!stripe || !elements || lockRef.current) return;
 
-    // ✅ 2) проверяем карточные поля
+  
     if (!cardComplete) return setError("Please enter a valid card number.");
     if (!expComplete) return setError("Please enter a valid expiry date.");
     if (!cvcComplete) return setError("Please enter a valid CVC.");
@@ -109,7 +108,6 @@ export function StripeCardPart({
         return;
       }
 
-      // ✅ 3) update intent перед confirm (у тебя это правильно)
       try {
         await updateIntent({
           productType,
@@ -191,7 +189,6 @@ export function StripeCardPart({
             onChange={(e) => {
               setCardComplete(!!e.complete);
               setCardError(e.error?.message ?? null);
-              // ✅ не триггерим billing validation; просто убираем общий error если человек исправляет карту
               if (error) setError(null);
             }}
           />

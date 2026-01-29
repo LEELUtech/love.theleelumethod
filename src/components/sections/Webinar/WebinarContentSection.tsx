@@ -1,9 +1,8 @@
 import React from "react";
 import Image from "next/image";
-import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton";
-import TestimonialsCarousel from "@/components/ui/TestimonialsCarousel";
-import Button from "@/components/ui/Button"
-import { WEBINAR_URL } from "@/utils/constants"
+import Button from "@/components/ui/Button";
+import { WEBINAR_URL } from "@/utils/constants";
+import LoveLevelsAnimatedBlock from "@/components/sections/Webinar/LoveLevelsAnimatedBlock";
 
 const CARD_CONTENT = [
 	{
@@ -38,10 +37,10 @@ const WebinarContentSection = () => {
 				/>
 			</div>
 
-			{/* Carousel */}
-			<TestimonialsCarousel className="absolute z-20 top-[-140px] md:top-[-90px] lg:top-[-110px]" />
+			{/* Carousel
+			<TestimonialsCarousel className="absolute z-20 top-[-140px] md:top-[-90px] lg:top-[-110px]" /> */}
 
-			<div className="container px-4 relative z-10 mt-[170px] md:mt-[220px] lg:mt-[250px]">
+			<div className="container px-4 relative z-10 ">
 				{/* FIRST BLOCK */}
 				<div
 					className="
@@ -71,8 +70,8 @@ const WebinarContentSection = () => {
 			"
 						>
 							<Image
-								src="/images/woman-sitting-windowsill.png"
-								alt="Woman sitting by window"
+								src="/images/beautiful-asian-woman-wrapped-blanket.png"
+								alt=""
 								fill
 								quality={100}
 								objectFit="cover"
@@ -84,7 +83,7 @@ const WebinarContentSection = () => {
 					<div className="w-full md:text-left md:max-w-[400px] lg:max-w-none">
 						<h2
 							className="
-				font-canela font-thin text-brand-deep tracking-normal leading-[100%]
+				font-canela font-thin text-brand-deep tracking-normal leading-[130%]
 
 				/* MOBILE */
 				text-[48px]
@@ -177,131 +176,7 @@ const WebinarContentSection = () => {
 					</div>
 				</div>
 
-				{/* SECOND BLOCK */}
-				<div className="relative text-center mb-12 md:mb-16 lg:mb-[34px]">
-					<Image
-						src="/icons/ornament_2.svg"
-						alt=""
-						width={400}
-						height={400}
-						className="
-							absolute left-1/2 -translate-x-1/2 z-0
-
-							/* MOBILE */
-							top-[-220px] w-[350px]
-
-							/* TABLET */
-							md:top-[-160px] md:w-[300px]
-
-							/* DESKTOP */
-							lg:top-[-210px] lg:w-[400px]
-						"
-						style={{
-							maskImage:
-								"linear-gradient(to bottom, black 0%, transparent 80%)",
-							WebkitMaskImage:
-								"linear-gradient(to bottom, black 0%, transparent 80%)",
-							filter: "brightness(200%)",
-						}}
-					/>
-
-					<h3
-						className="
-							relative z-10 font-canela font-thin tracking-normal text-brand-deep mb-4 leading-[100%]
-
-							text-[48px]
-							md:text-[48px]
-							lg:text-[60px]
-						"
-					>
-						Love isn&apos;t just about who you choose…
-						<br />
-						It&apos;s about what you&apos;re available for.
-					</h3>
-
-					<p
-						className="
-							font-light font-canela tracking-normal leading-[100%]
-
-							text-[20px]
-							md:text-[26px]
-							lg:text-[32px]
-						"
-					>
-						And that&apos;s determined at three levels <br />
-						each deeper than the last.
-					</p>
-				</div>
-
-				{/* THIRD BLOCK */}
-				<div className="grid grid-cols-1 gap-6 items-center justify-items-center mb-10">
-					{CARD_CONTENT.map((card, i) => (
-						<div
-							key={i}
-							className="
-										bg-white rounded-[32px] text-center flex flex-col items-center justify-center
-
-										/* MOBILE */
-										w-full max-w-[361px]
-										min-h-[497px]
-										p-1
-
-										/* TABLET */
-										md:max-w-[600px]
-										md:min-h-[320px]
-										md:p-8
-
-										/* DESKTOP */
-										lg:max-w-none
-										lg:w-[904px]
-										lg:h-[449px]
-										lg:p-10
-									"
-						>
-							{card.img && (
-								<div className="relative w-[139px] h-[139px] mb-4">
-									{/* Main image */}
-									<Image src={card.img} alt="" fill />
-
-									{/* Center icon */}
-									{card.icon && (
-										<Image
-											src={card.icon}
-											alt=""
-											width={90}
-											height={90}
-											className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-										/>
-									)}
-								</div>
-							)}
-
-							<h4
-								className="
-									font-canela font-normal md:font-light text-brand-black mb-3
-
-									text-[48px]
-									md:text-[40px]
-									lg:text-[60px]
-								"
-							>
-								{card.title}
-							</h4>
-
-							<p
-								className="
-									font-lato text-[#5A5757] font-normal leading-relaxed max-w-[680px]
-
-									text-[17px]
-									md:text-[17px]
-									lg:text-[18px]
-								"
-							>
-								{card.text}
-							</p>
-						</div>
-					))}
-				</div>
+				<LoveLevelsAnimatedBlock cards={CARD_CONTENT}/>
 
 				{/* CTA BUTTON */}
 				<div className="flex justify-center w-full">

@@ -107,7 +107,6 @@ export function StripeCardPart({
 			const cardNumber = elements.getElement(CardNumberElement);
 			if (!cardNumber) return setError("Card field is not ready yet.");
 
-			// ✅ обновляем intent только тем, что реально нужно для вебхука
 			await updateIntent({
 				productType,
 				email,
@@ -161,6 +160,8 @@ export function StripeCardPart({
 		cardComplete,
 		cardError,
 		onSuccess,
+		expComplete,
+		cvcComplete,
 	]);
 
 	React.useEffect(() => {

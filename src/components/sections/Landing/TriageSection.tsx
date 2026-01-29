@@ -1,8 +1,7 @@
 import Button from "@/components/ui/Button";
-import FreeQuizButton from "@/components/ui/buttons/FreeQuizButton";
-import { QUIZ_URL, WEBINAR_URL } from "@/utils/constants"
+import RotateOnView from "@/components/ui/RotateOnView";
+import { QUIZ_URL, WEBINAR_URL } from "@/utils/constants";
 import Image from "next/image";
-import Link from "next/link";
 import React from "react";
 
 const TriageSection = () => {
@@ -19,7 +18,7 @@ const TriageSection = () => {
 					sizes="100vw"
 				/>
 			</div>
-			<div className="container w-full ">
+			<div className="container w-full px-4">
 				<h2 className="font-thin text-[48px]  lg:text-[60px] leading-[100%] font-canela text-brand-deep mb-[50px] lg:mb-[100px] text-center">
 					You cannot fix a pattern you cannot see.
 				</h2>
@@ -100,79 +99,121 @@ const TriageSection = () => {
 						{/* LEFT ornament */}
 						<div
 							className="
-							relative
-							w-[180px] h-[180px]
-							lg:w-[238px] lg:h-[249px]
-				
-							translate-x-[250px] translate-y-[80px]
-							md:translate-x-[120px] md:translate-y-[50px]
-							lg:translate-x-[125px] lg:translate-y-[60px]
-						"
-						>
-							<Image
-								src="/icons/ornament_3.svg"
-								alt=""
-								fill
-								className="absolute filter brightness-0 invert"
-								style={{
-									maskImage:
-										"linear-gradient(to bottom, black 0%, black 10%, transparent 100%)",
-									WebkitMaskImage:
-										"linear-gradient(to bottom, black 0%, black 10%, transparent 100%)",
-									filter: "brightness(200%)",
-								}}
-							/>
-						</div>
+    relative overflow-hidden
+    w-[180px] h-[180px]
+    lg:w-[238px] lg:h-[249px]
 
+    translate-x-[250px] translate-y-[80px]
+    md:translate-x-[120px] md:translate-y-[50px]
+    lg:translate-x-[125px] lg:translate-y-[60px]
+  "
+							style={{
+								WebkitMaskImage:
+									"linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 15%, rgba(0,0,0,0) 100%)",
+								maskImage:
+									"linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 15%, rgba(0,0,0,0) 100%)",
+								WebkitMaskSize: "100% 100%",
+								maskSize: "100% 100%",
+								WebkitMaskRepeat: "no-repeat",
+								maskRepeat: "no-repeat",
+								WebkitMaskPosition: "center",
+								maskPosition: "center",
+							}}
+						>
+							<RotateOnView
+								duration={10}
+								amount={0.2}
+								ease="easeOut"
+								className="absolute inset-0"
+								style={{ willChange: "transform", transform: "translateZ(0)" }}
+							>
+								<Image
+									src="/icons/ornament_3.svg"
+									alt=""
+									fill
+									className="object-contain"
+									style={{ filter: "brightness(200%)" }}
+								/>
+							</RotateOnView>
+						</div>
 						{/* CENTER ornament */}
 						<div
-							className="
-							relative
-							w-[261px] h-[266px]
-							lg:w-[512px] lg:h-[524px]
-						"
+							className="relative overflow-hidden
+    w-[261px] h-[266px]
+    lg:w-[512px] lg:h-[524px]
+  "
+							style={{
+								WebkitMaskImage:
+									"linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 22%, rgba(0,0,0,0.6) 58%, rgba(0,0,0,0) 88%)",
+								maskImage:
+									"linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 22%, rgba(0,0,0,0.6) 58%, rgba(0,0,0,0) 88%)",
+
+								WebkitMaskSize: "100% 100%",
+								maskSize: "100% 100%",
+								WebkitMaskRepeat: "no-repeat",
+								maskRepeat: "no-repeat",
+								WebkitMaskPosition: "center",
+								maskPosition: "center",
+							}}
 						>
-							<Image
-								src="/icons/ornament_2.svg"
-								alt=""
-								fill
-								className="absolute filter brightness-0 invert"
-								style={{
-									maskImage:
-										"linear-gradient(to bottom, black 0%, transparent 100%)",
-									WebkitMaskImage:
-										"linear-gradient(to bottom, black 0%, transparent 100%)",
-									filter: "brightness(200%)",
-								}}
-							/>
+							<RotateOnView
+								duration={5}
+								amount={0.2}
+								ease="easeOut"
+								className="absolute inset-0"
+								style={{ willChange: "transform", transform: "translateZ(0)" }}
+							>
+								<Image
+									src="/icons/ornament_2/ornament_2_light.svg"
+									alt=""
+									fill
+									className="object-contain"
+									style={{ filter: "brightness(200%)" }}
+								/>
+							</RotateOnView>
 						</div>
 
 						{/* RIGHT ornament */}
 						<div
 							className="
-							relative
-							w-[180px] h-[180px]
-							lg:w-[259px] lg:h-[242px]
-				
-							-translate-x-[250px] translate-y-[90px]
-							md:-translate-x-[120px] md:translate-y-[50px]
-							lg:-translate-x-[120px] lg:translate-y-[60px]
-						"
+    relative overflow-hidden
+    w-[180px] h-[180px]
+    lg:w-[259px] lg:h-[242px]
+
+    -translate-x-[250px] translate-y-[90px]
+    md:-translate-x-[120px] md:translate-y-[50px]
+    lg:-translate-x-[120px] lg:translate-y-[60px]
+  "
+							style={{
+								WebkitMaskImage:
+									"linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 15%, rgba(0,0,0,0) 100%)",
+								maskImage:
+									"linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 15%, rgba(0,0,0,0) 100%)",
+								WebkitMaskSize: "100% 100%",
+								maskSize: "100% 100%",
+								WebkitMaskRepeat: "no-repeat",
+								maskRepeat: "no-repeat",
+								WebkitMaskPosition: "center",
+								maskPosition: "center",
+							}}
 						>
-							<Image
-								src="/icons/ornament_5.svg"
-								alt=""
-								fill
-								className="absolute filter brightness-0 invert"
-								style={{
-									maskImage:
-										"linear-gradient(to bottom, black 0%, black 80%, transparent 100%)",
-									WebkitMaskImage:
-										"linear-gradient(to bottom, black 0%, black 80%, transparent 100%)",
-									filter: "brightness(200%)",
-								}}
-							/>
+							<RotateOnView
+								duration={10}
+								amount={0.2}
+								ease="easeOut"
+								className="absolute inset-0"
+								style={{ willChange: "transform", transform: "translateZ(0)" }}
+							>
+								<Image
+									src="/icons/ornament_3.svg"
+									alt=""
+									fill
+									className="object-contain"
+									style={{ filter: "brightness(200%)" }}
+								/>
+							</RotateOnView>
 						</div>
+
 					</div>
 					<h2 className="relative font-thin text-[48px] lg:text-[60px] leading-[130%] font-canela text-brand-deep mb-8 text-center z-10 xs:max-w-[309px] lg:max-w-[550px] mx-auto uppercase">
 						The Relationship TRIAGE
@@ -199,16 +240,16 @@ const TriageSection = () => {
 							</p>
 
 							<p className="font-lato font-normal text-[15px] text-[#41444E] mb-[20px]">
-								The Friction Points: Why you keep having the same fight
+								<span className="font-semibold">The Friction Points:</span> Why you keep having the same fight
 							</p>
 
 							<p className="font-lato font-normal text-[15px] text-[#41444E] mb-[20px]">
-								The Probability: Is this relationship built for the long haul or
+								<span className="font-semibold">The Probability:</span> Is this relationship built for the long haul or
 								a lesson?
 							</p>
 
 							<p className="font-lato font-normal text-[15px] text-[#41444E] mb-[48px]">
-								The Truth: What his behavior is actually saying.
+								<span className="font-semibold">The Truth:</span> What his behavior is actually saying.
 							</p>
 
 							<Button
@@ -263,7 +304,7 @@ const TriageSection = () => {
 								className="w-full xs:text-[12px] mt-auto"
 								href={WEBINAR_URL}
 							>
-								REGISTER FOR WEBINAR 
+								REGISTER FOR WEBINAR
 							</Button>
 						</div>
 
@@ -274,24 +315,19 @@ const TriageSection = () => {
 							</h2>
 
 							<p className="text-[20px] font-normal font-canela mb-[20px]">
-								Is this relationship compatible or are you forcing it?
+								Should this relationship be salvaged? Was the last one doomed from the start?
 							</p>
 
 							<p className="font-lato font-normal text-[15px] text-[#41444E] mb-[20px]">
-								Did the last one end because of you—or because it was coded to
-								fail from the start?
+								This analysis shows you the structural reality: where relationship codes align, where they clash, and whether the friction you&apos;re experiencing is solvable or baked into the pairing itself.
 							</p>
 
 							<p className="font-lato font-normal text-[15px] text-[#41444E] mb-[20px]">
-								Your personalized analysis reveals the mathematical reality:
-								where your codes amplify each other and where they clash. The
-								structural dynamics beneath surface conflicts. What the friction
-								points mean. Whether this pairing builds or destabilizes.
+								You&apos;ll see what&apos;s actually fixable versus what you&apos;ve been forcing. 
 							</p>
 
-							<p className="font-lato font-normal text-[15px] text-[#41444E] mb-[48px]">
-								You&apos;ll see what&apos;s actually happening. Not theories.
-								Not hope. The algorithm.
+							<p className="font-lato font-semibold text-[15px] text-[#41444E] mb-[48px]">
+								No opinions. No blame. Mathematical certainty.
 							</p>
 
 							<Button

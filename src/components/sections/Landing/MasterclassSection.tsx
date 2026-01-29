@@ -1,32 +1,28 @@
 import React from "react";
 import Image from "next/image";
-import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton";
 import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
 import Button from "@/components/ui/Button";
-import { WEBINAR_URL } from "@/utils/constants"
+import { WEBINAR_URL } from "@/utils/constants";
+import RotateOnView from "@/components/ui/RotateOnView"
 
 export function MasterclassSection() {
-	const ornamentIcon = (
-		<Image src="/icons/ornament_1.svg" alt="" width={24} height={24} />
-	);
-
 	return (
 		<section className="bg-brand-white text-brand-deep pt-16 pb-20 md:pt-24 md:pb-28 lg:pt-[112px] lg:pb-[160px]">
-			<div className="container flex flex-col-reverse md:flex-row items-center justify-between gap-10 md:gap-12 lg:gap-16 overflow-hidden">
+			<div className="container px-4 flex flex-col-reverse md:flex-row items-center justify-between gap-10 md:gap-12 lg:gap-16 overflow-hidden">
 				<div className="order-1 md:order-1 w-full md:max-w-[520px]">
-					{/* <p className="font-canela hidden md:block lg:block font-light text-[32px] leading-[100%] tracking-normal text-black mb-6">
+					<p className="font-canela hidden md:block lg:block font-light text-[32px] leading-[100%] tracking-normal text-black mb-6">
 						Free live masterclass
-					</p> */}
+					</p>
 					<h2 className="text-[48px] text-center md:text-left lg:text-left lg:text-h1 font-thin md:font-light lg:font-light font-canela text-brand-deep mb-6">
 						Decoded Love
 					</h2>
-					<p className="text-body font-canela font-normal text-[#5A5757] mb-6 text-center md:text-left lg:text-left">
-						Discover the <span className="text-brand-primary">3 secrets</span>{" "}
+					<p className="text-body font-canela font-light text-[#5A5757] mb-6 text-center md:text-left lg:text-left">
+						Discover the 3 secrets
 						to choosing the right partner, creating healthy connection, and
 						ending the cycle of disappointment forever.
 					</p>
 					<div className="text-body text-brand-deep/80 space-y-2 mb-10">
-						<p className="font-canela text-body font-normal leading-[26px] text-[#5A5757] mb-6 text-center md:text-left lg:text-left">
+						<p className="font-canela text-body font-light leading-[26px] text-[#5A5757] mb-6 text-center md:text-left lg:text-left">
 							What you&apos;ll learn:
 						</p>
 						<ul className="list-none pl-2 md:pl-8 font-lato text-body font-medium leading-[26px] space-y-4 text-[#5A5757]">
@@ -79,7 +75,12 @@ export function MasterclassSection() {
 							</li>
 						</ul>
 					</div>
-					<Button variant="dark" size="md" className="w-full lg:w-[60%] xs:text-[12px]" href={WEBINAR_URL}>
+					<Button
+						variant="dark"
+						size="md"
+						className="w-full lg:w-[60%] xs:text-[12px]"
+						href={WEBINAR_URL}
+					>
 						Save My Seat
 					</Button>
 				</div>
@@ -93,6 +94,24 @@ export function MasterclassSection() {
 							quality={100}
 							sizes="(min-width:1024px) 642px, (min-width:768px) 80vw, 90vw"
 						/>
+
+						<div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+							<div className="flex items-center justify-center rounded-full bg-white shadow-[0px_6px_20px_rgba(0,0,0,0.12)] size-[86px] md:size-[96px] lg:size-[104px]">
+								<RotateOnView
+									duration={5}
+									amount={0.5}
+									className="relative size-[70px] md:size-[70px] lg:size-[80px]"
+									ease="easeOut"
+								>
+									<Image
+										src="/icons/ornament_2/ornament_2_black.svg"
+										alt=""
+										fill
+										priority
+									/>
+								</RotateOnView>
+							</div>
+						</div>
 						<ArcAutoOnce
 							className="absolute inset-0 -z-0 -translate-y-[35%] pointer-events-none -translate-x-[-26%]"
 							endAt={0.52}

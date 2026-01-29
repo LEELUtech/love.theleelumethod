@@ -1,6 +1,6 @@
-import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
-import Button from "@/components/ui/Button"
-import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton";
+import RelationshipProtocolTiers from "@/components/sections/Landing/RelationshipProtocolTiers"
+import Button from "@/components/ui/Button";
+import RotateOnView from "@/components/ui/RotateOnView";
 import Image from "next/image";
 import React from "react";
 
@@ -10,7 +10,7 @@ const RelationShipProtocolSection = () => {
 	);
 
 	return (
-		<section className="relative pb-[80px]">
+		<section className="relative pb-[80px] pt-[100px]">
 			{/* Background Image */}
 			<div className="absolute inset-0 -z-10">
 				<Image
@@ -24,74 +24,16 @@ const RelationShipProtocolSection = () => {
 				/>
 			</div>
 
-			<div className="container">
+			<div className="container px-4">
 				<div className="text-center">
-					{/* Top Image */}
-					<div className="flex justify-center mb-12 relative pt-[230px] md:pt-[300px] lg:pt-[300px]">
-						<div
-							className="
-                absolute
-                w-[268px] h-[290px]
-                sm:w-[358px] sm:h-[376px]
-                top-[-100px]
-                overflow-visible
-              "
-						>
-							<Image
-								src="/images/resources/resources-section-1.png"
-								alt="Stop Guessing"
-								fill
-								quality={100}
-								sizes="(min-width: 640px) 358px, 320px"
-								className="object-contain"
-							/>
-
-							{/* Logo badge */}
-							<div
-								className="
-                  absolute left-1/2 -translate-x-1/2
-                  bottom-[-50px] sm:bottom-[-50px]
-                  flex items-center justify-center
-                  bg-[#FFC8C8] rounded-[300px] z-10
-                  w-[86px] h-[112px]
-                  lg:w-[101px] lg:h-[140px]
-                "
-							>
-								<div className="relative w-[55px] h-[55px] lg:w-[58px] lg:h-[56px]">
-									<Image
-										src="/leelu_logo.svg"
-										alt=""
-										fill
-										className="object-contain"
-									/>
-								</div>
-							</div>
-
-							{/* Arc */}
-							<ArcAutoOnce
-								className="absolute inset-0 -z-0 -translate-y-[13%] pointer-events-none -translate-x-[2%]"
-								endAt={0.9}
-								flightStart={0.2}
-								durMs={1500}
-								startDelayMs={500}
-								arrowRotateDeg={254}
-								arrowScale={0.8}
-								arrowCenterX={6.5}
-								arrowCenterY={-6}
-								arrowOffsetY={3}
-								arcRx={220}
-								arcRy={208}
-							/>
-						</div>
-					</div>
 
 					{/* Heading */}
-					<h2 className="font-thin text-[48px] lg:text-[60px] leading-[100%] font-canela text-brand-deep mb-5 max-w-[550px] mx-auto">
+					<h2 className="font-thin text-[48px] lg:text-[60px] leading-[100%] font-canela text-brand-deep mb-5">
 						THE RELATIONSHIP PROTOCOL
 					</h2>
 
 					{/* Subheading */}
-					<p className="font-light font-canela text-[32px] lg:text-[32px] leading-[130%] text-brand-black mb-6 lg:mb-5 text-center">
+					<p className="font-light font-canela text-[32px] lg:text-[32px] leading-[130%] text-brand-primary mb-6 lg:mb-5 text-center">
 						The Operating Manual for Human Connection
 					</p>
 
@@ -170,6 +112,51 @@ const RelationShipProtocolSection = () => {
 						VIEW THE CURRICULUM
 					</Button>
 				</div>
+
+				<div>
+					<div className="flex justify-center mb-12 relative mt-[100px]">
+						<div
+							className="
+							relative
+                w-[348px] h-[363px]
+                overflow-visible
+              "
+						>
+							<Image
+								src="/images/lily/lily_7.png"
+								alt="Stop Guessing"
+								fill
+								quality={100}
+							/>
+
+							<div
+								className="
+											absolute left-1/2 bottom-[-40px] -translate-x-1/2
+											flex items-center justify-center overflow-hidden
+											bg-[#EB4F68]
+											before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay
+											rounded-[300px]
+											w-[80px] h-[100px]
+											md:w-[100px] md:h-[126px]
+											lg:w-[101px] lg:h-[140px]
+											z-10
+										"
+							>
+								<RotateOnView duration={5} amount={0.4} ease="easeOut">
+									<Image
+										src="/leelu_logo.svg"
+										alt=""
+										width={63}
+										height={61}
+										className="w-[51px] h-[53px] md:w-[65px] md:h-[63px] lg:w-[61px] lg:h-[63px] filter invert-[100%] brightness-[100%]"
+									/>
+								</RotateOnView>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<RelationshipProtocolTiers />
 			</div>
 		</section>
 	);

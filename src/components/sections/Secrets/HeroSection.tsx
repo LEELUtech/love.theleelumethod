@@ -2,6 +2,7 @@
 import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
 import Button from "@/components/ui/Button";
 import Header from "@/components/ui/Header";
+import RotateOnView from "@/components/ui/RotateOnView"
 import { sendFreeGuideEmail } from "@/lib/firebaseFunctions";
 import Image from "next/image";
 import React from "react";
@@ -55,7 +56,7 @@ export default function SecretsHeroSection() {
 		>
 			<Header />
 
-			<div className="container pt-8 pb-16 md:pt-12 md:pb-20 lg:pt-16 lg:pb-[112px]">
+			<div className="container pt-8 pb-16 md:pt-12 md:pb-20 lg:pt-16 lg:pb-[112px] px-4">
 				<div className="relative flex flex-col items-center justify-center w-full text-center gap-4 md:gap-5 lg:gap-6">
 					<div className="relative flex flex-col items-center gap-3 md:gap-4 mt-4 md:mt-5 lg:mt-6">
 						<div className="relative w-[278px] h-[290px] md:w-[220px] md:h-[240px] lg:w-[288px] lg:h-[290px]">
@@ -68,28 +69,36 @@ export default function SecretsHeroSection() {
 							/>
 
 							<ArcAutoOnce
-								className="absolute inset-0 -z-0 -translate-y-[15%] pointer-events-none -translate-x-[2%]"
+								className="absolute inset-0 -z-0 -translate-y-[18%] pointer-events-none -translate-x-[4%]"
 								endAt={0.9}
 								flightStart={0.2}
 								durMs={1500}
 								startDelayMs={500}
 								arrowRotateDeg={254}
-								arrowScale={0.8}
+								arrowScale={0}
 								arrowCenterX={6.5}
 								arrowCenterY={-6}
 								arrowOffsetY={3}
 								arcRx={220}
 								arcRy={208}
+								strokeWidth={3}
 							/>
 
-							<div className="absolute left-1/2 -translate-x-1/2 bottom-[-25px] md:bottom-[-30px] lg:bottom-[-35px] flex items-center justify-center bg-[#C4334F] rounded-[300px] w-[74px] h-[102px] z-10">
-								<Image
-									src="/leelu_logo.svg"
-									alt=""
-									width={46}
-									height={46}
-									className="filter invert"
-								/>
+							<div className="absolute left-1/2 -translate-x-1/2 bottom-[-25px] md:bottom-[-30px] lg:bottom-[-35px] flex items-center justify-center rounded-[300px] w-[74px] h-[102px] z-10 overflow-hidden bg-[#EB4F68] before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay">
+								<RotateOnView
+									className="relative z-10"
+									duration={5}
+									amount={0.35}
+									ease="easeOut"
+								>
+									<Image
+										src="/leelu_logo.svg"
+										alt=""
+										width={46}
+										height={46}
+										className="filter invert"
+									/>
+								</RotateOnView>
 							</div>
 						</div>
 					</div>

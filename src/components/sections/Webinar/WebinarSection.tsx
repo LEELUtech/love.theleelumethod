@@ -1,7 +1,8 @@
 import React from "react";
 import Image from "next/image";
 import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
-import Button from "@/components/ui/Button"
+import Button from "@/components/ui/Button";
+import RotateOnView from "@/components/ui/RotateOnView";
 
 const WebinarSection = () => {
 	return (
@@ -159,29 +160,20 @@ const WebinarSection = () => {
 							arcRy={260}
 						/>
 
-						<Image
-							src="/icons/ornament_6_pink.svg"
-							alt=""
-							width={209}
-							height={215}
-							priority
-							quality={100}
-							className="absolute bottom-[-60px] left-1/2 -translate-x-1/2 hidden lg:block pointer-events-none"
-						/>
-						{/* LOGO BADGE */}
-						{/* <div
-							className="absolute bottom-[10px] right-[10px] md:bottom-[-15px] md:right-[5px] lg:bottom-[-20px] lg:right-[5px]
-							flex items-center justify-center bg-brand-primary rounded-[300px]
-							w-[80px] h-[100px] md:w-[100px] md:h-[126px] lg:w-[142px] lg:h-[192px] z-10"
+						<RotateOnView
+							className="absolute bottom-[-60px] left-[140px] hidden lg:block pointer-events-none"
+							duration={5}
+							ease="easeOut"
 						>
 							<Image
-								src="/leelu_logo.svg"
+								src="/icons/ornament_2/ornament_2_pink.svg"
 								alt=""
-								width={83}
-								height={83}
-								className="filter brightness-0 invert w-[50px] h-[50px] md:w-[65px] md:h-[65px] lg:w-[83px] lg:h-[83px]"
+								width={209}
+								height={215}
+								priority
+								quality={100}
 							/>
-						</div> */}
+						</RotateOnView>
 					</div>
 				</div>
 			</div>

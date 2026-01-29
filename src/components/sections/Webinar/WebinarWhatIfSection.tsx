@@ -1,9 +1,8 @@
 import React from "react";
 import Image from "next/image";
-import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton";
 import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
-import Button from "@/components/ui/Button"
-import { WEBINAR_URL } from "@/utils/constants"
+import Button from "@/components/ui/Button";
+import { WEBINAR_URL } from "@/utils/constants";
 
 const WebinarWhatIfSection = () => {
 	return (
@@ -59,11 +58,11 @@ const WebinarWhatIfSection = () => {
 						"
 					>
 						<Image
-							src="/images/woman-receiving-rose.jpg"
+							src="/images/smile-relax-portrait.jpg"
 							alt=""
 							fill
 							quality={100}
-							className="object-cover object-right rounded-[1000px]"
+							className="object-cover scale-x-[-1] object-[41%_30%] rounded-[1000px]"
 						/>
 						<ArcAutoOnce
 							className="absolute inset-0 -z-0 -translate-y-[13%] pointer-events-none -translate-x-[-7%]"
@@ -84,27 +83,32 @@ const WebinarWhatIfSection = () => {
 							arcRy={260}
 						/>
 						<div
-							className="/* Mobile default */
-								w-[124px] h-[167px]
+							className="
+    /* Mobile default */
+    w-[124px] h-[167px]
 
-								lg:bottom-[-90px] lg:left-[-50px]
-								bottom-[-30px] left-[-10px]
-								md:bottom-[-50px] md:left-[-10px]
-								/* Desktop */
-								lg:w-[220px] lg:h-[307px]
-								absolute 
-								"
+    lg:bottom-[-90px] lg:left-[-50px]
+    bottom-[-30px] left-[-10px]
+    md:bottom-[-50px] md:left-[-10px]
+
+    /* Desktop */
+    lg:w-[220px] lg:h-[307px]
+
+    absolute
+    overflow-hidden
+    rounded-[1000px]
+  "
 						>
-							<Image
-								src="/images/two-women-embracing.jpg"
-								alt=""
-								fill
-								quality={100}
-								className="
-								rounded-[1000px] object-cover 
-								
-  							"
-							/>
+							{/* зумим этот слой, а не контейнер */}
+							<div className="absolute inset-0 scale-[1.12]">
+								<Image
+									src="/images/lily/lily_1.png"
+									alt=""
+									fill
+									quality={100}
+									className="object-cover object-[50%_35%]"
+								/>
+							</div>
 						</div>
 					</div>
 
@@ -281,7 +285,7 @@ const WebinarWhatIfSection = () => {
 								>
 									{item.parts.map((part, idx) =>
 										part.bold ? (
-											<span key={idx} className="font-bold">
+											<span key={idx} className="font-bold text-brand-primary">
 												{part.text}
 											</span>
 										) : (
