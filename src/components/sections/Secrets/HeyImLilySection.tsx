@@ -75,7 +75,7 @@ export default function HeyImLilySection() {
 							<Button
 								variant="primary"
 								size="md"
-								className="w-full lg:w-[65%] xs:text-[12px]"
+								className="w-full lg:w-[55%] xs:text-[12px]"
 							>
 								CLAIM YOUR FREE GUIDE
 							</Button>

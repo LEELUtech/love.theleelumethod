@@ -7,6 +7,7 @@ import React from "react";
 import useProductStore from "@/store/useProductStore";
 import { COMPATIBILITY_REPORT } from "@/utils/constants";
 import { formatPriceFromCents } from "@/helpers";
+import RotateOnView from "@/components/ui/RotateOnView";
 
 const CoreValueSection = () => {
 	const productId = COMPATIBILITY_REPORT;
@@ -29,8 +30,8 @@ const CoreValueSection = () => {
 			: "...";
 
 	return (
-		<section className="relative pb-[215px] pt-[90px] md:pt-[130px] lg:pt-[130px] bg-brand-white">
-			<div className="container">
+		<section className="relative pb-[100px] lg:pb-[215px] pt-[90px] md:pt-[130px] lg:pt-[130px] bg-brand-white">
+			<div className="container px-4">
 				<div className="mx-auto text-center">
 					{/* Top Image */}
 					<div className="flex justify-center mb-12 relative">
@@ -38,54 +39,72 @@ const CoreValueSection = () => {
 							className="
                 absolute
                 w-[268px] h-[290px]
-                sm:w-[358px] sm:h-[376px]
+                lg:w-[358px] sm:h-[366px]
 								top-[-320px]
                 overflow-visible
               "
 						>
 							<Image
-								src="/images/resources/resources-section-1.png"
-								alt="Stop Guessing"
+								src="/images/compatibility/core_value_section.png"
+								alt=""
 								fill
 								quality={100}
-								sizes="(min-width: 640px) 358px, 320px"
 							/>
 
-							{/* Logo badge */}
 							<div
 								className="
-                  absolute left-1/2 -translate-x-1/2
-                  bottom-[-50px]
-                  flex items-center justify-center
-                  bg-brand-primary rounded-[300px] z-10
-                  w-[86px] h-[112px]
-                  lg:w-[101px] lg:h-[140px]
-                "
+									absolute left-1/2 bottom-[-40px] -translate-x-1/2
+									flex items-center justify-center overflow-hidden
+									bg-[#EB4F68]
+									before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay
+									rounded-[300px]
+									w-[80px] h-[100px]
+									md:w-[100px] md:h-[126px]
+									lg:w-[101px] lg:h-[140px]
+									z-10
+								"
 							>
-								<div className="relative w-[55px] h-[55px] lg:w-[63px] lg:h-[61px]">
+								<RotateOnView duration={5} amount={0.4} ease="easeOut">
 									<Image
 										src="/leelu_logo.svg"
 										alt=""
-										fill
-										className="object-contain filter brightness-0 invert"
+										width={63}
+										height={61}
+										className="w-[51px] h-[53px] md:w-[65px] md:h-[63px] lg:w-[61px] lg:h-[63px] filter invert-[100%] brightness-[100%]"
 									/>
-								</div>
+								</RotateOnView>
 							</div>
 
 							{/* Arc */}
-							<ArcAutoOnce
+							{/* <ArcAutoOnce
 								className="absolute inset-0 -z-0 -translate-y-[15%] pointer-events-none -translate-x-[2%]"
 								endAt={0.9}
 								flightStart={0.2}
 								durMs={1500}
 								startDelayMs={500}
 								arrowRotateDeg={254}
-								arrowScale={0.8}
+								arrowScale={0}
 								arrowCenterX={6.5}
 								arrowCenterY={-6}
 								arrowOffsetY={3}
 								arcRx={220}
 								arcRy={208}
+							/> */}
+
+							<ArcAutoOnce
+								className="absolute inset-0 -z-0 -translate-y-[18%] pointer-events-none -translate-x-[4%]"
+								endAt={0.9}
+								flightStart={0.2}
+								durMs={1500}
+								startDelayMs={500}
+								arrowRotateDeg={254}
+								arrowScale={0}
+								arrowCenterX={6.5}
+								arrowCenterY={-6}
+								arrowOffsetY={3}
+								arcRx={220}
+								arcRy={208}
+								strokeWidth={3}
 							/>
 						</div>
 					</div>

@@ -3,18 +3,19 @@ import Image from "next/image";
 const CredentialsSection = () => {
 	return (
 		<section className="relative pt-[80px] lg:pt-[112px] pb-[250px] lg:pb-[319px]">
-			<div className="container">
+			<div className="container px-4">
 
 				{/* === MOBILE + TABLET IMAGE (TOP) === */}
 				<div className="flex justify-center mb-[128px] lg:hidden">
 					<div className="relative 
-						w-[361px] h-[550px] md:w-[461px] md:h-[700px]
+						w-[361px] h-[460px] md:w-[461px] md:h-[600px]
 					">
 						<Image
-							src="/images/about/credentials_img.png"
+							src="/images/lily/lily_8.png"
 							alt="Credentials"
 							fill
 							quality={100}
+							className="rounded-[113px]"
 						/>
 
 						{/* Logo Badge */}
@@ -64,7 +65,7 @@ const CredentialsSection = () => {
 								},
 								{
 									title: "Validated Data",
-									text: "Methodology stress-tested on 11,500+ profiles in a commercial HR environment.",
+									text: "Methodology stress-tested on  14,325  profiles in a commercial HR environment.",
 								},
 								{
 									title: "Clinical Oversight",
@@ -107,17 +108,18 @@ const CredentialsSection = () => {
 
 					{/* RIGHT: IMAGE (DESKTOP ONLY) */}
 					<div className="hidden lg:flex">
-						<div className="relative w-[795px] h-[850px]">
+						<div className="relative w-[595px] h-[750px] shrink-0">
 							<Image
-								src="/images/about/credentials_img.png"
+								src="/images/lily/lily_8.png"
 								alt="Credentials"
 								fill
 								quality={100}
+								className="rounded-[113px]"
 							/>
 
 							{/* Logo Badge */}
 							<div className="absolute 
-								bottom-[-50px] right-[-60px]
+								bottom-[-50px] right-[-40px]
 								flex items-center justify-center 
 								bg-[#d8ac9e] rounded-[300px]
 								w-[123px] h-[155px]

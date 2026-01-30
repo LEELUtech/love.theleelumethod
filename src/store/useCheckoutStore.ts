@@ -4,10 +4,7 @@ import { api } from "@/lib/api";
 import { ApiErrorResponse } from "@/types";
 
 type CreateIntentPayload = {
-	productType: string;
-	email?: string;
-	birthDate1?: string;
-	birthDate2?: string;
+  productType: string;
 };
 
 type UpdateIntentPayload = {
@@ -29,7 +26,12 @@ type UpdateIntentPayload = {
   birthDate2?: string;
 };
 
-type CreateIntentResp = { clientSecret: string; intentId: string };
+type CreateIntentResp = {
+  clientSecret: string;
+  intentId: string;
+  intentToken: string; // ✅ добавили
+};
+
 type UpdateIntentResp = {
   ok: boolean;
   intentId: string;
@@ -37,102 +39,213 @@ type UpdateIntentResp = {
 };
 
 type CheckoutStatus =
-	| "idle"
-	| "creating"
-	| "ready"
-	| "processing"
-	| "success"
-	| "error";
+  | "idle"
+  | "creating"
+  | "ready"
+  | "updating"
+  | "processing"
+  | "success"
+  | "error";
 
 type CheckoutState = {
-	clientSecret: string | null;
-	intentId: string | null;
-	status: CheckoutStatus;
-	error: string | null;
-	intentKey: string | null;
+  clientSecret: string | null;
+  intentId: string | null;
+  intentToken: string | null; // ✅ добавили
 
-	createIntent: (payload: CreateIntentPayload) => Promise<string>;
-	updateIntent: (payload: UpdateIntentPayload) => Promise<void>;
-	markProcessing: () => void;
-	markSuccess: () => void;
-	setError: (msg: string | null) => void;
-	reset: () => void;
+  status: CheckoutStatus;
+  error: string | null;
+
+  // caching / guards
+  intentKey: string | null;
+  updateKey: string | null;
+
+  // in-flight promises
+  createPromise: Promise<string> | null;
+  updatePromise: Promise<void> | null;
+
+  createIntent: (payload: CreateIntentPayload) => Promise<string>;
+  updateIntent: (payload: UpdateIntentPayload) => Promise<void>;
+
+  markProcessing: () => void;
+  markSuccess: () => void;
+  setError: (msg: string | null) => void;
+  reset: () => void;
 };
 
+function buildCreateKey(productType: string) {
+  return `create:${productType}`;
+}
+
+function norm(v?: string) {
+  return (v ?? "").trim();
+}
+function normLower(v?: string) {
+  return norm(v).toLowerCase();
+}
+
+function buildUpdateKey(p: UpdateIntentPayload, intentId: string, intentToken: string) {
+  // ✅ включаем intentId + token, чтобы кэш не “перелип” на другой intent
+  return [
+    "update",
+    intentId,
+    intentToken,
+    p.productType,
+    normLower(p.email),
+    norm(p.firstName),
+    norm(p.lastName),
+    norm(p.phone),
+    norm(p.address1),
+    norm(p.address2),
+    norm(p.city),
+    norm(p.state),
+    norm(p.postalCode),
+    norm(p.country).toUpperCase(),
+    norm(p.birthDate1),
+    norm(p.birthDate2),
+  ].join("|");
+}
+
+function getAxiosMsg(e: unknown, fallback: string) {
+  const axiosError = e as AxiosError<ApiErrorResponse>;
+  return axiosError.response?.data?.error || axiosError.message || fallback;
+}
+
 export const useCheckoutStore = create<CheckoutState>((set, get) => ({
-	clientSecret: null,
-	intentId: null,
-	status: "idle",
-	error: null,
-	intentKey: null,
+  clientSecret: null,
+  intentId: null,
+  intentToken: null,
 
-	createIntent: async (payload) => {
-		const { status, intentKey } = get();
+  status: "idle",
+  error: null,
 
-		const nextKey = `${payload.productType}:${payload.email ?? ""}:${payload.birthDate1 ?? ""}:${payload.birthDate2 ?? ""}`;
+  intentKey: null,
+  updateKey: null,
 
-		if (status === "ready" && get().clientSecret && intentKey === nextKey) {
-			return get().clientSecret!;
-		}
+  createPromise: null,
+  updatePromise: null,
 
-		if (status === "creating" && intentKey === nextKey) {
-			throw new Error("Payment is already initializing");
-		}
+  createIntent: async ({ productType }) => {
+    const { status, intentKey, clientSecret, createPromise } = get();
+    const nextKey = buildCreateKey(productType);
 
-		set({
-			status: "creating",
-			error: null,
-			intentKey: nextKey,
-			clientSecret: null,
-			intentId: null,
-		});
+    // reuse if already ready for same product
+    if (status === "ready" && clientSecret && intentKey === nextKey) {
+      return clientSecret;
+    }
 
-		try {
-			const { data } = await api.post<CreateIntentResp>(
-				"/api/create-payment-intent",
-				payload,
-			);
+    // if create already running for same key -> await it
+    if (status === "creating" && intentKey === nextKey && createPromise) {
+      return await createPromise;
+    }
 
-			if (!data?.clientSecret) throw new Error("No clientSecret returned");
+    // start new create
+    set({
+      status: "creating",
+      error: null,
+      intentKey: nextKey,
+      updateKey: null,
 
-			set({
-				clientSecret: data.clientSecret,
-				intentId: data.intentId,
-				status: "ready",
-			});
-			return data.clientSecret;
-		} catch (e) {
-			const axiosError = e as AxiosError<ApiErrorResponse>;
-			const msg =
-				axiosError.response?.data?.error ||
-				axiosError.message ||
-				"Failed to create intent";
+      clientSecret: null,
+      intentId: null,
+      intentToken: null,
 
-			set({ status: "error", error: msg, clientSecret: null, intentId: null });
-			throw new Error(msg);
-		}
-	},
-	updateIntent: async (payload) => {
-		const { intentId } = get();
-		if (!intentId)
-			throw new Error("No intentId in store. Create intent first.");
+      updatePromise: null,
+    });
 
-		await api.post<UpdateIntentResp>("/api/update-payment-intent", {
-			intentId,
-			...payload
-		});
-	},
+    const p = (async () => {
+      try {
+        const { data } = await api.post<CreateIntentResp>("/api/create-payment-intent", {
+          productType,
+        });
 
-	markProcessing: () => set({ status: "processing" }),
-	markSuccess: () => set({ status: "success" }),
-	setError: (msg) => set({ error: msg, status: msg ? "error" : get().status }),
+        if (!data?.clientSecret) throw new Error("No clientSecret returned");
+        if (!data?.intentId) throw new Error("No intentId returned");
+        if (!data?.intentToken) throw new Error("No intentToken returned");
 
-	reset: () =>
-		set({
-			clientSecret: null,
-			intentId: null,
-			status: "idle",
-			error: null,
-			intentKey: null,
-		}),
+        set({
+          clientSecret: data.clientSecret,
+          intentId: data.intentId,
+          intentToken: data.intentToken,
+          status: "ready",
+          createPromise: null,
+        });
+
+        return data.clientSecret;
+      } catch (e) {
+        const msg = getAxiosMsg(e, "Failed to create intent");
+        set({
+          status: "error",
+          error: msg,
+          clientSecret: null,
+          intentId: null,
+          intentToken: null,
+          createPromise: null,
+        });
+        throw new Error(msg);
+      }
+    })();
+
+    set({ createPromise: p });
+    return await p;
+  },
+
+  updateIntent: async (payload) => {
+    const { intentId, intentToken, updateKey, updatePromise } = get();
+    if (!intentId) throw new Error("No intentId in store. Create intent first.");
+    if (!intentToken) throw new Error("No intentToken in store. Create intent first.");
+
+    const nextKey = buildUpdateKey(payload, intentId, intentToken);
+
+    // already updated with exactly same data -> skip
+    if (updateKey === nextKey) return;
+
+    // if update already running -> await it
+    if (updatePromise) {
+      await updatePromise;
+      if (get().updateKey === nextKey) return;
+    }
+
+    set({ status: "updating", error: null });
+
+    const p = (async () => {
+      try {
+        await api.post<UpdateIntentResp>("/api/update-payment-intent", {
+          intentId,
+          intentToken, // ✅ отправляем token
+          ...payload,
+        });
+
+        set({ status: "ready", updateKey: nextKey, updatePromise: null });
+      } catch (e) {
+        const msg = getAxiosMsg(e, "Failed to update intent");
+        set({ status: "error", error: msg, updatePromise: null });
+        throw new Error(msg);
+      }
+    })();
+
+    set({ updatePromise: p });
+    await p;
+  },
+
+  markProcessing: () => set({ status: "processing" }),
+  markSuccess: () => set({ status: "success" }),
+
+  setError: (msg) =>
+    set((s) => ({
+      error: msg,
+      status: msg ? "error" : s.status,
+    })),
+
+  reset: () =>
+    set({
+      clientSecret: null,
+      intentId: null,
+      intentToken: null,
+      status: "idle",
+      error: null,
+      intentKey: null,
+      updateKey: null,
+      createPromise: null,
+      updatePromise: null,
+    }),
 }));

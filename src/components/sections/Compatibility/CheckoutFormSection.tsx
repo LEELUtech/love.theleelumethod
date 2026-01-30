@@ -21,7 +21,7 @@ import {
 	StripeCardPart,
 	type StripePayState,
 } from "@/components/sections/Compatibility/StripeCardPart";
-import CheckoutSectionLoader from "@/components/sections/Checkout/CheckoutSectionLoader"
+import CheckoutSectionLoader from "@/components/sections/Checkout/CheckoutSectionLoader";
 
 const pk = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!;
 const stripePromise = loadStripe(pk);
@@ -43,31 +43,32 @@ const initialForm: CompatibilityCheckoutForm = {
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function CheckoutFormSection() {
-	// -----------------------------
-	// constants / router
-	// -----------------------------
 	const productId = COMPATIBILITY_REPORT;
 	const router = useRouter();
 
-	// -----------------------------
 	// stores
-	// -----------------------------
 	const product = useProductStore((s) => s.getProduct(productId));
 	const productLoading = useProductStore((s) => s.isLoading(productId));
 	const fetchProduct = useProductStore((s) => s.fetchProduct);
 
-	const { clientSecret, status, createIntent, markSuccess } = useCheckoutStore();
+	const {
+		clientSecret,
+		status,
+		error: checkoutError,
+		createIntent,
+		markSuccess,
+		reset,
+		intentKey,
+	} = useCheckoutStore();
 
-	// -----------------------------
 	// local state
-	// -----------------------------
-	const [form, setForm] = React.useState<CompatibilityCheckoutForm>(initialForm);
+	const [form, setForm] =
+		React.useState<CompatibilityCheckoutForm>(initialForm);
 
-	// validation only on submit
 	const [submitAttempted, setSubmitAttempted] = React.useState(false);
 	const [errors, setErrors] = React.useState<FormErrors>({});
+	const [hadSecretOnce, setHadSecretOnce] = React.useState(false);
 
-	// Stripe pay function + state
 	const payFnRef = React.useRef<null | (() => Promise<void>)>(null);
 	const [payState, setPayState] = React.useState<StripePayState>({
 		canPay: false,
@@ -76,9 +77,7 @@ export default function CheckoutFormSection() {
 		cardError: null,
 	});
 
-	// -----------------------------
 	// derived
-	// -----------------------------
 	const priceLabel =
 		!productLoading && product
 			? formatPriceFromCents(product.price, {
@@ -87,10 +86,16 @@ export default function CheckoutFormSection() {
 				})
 			: "...";
 
-	const showStripe = status === "ready" && !!clientSecret;
-	const isStripeInitializing = status === "idle" || status === "creating";
+	const showStripe = !!clientSecret;
 
-	const elementsOptions = React.useMemo<StripeElementsOptions | undefined>(() => {
+	const isStripeInitializing =
+		!hadSecretOnce &&
+		!clientSecret &&
+		(status === "idle" || status === "creating");
+
+	const elementsOptions = React.useMemo<
+		StripeElementsOptions | undefined
+	>(() => {
 		if (!clientSecret) return undefined;
 		return { clientSecret, appearance: { theme: "stripe" } };
 	}, [clientSecret]);
@@ -100,25 +105,65 @@ export default function CheckoutFormSection() {
 		return !!v && emailRegex.test(v);
 	}, [form.email]);
 
-	const buttonDisabled = !payState.canPay || payState.paying;
+	const buttonDisabled =
+		!clientSecret ||
+		isStripeInitializing ||
+		!payState.canPay ||
+		payState.paying;
+	
+    // effects
+	React.useEffect(() => {
+		if (clientSecret) setHadSecretOnce(true);
+	}, [clientSecret]);
 
-	// -----------------------------
-	// effects
-	// -----------------------------
+	React.useEffect(() => {
+		const expectedKey = `create:${productId}`;
+		if (intentKey && intentKey !== expectedKey) reset();
+	}, [intentKey, productId, reset]);
+
+
 	React.useEffect(() => {
 		if (!product && !productLoading) fetchProduct(productId);
 	}, [product, productLoading, fetchProduct, productId]);
 
 	React.useEffect(() => {
 		if (!product || productLoading) return;
+
+		const expectedKey = `create:${productId}`;
+
+		if (intentKey && intentKey !== expectedKey) {
+			reset();
+			return;
+		}
+
+		if (clientSecret && intentKey === expectedKey) return;
+
 		if (status !== "idle") return;
+
 		createIntent({ productType: productId }).catch(() => {});
-	}, [product, productLoading, status, createIntent, productId]);
+	}, [
+		product,
+		productLoading,
+		productId,
+		intentKey,
+		clientSecret,
+		status,
+		createIntent,
+		reset,
+	]);
 
-	// -----------------------------
+	React.useEffect(() => {
+		if (!checkoutError) return;
+		setPayState((prev) => ({ ...prev, error: checkoutError }));
+	}, [checkoutError]);
+
+	React.useEffect(() => {
+		return () => {
+			reset();
+		};
+	}, [reset]);
+
 	// handlers
-	// -----------------------------
-
 	const setField = React.useCallback(
 		<K extends keyof CompatibilityCheckoutForm>(key: K, value: string) => {
 			setForm((prev) => ({ ...prev, [key]: value }));
@@ -143,19 +188,25 @@ export default function CheckoutFormSection() {
 	const onSuccess = React.useCallback(() => {
 		markSuccess?.();
 		router.push("/success");
+		// reset(); // ✅ и тут тоже
 	}, [router, markSuccess]);
 
-	const validateOnSubmit = React.useCallback((data: CompatibilityCheckoutForm) => {
-		const next: FormErrors = {};
+	const validateOnSubmit = React.useCallback(
+		(data: CompatibilityCheckoutForm) => {
+			const next: FormErrors = {};
 
-		if (!data.birthDate1) next.birthDate1 = "Please select your birthdate.";
-		if (!data.birthDate2) next.birthDate2 = "Please select partner’s birthdate.";
+			if (!data.birthDate1) next.birthDate1 = "Please select your birthdate.";
+			if (!data.birthDate2)
+				next.birthDate2 = "Please select partner’s birthdate.";
 
-		const email = data.email.trim();
-		if (!email || !emailRegex.test(email)) next.email = "Please enter a valid email.";
+			const email = data.email.trim();
+			if (!email || !emailRegex.test(email))
+				next.email = "Please enter a valid email.";
 
-		return next;
-	}, []);
+			return next;
+		},
+		[],
+	);
 
 	const onPayClick = React.useCallback(async () => {
 		setSubmitAttempted(true);
@@ -163,10 +214,17 @@ export default function CheckoutFormSection() {
 		const nextErrors = validateOnSubmit(form);
 		setErrors(nextErrors);
 
-		const ok = Object.keys(nextErrors).length === 0;
-		if (!ok) return;
+		if (Object.keys(nextErrors).length !== 0) return;
 
-		await payFnRef.current?.();
+		if (!payFnRef.current) {
+			setPayState((p) => ({
+				...p,
+				error: "Payment form is not ready yet. Please wait a moment.",
+			}));
+			return;
+		}
+
+		await payFnRef.current();
 	}, [form, validateOnSubmit]);
 
 	const showEmailError = submitAttempted && !!errors.email;
@@ -174,14 +232,30 @@ export default function CheckoutFormSection() {
 	const showBirth2Error = submitAttempted && !!errors.birthDate2;
 
 	return (
-		<section id="checkout" className="relative bg-white overflow-visible lg:h-[742px] py-[80px] lg:py-0">
+		<section
+			id="checkout"
+			className="relative bg-white overflow-visible lg:h-[742px] py-[80px] lg:py-0"
+		>
 			<div className="absolute inset-0 z-0">
-				<Image src="/images/bg/checkout_bg.png" alt="Checkout bg" fill quality={100} />
+				<Image
+					src="/images/bg/checkout_bg.png"
+					alt="Checkout bg"
+					fill
+					quality={100}
+				/>
 			</div>
 
 			<div className="container relative z-10 lg:top-[-100px]">
 				<div className="relative mx-auto rounded-[32px] bg-white px-6 py-8 md:px-10 md:py-10 lg:px-[104px] lg:py-[51px] shadow-[0px_4px_20px_0px_rgba(0,0,0,0.1)]">
-					{isStripeInitializing ? <CheckoutSectionLoader text="Initializing payment..." /> : null}
+					{isStripeInitializing ? (
+						<CheckoutSectionLoader text="Initializing payment..." />
+					) : null}
+
+					{status === "error" && checkoutError ? (
+						<p className="mb-4 text-sm font-lato text-red-600">
+							{checkoutError}
+						</p>
+					) : null}
 
 					{/* Header */}
 					<div className="flex flex-col items-center gap-6 md:flex-row md:items-start md:justify-between md:gap-8">
@@ -268,10 +342,10 @@ export default function CheckoutFormSection() {
 										<CardBrand label="discover" />
 									</div>
 
-									{showStripe && clientSecret && elementsOptions ? (
+									{showStripe && elementsOptions ? (
 										<Elements stripe={stripePromise} options={elementsOptions}>
 											<StripeCardPart
-												clientSecret={clientSecret}
+												clientSecret={clientSecret!}
 												productType={productId}
 												email={form.email}
 												emailValid={emailValid}
@@ -298,7 +372,7 @@ export default function CheckoutFormSection() {
 							<div className="mt-5 space-y-3">
 								<div className="flex items-baseline justify-between gap-4">
 									<p className="font-lato text-body font-normal uppercase tracking-[0.03em] text-brand-black">
-										{productLoading ? "Loading..." : product?.name ?? ""}
+										{productLoading ? "Loading..." : (product?.name ?? "")}
 									</p>
 									<p className="font-lato text-body font-normal text-brand-black">
 										{productLoading ? "..." : priceLabel}
@@ -342,7 +416,7 @@ export default function CheckoutFormSection() {
 							>
 								{payState.paying
 									? "PROCESSING..."
-									: `UNLOCK MY COMPATIBILITY CODE`}
+									: "UNLOCK MY COMPATIBILITY CODE"}
 							</button>
 
 							{payState.error ? (

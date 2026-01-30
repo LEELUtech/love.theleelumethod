@@ -63,7 +63,7 @@ export default function WebinarHeyImLilySection() {
 							<p className="text-[#5A5757] font-lato text-[17px] md:text-[17px] lg:text-body leading-[24px] md:leading-[26px] lg:leading-[28px]">
 								Today, my work helps women break negative relationship loops,
 								feel emotionally safe, and finally experience the partnership
-								they&apos;ve always desired--a love where they are fully met,
+								they&apos;ve always desired-a love where they are fully met,
 								deeply understood, and truly at home.
 							</p>
 

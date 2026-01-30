@@ -1,6 +1,7 @@
-import Button from "@/components/ui/Button"
+import ProblemsListAnimated from "@/components/sections/Compatibility/ProblemsListAnimated";
+import Button from "@/components/ui/Button";
+import RotateOnView from "@/components/ui/RotateOnView"
 import Image from "next/image";
-import Link from "next/link";
 
 export const PROBLEMS = [
 	{
@@ -24,36 +25,6 @@ export const PROBLEMS = [
 		text: "Years pass before you realize you were solving the wrong problems the entire time",
 	},
 ] as const;
-
-function ProblemCard({
-	text,
-	icon = "red_star",
-}: {
-	text: string;
-	icon?: "red_star";
-}) {
-	return (
-		<div className="rounded-[16px] bg-[#FFF8F8] backdrop-blur-md px-[20px] py-[20px] md:px-[24px] md:py-[24px]">
-			<div className="flex flex-row gap-4 items-center">
-				{icon === "red_star" && (
-					<div className="relative mt-[2px] w-[26px] h-[33px] shrink-0">
-						<Image
-							src={"/icons/red_star.svg"}
-							alt=""
-							fill
-							priority
-							quality={100}
-						/>
-					</div>
-				)}
-
-				<p className="font-canela font-normal text-brand-black text-[20px] md:text-[18px] leading-[1.4]">
-					{text}
-				</p>
-			</div>
-		</div>
-	);
-}
 
 type BlindCard = {
 	title: string;
@@ -136,8 +107,8 @@ const ProblemSolutionSection = () => {
 					quality={100}
 				/>
 			</div>
-			<div className="container">
-				<div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+			<div className="container px-4">
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
 					{/* Left Column - Image */}
 					<div className="flex justify-center">
 						<div className="relative mb-[60px] md:mb-0 lg:mb-0 w-[360px] h-[459px] lg:w-[551px] lg:h-[748px] rounded-lg">
@@ -175,11 +146,7 @@ const ProblemSolutionSection = () => {
 							code:
 						</p>
 
-						<div className="flex flex-col gap-6 mb-[30px]">
-							{PROBLEMS.map((item) => (
-								<ProblemCard key={item.id} text={item.text} icon={item.icon} />
-							))}
-						</div>
+						<ProblemsListAnimated items={PROBLEMS} />
 
 						<Button
 							variant="primary"
@@ -196,94 +163,135 @@ const ProblemSolutionSection = () => {
 				<div className="lg:mt-[400px] mt-[250px] relative">
 					<div
 						className="
-		absolute z-0
-		left-1/2 -translate-x-1/2
-		top-[-180px]
-		md:top-[-180px]
-		lg:top-[-300px]
-
-		flex flex-row items-center justify-center gap-[130px]
-		pointer-events-none
-	"
+											absolute z-0
+											left-1/2 -translate-x-1/2
+											top-[-150px]
+											md:top-[-180px]
+											lg:top-[-320px]
+									
+											flex flex-row items-center justify-center gap-[130px]
+											pointer-events-none
+										"
 					>
 						{/* LEFT ornament */}
 						<div
 							className="
-			relative
-			w-[180px] h-[180px]
-			lg:w-[238px] lg:h-[249px]
-
-			translate-x-[250px] translate-y-[80px]
-			md:translate-x-[120px] md:translate-y-[50px]
-			lg:translate-x-[125px] lg:translate-y-[60px]
-		"
+							relative overflow-hidden
+							w-[180px] h-[180px]
+							lg:w-[238px] lg:h-[249px]
+					
+							translate-x-[250px] translate-y-[80px]
+							md:translate-x-[120px] md:translate-y-[50px]
+							lg:translate-x-[125px] lg:translate-y-[60px]
+						"
+							style={{
+								WebkitMaskImage:
+									"linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 15%, rgba(0,0,0,0) 100%)",
+								maskImage:
+									"linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 15%, rgba(0,0,0,0) 100%)",
+								WebkitMaskSize: "100% 100%",
+								maskSize: "100% 100%",
+								WebkitMaskRepeat: "no-repeat",
+								maskRepeat: "no-repeat",
+								WebkitMaskPosition: "center",
+								maskPosition: "center",
+							}}
 						>
-							<Image
-								src="/icons/ornament_3.svg"
-								alt=""
-								fill
-								className="absolute filter brightness-0 invert"
-								style={{
-									maskImage:
-										"linear-gradient(to bottom, black 0%, black 10%, transparent 90%)",
-									WebkitMaskImage:
-										"linear-gradient(to bottom, black 0%, black 10%, transparent 90%)",
-									filter: "brightness(200%)",
-								}}
-							/>
+							<RotateOnView
+								duration={10}
+								amount={0.2}
+								ease="easeOut"
+								className="absolute inset-0"
+								style={{ willChange: "transform", transform: "translateZ(0)" }}
+							>
+								<Image
+									src="/icons/ornament_3.svg"
+									alt=""
+									fill
+									className="object-contain"
+									style={{ filter: "brightness(200%)" }}
+								/>
+							</RotateOnView>
 						</div>
-
 						{/* CENTER ornament */}
 						<div
-							className="
-			relative
-			w-[261px] h-[266px]
-			lg:w-[512px] lg:h-[524px]
-		"
+							className="relative overflow-hidden
+							w-[261px] h-[266px]
+							lg:w-[512px] lg:h-[524px]
+						"
+							style={{
+								WebkitMaskImage:
+									"linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 22%, rgba(0,0,0,0.6) 58%, rgba(0,0,0,0) 88%)",
+								maskImage:
+									"linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 22%, rgba(0,0,0,0.6) 58%, rgba(0,0,0,0) 88%)",
+
+								WebkitMaskSize: "100% 100%",
+								maskSize: "100% 100%",
+								WebkitMaskRepeat: "no-repeat",
+								maskRepeat: "no-repeat",
+								WebkitMaskPosition: "center",
+								maskPosition: "center",
+							}}
 						>
-							<Image
-								src="/icons/ornament_2.svg"
-								alt=""
-								fill
-								className="absolute filter brightness-0 invert"
-								style={{
-									maskImage:
-										"linear-gradient(to bottom, black 0%, transparent 80%)",
-									WebkitMaskImage:
-										"linear-gradient(to bottom, black 0%, transparent 80%)",
-									filter: "brightness(200%)",
-								}}
-							/>
+							<RotateOnView
+								duration={5}
+								amount={0.2}
+								ease="easeOut"
+								className="absolute inset-0"
+								style={{ willChange: "transform", transform: "translateZ(0)" }}
+							>
+								<Image
+									src="/icons/ornament_2/ornament_2_light.svg"
+									alt=""
+									fill
+									className="object-contain"
+									style={{ filter: "brightness(200%)" }}
+								/>
+							</RotateOnView>
 						</div>
 
 						{/* RIGHT ornament */}
 						<div
 							className="
-			relative
-			w-[180px] h-[180px]
-			lg:w-[259px] lg:h-[242px]
-
-			-translate-x-[250px] translate-y-[90px]
-			md:-translate-x-[120px] md:translate-y-[50px]
-			lg:-translate-x-[120px] lg:translate-y-[60px]
-		"
+							relative overflow-hidden
+							w-[180px] h-[180px]
+							lg:w-[259px] lg:h-[242px]
+					
+							-translate-x-[250px] translate-y-[90px]
+							md:-translate-x-[120px] md:translate-y-[50px]
+							lg:-translate-x-[120px] lg:translate-y-[60px]
+						"
+							style={{
+								WebkitMaskImage:
+									"linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 15%, rgba(0,0,0,0) 100%)",
+								maskImage:
+									"linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 15%, rgba(0,0,0,0) 100%)",
+								WebkitMaskSize: "100% 100%",
+								maskSize: "100% 100%",
+								WebkitMaskRepeat: "no-repeat",
+								maskRepeat: "no-repeat",
+								WebkitMaskPosition: "center",
+								maskPosition: "center",
+							}}
 						>
-							<Image
-								src="/icons/ornament_5.svg"
-								alt=""
-								fill
-								className="absolute filter brightness-0 invert"
-								style={{
-									maskImage:
-										"linear-gradient(to bottom, black 0%, black 20%, transparent 100%)",
-									WebkitMaskImage:
-										"linear-gradient(to bottom, black 0%, black 20%, transparent 100%)",
-									filter: "brightness(200%)",
-								}}
-							/>
+							<RotateOnView
+								duration={10}
+								amount={0.2}
+								ease="easeOut"
+								className="absolute inset-0"
+								style={{ willChange: "transform", transform: "translateZ(0)" }}
+							>
+								<Image
+									src="/icons/ornament_3.svg"
+									alt=""
+									fill
+									className="object-contain"
+									style={{ filter: "brightness(200%)" }}
+								/>
+							</RotateOnView>
 						</div>
 					</div>
-					<h2 className="relative font-thin text-[60px] lg:text-[60px] leading-[130%] font-canela text-brand-deep mb-8 text-center z-10">
+					<h2 className="relative font-thin text-[42px] lg:text-[60px] leading-[130%] font-canela text-brand-deep mb-8 text-center z-10">
 						The couples who succeed don&apos;t have fewer challenges.
 					</h2>
 					<h2 className="relative font-thin text-[32px] lg:text-[24px] leading-[130%] font-canela text-brand-deep mb-8 text-center z-10">

@@ -87,12 +87,6 @@ export const stripeCircleWebhook = onRequest(
       return;
     }
 
-    console.log("💰 Payment amount:", {
-      amount_cents: pi.amount,
-      amount_normalized: pi.amount / 100,
-      currency: pi.currency,
-    });
-
     // Pull all routing data from metadata
     const productType = pi.metadata?.product_type || "";
     const email = pi.metadata?.email || pi.receipt_email || "";
@@ -117,6 +111,23 @@ export const stripeCircleWebhook = onRequest(
       res.status(200).send("Already processed");
       return;
     }
+
+    // human-friendly amount (Stripe amount is in minor units, e.g. cents)
+    const currencyUpper = (pi.currency ?? "").toUpperCase();
+    const amountMinor = typeof pi.amount === "number" ? pi.amount : null;
+    const amountMajor = typeof pi.amount === "number" ? (pi.amount / 100).toFixed(2) : null;
+
+    console.log("💰 PAYMENT SUCCEEDED", {
+      payment_intent_id: pi.id,
+      email,
+      product_type: productType,
+      amount_minor: amountMinor, // e.g. 4900
+      amount_major: amountMajor, // e.g. "49.00"
+      currency: currencyUpper, // e.g. "USD"
+      status: pi.status,
+      latest_charge: pi.latest_charge ?? null,
+      created: typeof pi.created === "number" ? new Date(pi.created * 1000).toISOString() : null,
+    });
 
     console.log("💳 Processing succeeded PI:", {
       payment_intent_id: pi.id,
