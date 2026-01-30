@@ -1,6 +1,6 @@
-import Button from "@/components/ui/Button"
-import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton";
-import { WEBINAR_URL } from "@/utils/constants"
+import Button from "@/components/ui/Button";
+import RotateOnView from "@/components/ui/RotateOnView"
+import { WEBINAR_URL } from "@/utils/constants";
 import Image from "next/image";
 
 export default function HeyImLilySection() {
@@ -11,14 +11,16 @@ export default function HeyImLilySection() {
 					{/* Left side - Image */}
 					<div className="relative w-full max-w-[400px] md:max-w-[480px] lg:max-w-[551px] mx-auto lg:mx-0">
 						{/* Red circle badge with logo */}
-						<div className="absolute left-[-10px] top-[-30px] md:left-[-40px] md:top-[-50px] lg:top-[-60px] lg:left-[-60px] flex items-center justify-center bg-[#C4334F] rounded-[300px] w-[80px] h-[100px] md:w-[100px] md:h-[126px] lg:w-[134px] lg:h-[168px] z-10">
-							<Image
-								src="/icons/ornament_2.svg"
-								alt=""
-								width={83}
-								height={83}
-								className="filter brightness-0 invert w-[50px] h-[50px] md:w-[65px] md:h-[65px] lg:w-[83px] lg:h-[83px]"
-							/>
+						<div className="absolute left-[-10px] top-[-30px] md:left-[-40px] md:top-[-50px] lg:top-[-60px] lg:left-[-60px] flex items-center justify-center overflow-hidden bg-[#EB4F68] before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay rounded-[300px] w-[80px] h-[100px] md:w-[100px] md:h-[126px] lg:w-[134px] lg:h-[168px] z-10">
+							<RotateOnView duration={5} amount={0.4} ease="easeOut">
+								<Image
+									src="/icons/ornament_2/ornament_2_light.svg"
+									alt=""
+									width={83}
+									height={83}
+									className="w-[65px] h-[65px] md:w-[65px] md:h-[65px] lg:w-[83px] lg:h-[83px]"
+								/>
+							</RotateOnView>
 						</div>
 
 						{/* Main image with rounded corners */}

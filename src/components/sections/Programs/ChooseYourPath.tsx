@@ -1,4 +1,5 @@
-import Button from "@/components/ui/Button"
+import Button from "@/components/ui/Button";
+import RotateOnView from "@/components/ui/RotateOnView"
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -20,15 +21,29 @@ export default function ChooseYourPathSection() {
 			<div className="container">
 				{/* top badge */}
 				<div className="relative flex justify-center">
-					<div className="absolute -top-[210px] lg:-top-[210px] h-[175px] rounded-[300px] w-[122px] bg-brand-primary flex items-center justify-center">
-						<div className="relative w-[88px] h-[88px]">
+
+					<div
+						className="
+											absolute left-1/2 lg:top-[-220px] top-[-200px] -translate-x-1/2
+											flex items-center justify-center overflow-hidden
+											bg-[#EB4F68]
+											before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay
+											rounded-[300px]
+											w-[107px] h-[148px]
+											md:w-[107px] md:h-[148px]
+											lg:w-[142px] lg:h-[195px]
+											z-10
+										"
+					>
+						<RotateOnView duration={5} amount={0.4} ease="easeOut">
 							<Image
 								src="/leelu_logo.svg"
 								alt=""
-								fill
-								className="object-contain filter brightness-0 invert"
+								width={88}
+								height={88}
+								className="w-[65px] h-[65px] md:w-[65px] md:h-[65px] lg:w-[88px] lg:h-[88px] filter invert-[100%] brightness-[100%]"
 							/>
-						</div>
+						</RotateOnView>
 					</div>
 				</div>
 

@@ -1,160 +1,132 @@
-// app/api/checkout/update-intent/route.ts
+// app/api/update-payment-intent/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
-import Stripe from "stripe"
+import Stripe from "stripe";
 
 const stripe = getStripe();
+const SITE = process.env.DOMAIN_URL || "unknown";
 
 type Body = {
-	intentId: string;
-	productType: string;
+  intentId: string;
+  intentToken: string; // ✅ добавили
+  productType: string;
 
-	// Customer information
-	email: string;
-	firstName?: string;
-	lastName?: string;
-	phone?: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
 
-	// Billing address
-	address1?: string;
-	address2?: string;
-	city?: string;
-	state?: string;
-	postalCode?: string;
-	country?: string;
+  address1?: string;
+  address2?: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+  country?: string;
 
-	// Product specific data
-	birthDate1?: string;
-	birthDate2?: string;
+  birthDate1?: string;
+  birthDate2?: string;
 };
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export async function POST(req: NextRequest) {
-	try {
-		const body = (await req.json()) as Body;
+  try {
+    const body = (await req.json()) as Body;
 
-		const intentId = body.intentId?.trim();
-		const productType = body.productType?.trim();
-		const email = body.email?.trim();
+    const intentId = body.intentId?.trim();
+    const intentToken = body.intentToken?.trim();
+    const productType = body.productType?.trim();
+    const email = body.email?.trim();
 
-		if (!intentId) {
-			return NextResponse.json({ error: "Missing intentId" }, { status: 400 });
-		}
-		if (!productType) {
-			return NextResponse.json(
-				{ error: "Missing productType" },
-				{ status: 400 },
-			);
-		}
-		if (!email) {
-			return NextResponse.json({ error: "Missing email" }, { status: 400 });
-		}
+    if (!intentId) return NextResponse.json({ error: "Missing intentId" }, { status: 400 });
+    if (!intentToken) return NextResponse.json({ error: "Missing intentToken" }, { status: 400 });
+    if (!productType) return NextResponse.json({ error: "Missing productType" }, { status: 400 });
+    if (!email) return NextResponse.json({ error: "Missing email" }, { status: 400 });
 
-		// Validate email format
-		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		if (!emailRegex.test(email)) {
-			return NextResponse.json(
-				{ error: "Invalid email format" },
-				{ status: 400 },
-			);
-		}
+    if (!emailRegex.test(email)) {
+      return NextResponse.json({ error: "Invalid email format" }, { status: 400 });
+    }
 
-		// Prepare metadata
-		const metadata: Record<string, string> = {
-			product_type: productType,
-			email,
-			updated_at: new Date().toISOString(),
-		};
+    // ✅ 1) Retrieve PI and verify token
+    const pi = await stripe.paymentIntents.retrieve(intentId);
 
-		// Add optional customer info
-		if (body.firstName) metadata.first_name = body.firstName.trim();
-		if (body.lastName) metadata.last_name = body.lastName.trim();
-		if (body.phone) metadata.phone = body.phone.trim();
+    const storedToken = (pi.metadata?.intent_token ?? "").toString();
+    if (!storedToken || storedToken !== intentToken) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
 
-		// Add optional address info
-		if (body.address1) metadata.address_line1 = body.address1.trim();
-		if (body.address2) metadata.address_line2 = body.address2.trim();
-		if (body.city) metadata.city = body.city.trim();
-		if (body.state) metadata.state = body.state.trim();
-		if (body.postalCode) metadata.postal_code = body.postalCode.trim();
-		if (body.country) metadata.country = body.country.trim().toUpperCase();
+    // (опционально) защита по сайту:
+    const storedSite = (pi.metadata?.site ?? "").toString();
+    if (storedSite && storedSite !== SITE) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
 
-		// Product-specific metadata
-		if (productType === "compatibility_report") {
-			const bd1 = body.birthDate1?.trim();
-			const bd2 = body.birthDate2?.trim();
+    // ✅ 2) productType mismatch protection
+    const existingType = (pi.metadata?.product_type ?? "").toString();
+    if (existingType && existingType !== productType) {
+      return NextResponse.json(
+        { error: `productType mismatch (expected ${existingType}, got ${productType})` },
+        { status: 400 },
+      );
+    }
 
-			if (!bd1 || !bd2) {
-				return NextResponse.json(
-					{ error: "Missing birth dates for compatibility report" },
-					{ status: 400 },
-				);
-			}
+    // ✅ 3) Merge metadata
+    const metadata: Record<string, string> = {
+      ...(pi.metadata ?? {}),
+      product_type: existingType || productType,
+      email,
+      site: storedSite || SITE,
+      updated_at: new Date().toISOString(),
+    };
 
-			metadata.birth_date_1 = bd1;
-			metadata.birth_date_2 = bd2;
-		}
+    if (body.firstName?.trim()) metadata.first_name = body.firstName.trim();
+    if (body.lastName?.trim()) metadata.last_name = body.lastName.trim();
+    if (body.phone?.trim()) metadata.phone = body.phone.trim();
 
-		// Update Stripe PaymentIntent
-		const updatedIntent = await stripe.paymentIntents.update(intentId, {
-			receipt_email: email,
-			metadata,
-			// Optionally update billing details too
-			...(body.firstName || body.lastName || body.phone || body.address1
-				? {
-						shipping: {
-							name: `${body.firstName || ""} ${body.lastName || ""}`.trim(),
-							phone: body.phone?.trim(),
-							address: {
-								line1: body.address1?.trim(),
-								line2: body.address2?.trim(),
-								city: body.city?.trim(),
-								state: body.state?.trim(),
-								postal_code: body.postalCode?.trim(),
-								country: body.country?.trim().toUpperCase(),
-							},
-						},
-					}
-				: {}),
-		});
+    if (body.address1?.trim()) metadata.address_line1 = body.address1.trim();
+    if (body.address2?.trim()) metadata.address_line2 = body.address2.trim();
+    if (body.city?.trim()) metadata.city = body.city.trim();
+    if (body.state?.trim()) metadata.state = body.state.trim();
+    if (body.postalCode?.trim()) metadata.postal_code = body.postalCode.trim();
+    if (body.country?.trim()) metadata.country = body.country.trim().toUpperCase();
 
-		console.log(`✅ Payment intent ${intentId} updated with metadata`);
+    if (productType === "compatibility_report") {
+      const bd1 = body.birthDate1?.trim();
+      const bd2 = body.birthDate2?.trim();
+      if (!bd1 || !bd2) {
+        return NextResponse.json(
+          { error: "Missing birth dates for compatibility report" },
+          { status: 400 },
+        );
+      }
+      metadata.birth_date_1 = bd1;
+      metadata.birth_date_2 = bd2;
+    }
 
-		return NextResponse.json({
-			ok: true,
-			intentId: updatedIntent.id,
-			metadata: updatedIntent.metadata,
-		});
+    const updatedIntent = await stripe.paymentIntents.update(intentId, {
+      receipt_email: email,
+      metadata,
+    });
 
-	} catch (err: unknown) {
-		console.error("Error updating payment intent:", err);
+    return NextResponse.json({
+      ok: true,
+      intentId: updatedIntent.id,
+      metadata: updatedIntent.metadata,
+    });
+  } catch (err: unknown) {
+    console.error("Error updating payment intent:", err);
 
-		// Stripe error
-		if (err instanceof Stripe.errors.StripeError) {
-			if (err.type === "StripeInvalidRequestError") {
-				return NextResponse.json(
-					{ error: "Invalid payment intent ID or parameters" },
-					{ status: 400 },
-				);
-			}
+    if (err instanceof Stripe.errors.StripeError) {
+      return NextResponse.json({ error: err.message || "Stripe error" }, { status: 400 });
+    }
 
-			return NextResponse.json(
-				{ error: err.message || "Stripe error" },
-				{ status: 400 },
-			);
-		}
+    if (err instanceof Error) {
+      return NextResponse.json(
+        { error: "Failed to update payment intent", details: err.message },
+        { status: 500 },
+      );
+    }
 
-		// Normal JS Error
-		if (err instanceof Error) {
-			return NextResponse.json(
-				{ error: "Failed to update payment intent", details: err.message },
-				{ status: 500 },
-			);
-		}
-
-		// Fallback (unknown throw)
-		return NextResponse.json(
-			{ error: "Failed to update payment intent" },
-			{ status: 500 },
-		);
-	}
+    return NextResponse.json({ error: "Failed to update payment intent" }, { status: 500 });
+  }
 }

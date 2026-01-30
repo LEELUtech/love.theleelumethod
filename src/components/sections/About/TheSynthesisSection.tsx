@@ -1,7 +1,6 @@
-import Button from "@/components/ui/Button"
-import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton";
+import Button from "@/components/ui/Button";
+import RotateOnView from "@/components/ui/RotateOnView"
 import Image from "next/image";
-import Link from "next/link";
 
 const TheSynthesisSection = () => {
 	return (
@@ -17,13 +16,13 @@ const TheSynthesisSection = () => {
 				/>
 			</div>
 
-			<div className="container">
+			<div className="container px-4">
 				<div className="max-w-[800px] mx-auto text-center px-2">
 					{/* Top Image */}
 					<div className="flex justify-center mb-12 lg:mb-[75px]">
 						<div className="relative w-[361px] h-[377px] sm:w-[320px] sm:h-[340px] md:w-[380px] md:h-[400px] lg:w-[511px] lg:h-[534px]">
 							<Image
-								src="/images/about/synthesis_section.png"
+								src="/images/about/synthesis_section_img.png"
 								alt="The Synthesis"
 								fill
 								quality={100}
@@ -31,16 +30,27 @@ const TheSynthesisSection = () => {
 
 							{/* Logo */}
 							<div
-								className="absolute flex bottom-[-28px] lg:bottom-[-40px] left-1/2 -translate-x-1/2 items-center justify-center bg-brand-primary rounded-[300px] 
-                w-[68px] h-[100px] lg:w-[101px] lg:h-[140px] z-10"
-							>
-								<Image
-									src="/leelu_logo.svg"
-									alt=""
-									width={48}
-									height={46}
-									className="filter brightness-0 invert"
-								/>
+								className="
+																		absolute left-1/2 bottom-[-40px] -translate-x-1/2
+																		flex items-center justify-center overflow-hidden
+																		bg-[#EB4F68]
+																		before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay
+																		rounded-[300px]
+																		w-[80px] h-[100px]
+																		md:w-[100px] md:h-[126px]
+																		lg:w-[101px] lg:h-[140px]
+																		z-10
+																	"
+							> 
+								<RotateOnView duration={5} amount={0.4} ease="easeOut">
+									<Image
+										src="/leelu_logo.svg"
+										alt=""
+										width={63}
+										height={61}
+										className="w-[51px] h-[53px] md:w-[65px] md:h-[63px] lg:w-[61px] lg:h-[63px] filter invert-[100%] brightness-[100%]"
+									/>
+								</RotateOnView>
 							</div>
 						</div>
 					</div>
@@ -66,30 +76,19 @@ const TheSynthesisSection = () => {
 						className="font-medium text-[#5A5757] font-lato leading-[26px] tracking-normal mb-6 
             text-[17px] sm:text-[17px] lg:text-[17px]"
 					>
-						I spent the next few years traveling. I cross-referenced my
-						profiling data with ancient energetic systems from India, Tibet, and
-						Israel. While the government training gave me the structure, the
-						Eastern systems filled the gaps in the code, creating a hybrid
-						methodology uniquely unique to Leelu&apos;s tech.
+						I spent the next few years traveling. I cross-referenced my profiling data with ancient energetic systems from Japan, India, China, and Israel. While the government training gave me the structure, the Eastern systems filled the gaps in the code, creating a hybrid methodology entirely unique to LeeluTech.
 					</p>
 
 					<p className="font-medium text-[#5A5757] font-lato leading-[26px] tracking-normal mb-6 text-[17px] sm:text-[17px] lg:text-[17px]">
-						Since then, I&apos;ve decoded patterns for thousands of people, from
-						pragmatic founders to whom the word &quot;spiritual&quot; is an
-						insult, to artists and deep feelers with a profound call toward
-						their life&apos;s purpose.
+						Since then, I’ve decoded patterns for thousands of people, from pragmatic founders to whom the word “spiritual” is a red-flag to artists and deep feelers with a profound call toward their life’s purpose. 
 					</p>
 
 					<p className="font-medium text-[#5A5757] font-lato leading-[26px] tracking-normal mb-6 text-[17px] sm:text-[17px] lg:text-[17px]">
-						Whether you are navigating a corporate merger or a crisis of
-						identity, the friction is the same. You are trying to play a game
-						without knowing the rules.
+						Whether you are navigating a corporate merger or a crisis of identity, the friction is the same: You are trying to play a game without knowing the rules.
 					</p>
 
 					<p className="font-medium text-[#5A5757] font-lato leading-[26px] tracking-normal mb-10 text-[17px] sm:text-[17px] lg:text-[17px]">
-						My work bridges the gap between hard data and deep intuition. I use
-						numerology as the framework to organize the chaos, but the goal,
-						greater than relief, can be summed up in a single word:
+						My work bridges the gap between hard data and deep intuition. I use numerology as the framework to organize the chaos, but the goal, greater than relief, can be summed up in a single word:
 					</p>
 
 					{/* Fulfillment */}
@@ -104,10 +103,7 @@ const TheSynthesisSection = () => {
 						className="font-thin font-canela text-brand-deep mb-10 
             text-[32px] sm:text-[32px] md:text-[32px] lg:text-[32px] leading-[130%]"
 					>
-						It is about executing the contract you signed at birth. It is about
-						removing the friction between who you are and what you do, so you
-						can live the most impactful, abundant version of the life you were
-						designed to live.
+						It is about executing the contract you signed at birth. It is about  removing the friction between who you are and what you do, so you can live the most impactful, abundant version of the life you were designed to live.
 					</p>
 
 					{/* CTA */}

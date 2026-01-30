@@ -28,7 +28,7 @@ const resources: ResourceCard[] = [
 	{
 		title: "The Compatibility Report",
 		description:
-			"This guide gives you 7 evidence-based strategies to reclaim your nervous system and your life.",
+			"This report gives you code-level clarity: where codes align, where they clash, your compatibility type, and whether this was built to last.",
 		cta: "GET THE REPORT",
 		href: "#",
 		ctaType: "compatibility",
@@ -38,7 +38,7 @@ const resources: ResourceCard[] = [
 	{
 		title: "The Love Questionnaire",
 		description:
-			"I will show you the exact mechanics of why men pull away and how to shift the power dynamic instantly.",
+			"Wondering why men pull away? I'm going to show you the exact reason. Not fluff, the actual mechanics. And once you see it, you can shift the whole dynamic instantly.",
 		cta: "Start quiz",
 		href: "#",
 		ctaType: "quiz",

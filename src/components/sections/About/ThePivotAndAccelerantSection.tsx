@@ -2,8 +2,8 @@ import Image from "next/image";
 
 const ThePivotAndAccelerantSection = () => {
   return (
-    <section className="relative py-[80px] lg:py-[112px]">
-      <div className="container">
+    <section className="relative pb-[80px] pt-[180px] lg:py-[112px] overflow-hidden">
+      <div className="container px-4">
         {/* The Pivot Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center mb-[121px] lg:mb-[200px]">
           {/* Image (top on mobile/tablet) */}

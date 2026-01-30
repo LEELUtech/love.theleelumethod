@@ -1,6 +1,7 @@
 import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
 import Button from "@/components/ui/Button"
 import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton";
+import RotateOnView from "@/components/ui/RotateOnView"
 import Image from "next/image";
 
 const StopGuessingSection = () => {
@@ -19,7 +20,7 @@ const StopGuessingSection = () => {
 				/>
 			</div>
 
-			<div className="container">
+			<div className="container px-4">
 				<div className="max-w-[900px] mx-auto text-center">
 					{/* Top Image */}
 					<div className="flex justify-center mb-12 relative pt-[50px] md:pt-[130px] lg:pt-[130px]">
@@ -41,24 +42,28 @@ const StopGuessingSection = () => {
 							/>
 
 							{/* Logo badge */}
-							<div
+								<div
 								className="
-                  absolute left-1/2 -translate-x-1/2
-                  bottom-[-50px] sm:bottom-[-50px]
-                  flex items-center justify-center
-                  bg-brand-primary rounded-[300px] z-10
-                  w-[86px] h-[112px]
-                  lg:w-[101px] lg:h-[140px]
-                "
+											absolute left-1/2 bottom-[-40px] -translate-x-1/2
+											flex items-center justify-center overflow-hidden
+											bg-[#EB4F68]
+											before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay
+											rounded-[300px]
+											w-[80px] h-[100px]
+											md:w-[100px] md:h-[126px]
+											lg:w-[101px] lg:h-[140px]
+											z-10
+										"
 							>
-								<div className="relative w-[55px] h-[55px] lg:w-[63px] lg:h-[61px]">
+								<RotateOnView duration={5} amount={0.4} ease="easeOut">
 									<Image
 										src="/leelu_logo.svg"
 										alt=""
-										fill
-										className="object-contain filter brightness-0 invert"
+										width={63}
+										height={61}
+										className="w-[51px] h-[53px] md:w-[65px] md:h-[63px] lg:w-[61px] lg:h-[63px] filter invert-[100%] brightness-[100%]"
 									/>
-								</div>
+								</RotateOnView>
 							</div>
 
 							{/* Arc */}

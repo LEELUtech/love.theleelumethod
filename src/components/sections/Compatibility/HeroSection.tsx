@@ -3,7 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/ui/Header";
 import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
-import Button from "@/components/ui/Button"
+import Button from "@/components/ui/Button";
+import RotateOnView from "@/components/ui/RotateOnView";
 
 const HeroSection = () => {
 	return (
@@ -21,8 +22,8 @@ const HeroSection = () => {
 
 			<Header />
 
-			<div className="container relative z-10 pt-[33px] pb-[30px] md:pb-28 lg:pt-[97px] lg:pb-[165px]">
-				<div className="flex flex-col items-center justify-between gap-10 lg:flex-row lg:items-start lg:gap-16">
+			<div className="container px-4 relative z-10 pt-[33px] pb-[0px] md:pb-[0px] lg:pt-[97px] lg:pb-[165px]">
+				<div className="flex flex-col items-center justify-between gap-10 lg:flex-row lg:items-start lg:gap-[127px]">
 					{/* IMAGE */}
 					<div className="order-1 flex w-full justify-center lg:order-2 lg:w-auto z-10">
 						<div
@@ -68,25 +69,33 @@ const HeroSection = () => {
 								arcRy={260}
 							/>
 
-							<Image
-								src="/icons/ornament_13.svg"
-								alt=""
-								width={209}
-								height={215}
-								priority
-								quality={100}
-								className="
-									absolute left-1/2 -translate-x-1/2 pointer-events-none z-[1]
-									bottom-[-130px]
-									md:bottom-[-110px]
-									lg:bottom-[-100px]
-								"
-							/>
+							<RotateOnView
+								duration={5}
+								ease="easeOut"
+								className="absolute lg:left-[30%] left-[20%] pointer-events-none z-[1]
+			bottom-[-130px]
+			md:bottom-[-110px]
+			lg:bottom-[-100px]
+			hidden lg:block
+			"
+							>
+								<Image
+									src="/icons/ornament_13.svg"
+									alt=""
+									width={209}
+									height={215}
+									priority
+									quality={100}
+									className="
+			
+		"
+								/>
+							</RotateOnView>
 						</div>
 					</div>
 
 					{/* TEXT */}
-					<div className="order-2 w-full lg:order-1 lg:text-left flex flex-col z-20">
+					<div className="order-2 w-full lg:order-1 lg:text-left flex flex-col z-20 translate-y-[-70px]">
 						{/* Title */}
 						<h1
 							className="
@@ -105,7 +114,7 @@ const HeroSection = () => {
 						</h1>
 
 						{/* CTA (mobile under title, desktop bottom) */}
-						<div className="mt-6 md:mt-7 lg:mt-[48px] order-2 lg:order-4">
+						<div className="mt-6 md:mt-7 lg:mt-[32px] order-2 lg:order-4">
 							<Button
 								variant="primary"
 								size="md"
@@ -152,7 +161,12 @@ const HeroSection = () => {
 								when the real problem was written in their numbers from day one.
 							</p>
 
-							<p className="mt-5 font-lato font-normal text-[#5A5757] leading-[150%] text-body md:text-body">
+							<p
+								className="mt-5 font-canela font-thin text-brand-deep leading-[120%] text-[28px]
+								text-center lg:text-left
+								md:text-[32px]
+								lg:text-[32px]"
+							>
 								The question isn&apos;t whether you love each other.{" "}
 								<br className="lg:hidden" /> It&apos;s whether you are coded to
 								build together—or collide.
