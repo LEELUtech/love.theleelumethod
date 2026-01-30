@@ -1,4 +1,6 @@
 import Button from "@/components/ui/Button";
+import Phase3Orb from "@/components/ui/Phase3Orb";
+import RotateOnView from "@/components/ui/RotateOnView";
 import Image from "next/image";
 import React from "react";
 
@@ -6,11 +8,11 @@ type MiniCard = { title: string; text: string };
 type Module = { title: string; text: string; accent?: "red" | "gold" | "none" };
 
 const MINI_CARDS: MiniCard[] = [
+	{ title: "WHAT", text: "Is the mathematical root of your\nconflict?" },
 	{
 		title: "WHY",
 		text: 'Is your "Inner Devil" triggered\nby specific archetypes?',
 	},
-	{ title: "WHAT", text: "Is the mathematical root of your\nconflict?" },
 	{
 		title: "HOW",
 		text: "Do you shift the power dynamic\nwithout saying a word?",
@@ -20,22 +22,22 @@ const MINI_CARDS: MiniCard[] = [
 const PHASE_1: Module[] = [
 	{
 		title: "Module 1: The Diagnostic",
-		text: 'We stop treating the symptoms (the fights, the distance, the feeling of inadequacy) and locate the root cause. What is the specific "Trigger" that collapses your relationships?',
+		text: "We stop treating the symptoms (the fights, the distance, the feeling of inadequacy) and locate the root cause. What is the specific “Trigger” that collapses your relationships?",
 		accent: "red",
 	},
 	{
-		title: 'Module 2: The Polarity Reset ("Man in the Skirt")',
-		text: 'Are you the General of your household? We break the "Over-Functioning" addiction that forces men into the "Child" role. You will learn how not relinquish control to gain power.',
+		title: 'Module 2: The Polarity Reset "Wearing The Pants"',
+		text: "Are you the General of your household? We break the “Over-Functioning” addiction that forces men into the “Child” role. You will learn how to relinquish control to gain power.",
 		accent: "red",
 	},
 	{
 		title: "Module 3: The Fantasy Detox",
-		text: 'We identify the romantic script you’re unconsciously following: the "Fixer-upper", the "tragic love story", the "he’ll change for me" narrative and replace it with what your code actually requires to feel safe—which is often the opposite of what you’ve been chasing.',
+		text: "We identify the romantic script you’re unconsciously following (the “fixer-upper,” the “tragic love story,” the “he’ll change for me” narrative) and replace it with what your code actually requires to feel safe — which is often the opposite of what you’ve been chasing.",
 		accent: "red",
 	},
 	{
 		title: "Module 4: From Dependency to Sovereignty",
-		text: "How to stop outsourcing your emotional regulation to your partner. We cut the 'Parental Cord' so you stop negotiating for love like a child and start receiving it like a woman.",
+		text: "How to stop outsourcing your emotional regulation to your partner. We cut the “Parental Cord” so you stop negotiating for love like a child and start receiving it like a woman.",
 		accent: "red",
 	},
 ];
@@ -43,7 +45,7 @@ const PHASE_1: Module[] = [
 const PHASE_2: Module[] = [
 	{
 		title: "Module 5: The Independent Protocol",
-		text: 'How to receive support without losing autonomy. The delicate balance between being a "Strong Woman" and a "Cherished Partner".',
+		text: "How to receive support without losing autonomy. The delicate balance between being a “Strong Woman” and a “Cherished Partner”.",
 		accent: "gold",
 	},
 	{
@@ -53,7 +55,7 @@ const PHASE_2: Module[] = [
 	},
 	{
 		title: "Module 7 & 8: The Male Operating System",
-		text: "We decode the 3 Hidden Needs of every man: Freedom, Significance, and Sex. Learn why he pulls away when he feels 'managed' and how to become his sanctuary, not his stressor.",
+		text: "We decode the 3 Hidden Needs of every man: Freedom, Significance, and Sex. Learn why he pulls away when he feels “managed” and how to become his sanctuary, not his stressor.",
 		accent: "gold",
 	},
 ];
@@ -61,7 +63,7 @@ const PHASE_2: Module[] = [
 const PHASE_3: Module[] = [
 	{
 		title: "Module 9: The Control Glitch (Jealousy)",
-		text: 'Jealousy is just data. We decode what your fear of loss is actually telling you and how to shift from "Paranoid" to "Magnetic."',
+		text: "Jealousy is just data. We decode what your fear of loss is actually telling you and how to shift from “Paranoid” to “Magnetic.”",
 		accent: "none",
 	},
 	{
@@ -71,12 +73,12 @@ const PHASE_3: Module[] = [
 	},
 	{
 		title: "Module 11: The Compatibility Matrix",
-		text: 'The mathematical reality of your union. Is this a "Growth" partner, a "Karmic" teacher, or a "Life" partner? Know the difference before you invest another year.',
+		text: "The mathematical reality of your union. Is this a “Growth” partner, a “Karmic” teacher, or a “Life” partner? Know the difference before you invest another year.",
 		accent: "none",
 	},
 	{
 		title: "Module 12: The Hidden Desire",
-		text: "The Crown Jewel of the System: Every human has a secret emotional driver (one of 87 types). I teach you how to identify his, so you become the only woman who truly speaks his language.",
+		text: "The Crown Jewel of the System: Every human has a secret emotional driver (one of 87 types). I teach you how to identify *his*, so you become the only woman who truly speaks his language.",
 		accent: "none",
 	},
 ];
@@ -136,7 +138,7 @@ export default function ModulesSection() {
 				/>
 			</div>
 
-			<div className="container">
+			<div className="container px-4">
 				{/* ====== TOP BLOCK (WHY / WHAT / HOW) ====== */}
 				<div className="pt-[198px] lg:pt-[176px] pb-[80px] lg:pb-[110px] text-center">
 					{/* portrait + badge */}
@@ -184,7 +186,7 @@ export default function ModulesSection() {
 							{/* CENTER ornament */}
 							<div className="relative w-[261px] h-[266px] lg:w-[500px] lg:h-[500px]">
 								<Image
-									src="/icons/ornament_2.svg"
+									src="/icons/ornament_2/ornament_2_light.svg"
 									alt=""
 									fill
 									className="absolute filter brightness-0 invert"
@@ -216,14 +218,28 @@ export default function ModulesSection() {
 							</div>
 						</div>
 
-						<div className="absolute flex bottom-[-38px] lg:bottom-[-40px] left-1/2 -translate-x-1/2 items-center justify-center bg-brand-primary rounded-[300px] w-[84px] h-[112px] lg:w-[101px] lg:h-[140px] z-10">
-							<Image
-								src="/leelu_logo.svg"
-								alt=""
-								width={59}
-								height={59}
-								className="filter brightness-0 invert"
-							/>
+						<div
+							className="
+											absolute left-1/2 bottom-[-40px] -translate-x-1/2
+											flex items-center justify-center overflow-hidden
+											bg-[#EB4F68]
+											before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay
+											rounded-[300px]
+											w-[80px] h-[100px]
+											md:w-[100px] md:h-[126px]
+											lg:w-[101px] lg:h-[140px]
+											z-10
+										"
+						>
+							<RotateOnView duration={5} amount={0.4} ease="easeOut">
+								<Image
+									src="/leelu_logo.svg"
+									alt=""
+									width={63}
+									height={61}
+									className="w-[51px] h-[53px] md:w-[65px] md:h-[63px] lg:w-[61px] lg:h-[63px] filter invert-[100%] brightness-[100%]"
+								/>
+							</RotateOnView>
 						</div>
 					</div>
 
@@ -392,14 +408,7 @@ export default function ModulesSection() {
 							</h3>
 
 							<div className="mt-4 md:mt-[65px] relative mx-auto lg:mx-0">
-								<div className="relative w-full aspect-[450/514]">
-									<Image
-										src="/images/programs/phase_3.png"
-										alt="Phase 3"
-										fill
-										priority
-									/>
-								</div>
+								<Phase3Orb/>
 							</div>
 						</div>
 
@@ -412,24 +421,8 @@ export default function ModulesSection() {
 					</div>
 
 					{/* ================= FINAL CTA ================= */}
-					<div className="text-center relative mt-12 lg:mt-[-100px]">
-						{/* ornament (smaller + positioned nicer on mobile) */}
-						<div className="relative w-[220px] h-[220px] md:w-[261px] md:h-[266px] lg:w-[174px] lg:h-[174px] mx-auto mb-[-60px] lg:bottom-[-100px] lg:mb-0">
-							<Image
-								src="/icons/ornament_2.svg"
-								alt=""
-								fill
-								className="absolute filter brightness-0 invert"
-								style={{
-									maskImage:
-										"linear-gradient(to bottom, black 0%, transparent 80%)",
-									WebkitMaskImage:
-										"linear-gradient(to bottom, black 0%, transparent 80%)",
-									filter: "brightness(200%)",
-								}}
-							/>
-						</div>
-
+					<div className="text-center relative mt-12 lg:mt-[100px]">
+						
 						<h3 className="font-canela font-light text-brand-deep text-[28px] md:text-[32px] leading-[120%]">
 							Reconfigure your relationship architecture.
 						</h3>

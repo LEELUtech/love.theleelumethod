@@ -18,18 +18,6 @@ export default function StopImprovisingSection() {
 								className="object-cover"
 							/>
 						</div>
-
-						{/* Small circle overlap */}
-						<div className="absolute -bottom-[66px] right-[-12px] md:right-[-112px] lg:right-[-52px]">
-							<div className="relative w-[127px] h-[171px] md:w-[200px] md:h-[280px] lg:w-[220px] lg:h-[307px] rounded-[300px] overflow-hidden bg-[#f2f2f2]">
-								<Image
-									src="/images/two-women-embracing.jpg"
-									alt=""
-									fill
-									className="object-cover object-top scale-[116%] mt-4"
-								/>
-							</div>
-						</div>
 					</div>
 
 					{/* LEFT: text (MOBILE/TABLET SECOND) */}
@@ -88,8 +76,6 @@ export default function StopImprovisingSection() {
 					</div>
 				</div>
 
-				{/* extra spacing under because circle overlaps */}
-				<div className="h-[72px] md:h-[80px] lg:h-[60px]" />
 			</div>
 		</section>
 	);
