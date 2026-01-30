@@ -8,7 +8,7 @@ export default function DiscoverSection() {
 			{/* Background Image */}
 			<div className="absolute inset-0 z-0">
 				<Image
-					src="/images/gradient-bg.jpg"
+					src="/images/bg/discover_section_bg.png"
 					alt=""
 					fill
 					quality={100}

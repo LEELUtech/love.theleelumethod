@@ -61,7 +61,7 @@ export default function SecretsHeroSection() {
 					<div className="relative flex flex-col items-center gap-3 md:gap-4 mt-4 md:mt-5 lg:mt-6">
 						<div className="relative w-[278px] h-[290px] md:w-[220px] md:h-[240px] lg:w-[288px] lg:h-[290px]">
 							<Image
-								src="/images/resources-section-1.png"
+								src="/images/resources/resources-section-1.png"
 								alt="Woman smiling in a red sweater"
 								fill
 								priority
