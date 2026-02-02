@@ -100,26 +100,32 @@ export async function createCircleMember(email: string, name: string): Promise<C
 
 // Grant space access
 export async function grantCircleSpaceAccess(email: string, spaceId: string): Promise<void> {
+  console.log(`[Circle] Granting space access: ${email} -> space ${spaceId}`);
+  
   const response = await makeCircleRequest<GrantAccessResponse>("/space_members", {
     method: "POST",
     body: JSON.stringify({
       email,
-      space_id: parseInt(spaceId),
+      space_id: parseInt(spaceId, 10),
     }),
   });
-  console.log(`[Circle] ${response.message}`);
+  
+  console.log(`[Circle] Space access granted: ${response.message}`);
 }
 
 // Grant course access
 export async function grantCircleCourseAccess(email: string, courseId: string): Promise<void> {
+  console.log(`[Circle] Granting course access: ${email} -> course ${courseId}`);
+  
   const response = await makeCircleRequest<GrantAccessResponse>("/course_members", {
     method: "POST",
     body: JSON.stringify({
       email,
-      course_id: parseInt(courseId),
+      course_id: parseInt(courseId, 10),
     }),
   });
-  console.log(`[Circle] ${response.message}`);
+  
+  console.log(`[Circle] Course access granted: ${response.message}`);
 }
 
 // Main: Process Circle access
@@ -129,34 +135,33 @@ export async function processCircleAccess(
   spaceId?: string,
   courseId?: string,
 ): Promise<{ memberId: number; isNewMember: boolean }> {
-  console.log(`[Circle] Processing access for: ${email}`);
+  console.log(`[Circle] Processing access for: ${email}`, {
+    space_id: spaceId,
+    course_id: courseId,
+  });
 
   // Find or create member
   let member = await findCircleMemberByEmail(email);
   let isNewMember = false;
-
-  console.log("MEMBER LOG313213", member);
 
   if (!member) {
     console.log(`[Circle] Member not found, creating: ${email}`);
     member = await createCircleMember(email, name);
     isNewMember = true;
   } else {
-    console.log(`[Circle] Member exists: ${email} (${member.id})`);
+    console.log(`[Circle] Member exists: ${email} (ID: ${member.id})`);
   }
 
   // Grant access
   if (spaceId) {
-    console.log(`[Circle] Granting space access to: ${email}`);
     await grantCircleSpaceAccess(email, spaceId);
   }
 
   if (courseId) {
-    console.log(`[Circle] Granting course access to: ${email}`);
     await grantCircleCourseAccess(email, courseId);
   }
 
-  console.log(`[Circle] Access completed: ${email}`);
+  console.log(`[Circle] Access completed for: ${email}`);
 
   return {
     memberId: member.id,

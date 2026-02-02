@@ -1,6 +1,7 @@
 import type { StylesConfig } from "react-select";
+import type { CountryOption } from "@/types/forms";
 
-export type CountryOption = { label: string; value: string };
+export type { CountryOption };
 
 export const selectStyles: StylesConfig<CountryOption, false> = {
   container: (base) => ({
@@ -105,7 +106,6 @@ export const selectStyles: StylesConfig<CountryOption, false> = {
     maxHeight: 240,
     overflowY: "auto",
 
-    // скрываем скроллбар, но прокрутка работает
     scrollbarWidth: "none",      // Firefox
     msOverflowStyle: "none",     // IE/Edge legacy
   }),

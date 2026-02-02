@@ -147,8 +147,9 @@ async function grantSpaceWithRetry(
       course_id: courseId,
     });
     return member;
-  } catch (err: any) {
-    const missingUser = err?.message && err.message.includes("Missing record: user");
+  } catch (err: unknown) {
+    const errMessage = err instanceof Error ? err.message : "";
+    const missingUser = errMessage.includes("Missing record: user");
     if (!missingUser) throw err;
 
     console.warn("[Circle] User missing on grant, recreating and retrying...");

@@ -1,18 +1,8 @@
-export type BillingForm = {
-	firstName: string;
-	lastName: string;
-	email: string;
-	address1: string;
-	address2: string;
-	city: string;
-	state: string;
-	postalCode: string;
-	country: string;
-	phone: string;
-};
+import type { BillingForm, BillingErrors } from "@/types/checkout";
 
-export type BillingErrors = Partial<Record<keyof BillingForm, string>>;
+export type { BillingForm, BillingErrors };
 
+// Required fields for billing form validation
 export const REQUIRED_FIELDS: (keyof BillingForm)[] = [
 	"firstName",
 	"lastName",
@@ -24,10 +14,12 @@ export const REQUIRED_FIELDS: (keyof BillingForm)[] = [
 	"phone",
 ];
 
+// Validates email format
 export function validateEmail(email: string) {
 	return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 }
 
+// Validates all billing form fields and returns errors
 export function validateBilling(values: BillingForm): BillingErrors {
 	const e: BillingErrors = {};
 	const v = (k: keyof BillingForm) => values[k].trim();
@@ -51,6 +43,7 @@ export function validateBilling(values: BillingForm): BillingErrors {
 	return e;
 }
 
+// Checks if errors object is empty (form is valid)
 export function isEmptyErrors(errors: BillingErrors) {
 	return Object.keys(errors).length === 0;
 }

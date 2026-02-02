@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import useProductStore from "@/store/useProductStore";
 
 type Props = {
@@ -8,14 +8,13 @@ type Props = {
   children: React.ReactNode;
 };
 
+// Preloads product data before rendering children
 export default function ProgramPreloader({ ids, children }: Props) {
   const preloadProducts = useProductStore((s) => s.preloadProducts);
 
-  const key = useMemo(() => ids.slice().sort().join("|"), [ids]);
-
   useEffect(() => {
     preloadProducts(ids);
-  }, [preloadProducts, key]);
+  }, [preloadProducts, ids]);
 
   return <>{children}</>;
 }

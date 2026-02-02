@@ -25,6 +25,8 @@ type ArcAutoOnceProps = {
 	>;
 	strokeWidth?: number;
 
+	disableAnimation?: boolean;
+
 	className?: string;
 
 	arrowPathD?: string;
@@ -59,6 +61,8 @@ export default function ArcAutoOnce({
 	endAt = 1,
 	className = "",
 	strokeWidth = 2,
+
+	disableAnimation = false,
 
 	arrowPathD,
 	arrowScale = 0.85,
@@ -162,28 +166,32 @@ export default function ArcAutoOnce({
 						strokeLinecap="round"
 						pathLength={100}
 						strokeDasharray={100}
-						strokeDashoffset={fromDashOffset}
+						strokeDashoffset={disableAnimation ? toDashOffset : fromDashOffset}
 					>
-						<animate
-							attributeName="stroke-dashoffset"
-							from={String(fromDashOffset)}
-							to={String(toDashOffset)}
-							dur={dur}
-							begin={delay}
-							fill="freeze"
-							calcMode="linear"
-						/>
+						{!disableAnimation && (
+							<animate
+								attributeName="stroke-dashoffset"
+								from={String(fromDashOffset)}
+								to={String(toDashOffset)}
+								dur={dur}
+								begin={delay}
+								fill="freeze"
+								calcMode="linear"
+							/>
+						)}
 					</path>
 
-					<g opacity="0">
-						<animate
-							attributeName="opacity"
-							from="0"
-							to="1"
-							dur="350ms"
-							begin={delay}
-							fill="freeze"
-						/>
+					<g opacity={disableAnimation ? "1" : "0"}>
+						{!disableAnimation && (
+							<animate
+								attributeName="opacity"
+								from="0"
+								to="1"
+								dur="350ms"
+								begin={delay}
+								fill="freeze"
+							/>
+						)}
 
 						{/* scale -> translate(-centerScaled) -> rotate(custom) */}
 						<path
@@ -192,17 +200,19 @@ export default function ArcAutoOnce({
 							transform={`scale(${arrowScale}) translate(${-cx} ${-cy}) rotate(${arrowRotateDeg})`}
 						/>
 
-						<animateMotion
-							dur={dur}
-							begin={delay}
-							fill="freeze"
-							rotate="auto"
-							calcMode="linear"
-							keyTimes="0;1"
-							keyPoints={`${start};${end}`}
-						>
-							<mpath href={`#${arcPathId}`} />
-						</animateMotion>
+						{!disableAnimation && (
+							<animateMotion
+								dur={dur}
+								begin={delay}
+								fill="freeze"
+								rotate="auto"
+								calcMode="linear"
+								keyTimes="0;1"
+								keyPoints={`${start};${end}`}
+							>
+								<mpath href={`#${arcPathId}`} />
+							</animateMotion>
+						)}
 					</g>
 
 					<style>{`

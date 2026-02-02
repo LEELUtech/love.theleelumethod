@@ -1,12 +1,13 @@
 import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
-import Button from "@/components/ui/Button"
+import Button from "@/components/ui/Button";
+import RotateOnView from "@/components/ui/RotateOnView"
 import Image from "next/image";
 import React from "react";
 
 const HeroSection = () => {
 	return (
 		<section className="relative lg:py-[131px] pt-[54px] bg-brand-white overflow-hidden">
-			<div className="container relative z-10">
+			<div className="container px-4 relative z-10">
 				<div
 					className="
 						flex flex-col items-center
@@ -45,48 +46,52 @@ const HeroSection = () => {
 						</div>
 
 						<ArcAutoOnce
-							className="absolute inset-0 -z-0 -translate-y-[15%] pointer-events-none -translate-x-[-8%]"
+							className="absolute inset-0 -z-0 -translate-y-[15%] pointer-events-none -translate-x-[-7%]"
 							// endAt={0.9}
 							flightStart={0.2}
 							durMs={1500}
 							arrowRotateDeg={254}
-							arrowScale={0.8}
+							arrowScale={0}
 							arrowCenterX={6.5}
 							arrowCenterY={-6}
 							arrowOffsetY={3}
 							// arcRx={220}
 							// arcRy={208}
 							endAtByDevice={{ mobile: 0.87, desktop: 0.9 }}
-							arcEnd={{ x: -60, y: 219 }}
+							arcEnd={{ x: -62, y: 219 }}
 							arcRx={260}
-							arcRy={260}
+							arcRy={270}
+							disableAnimation={false}
 						/>
 
 						{/* Badge */}
 						<div
 							className="
-								absolute left-1/2 -translate-x-1/2
-								bottom-[-28px]
-								w-[74px] h-[102px]
-								md:w-[84px] md:h-[112px]
-								lg:w-[84px] lg:h-[112px]
-								rounded-[999px]
+								absolute left-1/2 bottom-[-40px] -translate-x-1/2
+								flex items-center justify-center overflow-hidden
 								bg-[#EB4F68]
-								flex items-center justify-center
+								before:absolute before:inset-0 before:bg-[url('/icons/noise.png')]
+								before:opacity-15 before:mix-blend-overlay
+								rounded-[300px]
+								w-[74px] h-[102px]
+								md:w-[100px] md:h-[126px]
+								lg:w-[74px] lg:h-[102px]
+								z-10
 							"
 						>
-							<div className="relative w-[46px] h-[45px] md:w-[46px] md:h-[45px] lg:w-[46px] lg:h-[45px]">
+							<RotateOnView duration={5} amount={0.4} ease="easeOut">
 								<Image
 									src="/leelu_logo.svg"
 									alt=""
-									fill
-									className="object-contain filter brightness-0 invert"
+									width={46}
+									height={46}
+									className="w-[46px] h-[46px] md:w-[46px] md:h-[46px] lg:w-[46px] lg:h-[46px] filter invert"
 								/>
-							</div>
+							</RotateOnView>
 						</div>
 					</div>
 
-					<div className="font-light transition text-[24px] md:text-[22px] lg:text-[24px] leading-[100%] font-canela flex items-center gap-2 md:gap-2.5 lg:gap-3 text-brand-black  justify-center md:justify-start mt-[43px]">
+					<div className="font-light transition text-[24px] md:text-[22px] lg:text-[24px] leading-[100%] font-canela flex items-center gap-2 md:gap-2.5 lg:gap-3 text-brand-black  justify-center md:justify-start mt-[63px]">
 						<span className=" w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 relative flex-shrink-0">
 							<Image
 								src="/leelu_logo.svg"
@@ -108,7 +113,7 @@ const HeroSection = () => {
 					<h1
 						className="
 							mt-4
-							font-canela font-thin uppercase text-brand-deep text-center
+							font-canela font-thin uppercase text-brand-black text-center
 							text-[46px] leading-[110%]
 							md:text-[56px] md:leading-[110%]
 							lg:text-[60px] lg:leading-[110%]
@@ -150,7 +155,7 @@ const HeroSection = () => {
 					<Button
 						variant="primary"
 						size="md"
-						className="w-full lg:w-[30%] xs:text-[12px] mt-[32px]"
+						className="w-full lg:w-[30%] xs:text-[12px] mt-[32px] lg:order-3"
 					>
 						ENROLL NOW
 					</Button>

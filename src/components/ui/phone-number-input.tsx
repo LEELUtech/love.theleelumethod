@@ -92,11 +92,11 @@ export const PhoneNumberInput: React.FC<Props> = ({
 
 							left: 0,
 							right: "auto",
-							transform: "none", // ✅ убираем авто-смещение
-							marginLeft: "-18px", // ✅ компенсируем padding инпута
+						transform: "none",
+						marginLeft: "-18px",
 
-							backgroundColor: "#FFFFFF",
-							border: "none", // ✅ убрали бордер
+						backgroundColor: "#FFFFFF",
+						border: "none",
 							borderRadius: "12px",
 							boxShadow: "0px 10px 30px rgba(0,0,0,0.08)",
 							padding: "6px",

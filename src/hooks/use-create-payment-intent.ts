@@ -17,7 +17,7 @@ type Resp = {
   intentId: string;
 };
 
-
+// Hook for creating Stripe PaymentIntent with deduplication
 export function useCreatePaymentIntent() {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -25,6 +25,7 @@ export function useCreatePaymentIntent() {
   const inFlightRef = React.useRef<Promise<string> | null>(null);
 
   const create = React.useCallback(async (payload: Payload): Promise<string> => {
+    // Prevent duplicate API calls
     if (inFlightRef.current) return inFlightRef.current;
 
     setLoading(true);

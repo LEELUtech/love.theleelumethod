@@ -3,6 +3,7 @@ import React from "react";
 import type { Dayjs } from "dayjs";
 import { DATE_FORMAT } from "@/utils/constants"
 
+// Date picker component with popup container fix for modals
 export default function BirthDatePicker({
 	placeholder,
 	onChange,

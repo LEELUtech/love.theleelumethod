@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-import { loadStripe, type StripeElementsOptions } from "@stripe/stripe-js";
+import { loadStripe, StripeElementsOptions } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 
 import CardBrand from "@/components/ui/CardBrand";
@@ -16,7 +16,6 @@ import useProductStore from "@/store/useProductStore";
 import { useCheckoutStore } from "@/store/useCheckoutStore";
 
 import { formatPriceFromCents } from "@/helpers";
-import { PROTOCOL_ESSENTIALS } from "@/utils/constants";
 
 import {
 	type BillingForm,
@@ -28,6 +27,7 @@ import Select from "react-select";
 import { countries } from "@/helpers/countries";
 import { CountryOption, selectStyles } from "@/components/ui/Select";
 import CheckoutSectionLoader from "@/components/sections/Checkout/CheckoutSectionLoader";
+import ProgramFooter from "@/app/programs/ProgramFooter";
 
 const pk = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!;
 const stripePromise = loadStripe(pk);
@@ -45,8 +45,13 @@ const initialBilling: BillingForm = {
 	phone: "",
 };
 
-export default function CheckoutFormSection() {
-	const productId = PROTOCOL_ESSENTIALS;
+interface CheckoutFormSectionProps {
+	productId: string;
+}
+
+export default function CheckoutFormSection({
+	productId,
+}: CheckoutFormSectionProps) {
 	const selectId = React.useId();
 	const router = useRouter();
 
@@ -89,7 +94,6 @@ export default function CheckoutFormSection() {
 		!clientSecret &&
 		(status === "idle" || status === "creating");
 
-
 	const elementsOptions = React.useMemo<
 		StripeElementsOptions | undefined
 	>(() => {
@@ -97,17 +101,16 @@ export default function CheckoutFormSection() {
 		return { clientSecret, appearance: { theme: "stripe" } };
 	}, [clientSecret]);
 
-	React.useEffect(() => {
-		if (clientSecret) setHadSecretOnce(true);
-	}, [clientSecret]);
-
-
+	// effects
 	React.useEffect(() => {
 		const expectedKey = `create:${productId}`;
 		if (intentKey && intentKey !== expectedKey) reset();
 	}, [intentKey, productId, reset]);
 
-	// effects
+	React.useEffect(() => {
+		if (clientSecret) setHadSecretOnce(true);
+	}, [clientSecret]);
+
 	React.useEffect(() => {
 		if (!product && !productLoading) fetchProduct(productId);
 	}, [product, productLoading, fetchProduct, productId]);
@@ -116,7 +119,6 @@ export default function CheckoutFormSection() {
 		if (!product || productLoading) return;
 
 		const expectedKey = `create:${productId}`;
-
 
 		if (intentKey && intentKey !== expectedKey) {
 			reset();
@@ -138,6 +140,12 @@ export default function CheckoutFormSection() {
 		createIntent,
 		reset,
 	]);
+
+	React.useEffect(() => {
+		return () => {
+			reset();
+		};
+	}, [reset]);
 
 	// handlers
 	const setField = React.useCallback(
@@ -161,14 +169,8 @@ export default function CheckoutFormSection() {
 		return isEmptyErrors(nextErrors);
 	}, [billing]);
 
-	React.useEffect(() => {
-		return () => {
-			reset();
-		};
-	}, [reset]);
-
 	return (
-		<section className="relative bg-white py-[37px] md:py-[56px] lg:py-[37px] lg:h-[1080px] overflow-visible">
+		<section className="relative bg-white py-[37px] md:py-[56px] lg:py-[37px] lg:h-[1497px] overflow-visible">
 			<div className="absolute inset-0 z-0">
 				<Image
 					src="/images/bg/checkout_bg.png"
@@ -178,7 +180,7 @@ export default function CheckoutFormSection() {
 				/>
 			</div>
 
-			<div className="container relative z-10 lg:top-[-100px]">
+			<div className="container px-4 relative z-10 lg:top-[-100px]">
 				<div className="relative mx-auto rounded-[32px] bg-white px-6 py-8 md:px-10 md:py-10 lg:px-[104px] lg:py-[51px] shadow-[0px_4px_20px_0px_rgba(0,0,0,0.1)]">
 					{isStripeInitializing ? (
 						<CheckoutSectionLoader text="Initializing payment..." />
@@ -197,7 +199,7 @@ export default function CheckoutFormSection() {
 								Order now
 							</p>
 
-							<h2 className="mt-[23px] font-canela font-thin text-brand-black text-[32px] md:text-[52px] lg:text-[60px] leading-[105%] text-center md:text-left">
+							<h2 className="mt-[23px] font-canela font-thin text-brand-black text-[32px] md:text-[52px] lg:text-[54px] leading-[105%] text-center md:text-left">
 								{productLoading ? "Loading..." : product?.title}
 							</h2>
 
@@ -383,7 +385,6 @@ export default function CheckoutFormSection() {
 										onSuccess={() => {
 											markSuccess();
 											router.push("/success");
-											// reset();
 										}}
 									/>
 								</Elements>
@@ -391,6 +392,10 @@ export default function CheckoutFormSection() {
 						</div>
 					</div>
 				</div>
+			</div>
+
+			<div className="container px-4">
+				<ProgramFooter />
 			</div>
 		</section>
 	);

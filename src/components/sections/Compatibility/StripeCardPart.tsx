@@ -88,6 +88,7 @@ export function StripeCardPart({
     cvcComplete &&
     !cardError;
 
+  // Handles payment submission with Stripe
   const onPay = React.useCallback(async () => {
     if (!stripe || !elements || lockRef.current) return;
 

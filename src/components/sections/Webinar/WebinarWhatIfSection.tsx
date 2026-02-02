@@ -99,7 +99,6 @@ const WebinarWhatIfSection = () => {
     rounded-[1000px]
   "
 						>
-							{/* зумим этот слой, а не контейнер */}
 							<div className="absolute inset-0 scale-[1.12]">
 								<Image
 									src="/images/lily/lily_1.png"

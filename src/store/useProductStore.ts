@@ -1,29 +1,14 @@
-// store/useProductStore.ts
-"use client";
-
 import { create } from "zustand";
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase"; // <-- твой firebase init
-import type { Product } from "@/types";
-
-type FirestoreOfferingDoc = {
-  title?: string;
-  name?: string;
-  description?: string;
-  price?: number;  
-  currency?: string; 
-}
+import { db } from "@/lib/firebase";
+import type { Product, FirestoreOfferingDoc } from "@/types";
 
 interface ProductState {
   productsById: Record<string, Product | undefined>;
   loadingById: Record<string, boolean | undefined>;
   errorById: Record<string, string | undefined>;
-
-  // actions
   fetchProduct: (id: string, opts?: { force?: boolean }) => Promise<Product | null>;
   preloadProducts: (ids: string[]) => Promise<void>;
-
-  // selectors/helpers
   getProduct: (id: string) => Product | undefined;
   isLoading: (id: string) => boolean;
   getError: (id: string) => string | undefined;
@@ -43,6 +28,7 @@ const useProductStore = create<ProductState>((set, get) => ({
   isLoading: (id) => Boolean(get().loadingById[id]),
   getError: (id) => get().errorById[id],
 
+  // Fetches product from Firestore with caching
   fetchProduct: async (id, opts) => {
     const force = opts?.force ?? false;
 
@@ -69,8 +55,6 @@ const useProductStore = create<ProductState>((set, get) => ({
 
       const data = snap.data() as FirestoreOfferingDoc;
 
-      console.log('123', data)
-
       const product: Product = {
         id: snap.id,
         title: data.title ?? "",
@@ -78,6 +62,7 @@ const useProductStore = create<ProductState>((set, get) => ({
         description: data.description ?? "",
         price: normalizePriceToCents(data.price),
         currency: data.currency ?? "USD",
+        space_id: data.space_id,
       };
 
       set((state) => ({
@@ -96,6 +81,7 @@ const useProductStore = create<ProductState>((set, get) => ({
     }
   },
 
+  // Preloads multiple products in parallel
   preloadProducts: async (ids) => {
     await Promise.all(ids.map((id) => get().fetchProduct(id)));
   },

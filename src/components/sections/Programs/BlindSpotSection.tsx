@@ -1,6 +1,5 @@
 import Button from "@/components/ui/Button"
 import Image from "next/image";
-import Link from "next/link";
 import React from "react";
 
 type BlindCard = {

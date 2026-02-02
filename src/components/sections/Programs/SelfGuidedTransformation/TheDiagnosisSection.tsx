@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import React from "react";
+import { motion } from "framer-motion";
 
 export default function TheDiagnosisSection() {
 	return (
@@ -22,7 +23,13 @@ export default function TheDiagnosisSection() {
 				/>
 			</div>
 
-			<div className="container relative py-[12px] md:py-[70px] lg:py-[110px] z-10">
+			<motion.div
+				className="container px-4 relative py-[12px] md:py-[70px] lg:py-[110px] z-10"
+				initial={{ opacity: 0, y: 20 }}
+				whileInView={{ opacity: 1, y: 0 }}
+				viewport={{ once: true, amount: 0.2 }}
+				transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+			>
 				<div className="grid grid-cols-1 lg:grid-cols-[1.50fr_0.50fr] gap-12 md:gap-14 lg:gap-16 items-center">
 					{/* ================= LEFT ================= */}
 					<div className="order-2 lg:order-1">
@@ -49,12 +56,20 @@ export default function TheDiagnosisSection() {
 									text: `You're high-achieving in every area except love. You're tired of "potential." You want to know exactly how to screen for a builder, not a project.`,
 								},
 							].map((item) => (
-								<div key={item.title} className="rounded-[16px] bg-[#FFF8F8] px-6 py-6">
+								<div
+									key={item.title}
+									className="rounded-[16px] bg-[#FFF8F8] px-6 py-6"
+								>
 									<div className="flex items-start gap-4">
 										<div>
 											<div className="flex flex-row gap-4 items-center">
 												<div className="relative h-[33px] w-[27px] flex-shrink-0">
-													<Image src={item.icon} alt="" fill className="object-contain" />
+													<Image
+														src={item.icon}
+														alt=""
+														fill
+														className="object-contain"
+													/>
 												</div>
 												<p className="font-canela font-light text-brand-deep text-[26px] md:text-[28px] lg:text-[32px] tracking-[0.02em]">
 													{item.title}
@@ -98,7 +113,9 @@ export default function TheDiagnosisSection() {
 							<div className="absolute -bottom-[22px] md:-bottom-[28px] lg:-bottom-[26px] left-1/2 -translate-x-1/2">
 								<div
 									className="
-										bg-[#EB4F68] flex items-center justify-center rounded-full
+										bg-[#EB4F68] 
+									before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] 
+									before:opacity-15 before:mix-blend-overlay before:rounded-full flex items-center justify-center rounded-full
 										w-[96px] h-[132px]
 										md:w-[120px] md:h-[170px]
 										lg:w-[171px] lg:h-[238px]
@@ -127,7 +144,7 @@ export default function TheDiagnosisSection() {
 						</div>
 					</div>
 				</div>
-			</div>
+			</motion.div>
 		</section>
 	);
 }

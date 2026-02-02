@@ -1,7 +1,6 @@
 import Button from "@/components/ui/Button";
 import RotateOnView from "@/components/ui/RotateOnView"
 import Image from "next/image";
-import Link from "next/link";
 import React from "react";
 
 export default function ChooseYourPathSection() {

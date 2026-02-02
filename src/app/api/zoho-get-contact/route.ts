@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     } else {
       return NextResponse.json({ error: "Contact not found" }, { status: 404 });
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const status = error.response?.status || 500;
       const message = error.response?.data || error.message;

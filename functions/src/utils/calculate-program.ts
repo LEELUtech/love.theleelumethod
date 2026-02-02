@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 import { extractDateParts } from "./date";
 import { reduceToCycle, sumDigits } from "./number";
 
