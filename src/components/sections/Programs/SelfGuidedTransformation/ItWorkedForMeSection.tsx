@@ -3,6 +3,7 @@
 import Button from "@/components/ui/Button"
 import Image from "next/image";
 import React from "react";
+import { motion } from "framer-motion";
 
 export default function ItWorkedForMeSection() {
 	return (
@@ -19,7 +20,13 @@ export default function ItWorkedForMeSection() {
 				/>
 			</div>
 
-			<div className="container relative z-10 pt-[80px] pb-[160px] md:pt-[110px] md:pb-[300px] lg:pt-[160px] lg:pb-[360px]">
+		<motion.div 
+			className="container px-4 relative z-10 pt-[80px] pb-[160px] md:pt-[110px] md:pb-[300px] lg:pt-[160px] lg:pb-[360px]"
+			initial={{ opacity: 0 }}
+			whileInView={{ opacity: 1 }}
+			viewport={{ once: true, amount: 0.2 }}
+			transition={{ duration: 0.8, delay: 0.2 }}
+		>
 				<div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-12 lg:gap-10 items-center">
 					{/* LEFT */}
 					<div className="lg:max-w-[492px] lg:order-1 order-2 md:mx-auto lg:mx-0">
@@ -67,7 +74,7 @@ export default function ItWorkedForMeSection() {
 						</div>
 					</div>
 				</div>
-			</div>
+		</motion.div>
 		</section>
 	);
 }

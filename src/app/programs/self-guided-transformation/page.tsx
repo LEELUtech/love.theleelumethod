@@ -1,3 +1,4 @@
+import ProgramFooter from "@/app/programs/ProgramFooter";
 import CheckoutFormSection from "@/components/sections/Checkout/CheckoutFormSection";
 import CostOfWaitingSection from "@/components/sections/Programs/SelfGuidedTransformation/CostOfWaitingSection";
 import HeroSection from "@/components/sections/Programs/SelfGuidedTransformation/HeroSection";
@@ -18,7 +19,7 @@ export default function SelfGuidedTransformationPage() {
 			<ItWorkedForMeSection />
 			<CostOfWaitingSection />
 			<CheckoutFormSection productId={PROTOCOL_ESSENTIALS} />
-			<Footer className="lg:pt-[200px]" />
+			{/* <Footer className="lg:pt-[200px]" /> */}
 		</main>
 	);
 }

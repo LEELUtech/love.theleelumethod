@@ -314,7 +314,7 @@ export default function ModulesSection() {
 									/>
 								</div>
 
-								<div className="absolute left-[2%] bottom-[2%] h-[64px] w-[64px] md:h-[81px] md:w-[81px] rounded-full bg-brand-primary flex items-center justify-center">
+							<div className="absolute left-[2%] bottom-[2%] h-[64px] w-[64px] md:h-[81px] md:w-[81px] rounded-full overflow-hidden bg-[#EB4F68] before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay flex items-center justify-center">
 									<div className="relative w-[26px] h-[32px] md:w-[32px] md:h-[39px]">
 										<Image
 											src="/icons/red_star.svg"

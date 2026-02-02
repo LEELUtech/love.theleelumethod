@@ -30,8 +30,8 @@ export default function CostOfWaitingSection() {
 			: "...";
 
 	return (
-		<section className="relative lg:pb-[166px] pb-[80px]">
-			<div className="container">
+		<section className="relative lg:pb-[116px] pb-[80px]">
+			<div className="container px-4">
 				<div className="text-center">
 					{/* Top Image */}
 					<div className="flex justify-center mb-12 relative pt-[230px] md:pt-[300px] lg:pt-[300px]">
@@ -45,21 +45,20 @@ export default function CostOfWaitingSection() {
               "
 						>
 							<Image
-								src="/images/resources/resources-section-1.png"
+								src="/images/programs/self-guided-transformation/sad-anxiety-depressed.jpg"
 								alt="Stop Guessing"
 								fill
 								quality={100}
-								sizes="(min-width: 640px) 358px, 320px"
-								className="object-contain"
-							/>
-
+							className="object-cover rounded-t-[200px] object-[90%_50%]"
+						/>
 							{/* Logo badge */}
 							<div
 								className="
                   absolute left-1/2 -translate-x-1/2
                   bottom-[-50px] sm:bottom-[-50px]
                   flex items-center justify-center
-                  bg-[#EB4F68] rounded-[300px] z-10
+                  bg-[#EB4F68] overflow-hidden
+                  before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay rounded-[300px] z-10
                   w-[74px] h-[102px]
                   lg:w-[101px] lg:h-[140px]
                 "
@@ -82,7 +81,7 @@ export default function CostOfWaitingSection() {
 								durMs={1500}
 								startDelayMs={500}
 								arrowRotateDeg={254}
-								arrowScale={0.8}
+								arrowScale={0}
 								arrowCenterX={6.5}
 								arrowCenterY={-6}
 								arrowOffsetY={3}
@@ -134,6 +133,10 @@ export default function CostOfWaitingSection() {
 					>
 						BEGIN THE PROTOCOL
 					</Button>
+
+					<p className="text-brand-primary font-lato font-normal text-[24px] leading-[150%] mt-[33px]">
+						<span className="text-brand-deep">Next cohort starts</span> March 18
+					</p>
 				</div>
 			</div>
 		</section>

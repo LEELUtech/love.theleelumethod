@@ -1,12 +1,13 @@
 import Image from "next/image";
 import React from "react";
+import RotateOnView from "@/components/ui/RotateOnView";
 
 export default function TheResultSection() {
 	return (
 		<section className="relative overflow-hidden bg-white">
 			<div
 				className="
-					container relative text-center
+					container px-4 relative text-center
 					pt-[300px] pb-[100px]
 					md:pt-[240px] md:pb-[120px]
 					lg:pt-[200px] lg:pb-[163px]
@@ -14,21 +15,23 @@ export default function TheResultSection() {
 			>
 				{/* background ornament */}
 				<div
-					className="
-						absolute pointer-events-none z-0
-						top-[120px] left-1/2 -translate-x-1/2
-						w-[456px] h-[421px]
-						md:top-[70px] md:w-[520px] md:h-[480px]
-						lg:top-[80px] lg:w-[406px] lg:h-[391px]
-						opacity-100 md:opacity-100 lg:opacity-100
-					"
+					className="absolute pointer-events-none z-0 top-[120px] left-1/2 w-[456px] h-[421px] md:top-[70px] md:w-[520px] md:h-[480px] lg:top-[80px] lg:w-[406px] lg:h-[391px]"
+					style={{ transform: "translateX(-50%)" }}
 				>
-					<Image src="/icons/logo_orange.svg" alt="" fill />
+					<RotateOnView
+						duration={10}
+						repeat={false}
+						amount={0.1}
+						ease="easeOut"
+						className="w-full h-full"
+					>
+						<Image src="/icons/logo_orange.svg" alt="" fill />
+					</RotateOnView>
 				</div>
 
 				{/* top badge */}
 				<div className="relative z-10 flex justify-center mb-8 md:mb-10 lg:mb-8">
-					<div className="h-[129px] w-[93px] md:h-[140px] md:w-[100px] lg:h-[140px] lg:w-[96px] bg-brand-primary rounded-full flex items-center justify-center">
+					<div className="relative h-[129px] w-[93px] md:h-[140px] md:w-[100px] lg:h-[140px] lg:w-[96px] overflow-hidden bg-[#EB4F68] before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay rounded-full flex items-center justify-center">
 						<div className="relative w-[56px] h-[56px]">
 							<Image
 								src="/leelu_logo.svg"

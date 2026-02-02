@@ -223,7 +223,7 @@ export default function MechanicsDeliverablesSection() {
 								flex flex-col items-center gap-[16px] pt-[20px] px-4
 							"
 						>
-							<div className="flex items-center justify-center bg-brand-primary rounded-[300px] w-[58px] h-[86px]">
+							<div className="flex items-center justify-center overflow-hidden bg-[#EB4F68] before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay rounded-[300px] w-[58px] h-[86px]">
 								<Image
 									src="/leelu_logo.svg"
 									alt=""
@@ -339,7 +339,7 @@ export default function MechanicsDeliverablesSection() {
 							</div>
 
 							<div className="relative p-4 flex flex-col gap-[27px] items-center bottom-[-490px] left-[180px] w-[166px] h-[238px] bg-[#FFEBE5] z-[40] rounded-[20px] shadow-[5.62px_5.62px_16.85px_0px_rgba(0,0,0,0.1)]">
-								<div className="bottom-[50px] mt-[20px] right-[50px] flex items-center justify-center bg-brand-primary rounded-[300px] w-[58px] h-[86px] z-10">
+								<div className="bottom-[50px] mt-[20px] right-[50px] flex items-center justify-center overflow-hidden bg-[#EB4F68] before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay rounded-[300px] w-[58px] h-[86px] z-10">
 									<Image
 										src="/leelu_logo.svg"
 										alt=""
