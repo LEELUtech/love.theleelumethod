@@ -41,8 +41,11 @@ export async function POST(req: NextRequest) {
     if (!intentId) return NextResponse.json({ error: "Missing intentId" }, { status: 400 });
     if (!intentToken) return NextResponse.json({ error: "Missing intentToken" }, { status: 400 });
     if (!productType) return NextResponse.json({ error: "Missing productType" }, { status: 400 });
-    if (!email) return NextResponse.json({ error: "Missing email" }, { status: 400 });
-
+    
+    if (!email || email === "") {
+      return NextResponse.json({ error: "Email is required" }, { status: 400 });
+    }
+    
     if (!emailRegex.test(email)) {
       return NextResponse.json({ error: "Invalid email format" }, { status: 400 });
     }
