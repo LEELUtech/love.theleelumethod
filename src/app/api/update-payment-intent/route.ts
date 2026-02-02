@@ -69,17 +69,35 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    console.log("📥 Original PaymentIntent metadata:", pi.metadata);
+
     // ✅ 3) Merge metadata
     const metadata: Record<string, string> = {
-      ...(pi.metadata ?? {}),
       product_type: existingType || productType,
       email,
       site: storedSite || SITE,
       updated_at: new Date().toISOString(),
     };
 
-    if (body.firstName?.trim()) metadata.first_name = body.firstName.trim();
-    if (body.lastName?.trim()) metadata.last_name = body.lastName.trim();
+    // Preserve space_id from create
+    if (pi.metadata?.space_id) {
+      metadata.space_id = pi.metadata.space_id.toString();
+    }
+    // Preserve other original metadata fields
+    if (pi.metadata?.created_at) {
+      metadata.created_at = pi.metadata.created_at.toString();
+    }
+    if (pi.metadata?.intent_token) {
+      metadata.intent_token = pi.metadata.intent_token.toString();
+    }
+
+    // Build full name from first + last for Circle
+    const firstName = body.firstName?.trim() || "";
+    const lastName = body.lastName?.trim() || "";
+    if (firstName || lastName) {
+      metadata.name = `${firstName} ${lastName}`.trim();
+    }
+
     if (body.phone?.trim()) metadata.phone = body.phone.trim();
 
     if (body.address1?.trim()) metadata.address_line1 = body.address1.trim();
@@ -101,6 +119,8 @@ export async function POST(req: NextRequest) {
       metadata.birth_date_1 = bd1;
       metadata.birth_date_2 = bd2;
     }
+
+    console.log("📤 Updating PaymentIntent with metadata:", metadata);
 
     const updatedIntent = await stripe.paymentIntents.update(intentId, {
       receipt_email: email,

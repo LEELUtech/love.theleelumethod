@@ -1,90 +1,50 @@
 import { create } from "zustand";
 import { AxiosError } from "axios";
 import { api } from "@/lib/api";
-import { ApiErrorResponse } from "@/types";
-
-type CreateIntentPayload = {
-  productType: string;
-};
-
-type UpdateIntentPayload = {
-  productType: string;
-
-  email: string;
-  firstName?: string;
-  lastName?: string;
-  phone?: string;
-
-  address1?: string;
-  address2?: string;
-  city?: string;
-  state?: string;
-  postalCode?: string;
-  country?: string;
-
-  birthDate1?: string;
-  birthDate2?: string;
-};
-
-type CreateIntentResp = {
-  clientSecret: string;
-  intentId: string;
-  intentToken: string;
-};
-
-type UpdateIntentResp = {
-  ok: boolean;
-  intentId: string;
-  metadata?: Record<string, string>;
-};
-
-type CheckoutStatus =
-  | "idle"
-  | "creating"
-  | "ready"
-  | "updating"
-  | "processing"
-  | "success"
-  | "error";
+import type {
+  ApiErrorResponse,
+  CreateIntentPayload,
+  UpdateIntentPayload,
+  CreateIntentResponse,
+  UpdateIntentResponse,
+  CheckoutStatus,
+} from "@/types";
 
 type CheckoutState = {
   clientSecret: string | null;
   intentId: string | null;
   intentToken: string | null;
-
   status: CheckoutStatus;
   error: string | null;
-
-  // caching / guards
   intentKey: string | null;
   updateKey: string | null;
-
-  // in-flight promises
   createPromise: Promise<string> | null;
   updatePromise: Promise<void> | null;
-
   createIntent: (payload: CreateIntentPayload) => Promise<string>;
   updateIntent: (payload: UpdateIntentPayload) => Promise<void>;
-
   markProcessing: () => void;
   markSuccess: () => void;
   setError: (msg: string | null) => void;
   reset: () => void;
 };
 
+// Generates unique key for create intent deduplication
 function buildCreateKey(productType: string) {
   return `create:${productType}`;
 }
 
+// Normalizes string value
 function norm(v?: string) {
   return (v ?? "").trim();
 }
+
+// Normalizes and lowercases string
 function normLower(v?: string) {
   return norm(v).toLowerCase();
 }
 
+// Generates unique key from all update intent params for deduplication
 function buildUpdateKey(p: UpdateIntentPayload, intentId: string, intentToken: string) {
-
   return [
     "update",
     intentId,
@@ -105,6 +65,7 @@ function buildUpdateKey(p: UpdateIntentPayload, intentId: string, intentToken: s
   ].join("|");
 }
 
+// Extracts error message from Axios error
 function getAxiosMsg(e: unknown, fallback: string) {
   const axiosError = e as AxiosError<ApiErrorResponse>;
   return axiosError.response?.data?.error || axiosError.message || fallback;
@@ -124,6 +85,7 @@ export const useCheckoutStore = create<CheckoutState>((set, get) => ({
   createPromise: null,
   updatePromise: null,
 
+  // Creates Stripe PaymentIntent with deduplication
   createIntent: async ({ productType }) => {
     const { status, intentKey, clientSecret, createPromise } = get();
     const nextKey = buildCreateKey(productType);
@@ -154,7 +116,7 @@ export const useCheckoutStore = create<CheckoutState>((set, get) => ({
 
     const p = (async () => {
       try {
-        const { data } = await api.post<CreateIntentResp>("/api/create-payment-intent", {
+        const { data } = await api.post<CreateIntentResponse>("/api/create-payment-intent", {
           productType,
         });
 
@@ -189,6 +151,7 @@ export const useCheckoutStore = create<CheckoutState>((set, get) => ({
     return await p;
   },
 
+  // Updates PaymentIntent with billing data (deduplication by content)
   updateIntent: async (payload) => {
     const { intentId, intentToken, updateKey, updatePromise } = get();
     if (!intentId) throw new Error("No intentId in store. Create intent first.");
@@ -209,7 +172,7 @@ export const useCheckoutStore = create<CheckoutState>((set, get) => ({
 
     const p = (async () => {
       try {
-        await api.post<UpdateIntentResp>("/api/update-payment-intent", {
+        await api.post<UpdateIntentResponse>("/api/update-payment-intent", {
           intentId,
           intentToken,
           ...payload,

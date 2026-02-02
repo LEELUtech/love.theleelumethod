@@ -46,7 +46,14 @@ export async function POST(req: NextRequest) {
       currency?: string;
       name?: string;
       description?: string;
+      space_id?: string;
     };
+
+    console.log("📦 Product from Firebase:", {
+      productType,
+      price: product.price,
+      space_id: product.space_id,
+    });
 
     const amount = typeof product.price === "number" ? product.price : 0;
     const currency = (product.currency ?? "USD").toLowerCase();
@@ -61,8 +68,15 @@ export async function POST(req: NextRequest) {
       product_type: productType,
       site: SITE,
       created_at: new Date().toISOString(),
-      intent_token: intentToken, // ✅ token
+      intent_token: intentToken,
     };
+
+    // Add space_id for Circle products
+    if (product.space_id) {
+      metadata.space_id = product.space_id;
+    }
+
+    console.log("📤 Creating PaymentIntent with metadata:", metadata);
 
     const intent = await stripe.paymentIntents.create({
       amount,

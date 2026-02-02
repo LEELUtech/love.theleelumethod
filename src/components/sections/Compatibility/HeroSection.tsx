@@ -1,6 +1,5 @@
 import React from "react";
 import Image from "next/image";
-import Link from "next/link";
 import Header from "@/components/ui/Header";
 import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
 import Button from "@/components/ui/Button";

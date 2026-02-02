@@ -1,16 +1,17 @@
 import CohortLearnCards from "@/components/sections/Landing/CohortLearnCards";
 import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
 import Button from "@/components/ui/Button";
-import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton";
 import RotateOnView from "@/components/ui/RotateOnView";
 import Image from "next/image";
 import React from "react";
 
+// Legacy code - not currently used but kept for future reference
 type Card = {
 	title: string;
 	text: string;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const CARDS = {
 	top: {
 		title: "The Loyalty Algorithm",
@@ -38,6 +39,7 @@ const CARDS = {
 	},
 } satisfies Record<string, Card>;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function LearnCard({ title, text }: Card) {
 	return (
 		<div

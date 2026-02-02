@@ -1,18 +1,19 @@
 import { isPhoneValid } from "@/utils/is-phone-valid";
-import { RuleObject } from "rc-field-form/lib/interface";
+import type { Rule } from "antd/es/form";
 
+// phone validation with custom validator
 export const phoneValidationRules = [
   {
     required: true,
     message: "Please input a valid phone number",
-    validator: (rule: RuleObject, value: string) => {
+    validator: (_: Rule, value: string) => {
       if (!value) {
         // reject when empty to enforce required
-        return Promise.reject(rule.message as string);
+        return Promise.reject("Please input a valid phone number");
       }
 
       if (!isPhoneValid(value)) {
-        return Promise.reject(rule.message as string);
+        return Promise.reject("Please input a valid phone number");
       }
 
       return Promise.resolve();

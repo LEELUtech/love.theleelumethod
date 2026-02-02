@@ -1,6 +1,5 @@
 import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
 import Button from "@/components/ui/Button"
-import WebinarModalButton from "@/components/ui/buttons/WebinarModalButton";
 import RotateOnView from "@/components/ui/RotateOnView"
 import Image from "next/image";
 

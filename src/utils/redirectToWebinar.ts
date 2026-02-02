@@ -1,3 +1,4 @@
+// Redirects to webinar registration with pre-filled user data
 export function redirectToWebinar(params: { name?: string; email?: string }) {
   const baseUrl = "https://leelutech.ewebinar.com/webinar/decoded-love-22610";
   const url = new URL(baseUrl);

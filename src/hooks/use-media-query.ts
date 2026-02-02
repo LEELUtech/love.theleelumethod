@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+// Hook for detecting device type and viewport dimensions
 export default function useMediaQuery() {
   const [device, setDevice] = useState<
     "mobile" | "tablet" | "mdTablet" | "desktop" | null
@@ -32,10 +33,9 @@ export default function useMediaQuery() {
     // Initial detection
     checkDevice();
 
-    // Listener for windows resize
+    // Listen for viewport changes
     window.addEventListener("resize", checkDevice);
 
-    // Cleanup listener
     return () => {
       window.removeEventListener("resize", checkDevice);
     };

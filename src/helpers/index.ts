@@ -1,4 +1,4 @@
-import { UserFormValues } from "@/components/ui/forms/UserForm";
+import type { UserFormValues } from "@/types/forms";
 import { FORM_STORAGE_KEY } from "@/utils/constants";
 import dayjs, { Dayjs } from "dayjs";
 
@@ -17,14 +17,7 @@ export function formatDateToISO(
 ): string {
   if (!dateValue) return "";
 
-  let d: Dayjs;
-  if (typeof dateValue === "string") {
-    d = dayjs(dateValue);
-  } else if (dateValue instanceof Date) {
-    d = dayjs(dateValue);
-  } else {
-    d = dateValue;
-  }
+  const d = dayjs(dateValue);
   return d.isValid() ? d.format("DD.MM.YYYY") : "";
 }
 
@@ -36,6 +29,7 @@ export function combineNames(
 	return [firstName, lastName].filter(Boolean).join(" ");
 }
 
+// Saves email to localStorage for form persistence
 export const saveUserFormToStorage = (email: string) => {
   try {
     localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify({ email }));
@@ -44,19 +38,20 @@ export const saveUserFormToStorage = (email: string) => {
   }
 };
 
+// Retrieves saved email from localStorage
 export const getUserFormFromStorage = (): Partial<UserFormValues> | null => {
   try {
     const raw = localStorage.getItem(FORM_STORAGE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw);
-    if (!parsed.email) return null;
-    return { email: parsed.email };
+    return parsed?.email ? { email: parsed.email } : null;
   } catch (e) {
     console.warn("Failed to read user form data", e);
     return null;
   }
 };
 
+// Clears saved form data from localStorage
 export const clearUserFormStorage = () => {
   try {
     localStorage.removeItem(FORM_STORAGE_KEY);

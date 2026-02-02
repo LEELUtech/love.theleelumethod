@@ -1,6 +1,5 @@
 import Button from "@/components/ui/Button"
 import Header from "@/components/ui/Header";
-import Link from "next/link";
 import React from "react";
 
 const HeroSection = () => {

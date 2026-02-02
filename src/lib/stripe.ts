@@ -2,6 +2,7 @@ import Stripe from "stripe";
 
 let stripeClient: Stripe | null = null;
 
+// Returns singleton Stripe client instance
 export function getStripe(): Stripe {
   if (stripeClient) return stripeClient;
 

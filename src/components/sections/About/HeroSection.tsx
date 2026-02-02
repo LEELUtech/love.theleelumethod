@@ -3,7 +3,6 @@ import Button from "@/components/ui/Button";
 import Header from "@/components/ui/Header";
 import RotateOnView from "@/components/ui/RotateOnView";
 import Image from "next/image";
-import Link from "next/link";
 
 const HeroSection = () => {
 	return (

@@ -42,6 +42,7 @@ const initialForm: CompatibilityCheckoutForm = {
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Main checkout form component for Compatibility Report
 export default function CheckoutFormSection() {
 	const productId = COMPATIBILITY_REPORT;
 	const router = useRouter();
@@ -111,21 +112,23 @@ export default function CheckoutFormSection() {
 		!payState.canPay ||
 		payState.paying;
 	
-    // effects
+  // Track if we've had a clientSecret (for UI state)
 	React.useEffect(() => {
 		if (clientSecret) setHadSecretOnce(true);
 	}, [clientSecret]);
 
+  // Reset if product type changed
 	React.useEffect(() => {
 		const expectedKey = `create:${productId}`;
 		if (intentKey && intentKey !== expectedKey) reset();
 	}, [intentKey, productId, reset]);
 
-
+  // Fetch product data on mount
 	React.useEffect(() => {
 		if (!product && !productLoading) fetchProduct(productId);
 	}, [product, productLoading, fetchProduct, productId]);
 
+  // Auto-create PaymentIntent when ready
 	React.useEffect(() => {
 		if (!product || productLoading) return;
 
@@ -152,18 +155,20 @@ export default function CheckoutFormSection() {
 		reset,
 	]);
 
+  // Sync checkout errors to payment state
 	React.useEffect(() => {
 		if (!checkoutError) return;
 		setPayState((prev) => ({ ...prev, error: checkoutError }));
 	}, [checkoutError]);
 
+  // Cleanup on unmount
 	React.useEffect(() => {
 		return () => {
 			reset();
 		};
 	}, [reset]);
 
-	// handlers
+  // Form field updater
 	const setField = React.useCallback(
 		<K extends keyof CompatibilityCheckoutForm>(key: K, value: string) => {
 			setForm((prev) => ({ ...prev, [key]: value }));
@@ -190,6 +195,7 @@ export default function CheckoutFormSection() {
 		router.push("/success");
 	}, [router, markSuccess]);
 
+  // Validates form before payment
 	const validateOnSubmit = React.useCallback(
 		(data: CompatibilityCheckoutForm) => {
 			const next: FormErrors = {};
@@ -207,6 +213,7 @@ export default function CheckoutFormSection() {
 		[],
 	);
 
+  // Handles payment button click
 	const onPayClick = React.useCallback(async () => {
 		setSubmitAttempted(true);
 

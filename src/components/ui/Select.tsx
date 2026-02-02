@@ -1,6 +1,7 @@
 import type { StylesConfig } from "react-select";
+import type { CountryOption } from "@/types/forms";
 
-export type CountryOption = { label: string; value: string };
+export type { CountryOption };
 
 export const selectStyles: StylesConfig<CountryOption, false> = {
   container: (base) => ({
