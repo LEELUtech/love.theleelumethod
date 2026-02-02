@@ -15,6 +15,6 @@ export async function GET(req: NextRequest) {
     );
     return NextResponse.json(res.data);
   } catch (error: any) {
-    return NextResponse.json({ error: error.message || "Ошибка запроса к Zoho" }, { status: 500 });
+    return NextResponse.json({ error: error.message || "Zoho request error" }, { status: 500 });
   }
 }

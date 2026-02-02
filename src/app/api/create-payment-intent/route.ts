@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       clientSecret: intent.client_secret,
       intentId: intent.id,
-      intentToken, // ✅ отдаем на фронт
+      intentToken,
     });
   } catch (err) {
     console.error("Error creating payment intent:", err);

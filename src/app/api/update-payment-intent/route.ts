@@ -8,7 +8,7 @@ const SITE = process.env.DOMAIN_URL || "unknown";
 
 type Body = {
   intentId: string;
-  intentToken: string; // ✅ добавили
+  intentToken: string;
   productType: string;
 
   email: string;
@@ -55,7 +55,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    // (опционально) защита по сайту:
     const storedSite = (pi.metadata?.site ?? "").toString();
     if (storedSite && storedSite !== SITE) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });

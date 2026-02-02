@@ -29,10 +29,6 @@ const HeroSection = () => {
 						lg:pb-[76px]
 					"
 				>
-					{/* LOGO + NAME
-              mobile: сверху
-              desktop: после фото
-          */}
 					<div
 						className="
 							order-1 lg:order-2

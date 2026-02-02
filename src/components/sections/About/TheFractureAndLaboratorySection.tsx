@@ -254,7 +254,6 @@ const TheFractureAndLaboratorySection = () => {
     pointer-events-none
   "
 			>
-				{/* MOBILE / TABLET (до lg) */}
 				<div className="relative w-full max-w-[420px] lg:hidden pointer-events-none">
 					<div className="flex justify-center gap-[14px]">
 						{/* LEFT */}

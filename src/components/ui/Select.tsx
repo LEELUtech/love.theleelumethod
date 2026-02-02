@@ -105,7 +105,6 @@ export const selectStyles: StylesConfig<CountryOption, false> = {
     maxHeight: 240,
     overflowY: "auto",
 
-    // скрываем скроллбар, но прокрутка работает
     scrollbarWidth: "none",      // Firefox
     msOverflowStyle: "none",     // IE/Edge legacy
   }),

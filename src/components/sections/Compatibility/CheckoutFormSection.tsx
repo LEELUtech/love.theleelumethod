@@ -188,7 +188,6 @@ export default function CheckoutFormSection() {
 	const onSuccess = React.useCallback(() => {
 		markSuccess?.();
 		router.push("/success");
-		// reset(); // ✅ и тут тоже
 	}, [router, markSuccess]);
 
 	const validateOnSubmit = React.useCallback(

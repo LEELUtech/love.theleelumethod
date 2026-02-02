@@ -63,7 +63,7 @@ const HeroSection = () => {
 
 			{/* ===== DESKTOP (lg+) ===== */}
 			<div className="hidden lg:block">
-				<div className="container flex justify-between gap-12 relative">
+				<div className="container px-4 flex justify-between gap-12 relative">
 					<div className="relative mt-[64px] z-10 max-w-[600px] rounded-[24px] bg-brand-white backdrop-blur-md p-[60px] shadow-[0_4px_20px_rgba(0,0,0,0.05)] max-h-[660px]">
 						<p className="font-canela font-thin text-[32px] italic text-brand-black">
 							Love isn’t a mystery.

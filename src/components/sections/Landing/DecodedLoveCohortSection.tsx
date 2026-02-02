@@ -177,31 +177,29 @@ export default function DecodedLoveCohortSection() {
 								</li>
 							</ul>
 						</div>
-					</div>
-				</div>
-			</section>
-			<div className="relative w-full">
-				<div className="relative w-full h-[365px] lg:h-[565px]">
-					{/* wrapper только для картинки */}
-					<div className="absolute inset-0 overflow-hidden">
-						<Image
-							src="/images/lily/lily_6.jpg"
-							alt=""
-							fill
-							quality={100}
-							priority
-							className="
-					object-cover
-					scale-[2] md:scale-[2] lg:scale-[1.2]
-					object-[80%_30%] lg:object-[90%_50%] lg:-translate-x-[100px]
-				"
-						/>
-					</div>
+			</div>
+		</div>
+	</section>
+	<div className="relative w-full">
+		<div className="relative w-full h-[365px] lg:h-[565px]">
+			<div className="absolute inset-0 overflow-hidden">
+				<Image
+					src="/images/lily/lily_6.jpg"
+					alt=""
+					fill
+					quality={100}
+					priority
+					className="
+				object-cover
+				scale-[2] md:scale-[2] lg:scale-[1.2]
+				object-[80%_30%] lg:object-[90%_50%] lg:-translate-x-[100px]
+			"
+				/>
+			</div>
 
-					{/* бадж НЕ внутри overflow-hidden */}
-					<div
-						className="
-				absolute left-1/2 bottom-[-40px] -translate-x-1/2
+			<div
+				className="
+			absolute left-1/2 bottom-[-40px] -translate-x-1/2
 				flex items-center justify-center overflow-hidden
 				bg-[#EB4F68]
 				before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay

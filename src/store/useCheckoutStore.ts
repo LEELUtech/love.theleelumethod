@@ -29,7 +29,7 @@ type UpdateIntentPayload = {
 type CreateIntentResp = {
   clientSecret: string;
   intentId: string;
-  intentToken: string; // ✅ добавили
+  intentToken: string;
 };
 
 type UpdateIntentResp = {
@@ -50,7 +50,7 @@ type CheckoutStatus =
 type CheckoutState = {
   clientSecret: string | null;
   intentId: string | null;
-  intentToken: string | null; // ✅ добавили
+  intentToken: string | null;
 
   status: CheckoutStatus;
   error: string | null;
@@ -84,7 +84,7 @@ function normLower(v?: string) {
 }
 
 function buildUpdateKey(p: UpdateIntentPayload, intentId: string, intentToken: string) {
-  // ✅ включаем intentId + token, чтобы кэш не “перелип” на другой intent
+
   return [
     "update",
     intentId,
@@ -211,7 +211,7 @@ export const useCheckoutStore = create<CheckoutState>((set, get) => ({
       try {
         await api.post<UpdateIntentResp>("/api/update-payment-intent", {
           intentId,
-          intentToken, // ✅ отправляем token
+          intentToken,
           ...payload,
         });
 

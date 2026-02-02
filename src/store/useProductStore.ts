@@ -3,7 +3,7 @@
 
 import { create } from "zustand";
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase"; // <-- твой firebase init
+import { db } from "@/lib/firebase";
 import type { Product } from "@/types";
 
 type FirestoreOfferingDoc = {

@@ -44,7 +44,6 @@ const WebinarDiscoverSection = () => {
     <section className="relative bg-brand-white py-16 md:pt-[550px] pt-[1030px] lg:pt-[450px]">
       <div className="container px-4 mx-auto">
         <div className="max-w-[1200px] mx-auto">
-          {/* Wrap для последовательности */}
           <motion.div
             ref={ref}
             variants={wrap}
