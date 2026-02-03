@@ -12,6 +12,7 @@ import {
 import type { StripeError } from "@stripe/stripe-js";
 import type { BillingForm } from "@/helpers/checkout";
 import { useCheckoutStore } from "@/store/useCheckoutStore";
+import Button from "@/components/ui/Button";
 
 const stripeElementOptions = {
   style: {
@@ -46,6 +47,7 @@ type Props = {
   productName?: string;
   priceLabel: string;
   loading: boolean;
+  buttonText?: string;
 };
 
 export function StripeCardPart({
@@ -57,6 +59,7 @@ export function StripeCardPart({
   productName,
   priceLabel,
   loading,
+  buttonText = "SIGN UP & GET PERSONALIZED SUPPORT",
 }: Props) {
   const stripe = useStripe();
   const elements = useElements();
@@ -259,22 +262,16 @@ export function StripeCardPart({
       </div>
 
       {/* Button */}
-      <button
+      <Button
         type="button"
         onClick={onPay}
         disabled={!canPay}
-        className="
-          mt-[24px] md:mt-10 lg:mt-[80px]
-          inline-flex w-full items-center justify-center
-          rounded-full bg-brand-primary hover:bg-[#E13954]
-          px-0 py-4 md:px-6
-          font-lato text-[15px] leading-[26px] font-medium uppercase tracking-[0.10em]
-          text-white transition-colors
-          disabled:cursor-not-allowed disabled:opacity-60
-        "
+        loading={paying}
+        fullWidth
+        className="mt-[24px] md:mt-10 lg:mt-[80px] px-1"
       >
-        {paying ? "PROCESSING..." : "SIGN UP & GET PERSONALIZED SUPPORT"}
-      </button>
+        {buttonText}
+      </Button>
     </>
   );
 }

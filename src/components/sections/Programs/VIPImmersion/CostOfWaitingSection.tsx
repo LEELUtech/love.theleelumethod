@@ -42,7 +42,7 @@ export default function CostOfWaitingSection() {
               "
 						>
 							<Image
-								src="/images/resources/resources-section-1.png"
+								src="/images/programs/vip-immersion/man-holding-rose-flower-back.png"
 								alt="Stop Guessing"
 								fill
 								quality={100}
@@ -79,12 +79,13 @@ export default function CostOfWaitingSection() {
 								durMs={1500}
 								startDelayMs={500}
 								arrowRotateDeg={254}
-								arrowScale={0.8}
+								arrowScale={0}
 								arrowCenterX={6.5}
 								arrowCenterY={-6}
 								arrowOffsetY={3}
 								arcRx={220}
 								arcRy={208}
+								strokeWidth={3}
 							/>
 						</div>
 					</div>
@@ -214,6 +215,10 @@ export default function CostOfWaitingSection() {
 					<p className="font-lato text-body font-normal text-[#757986] mt-[12px]">
 						Applications are reviewed within 48 hours. If accepted, you&apos;ll
 						receive calendar access to book your initial diagnostic session.
+					</p>
+
+					<p className="text-brand-primary font-lato font-normal text-[24px] leading-[150%] mt-[33px]">
+						<span className="text-brand-deep">Next cohort starts</span> March 18
 					</p>
 				</div>
 			</div>

@@ -1,8 +1,9 @@
 "use client";
 
-import Button from "@/components/ui/Button"
+import Button from "@/components/ui/Button";
 import Image from "next/image";
 import React from "react";
+import AnimatedMechanicStep from "./AnimatedMechanicStep";
 
 export default function MechanicsDeliverablesSection() {
 	return (
@@ -40,131 +41,41 @@ export default function MechanicsDeliverablesSection() {
 							items-stretch
 						"
 					>
-						{/* STEP 1 */}
-						<div className="flex flex-col items-center">
-							<div className="relative h-[210px] w-[177px]">
-								<Image
-									src="/images/programs/self-guided-transformation/mechanic_icon.png"
-									alt=""
-									fill
-								/>
-								<div className="absolute top-1/2 left-[50px] -translate-y-14 h-[80px] w-[80px]">
-									<Image
-										src="/icons/ornament_12.svg"
-										alt=""
-										fill
-										className="object-contain"
-									/>
-								</div>
-								<p className="mt-4 absolute bottom-[-15px] left-[70px] font-canela font-light text-[#C89F26] text-[60px] leading-none">
-									1.
-								</p>
-							</div>
+						<AnimatedMechanicStep
+							index={0}
+							icon="/icons/ornament_12.svg"
+							stepNumber="1."
+							title="Root Cause Extraction"
+							description="I don't just look at your chart; I look at your partner's chart. We decode both behavioral frequency patterns simultaneously."
+						/>
 
-							<p className="mt-[76px] font-canela font-light text-brand-black lg:text-[32px] text-[24px] leading-[1.15]">
-								Root Cause Extraction
-							</p>
+						<AnimatedMechanicStep
+							index={1}
+							icon="/icons/ornament_7.svg"
+							stepNumber="2."
+							title="The Partner Protocol"
+							description="I bring him into the room—with you, separately, or both. We decode the dynamic from both sides to accelerate alignment."
+						/>
 
-							<p className="mt-4 font-medium text-center font-lato text-[#5A5757] text-body leading-[1.7]">
-								I don&apos;t just look at your chart; I look at your
-								partner&apos;s chart. We decode both behavioral frequency
-								patterns simultaneously.
-							</p>
-						</div>
+						<AnimatedMechanicStep
+							index={2}
+							icon="/icons/ornament_8.svg"
+							stepNumber="3."
+							title={
+								<>
+									Priority Course <br /> Correction
+								</>
+							}
+							description="You don't wait for a call. I review your texts, your matches, and your situations in real time to shift the power dynamic the moment it slips."
+						/>
 
-						{/* STEP 2 */}
-						<div className="flex flex-col items-center">
-							<div className="relative h-[210px] w-[177px]">
-								<Image
-									src="/images/programs/self-guided-transformation/mechanic_icon.png"
-									alt=""
-									fill
-								/>
-								<div className="absolute top-1/2 left-[50px] -translate-y-14 h-[80px] w-[80px]">
-									<Image
-										src="/icons/ornament_7.svg"
-										alt=""
-										fill
-										className="object-contain"
-									/>
-								</div>
-								<p className="mt-4 absolute bottom-[-15px] left-[70px] font-canela font-light text-[#C89F26] text-[60px] leading-none">
-									2.
-								</p>
-							</div>
-
-							<p className="mt-[76px] font-canela font-light text-brand-black lg:text-[32px] text-[24px] leading-[1.15]">
-								The Partner Protocol
-							</p>
-
-							<p className="mt-4 text-center font-lato text-[#5A5757] text-body leading-[1.7]">
-								I bring him into the room—with you, separately, or both. We
-								decode the dynamic from both sides to accelerate alignment.
-							</p>
-						</div>
-
-						{/* STEP 3 */}
-						<div className="flex flex-col items-center">
-							<div className="relative h-[210px] w-[177px]">
-								<Image
-									src="/images/programs/self-guided-transformation/mechanic_icon.png"
-									alt=""
-									fill
-								/>
-								<div className="absolute top-1/2 left-[50px] -translate-y-14 h-[80px] w-[80px]">
-									<Image
-										src="/icons/ornament_8.svg"
-										alt=""
-										fill
-										className="object-contain"
-									/>
-								</div>
-								<p className="mt-4 absolute bottom-[-15px] left-[70px] font-canela font-light text-[#C89F26] text-[60px] leading-none">
-									3.
-								</p>
-							</div>
-
-							<p className="mt-[76px] font-canela font-light text-brand-black lg:text-[32px] text-[24px] leading-[1.15]">
-								Priority Course <br /> Correction
-							</p>
-
-							<p className="mt-4 text-center font-lato text-[#5A5757] text-body leading-[1.7]">
-								You don&apos;t wait for a call. I review your texts, your
-								matches, and your situations in real time to shift the power
-								dynamic the moment it slips.
-							</p>
-						</div>
-
-						{/* STEP 4 */}
-						<div className="flex flex-col items-center">
-							<div className="relative h-[210px] w-[177px]">
-								<Image
-									src="/images/programs/self-guided-transformation/mechanic_icon.png"
-									alt=""
-									fill
-								/>
-								<div className="absolute top-1/2 left-[50px] -translate-y-14 h-[80px] w-[80px]">
-									<Image
-										src="/icons/ornament_8.svg"
-										alt=""
-										fill
-										className="object-contain"
-									/>
-								</div>
-								<p className="mt-4 absolute bottom-[-15px] left-[70px] font-canela font-light text-[#C89F26] text-[60px] leading-none">
-									4.
-								</p>
-							</div>
-
-							<p className="mt-[76px] font-canela font-light text-brand-black lg:text-[32px] text-[24px] leading-[1.15]">
-								Inherited Behavioral Patterns
-							</p>
-
-							<p className="mt-4 text-center font-lato text-[#5A5757] text-body leading-[1.7]">
-								We identify the relationship scripts passed down through your
-								family of origin that are sabotaging your present.
-							</p>
-						</div>
+						<AnimatedMechanicStep
+							index={3}
+							icon="/icons/ornament_8.svg"
+							stepNumber="4."
+							title="Inherited Behavioral Patterns"
+							description="We identify the relationship scripts passed down through your family of origin that are sabotaging your present."
+						/>
 					</div>
 				</div>
 
@@ -213,23 +124,37 @@ export default function MechanicsDeliverablesSection() {
 						{/* Floating card */}
 						<div
 							className="
-								absolute z-20
-								bottom-[-280px] right-[100px]
-								w-[166px] h-[238px]
-								md:bottom-[-210px] md:right-[178px]
-								bg-[#FFEBE5]
-								rounded-[20px]
-								shadow-[5.62px_5.62px_16.85px_0px_rgba(0,0,0,0.1)]
-								flex flex-col items-center gap-[16px] pt-[20px] px-4
-							"
+														absolute z-20
+														bottom-[-280px] right-[100px]
+														w-[166px] h-[238px]
+														md:bottom-[-210px] md:right-[178px]
+														bg-[#FFEBE5]
+														rounded-[20px]
+														shadow-[5.62px_5.62px_16.85px_0px_rgba(0,0,0,0.1)]
+														flex flex-col items-center gap-[16px] pt-[20px] px-4
+													"
 						>
-							<div className="flex items-center justify-center overflow-hidden bg-[#EB4F68] before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay rounded-[300px] w-[58px] h-[86px]">
+							<div
+								className="
+															relative
+															flex items-center justify-center
+															bg-[#EB4F68]
+															rounded-[300px]
+															w-[58px] h-[86px]
+															overflow-hidden
+															
+															before:absolute before:inset-0
+															before:bg-[url('/icons/noise.png')]
+															before:opacity-15
+															before:mix-blend-overlay
+														"
+							>
 								<Image
 									src="/leelu_logo.svg"
 									alt=""
 									width={39}
 									height={39}
-									className="filter brightness-0 invert"
+									className="relative z-10 filter brightness-0 invert"
 								/>
 							</div>
 
@@ -339,13 +264,29 @@ export default function MechanicsDeliverablesSection() {
 							</div>
 
 							<div className="relative p-4 flex flex-col gap-[27px] items-center bottom-[-490px] left-[180px] w-[166px] h-[238px] bg-[#FFEBE5] z-[40] rounded-[20px] shadow-[5.62px_5.62px_16.85px_0px_rgba(0,0,0,0.1)]">
-								<div className="bottom-[50px] mt-[20px] right-[50px] flex items-center justify-center overflow-hidden bg-[#EB4F68] before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay rounded-[300px] w-[58px] h-[86px] z-10">
+								<div
+									className="
+															relative
+																top-[20px]
+															flex items-center justify-center
+															bg-[#EB4F68]
+															rounded-[254px]
+															w-[62px] h-[86px]
+															z-10
+															overflow-hidden
+						
+															before:absolute before:inset-0
+															before:bg-[url('/icons/noise.png')]
+															before:opacity-15
+															before:mix-blend-overlay
+														"
+								>
 									<Image
 										src="/leelu_logo.svg"
 										alt=""
 										width={39}
 										height={39}
-										className="filter brightness-0 invert"
+										className="relative z-10 filter brightness-0 invert"
 									/>
 								</div>
 								<p className="font-canela font-light text-[18px] text-center text-brand-black">

@@ -1,12 +1,13 @@
 import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
-import Button from "@/components/ui/Button"
+import Button from "@/components/ui/Button";
+import RotateOnView from "@/components/ui/RotateOnView"
 import Image from "next/image";
 import React from "react";
 
 const HeroSection = () => {
 	return (
 		<section className="relative lg:py-[131px] pt-[54px] bg-brand-white overflow-hidden">
-			<div className="container relative z-10">
+			<div className="container px-4 relative z-10">
 				<div
 					className="
 						flex flex-col items-center
@@ -50,7 +51,7 @@ const HeroSection = () => {
 							flightStart={0.2}
 							durMs={1500}
 							arrowRotateDeg={254}
-							arrowScale={0.8}
+							arrowScale={0}
 							arrowCenterX={6.5}
 							arrowCenterY={-6}
 							arrowOffsetY={3}
@@ -68,21 +69,26 @@ const HeroSection = () => {
 								absolute left-1/2 -translate-x-1/2
 								bottom-[-28px]
 								w-[74px] h-[102px]
-								md:w-[84px] md:h-[112px]
-								lg:w-[84px] lg:h-[112px]
+								md:w-[74px] md:h-[102px]
+								lg:w-[74px] lg:h-[102px]
 								rounded-[999px]
-								bg-[#EB4F68]
+								overflow-hidden bg-[#EB4F68] before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay
 								flex items-center justify-center
 							"
 						>
-							<div className="relative w-[46px] h-[45px] md:w-[46px] md:h-[45px] lg:w-[46px] lg:h-[45px]">
+							<RotateOnView 
+								duration={5} 
+								amount={0.4} 
+								ease="easeOut"
+								className="relative w-[46px] h-[45px] md:w-[46px] md:h-[45px] lg:w-[46px] lg:h-[45px]"
+							>
 								<Image
 									src="/leelu_logo.svg"
 									alt=""
 									fill
 									className="object-contain filter brightness-0 invert"
 								/>
-							</div>
+							</RotateOnView>
 						</div>
 					</div>
 
@@ -108,7 +114,7 @@ const HeroSection = () => {
 					<h1
 						className="
 							mt-4
-							font-canela font-thin uppercase text-brand-deep text-center
+							font-canela font-thin uppercase text-brand-black text-center
 							text-[46px] leading-[110%]
 							md:text-[56px] md:leading-[110%]
 							lg:text-[60px] lg:leading-[110%]
@@ -148,7 +154,7 @@ const HeroSection = () => {
 					<Button
 						variant="primary"
 						size="md"
-						className="w-full lg:w-[35%] xs:text-[12px] mt-[32px]"
+						className="w-full lg:w-[35%] xs:text-[12px] mt-[32px] lg:order-3"
 					>
 						ENROLL NOW
 					</Button>

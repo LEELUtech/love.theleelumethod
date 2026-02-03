@@ -18,7 +18,7 @@ export default function GuidedBreakthroughPage() {
 			<ItWorkedForMeSection />
 			<CostOfWaitingSection />
 			<CheckoutFormSection productId={GUIDED_BREAKTHROUGH} />
-			<Footer className="lg:pt-[200px]" />
+			{/* <Footer className="lg:pt-[200px]" /> */}
 		</main>
 	);
 }

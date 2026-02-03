@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import React from "react";
+import { motion } from "framer-motion";
 
 export default function TheDiagnosisSection() {
 	return (
@@ -22,10 +23,16 @@ export default function TheDiagnosisSection() {
 				/>
 			</div>
 
-			<div className="container relative py-[12px] md:py-[70px] lg:py-[110px] z-10">
+			<motion.div
+				className="container px-4 relative py-[12px] md:py-[70px] lg:py-[110px] lg:pb-[180px] z-10"
+				initial={{ opacity: 0, y: 20 }}
+				whileInView={{ opacity: 1, y: 0 }}
+				viewport={{ once: true, amount: 0.2 }}
+				transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+			>
 				<div className="grid grid-cols-1 lg:grid-cols-[1.50fr_0.50fr] gap-12 md:gap-14 lg:gap-16 items-center">
 					{/* ================= LEFT ================= */}
-					<div className="order-2 lg:order-1">
+					<div className="order-2 mt-[50px] md:mt-[70px] lg:mt-0 lg:order-1">
 						<h2 className="font-canela font-thin text-brand-black text-[44px] md:text-[52px] lg:text-[60px] leading-[105%]">
 							THE DIAGNOSIS
 						</h2>
@@ -49,12 +56,20 @@ export default function TheDiagnosisSection() {
 									text: `You operate at a level where a bad match isn't just heartbreak—it's a liability. You want a professional profiler to vet your options and architect your love life with the same rigor you apply to your business.`,
 								},
 							].map((item) => (
-								<div key={item.title} className="rounded-[16px] bg-[#FFF8F8] px-6 py-6">
+								<div
+									key={item.title}
+									className="rounded-[16px] bg-[#FFF8F8] px-6 py-6"
+								>
 									<div className="flex items-start gap-4">
 										<div>
 											<div className="flex flex-row gap-4 items-center">
 												<div className="relative h-[33px] w-[27px] flex-shrink-0">
-													<Image src={item.icon} alt="" fill className="object-contain" />
+													<Image
+														src={item.icon}
+														alt=""
+														fill
+														className="object-contain"
+													/>
 												</div>
 												<p className="font-canela font-light text-brand-deep text-[26px] md:text-[28px] lg:text-[32px] tracking-[0.02em]">
 													{item.title}
@@ -95,15 +110,17 @@ export default function TheDiagnosisSection() {
 							</div>
 
 							{/* bottom badge */}
-							<div className="absolute -bottom-[22px] md:-bottom-[28px] lg:-bottom-[56px] left-1/2 -translate-x-1/2">
+							<div className="absolute -bottom-[62px] md:-bottom-[78px] lg:-bottom-[56px] left-1/2 -translate-x-1/2">
 								<div
 									className="
-										bg-[#EB4F68] flex items-center justify-center rounded-full
+										bg-[#EB4F68] 
+									before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] 
+									before:opacity-15 before:mix-blend-overlay before:rounded-full flex items-center justify-center rounded-full
 										w-[96px] h-[132px]
 										md:w-[120px] md:h-[170px]
 										lg:w-[171px] lg:h-[238px]
 									"
-								>
+									>
 									<div
 										className="
 											relative
@@ -121,11 +138,10 @@ export default function TheDiagnosisSection() {
 									</div>
 								</div>
 							</div>
-
 						</div>
 					</div>
 				</div>
-			</div>
+			</motion.div>
 		</section>
 	);
 }
