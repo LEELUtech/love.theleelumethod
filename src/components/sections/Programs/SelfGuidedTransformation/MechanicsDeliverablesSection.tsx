@@ -4,6 +4,7 @@ import Button from "@/components/ui/Button";
 import Image from "next/image";
 import React from "react";
 import AnimatedMechanicStep from "./AnimatedMechanicStep";
+import SlowVideo from "@/components/ui/SlowVideo";
 
 export default function MechanicsDeliverablesSection() {
 	return (
@@ -69,34 +70,34 @@ export default function MechanicsDeliverablesSection() {
 					</div>
 				</div>
 
-				{/* ===== IMAGE BLOCK (MOBILE + TABLET ONLY) ===== */}
+				{/* ===== IMAGE/VIDEO BLOCK (MOBILE + TABLET ONLY) ===== */}
 				<div className="flex justify-center mt-[108px] lg:hidden">
 					<div
 						className="
-							relative
-							w-[361px] h-[390px]
-							md:w-[520px] md:h-[520px]
-						"
+      relative
+      w-[361px] h-[390px]
+      md:w-[520px] md:h-[520px]
+    "
 					>
-						{/* Main image */}
-						<Image
-							src="/images/lily/lily_3.png"
-							alt=""
-							fill
-							quality={100}
+						{/* Main video */}
+						<SlowVideo
+							src="https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/landingVideos%2Flanding_video_1.mp4?alt=media&token=0c8dc725-566d-4cff-a30a-f88ccec29974"
+							playbackRate={0.7}
 							className="
-								[mask-image:linear-gradient(to_bottom,black_70%,transparent_100%)]
-								[-webkit-mask-image:linear-gradient(to_bottom,black_70%,transparent_100%)]
-							"
+        w-full h-full object-cover
+        [mask-image:linear-gradient(to_bottom,black_70%,transparent_100%)]
+        [-webkit-mask-image:linear-gradient(to_bottom,black_70%,transparent_100%)]
+				rounded-t-[300px]
+      "
 						/>
 
 						{/* Ornament */}
 						<div
 							className="
-								absolute z-10 opacity-60
-								bottom-[-400px] left-[-65px] w-[484px] h-[506px]
-								md:bottom-[-320px] md:left-[-20px] md:w-[560px] md:h-[560px]
-							"
+        absolute z-10 opacity-60
+        bottom-[-400px] left-[-65px] w-[484px] h-[506px]
+        md:bottom-[-320px] md:left-[-20px] md:w-[560px] md:h-[560px]
+      "
 						>
 							<Image
 								src="/icons/ornament_3.svg"
@@ -104,40 +105,39 @@ export default function MechanicsDeliverablesSection() {
 								fill
 								quality={100}
 								className="
-									filter brightness-0 invert
-									[mask-image:linear-gradient(to_bottom,black_50%,transparent_100%)]
-									[-webkit-mask-image:linear-gradient(to_bottom,black_50%,transparent_100%)]
-								"
+          filter brightness-0 invert
+          [mask-image:linear-gradient(to_bottom,black_50%,transparent_100%)]
+          [-webkit-mask-image:linear-gradient(to_bottom,black_50%,transparent_100%)]
+        "
 							/>
 						</div>
 
 						{/* Floating card */}
 						<div
 							className="
-								absolute z-20
-								bottom-[-280px] right-[100px]
-								w-[166px] h-[238px]
-								md:bottom-[-210px] md:right-[178px]
-								bg-[#FFEBE5]
-								rounded-[20px]
-								shadow-[5.62px_5.62px_16.85px_0px_rgba(0,0,0,0.1)]
-								flex flex-col items-center gap-[16px] pt-[20px] px-4
-							"
+        absolute z-20
+        bottom-[-280px] right-[100px]
+        w-[166px] h-[238px]
+        md:bottom-[-210px] md:right-[178px]
+        bg-[#FFEBE5]
+        rounded-[20px]
+        shadow-[5.62px_5.62px_16.85px_0px_rgba(0,0,0,0.1)]
+        flex flex-col items-center gap-[16px] pt-[20px] px-4
+      "
 						>
 							<div
 								className="
-									relative
-									flex items-center justify-center
-									bg-[#EB4F68]
-									rounded-[300px]
-									w-[58px] h-[86px]
-									overflow-hidden
-									
-									before:absolute before:inset-0
-									before:bg-[url('/icons/noise.png')]
-									before:opacity-15
-									before:mix-blend-overlay
-								"
+          relative
+          flex items-center justify-center
+          bg-[#EB4F68]
+          rounded-[300px]
+          w-[58px] h-[86px]
+          overflow-hidden
+          before:absolute before:inset-0
+          before:bg-[url('/icons/noise.png')]
+          before:opacity-15
+          before:mix-blend-overlay
+        "
 							>
 								<Image
 									src="/leelu_logo.svg"
@@ -231,15 +231,15 @@ export default function MechanicsDeliverablesSection() {
 					{/* RIGHT: IMAGE (DESKTOP ONLY) */}
 					<div className="hidden lg:flex">
 						<div className="relative w-[496px] h-[535px]">
-							<Image
-								src="/images/lily/lily_3.png"
-								alt=""
-								fill
-								quality={100}
+							<SlowVideo
+								src="https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/landingVideos%2Flanding_video_1.mp4?alt=media&token=0c8dc725-566d-4cff-a30a-f88ccec29974"
 								className="
-									[mask-image:linear-gradient(to_bottom,black_70%,transparent_100%)]
-									[-webkit-mask-image:linear-gradient(to_bottom,black_70%,transparent_100%)]
-								"
+		w-full h-full object-cover
+		[mask-image:linear-gradient(to_bottom,black_60%,transparent_100%)]
+		[-webkit-mask-image:linear-gradient(to_bottom,black_60%,transparent_100%)]
+		rounded-t-[300px]
+	"
+								playbackRate={0.7}
 							/>
 
 							<div className="absolute z-30 bottom-[-300px] left-[20px] w-[484px] h-[506px] opacity-60">
@@ -256,7 +256,7 @@ export default function MechanicsDeliverablesSection() {
 								/>
 							</div>
 
-							<div className="relative p-4 flex flex-col gap-[27px] items-center bottom-[-490px] left-[180px] w-[166px] h-[238px] bg-[#FFEBE5] z-[40] rounded-[20px] shadow-[5.62px_5.62px_16.85px_0px_rgba(0,0,0,0.1)]">
+							<div className="absolute p-4 flex flex-col gap-[27px] items-center bottom-[-200px] left-[180px] w-[166px] h-[238px] bg-[#FFEBE5] z-[40] rounded-[20px] shadow-[5.62px_5.62px_16.85px_0px_rgba(0,0,0,0.1)]">
 								<div
 									className="
 									relative
@@ -273,7 +273,7 @@ export default function MechanicsDeliverablesSection() {
 									before:opacity-15
 									before:mix-blend-overlay
 								"
-															>
+								>
 									<Image
 										src="/leelu_logo.svg"
 										alt=""
