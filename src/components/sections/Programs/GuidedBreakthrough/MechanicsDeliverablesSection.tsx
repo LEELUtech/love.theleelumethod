@@ -4,6 +4,7 @@ import Button from "@/components/ui/Button";
 import Image from "next/image";
 import React from "react";
 import AnimatedMechanicStep from "./AnimatedMechanicStep";
+import SlowVideo from "@/components/ui/SlowVideo";
 
 export default function MechanicsDeliverablesSection() {
 	return (
@@ -77,15 +78,15 @@ export default function MechanicsDeliverablesSection() {
 							md:w-[520px] md:h-[520px]
 						"
 					>
-						{/* Main image */}
-						<Image
-							src="/images/lily/lily_3.png"
-							alt=""
-							fill
-							quality={100}
+						{/* Main video */}
+						<SlowVideo
+							src="https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/landingVideos%2Flanding_video_1.mp4?alt=media&token=0c8dc725-566d-4cff-a30a-f88ccec29974"
+							playbackRate={0.7}
 							className="
-								[mask-image:linear-gradient(to_bottom,black_70%,transparent_100%)]
-								[-webkit-mask-image:linear-gradient(to_bottom,black_70%,transparent_100%)]
+							w-full h-full object-cover
+							[mask-image:linear-gradient(to_bottom,black_70%,transparent_100%)]
+							[-webkit-mask-image:linear-gradient(to_bottom,black_70%,transparent_100%)]
+							rounded-t-[300px]
 							"
 						/>
 
@@ -223,15 +224,15 @@ export default function MechanicsDeliverablesSection() {
 					{/* RIGHT: IMAGE (DESKTOP ONLY) */}
 					<div className="hidden lg:flex h-[800px]">
 						<div className="relative w-[496px] h-[535px]">
-							<Image
-								src="/images/lily/lily_3.png"
-								alt=""
-								fill
-								quality={100}
+							<SlowVideo
+								src="https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/landingVideos%2Flanding_video_1.mp4?alt=media&token=0c8dc725-566d-4cff-a30a-f88ccec29974"
 								className="
-									[mask-image:linear-gradient(to_bottom,black_70%,transparent_100%)]
-									[-webkit-mask-image:linear-gradient(to_bottom,black_70%,transparent_100%)]
-								"
+								w-full h-full object-cover
+								[mask-image:linear-gradient(to_bottom,black_60%,transparent_100%)]
+								[-webkit-mask-image:linear-gradient(to_bottom,black_60%,transparent_100%)]
+								rounded-t-[300px]
+							"
+								playbackRate={0.7}
 							/>
 
 							<div className="absolute z-30 bottom-[-300px] left-[20px] w-[484px] h-[506px] opacity-60">
@@ -248,7 +249,7 @@ export default function MechanicsDeliverablesSection() {
 								/>
 							</div>
 
-							<div className="relative p-4 flex flex-col gap-[27px] items-center bottom-[-490px] left-[180px] w-[166px] h-[238px] bg-[#FFEBE5] z-[40] rounded-[20px] shadow-[5.62px_5.62px_16.85px_0px_rgba(0,0,0,0.1)]">
+							<div className="absolute p-4 flex flex-col gap-[27px] items-center bottom-[-200px] left-[180px] w-[166px] h-[238px] bg-[#FFEBE5] z-[40] rounded-[20px] shadow-[5.62px_5.62px_16.85px_0px_rgba(0,0,0,0.1)]">
 								<div
 									className="
 																	relative
