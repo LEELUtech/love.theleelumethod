@@ -31,16 +31,16 @@ const TheSynthesisSection = () => {
 							{/* Logo */}
 							<div
 								className="
-																		absolute left-1/2 bottom-[-40px] -translate-x-1/2
-																		flex items-center justify-center overflow-hidden
-																		bg-[#EB4F68]
-																		before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay
-																		rounded-[300px]
-																		w-[80px] h-[100px]
-																		md:w-[100px] md:h-[126px]
-																		lg:w-[101px] lg:h-[140px]
-																		z-10
-																	"
+								absolute left-1/2 bottom-[-40px] -translate-x-1/2
+								flex items-center justify-center overflow-hidden
+								bg-[#EB4F68]
+								before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay
+								rounded-[300px]
+								w-[80px] h-[100px]
+								md:w-[100px] md:h-[126px]
+								lg:w-[101px] lg:h-[140px]
+								z-10
+							"
 							> 
 								<RotateOnView duration={5} amount={0.4} ease="easeOut">
 									<Image
@@ -82,7 +82,27 @@ const TheSynthesisSection = () => {
 					<p className="font-medium text-[#5A5757] font-lato leading-[26px] tracking-normal mb-6 text-[17px] sm:text-[17px] lg:text-[17px]">
 						Since then, I’ve decoded patterns for thousands of people, from pragmatic founders to whom the word “spiritual” is a red-flag to artists and deep feelers with a profound call toward their life’s purpose. 
 					</p>
-
+					{/* Two images side by side */}
+					<div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center mb-4 lg:mb-4">
+						<div className="relative w-full sm:w-[48%] lg:max-w-[286px]  aspect-[286/175]">
+							<Image
+								src="/images/about/synthesis/img_1.png"
+								alt=""
+								fill
+								className="object-contain"
+								quality={100}
+							/>
+						</div>
+						<div className="relative w-full sm:w-[48%] lg:max-w-[286px]  aspect-[286/175]">
+							<Image
+								src="/images/about/synthesis/img_2.png"
+								alt=""
+								fill
+								className="object-contain"
+								quality={100}
+							/>
+						</div>
+					</div>
 					<p className="font-medium text-[#5A5757] font-lato leading-[26px] tracking-normal mb-6 text-[17px] sm:text-[17px] lg:text-[17px]">
 						Whether you are navigating a corporate merger or a crisis of identity, the friction is the same: You are trying to play a game without knowing the rules.
 					</p>

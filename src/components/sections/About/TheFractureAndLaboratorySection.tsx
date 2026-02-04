@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const TheFractureAndLaboratorySection = () => {
 	return (
-		<section className="relative pt-[80px] pb-[180px]  lg:pt-[111px] lg:pb-[552px]">
+		<section className="relative pt-[80px] pb-[180px]  lg:pt-[111px] lg:pb-[111px]">
 			{/* Background Image */}
 			<div className="absolute inset-0 z-[-1]">
 				<Image
@@ -236,95 +236,6 @@ const TheFractureAndLaboratorySection = () => {
 						Numerology didn’t just match the psychological profiles—it predicted
 						behavioral traits psychologists missed in 75% of cases.
 					</p>
-				</div>
-			</div>
-
-			{/* Results Photos */}
-			<div
-				className="
-    absolute
-    left-1/2
-    -translate-x-1/2
-    bottom-[-40px]
-    lg:bottom-[180px]
-    z-[150]
-    w-full
-    flex
-    justify-center
-    pointer-events-none
-  "
-			>
-				<div className="relative w-full max-w-[420px] lg:hidden pointer-events-none">
-					<div className="flex justify-center gap-[14px]">
-						{/* LEFT */}
-						<div className="relative w-[129px] h-[176px] shrink-0 bg-white pointer-events-none">
-							<Image
-								src="/images/results/result_1.jpg"
-								alt=""
-								fill
-								className="object-cover"
-								quality={100}
-							/>
-						</div>
-
-						{/* CENTER (drops down) */}
-						<div className="relative w-[129px] h-[176px] translate-y-[70px] z-30 shrink-0 bg-white pointer-events-none">
-							<Image
-								src="/images/results/result_2.jpg"
-								alt=""
-								fill
-								className="object-cover"
-								quality={100}
-							/>
-						</div>
-
-						{/* RIGHT */}
-						<div className="relative w-[129px] h-[176px] shrink-0 bg-white pointer-events-none">
-							<Image
-								src="/images/results/result_3.jpg"
-								alt=""
-								fill
-								className="object-cover"
-								quality={100}
-							/>
-						</div>
-					</div>
-				</div>
-
-				{/* DESKTOP (lg+) */}
-				<div className="relative hidden lg:grid grid-cols-3 gap-[53px] items-end pointer-events-none">
-					{/* LEFT */}
-					<div className="relative w-[233px] h-[318px] bg-white">
-						<Image
-							src="/images/results/result_1.jpg"
-							alt=""
-							fill
-							className="object-cover"
-							quality={100}
-						/>
-					</div>
-
-					{/* CENTER */}
-					<div className="relative w-[233px] h-[318px] translate-y-[110px] bg-white">
-						<Image
-							src="/images/results/result_2.jpg"
-							alt=""
-							fill
-							className="object-cover"
-							quality={100}
-						/>
-					</div>
-
-					{/* RIGHT */}
-					<div className="relative w-[233px] h-[318px] bg-white">
-						<Image
-							src="/images/results/result_3.jpg"
-							alt=""
-							fill
-							className="object-cover"
-							quality={100}
-						/>
-					</div>
 				</div>
 			</div>
 		</section>

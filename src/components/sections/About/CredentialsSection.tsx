@@ -4,12 +4,13 @@ const CredentialsSection = () => {
 	return (
 		<section className="relative pt-[80px] lg:pt-[112px] pb-[250px] lg:pb-[319px]">
 			<div className="container px-4">
-
 				{/* === MOBILE + TABLET IMAGE (TOP) === */}
 				<div className="flex justify-center mb-[128px] lg:hidden">
-					<div className="relative 
-						w-[361px] h-[460px] md:w-[461px] md:h-[600px]
-					">
+					<div
+						className="relative 
+						w-[361px] h-[500px] md:w-[461px] md:h-[600px]
+					"
+					>
 						<Image
 							src="/images/lily/lily_8.png"
 							alt="Credentials"
@@ -19,20 +20,30 @@ const CredentialsSection = () => {
 						/>
 
 						{/* Logo Badge */}
-						<div className="absolute 
-							bottom-[-35px] right-[-10px]
-							flex items-center justify-center 
-							bg-[#d8ac9e] rounded-[300px]
-							w-[100px] h-[130px]
-							md:w-[90px] md:h-[115px]
-							z-10
-						">
+						<div
+							className="
+    absolute
+    bottom-[-35px] right-[-10px]
+
+    flex items-center justify-center overflow-hidden
+    bg-[#d8ac9e] rounded-[300px]
+
+    w-[100px] h-[130px]
+    md:w-[90px] md:h-[115px]
+    z-10
+
+    before:absolute before:inset-0
+    before:bg-[url('/icons/noise.png')]
+    before:opacity-15
+    before:mix-blend-overlay
+  "
+						>
 							<Image
 								src="/leelu_logo.svg"
 								alt=""
 								width={65}
 								height={65}
-								className="filter brightness-0 invert"
+								className="relative z-10 filter brightness-0 invert"
 							/>
 						</div>
 					</div>
@@ -53,11 +64,9 @@ const CredentialsSection = () => {
 
 				{/* === DESKTOP GRID === */}
 				<div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-
 					{/* LEFT: TEXT */}
 					<div>
 						<div className="space-y-12 max-w-[557px] mx-auto lg:mx-0">
-
 							{[
 								{
 									title: "Specialized Training",
@@ -102,13 +111,12 @@ const CredentialsSection = () => {
 									</div>
 								</div>
 							))}
-
 						</div>
 					</div>
 
 					{/* RIGHT: IMAGE (DESKTOP ONLY) */}
 					<div className="hidden lg:flex">
-						<div className="relative w-[595px] h-[750px] shrink-0">
+						<div className="relative w-[595px] h-[913px] shrink-0">
 							<Image
 								src="/images/lily/lily_8.png"
 								alt="Credentials"
@@ -118,24 +126,34 @@ const CredentialsSection = () => {
 							/>
 
 							{/* Logo Badge */}
-							<div className="absolute 
-								bottom-[-50px] right-[-40px]
-								flex items-center justify-center 
-								bg-[#d8ac9e] rounded-[300px]
-								w-[123px] h-[155px]
-								z-10
-							">
+							<div
+								className="
+    absolute
+    bottom-[-50px] right-[-40px]
+    flex items-center justify-center
+    bg-[#d8ac9e] rounded-[300px]
+    w-[123px] h-[155px]
+    z-10
+    overflow-hidden
+
+    before:content-['']
+    before:absolute before:inset-0
+    before:bg-[url('/icons/noise.png')]
+    before:opacity-15
+    before:mix-blend-overlay
+    before:pointer-events-none
+  "
+							>
 								<Image
 									src="/leelu_logo.svg"
 									alt=""
 									width={75}
 									height={75}
-									className="filter brightness-0 invert"
+									className="relative z-10 filter brightness-0 invert"
 								/>
 							</div>
 						</div>
 					</div>
-
 				</div>
 			</div>
 		</section>
