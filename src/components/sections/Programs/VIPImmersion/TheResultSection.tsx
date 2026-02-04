@@ -1,3 +1,4 @@
+import RotateOnView from "@/components/ui/RotateOnView";
 import Image from "next/image";
 import React from "react";
 
@@ -14,21 +15,23 @@ export default function TheResultSection() {
 			>
 				{/* background ornament */}
 				<div
-					className="
-						absolute pointer-events-none z-0
-						top-[120px] left-1/2 -translate-x-1/2
-						w-[456px] h-[421px]
-						md:top-[70px] md:w-[520px] md:h-[480px]
-						lg:top-[80px] lg:w-[406px] lg:h-[391px]
-						opacity-100 md:opacity-100 lg:opacity-100
-					"
+					className="absolute pointer-events-none z-0 top-[120px] left-1/2 w-[456px] h-[421px] md:top-[70px] md:w-[520px] md:h-[480px] lg:top-[80px] lg:w-[406px] lg:h-[391px]"
+					style={{ transform: "translateX(-50%)" }}
 				>
-					<Image src="/icons/logo_orange.svg" alt="" fill />
+					<RotateOnView
+						duration={10}
+						repeat={false}
+						amount={0.1}
+						ease="easeOut"
+						className="w-full h-full"
+					>
+						<Image src="/icons/logo_orange.svg" alt="" fill />
+					</RotateOnView>
 				</div>
 
 				{/* top badge */}
 				<div className="relative z-10 flex justify-center mb-8 md:mb-10 lg:mb-8">
-					<div className="h-[129px] w-[93px] md:h-[140px] md:w-[100px] lg:h-[140px] lg:w-[96px] bg-brand-primary rounded-full flex items-center justify-center">
+					<div className="relative h-[129px] w-[93px] md:h-[140px] md:w-[100px] lg:h-[140px] lg:w-[96px] overflow-hidden bg-[#EB4F68] before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay rounded-full flex items-center justify-center">
 						<div className="relative w-[56px] h-[56px]">
 							<Image
 								src="/leelu_logo.svg"
@@ -66,7 +69,9 @@ export default function TheResultSection() {
 						max-w-[808px] mx-auto
 					"
 				>
-					This is not a repair job; it is a demolition and a rebuild. We do not patch the cracks; we pour a new foundation. You get the highest level of access to ensure you never return to the old version of your life.
+					This is not a repair job; it is a demolition and a rebuild. We do not
+					patch the cracks; we pour a new foundation. You get the highest level
+					of access to ensure you never return to the old version of your life.
 				</p>
 			</div>
 		</section>

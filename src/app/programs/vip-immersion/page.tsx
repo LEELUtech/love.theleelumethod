@@ -18,7 +18,7 @@ export default function VIPImmersionPage() {
 			<ItWorkedForMeSection />
 			<CostOfWaitingSection />
 			<CheckoutFormSection productId={VIP_IMMERSION} />
-			<Footer className="lg:pt-[150px]" />
+			{/* <Footer className="lg:pt-[150px]" /> */}
 		</main>
 	);
 }

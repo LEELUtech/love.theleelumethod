@@ -28,9 +28,27 @@ import { countries } from "@/helpers/countries";
 import { CountryOption, selectStyles } from "@/components/ui/Select";
 import CheckoutSectionLoader from "@/components/sections/Checkout/CheckoutSectionLoader";
 import ProgramFooter from "@/app/programs/ProgramFooter";
+import {
+	PROTOCOL_ESSENTIALS,
+	GUIDED_BREAKTHROUGH,
+	VIP_IMMERSION,
+} from "@/utils/constants";
 
 const pk = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!;
 const stripePromise = loadStripe(pk);
+
+function getButtonText(productId: string): string {
+	switch (productId) {
+		case PROTOCOL_ESSENTIALS:
+			return "SIGN UP & BEGIN THE PROTOCOL";
+		case GUIDED_BREAKTHROUGH:
+			return "SIGN UP & GET PERSONALIZED SUPPORT";
+		case VIP_IMMERSION:
+			return "SIGN UP & APPLY FOR VIP ACCESS";
+		default:
+			return "SIGN UP NOW";
+	}
+}
 
 const initialBilling: BillingForm = {
 	firstName: "",
@@ -382,6 +400,7 @@ export default function CheckoutFormSection({
 										loading={productLoading}
 										productName={product?.name}
 										priceLabel={priceLabel}
+										buttonText={getButtonText(productId)}
 										onSuccess={() => {
 											markSuccess();
 											router.push("/success");
