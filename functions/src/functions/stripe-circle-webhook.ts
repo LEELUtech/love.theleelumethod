@@ -3,9 +3,8 @@ import Stripe from "stripe";
 import { db } from "../configs/firebase";
 import { configs } from "../configs/env";
 import { handleCompatibilityReport } from "../utils/compatibility-report/compatibility-report";
-// import { handleProtocolEssentials } from "../utils/protocol-essentials/protocol-essentials";
-// import { handleGuidedBreakthrough } from "../utils/guided-breakthrough/guided-breakthrough";
-// import { handleVipImmersion } from "../utils/vip-immersion/vip-immersion";
+import { handleProtocolEssentials } from "../utils/protocol-essentials/protocol-essentials";
+import { createOrUpdateContact, createDeal } from "../lib/zoho-crm"; // ✅ включаем
 
 type ProductType =
   | "compatibility_report"
@@ -30,7 +29,6 @@ interface PaymentRecord {
 
 let stripe: Stripe | null = null;
 
-// Initialize Stripe client
 const getStripeClient = (): Stripe => {
   if (!stripe) {
     if (!configs.stripeSecretKeyTest) {
@@ -43,7 +41,6 @@ const getStripeClient = (): Stripe => {
   return stripe;
 };
 
-// Route payment to correct handler based on product type
 async function processPayment(pi: Stripe.PaymentIntent): Promise<void> {
   const productType = pi.metadata?.product_type as ProductType;
 
@@ -51,28 +48,20 @@ async function processPayment(pi: Stripe.PaymentIntent): Promise<void> {
   case "compatibility_report":
     await handleCompatibilityReport(pi);
     break;
-
   case "protocol_essentials":
-    // await handleProtocolEssentials(pi);
-    console.log("Protocol Essentials handler is currently disabled.");
+    await handleProtocolEssentials(pi);
     break;
-
   case "guided_breakthrough":
-    // await handleGuidedBreakthrough(pi);
     console.log("Guided Breakthrough handler is currently disabled.");
     break;
-
   case "vip_immersion":
-    // await handleVipImmersion(pi);
     console.log("VIP Immersion handler is currently disabled.");
     break;
-
   default:
     throw new Error(`Unsupported product type: ${productType}`);
   }
 }
 
-// Check if payment has all required metadata
 function validatePaymentIntent(pi: Stripe.PaymentIntent): {
   isValid: boolean;
   email: string;
@@ -83,13 +72,8 @@ function validatePaymentIntent(pi: Stripe.PaymentIntent): {
   const productType = pi.metadata?.product_type || "";
   const email = pi.metadata?.email || pi.receipt_email || "";
 
-  if (!productType) {
-    errors.push("Missing product_type in metadata");
-  }
-
-  if (!email) {
-    errors.push("Missing email in metadata or receipt_email");
-  }
+  if (!productType) errors.push("Missing product_type in metadata");
+  if (!email) errors.push("Missing email in metadata or receipt_email");
 
   const validProductTypes: ProductType[] = [
     "compatibility_report",
@@ -102,15 +86,9 @@ function validatePaymentIntent(pi: Stripe.PaymentIntent): {
     errors.push(`Invalid product_type: ${productType}`);
   }
 
-  return {
-    isValid: errors.length === 0,
-    email,
-    productType,
-    errors,
-  };
+  return { isValid: errors.length === 0, email, productType, errors };
 }
 
-// Atomically check and create payment record (idempotency with transaction)
 async function createPaymentRecordIfNotExists(
   pi: Stripe.PaymentIntent,
   eventId: string,
@@ -118,9 +96,7 @@ async function createPaymentRecordIfNotExists(
   const paymentRef = db.collection("payments").doc(pi.id);
 
   const email = pi.metadata?.email || pi.receipt_email || "";
-  if (!email) {
-    throw new Error("Email is required but missing in PaymentIntent");
-  }
+  if (!email) throw new Error("Email is required but missing in PaymentIntent");
 
   const record: PaymentRecord = {
     stripe_payment_intent_id: pi.id,
@@ -136,30 +112,17 @@ async function createPaymentRecordIfNotExists(
     processed_at: new Date(),
   };
 
-  try {
-    const result = await db.runTransaction(async (transaction) => {
-      const doc = await transaction.get(paymentRef);
+  const result = await db.runTransaction(async (transaction) => {
+    const doc = await transaction.get(paymentRef);
+    if (doc.exists) return { exists: true, record: null };
+    transaction.set(paymentRef, record);
+    return { exists: false, record };
+  });
 
-      if (doc.exists) {
-        return { exists: true, record: null };
-      }
-
-      transaction.set(paymentRef, record);
-      return { exists: false, record };
-    });
-
-    if (!result.exists) {
-      console.log("✅ Payment record created:", pi.id);
-    }
-
-    return result;
-  } catch (error) {
-    console.error("❌ Transaction failed:", error);
-    throw error;
-  }
+  if (!result.exists) console.log("✅ Payment record created:", pi.id);
+  return result;
 }
 
-// Update payment record status
 async function updatePaymentStatus(
   paymentIntentId: string,
   processingStatus: "completed" | "failed",
@@ -171,43 +134,49 @@ async function updatePaymentStatus(
     processing_status: processingStatus,
     processed_at: new Date(),
   };
-
-  if (error) {
-    updates.error = error;
-  }
+  if (error) updates.error = error;
 
   await paymentRef.update(updates);
   console.log(`✅ Payment status updated to ${processingStatus}:`, paymentIntentId);
 }
 
+function getProductName(productType: ProductType): string {
+  const names: Record<ProductType, string> = {
+    compatibility_report: "Compatibility Report",
+    protocol_essentials: "Protocol Essentials",
+    guided_breakthrough: "Guided Breakthrough",
+    vip_immersion: "VIP Immersion",
+  };
+  return names[productType] || productType;
+}
+
+function splitName(full?: string) {
+  const s = (full || "").trim();
+  if (!s) return { firstName: undefined, lastName: undefined };
+  const parts = s.split(/\s+/);
+  return {
+    firstName: parts[0],
+    lastName: parts.slice(1).join(" ") || undefined,
+  };
+}
+
 export const stripeCircleWebhook = onRequest(
-  {
-    cors: true,
-    region: "us-central1",
-  },
+  { cors: true, region: "us-central1" },
   async (req, res) => {
     console.log("🎯 Stripe Webhook received", {
       method: req.method,
       hasBody: !!req.rawBody,
     });
 
-    // Only accept POST requests
     if (req.method !== "POST") {
-      console.warn("❌ Invalid method:", req.method);
       res.status(405).send("Method Not Allowed");
       return;
     }
 
-    // Verify webhook signature
     const sig = req.headers["stripe-signature"];
     const rawBody = req.rawBody;
 
     if (!rawBody || !sig || !configs.stripeCircleWebhookSecret) {
-      console.error("❌ Missing webhook data:", {
-        hasRawBody: !!rawBody,
-        hasSignature: !!sig,
-        hasSecret: !!configs.stripeCircleWebhookSecret,
-      });
       res.status(400).send("Missing required webhook data");
       return;
     }
@@ -219,56 +188,27 @@ export const stripeCircleWebhook = onRequest(
         sig as string,
         configs.stripeCircleWebhookSecret as string,
       );
-      console.log("✅ Webhook signature verified:", event.id, event.type);
     } catch (err) {
       console.error("❌ Webhook signature verification failed:", err);
       res.status(400).send("Webhook signature verification failed");
       return;
     }
 
-    // Only handle payment_intent.succeeded events
     if (event.type !== "payment_intent.succeeded") {
-      console.log("ℹ️ Event type ignored:", event.type);
       res.status(200).send("Event type not handled");
       return;
     }
 
-    const pi = event.data.object as Stripe.PaymentIntent;
+    const piFromEvent = event.data.object as Stripe.PaymentIntent;
 
-    console.log(
-      "📦 FULL PAYMENT DATA:",
-      JSON.stringify(
-        {
-          id: pi.id,
-          amount: pi.amount,
-          amount_received: pi.amount_received,
-          currency: pi.currency,
-          status: pi.status,
-          created: pi.created,
-          metadata: pi.metadata,
-          receipt_email: pi.receipt_email,
-          customer: pi.customer,
-          description: pi.description,
-          payment_method: pi.payment_method,
-          shipping: pi.shipping,
-          billing_details: pi.latest_charge ? "see charges" : null,
-        },
-        null,
-        2,
-      ),
-    );
-
-    // Check payment status
-    if (pi.status !== "succeeded") {
-      console.warn("⚠️ Payment not succeeded:", {
-        id: pi.id,
-        status: pi.status,
-      });
+    if (piFromEvent.status !== "succeeded") {
       res.status(200).send("Payment not succeeded");
       return;
     }
 
-    // Validate required metadata first
+    // ✅ ВАЖНО: всегда берём свежий PI, чтобы подтянуть UTM/email/name/phone из update-payment-intent
+    const pi = await getStripeClient().paymentIntents.retrieve(piFromEvent.id);
+
     const validation = validatePaymentIntent(pi);
     if (!validation.isValid) {
       console.error("❌ Invalid PaymentIntent:", {
@@ -280,7 +220,6 @@ export const stripeCircleWebhook = onRequest(
       return;
     }
 
-    // Atomically create payment record (idempotency check + save in one transaction)
     let recordResult;
     try {
       recordResult = await createPaymentRecordIfNotExists(pi, event.id);
@@ -294,41 +233,86 @@ export const stripeCircleWebhook = onRequest(
     }
 
     if (recordResult.exists) {
-      console.log("✓ Payment already processed:", pi.id);
       res.status(200).send("Already processed");
       return;
     }
 
-    // Log payment details (only in development)
-    const amountMajor = typeof pi.amount === "number" ? (pi.amount / 100).toFixed(2) : "0.00";
+    const amountMajor =
+      typeof pi.amount === "number" ? (pi.amount / 100).toFixed(2) : "0.00";
 
     console.log("💰 Payment succeeded", {
       payment_intent_id: pi.id,
-      email:  validation.email,
+      email: validation.email,
       product_type: validation.productType,
       amount: `${amountMajor} ${(pi.currency ?? "").toUpperCase()}`,
-      created: typeof pi.created === "number" ? new Date(pi.created * 1000).toISOString() : null,
     });
 
-    // Process payment (record already saved with status="processing")
     try {
-      await processPayment(pi);
-      await updatePaymentStatus(pi.id, "completed");
+      // ✅ 1) Zoho sync (не валит webhook)
+      try {
+        const metadata = pi.metadata || {};
+        const site = (metadata.site || "").toString(); // у тебя уже нормализован в Next
+        const customerId = pi.customer ? String(pi.customer) : undefined;
 
-      console.log("✅ Payment processed successfully:", pi.id);
+        const { firstName, lastName } = splitName(metadata.name);
+
+        const productName = getProductName(validation.productType as ProductType);
+
+        const { contactId } = await createOrUpdateContact({
+          email: validation.email,
+          firstName,
+          lastName,
+          phone: metadata.phone,
+          productType: validation.productType,
+          amount: typeof pi.amount === "number" ? pi.amount : 0,
+          currency: pi.currency || "usd",
+          site,
+          stripePaymentIntentId: pi.id,
+          stripeCustomerId: customerId,
+          utmSource: metadata.utm_source,
+          utmMedium: metadata.utm_medium,
+          utmCampaign: metadata.utm_campaign,
+          utmContent: metadata.utm_content,
+          utmTerm: metadata.utm_term,
+          pagePath: metadata.page_path,
+        });
+
+        const dealName = `${productName} - ${validation.email}`;
+        await createDeal({
+          contactId,
+          dealName,
+          amount: typeof pi.amount === "number" ? pi.amount : 0,
+          currency: pi.currency || "usd",
+          productType: validation.productType,
+          paymentIntentId: pi.id,
+          site,
+          customerId,
+          utmSource: metadata.utm_source,
+          utmMedium: metadata.utm_medium,
+          utmCampaign: metadata.utm_campaign,
+          utmContent: metadata.utm_content,
+          utmTerm: metadata.utm_term,
+          checkoutVariant: metadata.checkout_variant,
+          pagePath: metadata.page_path,
+        });
+
+        console.log("✅ Zoho CRM synced (Contact + Deal)");
+      } catch (zohoError) {
+        console.error("⚠️ Zoho CRM sync failed (non-critical):", zohoError);
+      }
+
+      // ✅ 2) Your business handlers
+      await processPayment(pi);
+
+      await updatePaymentStatus(pi.id, "completed");
       res.status(200).send("Success");
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
-
-      // Update status to failed
       await updatePaymentStatus(pi.id, "failed", errorMsg);
-
       console.error("❌ Payment processing failed:", {
         payment_intent_id: pi.id,
         error: errorMsg,
-        stack: error instanceof Error ? error.stack : undefined,
       });
-
       res.status(500).send("Payment processing failed");
     }
   },

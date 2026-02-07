@@ -46,6 +46,15 @@ export type UpdateIntentPayload = {
   country?: string;
   birthDate1?: string;
   birthDate2?: string;
+  
+  // Phase 2: UTM tracking + context (for Zoho CRM attribution)
+  utmSource?: string;
+  utmMedium?: string;
+  utmCampaign?: string;
+  utmContent?: string;
+  utmTerm?: string;
+  checkoutVariant?: string;
+  pagePath?: string;
 };
 
 export type CreateIntentResponse = {

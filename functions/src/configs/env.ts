@@ -15,4 +15,19 @@ export const configs = {
   circleApiKey: process.env.CIRCLE_API_KEY || "",
   circleCommunityId: process.env.CIRCLE_COMMUNITY_ID || "",
   circleCommunityUrl: process.env.CIRCLE_COMMUNITY_URL || "",
+
+  //  ZOHO (SANDBOX VALUES)
+
+  // OAuth (US / .com)
+  zohoClientId: process.env.ZOHO_CLIENT_ID_SANDBOX || "",
+  zohoClientSecret: process.env.ZOHO_CLIENT_SECRET_SANDBOX || "",
+  zohoRefreshToken: process.env.ZOHO_REFRESH_TOKEN_SANDBOX || "",
+
+  // Domains
+  zohoAccountsDomain: process.env.ZOHO_ACCOUNTS_DOMAIN_SANDBOX || "accounts.zoho.com",
+
+  zohoApiDomain: process.env.ZOHO_API_DOMAIN_SANDBOX || "sandbox.zohoapis.com",
+
+  // Zoho OAuth: accounts.zoho.com
+  // Zoho CRM API: sandbox.zohoapis.com
 };

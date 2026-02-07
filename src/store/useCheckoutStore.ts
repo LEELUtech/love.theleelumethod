@@ -62,6 +62,14 @@ function buildUpdateKey(p: UpdateIntentPayload, intentId: string, intentToken: s
     norm(p.country).toUpperCase(),
     norm(p.birthDate1),
     norm(p.birthDate2),
+    // Phase 2: Include UTM params in deduplication key
+    norm(p.utmSource),
+    norm(p.utmMedium),
+    norm(p.utmCampaign),
+    norm(p.utmContent),
+    norm(p.utmTerm),
+    norm(p.checkoutVariant),
+    norm(p.pagePath),
   ].join("|");
 }
 
