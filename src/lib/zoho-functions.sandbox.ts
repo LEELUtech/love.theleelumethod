@@ -1,167 +1,418 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // src/lib/zoho-functions.sandbox.ts
-import { zohoSandboxRequest } from "@/lib/zoho-client.sandbox";
+import { zohoRequest } from "@/lib/zoho-client.sandbox";
 
-type CheckoutStartedInput = {
-  email: string;
-  firstName?: string;
-  lastName?: string;
-  phone?: string;
-
-  productType: string;      
-  checkoutVariant?: string;   
-  pagePath?: string;         
-  site?: string;              
-
-  utmSource?: string;
-  utmMedium?: string;
-  utmCampaign?: string;
-  utmContent?: string;
-  utmTerm?: string;
-
-  stripePaymentIntentId?: string;
+type UTM = {
+	utmSource?: string;
+	utmMedium?: string;
+	utmCampaign?: string;
+	utmContent?: string;
+	utmTerm?: string;
 };
 
-function guessLeadSource(utmSource?: string) {
-  const s = (utmSource || "").toLowerCase();
-  if (s.includes("instagram")) return "Instagram";
-  if (s.includes("tiktok")) return "TikTok";
-  if (s.includes("facebook")) return "Facebook";
-  if (s.includes("youtube")) return "YouTube";
-  if (s.includes("google")) return "Google";
-  return undefined;
+export type UpsertResult = { contactId: string; isNew: boolean };
+
+function cleanStr(v?: string | null) {
+	const s = (v ?? "").trim();
+	return s ? s : undefined;
 }
 
-export async function upsertContactCheckoutStartedSandbox(input: CheckoutStartedInput): Promise<{
-  contactId: string;
-  isNew: boolean;
-}> {
-  const email = input.email.trim();
-  if (!email) throw new Error("Email is required");
+function guessLeadSource(utmSource?: string) {
+	const s = (utmSource || "").toLowerCase();
+	if (s.includes("instagram")) return "Instagram";
+	if (s.includes("tiktok")) return "TikTok";
+	if (s.includes("facebook")) return "Facebook";
+	if (s.includes("youtube")) return "YouTube";
+	if (s.includes("google")) return "Google";
+	return undefined;
+}
 
-  // 1) search by email
-  let existing: any | null = null;
-  try {
-    const criteria = encodeURIComponent(`(Email:equals:${email})`);
-    const url = `https://${process.env.ZOHO_API_DOMAIN_SANDBOX}/crm/v2/Contacts/search?criteria=${criteria}`;
+/** ставим поле ТОЛЬКО если в CRM оно пустое */
+function setIfEmpty(
+	obj: Record<string, any>,
+	key: string,
+	current: any,
+	next?: any,
+) {
+	const val = typeof next === "string" ? cleanStr(next) : next;
+	if (val === undefined || val === null) return;
+	if (!current) obj[key] = val;
+}
 
-    const search = await zohoSandboxRequest({ method: "GET", url });
-    existing = search?.data?.[0] ?? null;
-  } catch (e: any) {
-    // Zoho often returns 204 for no content
-    const status = e?.response?.status;
-    if (status !== 204 && status !== 404) throw e;
-  }
+function isPlaceholderName(v: any) {
+	const s = String(v ?? "")
+		.trim()
+		.toLowerCase();
+	return !s || s === "unknown" || s === "lead" || s === "customer";
+}
 
-  const leadSource = guessLeadSource(input.utmSource);
+function setIfEmptyOrPlaceholder(
+	obj: Record<string, any>,
+	key: string,
+	current: any,
+	next?: any,
+) {
+	const val = typeof next === "string" ? cleanStr(next) : next;
+	if (val === undefined || val === null) return;
 
-  // helper: only set field if current empty
-  const setIfEmpty = (obj: Record<string, any>, key: string, current: any, next?: any) => {
-    if (next === undefined || next === null) return;
-    const s = typeof next === "string" ? next.trim() : next;
-    if (s === "" || s === undefined || s === null) return;
-    if (!current) obj[key] = s;
-  };
+	// ✅ пишем если пусто ИЛИ если там заглушка типа "Unknown"
+	if (!current || isPlaceholderName(current)) obj[key] = val;
+}
 
-  // 2) update
-  if (existing?.id) {
-    const updateData: Record<string, any> = { id: existing.id };
+/** аккуратно добавляем строку в Description, не раздувая > 3000 */
+function appendDescription(existingDesc: string | undefined, line: string) {
+	const l = cleanStr(line);
+	if (!l) return undefined;
 
-    // fill basics only if empty in CRM
-    setIfEmpty(updateData, "First_Name", existing.First_Name, input.firstName);
-    setIfEmpty(updateData, "Last_Name", existing.Last_Name, input.lastName);
-    setIfEmpty(updateData, "Phone", existing.Phone, input.phone);
+	const base = cleanStr(existingDesc) || "";
+	const next = base ? `${base}\n${l}` : l;
 
-    // first-touch attribution: only if empty
-    setIfEmpty(updateData, "First_UTM_Source", existing.First_UTM_Source, input.utmSource);
-    setIfEmpty(updateData, "First_UTM_Medium", existing.First_UTM_Medium, input.utmMedium);
-    setIfEmpty(updateData, "First_UTM_Campaign", existing.First_UTM_Campaign, input.utmCampaign);
-    setIfEmpty(updateData, "First_UTM_Content", existing.First_UTM_Content, input.utmContent);
-    setIfEmpty(updateData, "First_UTM_Term", existing.First_UTM_Term, input.utmTerm);
-    setIfEmpty(updateData, "First_Landing_Page", existing.First_Landing_Page, input.pagePath);
+	const LIMIT = 3000;
+	if (next.length <= LIMIT) return next;
 
-    // site fields: only if empty
-    setIfEmpty(updateData, "Site", existing.Site, input.site);
-    setIfEmpty(updateData, "Site_Source", existing.Site_Source, input.site);
+	return next.slice(next.length - LIMIT);
+}
 
-    // Lead source: only if empty
-    setIfEmpty(updateData, "Lead_Source", existing.Lead_Source, leadSource);
+async function findContactByEmail(email: string): Promise<any | null> {
+	const criteria = encodeURIComponent(`(Email:equals:${email})`);
+	const url = `https://${process.env.ZOHO_API_DOMAIN_SANDBOX}/crm/v2/Contacts/search?criteria=${criteria}`;
 
-    // Keep latest PI id (можно обновлять всегда, это безопасно)
-    if (input.stripePaymentIntentId?.trim()) {
-      updateData.Stripe_Payment_Intent_ID = input.stripePaymentIntentId.trim();
-    }
+	try {
+		const search = await zohoRequest({ method: "GET", url });
+		return search?.data?.[0] ?? null;
+	} catch (e: any) {
+		const status = e?.response?.status;
+		// Zoho часто отвечает 204 "No Content" если ничего не найдено
+		if (status === 204 || status === 404) return null;
+		throw e;
+	}
+}
 
-    // Context можно складывать в Description (не обязательно)
-    // (это удобно, если пока нет отдельного поля "Checkout Started")
-    const ctx = [
-      `Checkout Started`,
-      `productType=${input.productType}`,
-      input.checkoutVariant ? `variant=${input.checkoutVariant}` : null,
-      input.pagePath ? `page=${input.pagePath}` : null,
-    ].filter(Boolean).join(" | ");
+function buildCheckoutStartedLine(input: {
+	productType: string;
+	checkoutVariant?: string;
+	pagePath?: string;
+	site?: string;
+	stripePaymentIntentId?: string;
+}) {
+	const parts = [
+		"Checkout started",
+		`product=${input.productType}`,
+		input.checkoutVariant ? `variant=${input.checkoutVariant}` : null,
+		input.pagePath ? `page=${input.pagePath}` : null,
+		input.site ? `site=${input.site}` : null,
+		input.stripePaymentIntentId ? `pi=${input.stripePaymentIntentId}` : null,
+	].filter(Boolean);
 
-    // Не затирай Description если уже есть — просто допиши (очень аккуратно)
-    if (!existing.Description) {
-      updateData.Description = ctx;
-    }
+	return parts.join(" | ");
+}
 
-    const url = `https://${process.env.ZOHO_API_DOMAIN_SANDBOX}/crm/v2/Contacts`;
-    await zohoSandboxRequest({
-      method: "PUT",
-      url,
-      data: { data: [updateData] },
-    });
+/** ключ для дедупа checkout-started (стабильный, без PI) */
+function buildCheckoutStartedDedupeKey(input: {
+	productType: string;
+	checkoutVariant?: string;
+	pagePath?: string;
+}) {
+	const parts = [
+		"Checkout started",
+		`product=${input.productType}`,
+		input.checkoutVariant ? `variant=${input.checkoutVariant}` : null,
+		input.pagePath ? `page=${input.pagePath}` : null,
+	].filter(Boolean);
 
-    return { contactId: existing.id, isNew: false };
-  }
+	return parts.join(" | ");
+}
 
-  // 3) create new contact
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const createData: Record<string, any> = {
-    Email: email,
-    First_Name: input.firstName?.trim() || "Unknown",
-    Last_Name: input.lastName?.trim() || "Customer",
-  };
+/**
+ * ✅ ЭТАП 1 — Lead Captured (onBlur)
+ * - Создаёт Contact если его нет
+ * - Заполняет только first-touch поля (UTM + Landing Page + Site + Lead Source)
+ * - НЕ ПИШЕТ Description
+ * - НЕ трогает имя/телефон
+ */
+export async function upsertContactLeadCaptured(
+	input: {
+		email: string;
+		site?: string;
+		pagePath?: string;
+	} & UTM,
+): Promise<UpsertResult> {
+	const email = cleanStr(input.email)?.toLowerCase();
+	if (!email) throw new Error("Email is required");
 
-  if (input.phone?.trim()) createData.Phone = input.phone.trim();
-  if (leadSource) createData.Lead_Source = leadSource;
+	const existing = await findContactByEmail(email);
+	const leadSource = guessLeadSource(input.utmSource);
 
-  // first-touch directly
-  if (input.utmSource?.trim()) createData.First_UTM_Source = input.utmSource.trim();
-  if (input.utmMedium?.trim()) createData.First_UTM_Medium = input.utmMedium.trim();
-  if (input.utmCampaign?.trim()) createData.First_UTM_Campaign = input.utmCampaign.trim();
-  if (input.utmContent?.trim()) createData.First_UTM_Content = input.utmContent.trim();
-  if (input.utmTerm?.trim()) createData.First_UTM_Term = input.utmTerm.trim();
-  if (input.pagePath?.trim()) createData.First_Landing_Page = input.pagePath.trim();
+	// UPDATE EXISTING
+	if (existing?.id) {
+		const updateData: Record<string, any> = { id: existing.id };
 
-  if (input.site?.trim()) {
-    createData.Site = input.site.trim();
-    createData.Site_Source = input.site.trim();
-  }
+		// first-touch attribution (only if empty)
+		setIfEmpty(
+			updateData,
+			"First_UTM_Source",
+			existing.First_UTM_Source,
+			input.utmSource,
+		);
+		setIfEmpty(
+			updateData,
+			"First_UTM_Medium",
+			existing.First_UTM_Medium,
+			input.utmMedium,
+		);
+		setIfEmpty(
+			updateData,
+			"First_UTM_Campaign",
+			existing.First_UTM_Campaign,
+			input.utmCampaign,
+		);
+		setIfEmpty(
+			updateData,
+			"First_UTM_Content",
+			existing.First_UTM_Content,
+			input.utmContent,
+		);
+		setIfEmpty(
+			updateData,
+			"First_UTM_Term",
+			existing.First_UTM_Term,
+			input.utmTerm,
+		);
+		setIfEmpty(
+			updateData,
+			"First_Landing_Page",
+			existing.First_Landing_Page,
+			input.pagePath,
+		);
 
-  if (input.stripePaymentIntentId?.trim()) {
-    createData.Stripe_Payment_Intent_ID = input.stripePaymentIntentId.trim();
-  }
+		// site + lead source (only if empty)
+		setIfEmpty(updateData, "Site", existing.Site, input.site);
+		setIfEmpty(updateData, "Lead_Source", existing.Lead_Source, leadSource);
 
-  createData.Description = [
-    `Checkout Started`,
-    `productType=${input.productType}`,
-    input.checkoutVariant ? `variant=${input.checkoutVariant}` : null,
-    input.pagePath ? `page=${input.pagePath}` : null,
-  ].filter(Boolean).join(" | ");
+		// ничего обновлять — не делаем PUT
+		if (Object.keys(updateData).length === 1) {
+			return { contactId: existing.id, isNew: false };
+		}
 
-  const url = `https://${process.env.ZOHO_API_DOMAIN_SANDBOX}/crm/v2/Contacts`;
-  const created = await zohoSandboxRequest({
-    method: "POST",
-    url,
-    data: { data: [createData] },
-  });
+		const url = `https://${process.env.ZOHO_API_DOMAIN_SANDBOX}/crm/v2/Contacts`;
+		await zohoRequest({ method: "PUT", url, data: { data: [updateData] } });
 
-  const newId = created?.data?.[0]?.details?.id;
-  if (!newId) {
-    throw new Error(`Zoho create failed: ${JSON.stringify(created)}`);
-  }
+		return { contactId: existing.id, isNew: false };
+	}
 
-  return { contactId: newId, isNew: true };
+	// CREATE NEW
+	const createData: Record<string, any> = {
+		Email: email,
+		// Zoho часто требует имена
+		First_Name: "Unknown",
+		Last_Name: "Lead",
+	};
+
+	if (leadSource) createData.Lead_Source = leadSource;
+
+	if (cleanStr(input.utmSource))
+		createData.First_UTM_Source = input.utmSource!.trim();
+	if (cleanStr(input.utmMedium))
+		createData.First_UTM_Medium = input.utmMedium!.trim();
+	if (cleanStr(input.utmCampaign))
+		createData.First_UTM_Campaign = input.utmCampaign!.trim();
+	if (cleanStr(input.utmContent))
+		createData.First_UTM_Content = input.utmContent!.trim();
+	if (cleanStr(input.utmTerm))
+		createData.First_UTM_Term = input.utmTerm!.trim();
+
+	if (cleanStr(input.pagePath))
+		createData.First_Landing_Page = input.pagePath!.trim();
+	if (cleanStr(input.site)) createData.Site = input.site!.trim();
+
+	const url = `https://${process.env.ZOHO_API_DOMAIN_SANDBOX}/crm/v2/Contacts`;
+	const created = await zohoRequest({
+		method: "POST",
+		url,
+		data: { data: [createData] },
+	});
+
+	const newId = created?.data?.[0]?.details?.id;
+	if (!newId)
+		throw new Error(`Zoho create failed: missing id (check Zoho response)`);
+
+	return { contactId: newId, isNew: true };
+}
+
+/**
+ * ✅ ЭТАП 2 — Checkout Started (кнопка Pay)
+ * - Дополняем контакт (имя/телефон) ТОЛЬКО если пусто
+ * - First-touch поля — тоже только если пусто
+ * - Stripe_Payment_Intent_ID — можно обновлять всегда (безопасно)
+ * - Пишем лог в Description (append), но без дублей
+ */
+export async function upsertContactCheckoutStarted(
+	input: {
+		email: string;
+		firstName?: string;
+		lastName?: string;
+		phone?: string;
+
+		productType: string;
+		checkoutVariant?: string;
+		pagePath?: string;
+		site?: string;
+
+		stripePaymentIntentId?: string;
+	} & UTM,
+): Promise<UpsertResult> {
+	const email = cleanStr(input.email)?.toLowerCase();
+	if (!email) throw new Error("Email is required");
+
+	const existing = await findContactByEmail(email);
+	const leadSource = guessLeadSource(input.utmSource);
+
+	// UPDATE EXISTING
+	if (existing?.id) {
+		const updateData: Record<string, any> = { id: existing.id };
+
+		// basics (only if empty)
+		setIfEmptyOrPlaceholder(
+			updateData,
+			"First_Name",
+			existing.First_Name,
+			input.firstName,
+		);
+		setIfEmptyOrPlaceholder(
+			updateData,
+			"Last_Name",
+			existing.Last_Name,
+			input.lastName,
+		);
+		setIfEmpty(updateData, "Phone", existing.Phone, input.phone);
+
+		// first-touch (only if empty)
+		setIfEmpty(
+			updateData,
+			"First_UTM_Source",
+			existing.First_UTM_Source,
+			input.utmSource,
+		);
+		setIfEmpty(
+			updateData,
+			"First_UTM_Medium",
+			existing.First_UTM_Medium,
+			input.utmMedium,
+		);
+		setIfEmpty(
+			updateData,
+			"First_UTM_Campaign",
+			existing.First_UTM_Campaign,
+			input.utmCampaign,
+		);
+		setIfEmpty(
+			updateData,
+			"First_UTM_Content",
+			existing.First_UTM_Content,
+			input.utmContent,
+		);
+		setIfEmpty(
+			updateData,
+			"First_UTM_Term",
+			existing.First_UTM_Term,
+			input.utmTerm,
+		);
+		setIfEmpty(
+			updateData,
+			"First_Landing_Page",
+			existing.First_Landing_Page,
+			input.pagePath,
+		);
+
+		setIfEmpty(updateData, "Site", existing.Site, input.site);
+		setIfEmpty(updateData, "Lead_Source", existing.Lead_Source, leadSource);
+
+		// safe to always store latest PI if provided
+		if (cleanStr(input.stripePaymentIntentId)) {
+			updateData.Stripe_Payment_Intent_ID = input.stripePaymentIntentId!.trim();
+		}
+
+		// log step (append, без дублей)
+		const eventLine = buildCheckoutStartedLine({
+			productType: input.productType,
+			checkoutVariant: input.checkoutVariant,
+			pagePath: input.pagePath,
+			site: input.site,
+			stripePaymentIntentId: input.stripePaymentIntentId,
+		});
+
+		const dedupeKey = buildCheckoutStartedDedupeKey({
+			productType: input.productType,
+			checkoutVariant: input.checkoutVariant,
+			pagePath: input.pagePath,
+		});
+
+		if (!existing.Description?.includes(dedupeKey)) {
+			const nextDesc = appendDescription(existing.Description, eventLine);
+			if (nextDesc && nextDesc !== existing.Description) {
+				updateData.Description = nextDesc;
+			}
+		}
+
+		// ✅ ничего обновлять — не делаем PUT
+		if (Object.keys(updateData).length === 1) {
+			return { contactId: existing.id, isNew: false };
+		}
+
+		const url = `https://${process.env.ZOHO_API_DOMAIN_SANDBOX}/crm/v2/Contacts`;
+		await zohoRequest({ method: "PUT", url, data: { data: [updateData] } });
+
+		return { contactId: existing.id, isNew: false };
+	}
+
+	// CREATE NEW
+	const createData: Record<string, any> = {
+		Email: email,
+		First_Name: cleanStr(input.firstName) || "Unknown",
+		Last_Name: cleanStr(input.lastName) || "Customer",
+	};
+
+	if (cleanStr(input.phone)) createData.Phone = input.phone!.trim();
+	if (leadSource) createData.Lead_Source = leadSource;
+
+	if (cleanStr(input.utmSource))
+		createData.First_UTM_Source = input.utmSource!.trim();
+	if (cleanStr(input.utmMedium))
+		createData.First_UTM_Medium = input.utmMedium!.trim();
+	if (cleanStr(input.utmCampaign))
+		createData.First_UTM_Campaign = input.utmCampaign!.trim();
+	if (cleanStr(input.utmContent))
+		createData.First_UTM_Content = input.utmContent!.trim();
+	if (cleanStr(input.utmTerm))
+		createData.First_UTM_Term = input.utmTerm!.trim();
+
+	if (cleanStr(input.pagePath))
+		createData.First_Landing_Page = input.pagePath!.trim();
+	if (cleanStr(input.site)) createData.Site = input.site!.trim();
+
+	if (cleanStr(input.stripePaymentIntentId)) {
+		createData.Stripe_Payment_Intent_ID = input.stripePaymentIntentId!.trim();
+	}
+
+	// ✅ лог на создание
+	createData.Description = buildCheckoutStartedLine({
+		productType: input.productType,
+		checkoutVariant: input.checkoutVariant,
+		pagePath: input.pagePath,
+		site: input.site,
+		stripePaymentIntentId: input.stripePaymentIntentId,
+	});
+
+	const url = `https://${process.env.ZOHO_API_DOMAIN_SANDBOX}/crm/v2/Contacts`;
+	const created = await zohoRequest({
+		method: "POST",
+		url,
+		data: { data: [createData] },
+	});
+
+	const newId = created?.data?.[0]?.details?.id;
+	if (!newId)
+		throw new Error(`Zoho create failed: missing id (check Zoho response)`);
+
+	return { contactId: newId, isNew: true };
 }

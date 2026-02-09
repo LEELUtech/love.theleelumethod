@@ -1,319 +1,257 @@
+// functions/src/webhooks/stripeCircleWebhook.ts
 import { onRequest } from "firebase-functions/v2/https";
 import Stripe from "stripe";
-import { db } from "../configs/firebase";
+import { defineSecret } from "firebase-functions/params";
+
 import { configs } from "../configs/env";
-import { handleCompatibilityReport } from "../utils/compatibility-report/compatibility-report";
-import { handleProtocolEssentials } from "../utils/protocol-essentials/protocol-essentials";
-import { createOrUpdateContact, createDeal } from "../lib/zoho-crm"; // ✅ включаем
+import { createOrUpdateContact, createDeal } from "../lib/zoho-crm";
 
-type ProductType =
-  | "compatibility_report"
-  | "protocol_essentials"
-  | "guided_breakthrough"
-  | "vip_immersion";
+import {
+  cleanStr,
+  normalizeHost,
+  splitName,
+  getProductName,
+  validatePaymentIntent,
+  acquirePaymentLease,
+  updatePaymentStatus,
+  getStripeClient,
+  processPayment,
+  ProductType,
+  updateDeliveryStatus,
+  updateZohoContactId,
+  updateZohoDealId,
+  getPaymentRecord,
+  markFunnelStep,
+  errToMessage,
+} from "../utils/stripeCircleWebhook.helpers";
 
-interface PaymentRecord {
-  stripe_payment_intent_id: string;
-  stripe_event_id: string;
-  email: string;
-  product_type: ProductType;
-  amount: number | null;
-  currency: string | null;
-  status: string;
-  processing_status: "processing" | "completed" | "failed";
-  metadata: Record<string, string>;
-  created_at: FirebaseFirestore.Timestamp | Date;
-  processed_at: FirebaseFirestore.Timestamp | Date;
-  error?: string;
-}
+// Secrets must be attached to this function (Firebase v2)
+const ZOHO_CLIENT_ID_SANDBOX = defineSecret("ZOHO_CLIENT_ID_SANDBOX");
+const ZOHO_CLIENT_SECRET_SANDBOX = defineSecret("ZOHO_CLIENT_SECRET_SANDBOX");
+const ZOHO_REFRESH_TOKEN_SANDBOX = defineSecret("ZOHO_REFRESH_TOKEN_SANDBOX");
 
-let stripe: Stripe | null = null;
+// Optional (only if you store in Secret Manager)
+const ZOHO_ACCOUNTS_DOMAIN_SANDBOX = defineSecret("ZOHO_ACCOUNTS_DOMAIN_SANDBOX");
+const ZOHO_API_DOMAIN_SANDBOX = defineSecret("ZOHO_API_DOMAIN_SANDBOX");
 
-const getStripeClient = (): Stripe => {
-  if (!stripe) {
-    if (!configs.stripeSecretKeyTest) {
-      throw new Error("Stripe secret key (test) is not configured");
-    }
-    stripe = new Stripe(configs.stripeSecretKeyTest, {
-      apiVersion: "2025-04-30.basil",
-    });
-  }
-  return stripe;
-};
-
-async function processPayment(pi: Stripe.PaymentIntent): Promise<void> {
-  const productType = pi.metadata?.product_type as ProductType;
-
-  switch (productType) {
-  case "compatibility_report":
-    await handleCompatibilityReport(pi);
-    break;
-  case "protocol_essentials":
-    await handleProtocolEssentials(pi);
-    break;
-  case "guided_breakthrough":
-    console.log("Guided Breakthrough handler is currently disabled.");
-    break;
-  case "vip_immersion":
-    console.log("VIP Immersion handler is currently disabled.");
-    break;
-  default:
-    throw new Error(`Unsupported product type: ${productType}`);
-  }
-}
-
-function validatePaymentIntent(pi: Stripe.PaymentIntent): {
-  isValid: boolean;
-  email: string;
-  productType: string;
-  errors: string[];
-} {
-  const errors: string[] = [];
-  const productType = pi.metadata?.product_type || "";
-  const email = pi.metadata?.email || pi.receipt_email || "";
-
-  if (!productType) errors.push("Missing product_type in metadata");
-  if (!email) errors.push("Missing email in metadata or receipt_email");
-
-  const validProductTypes: ProductType[] = [
-    "compatibility_report",
-    "protocol_essentials",
-    "guided_breakthrough",
-    "vip_immersion",
-  ];
-
-  if (productType && !validProductTypes.includes(productType as ProductType)) {
-    errors.push(`Invalid product_type: ${productType}`);
-  }
-
-  return { isValid: errors.length === 0, email, productType, errors };
-}
-
-async function createPaymentRecordIfNotExists(
-  pi: Stripe.PaymentIntent,
-  eventId: string,
-): Promise<{ exists: boolean; record: PaymentRecord | null }> {
-  const paymentRef = db.collection("payments").doc(pi.id);
-
-  const email = pi.metadata?.email || pi.receipt_email || "";
-  if (!email) throw new Error("Email is required but missing in PaymentIntent");
-
-  const record: PaymentRecord = {
-    stripe_payment_intent_id: pi.id,
-    stripe_event_id: eventId,
-    email,
-    product_type: pi.metadata?.product_type as ProductType,
-    amount: typeof pi.amount === "number" ? pi.amount : null,
-    currency: pi.currency ?? null,
-    status: pi.status,
-    processing_status: "processing",
-    metadata: pi.metadata || {},
-    created_at: new Date(),
-    processed_at: new Date(),
-  };
-
-  const result = await db.runTransaction(async (transaction) => {
-    const doc = await transaction.get(paymentRef);
-    if (doc.exists) return { exists: true, record: null };
-    transaction.set(paymentRef, record);
-    return { exists: false, record };
-  });
-
-  if (!result.exists) console.log("✅ Payment record created:", pi.id);
-  return result;
-}
-
-async function updatePaymentStatus(
-  paymentIntentId: string,
-  processingStatus: "completed" | "failed",
-  error?: string,
-): Promise<void> {
-  const paymentRef = db.collection("payments").doc(paymentIntentId);
-
-  const updates: Partial<PaymentRecord> = {
-    processing_status: processingStatus,
-    processed_at: new Date(),
-  };
-  if (error) updates.error = error;
-
-  await paymentRef.update(updates);
-  console.log(`✅ Payment status updated to ${processingStatus}:`, paymentIntentId);
-}
-
-function getProductName(productType: ProductType): string {
-  const names: Record<ProductType, string> = {
-    compatibility_report: "Compatibility Report",
-    protocol_essentials: "Protocol Essentials",
-    guided_breakthrough: "Guided Breakthrough",
-    vip_immersion: "VIP Immersion",
-  };
-  return names[productType] || productType;
-}
-
-function splitName(full?: string) {
-  const s = (full || "").trim();
-  if (!s) return { firstName: undefined, lastName: undefined };
-  const parts = s.split(/\s+/);
-  return {
-    firstName: parts[0],
-    lastName: parts.slice(1).join(" ") || undefined,
-  };
+function safeId(id: string) {
+  return id.length > 10 ? `${id.slice(0, 6)}…${id.slice(-4)}` : id;
 }
 
 export const stripeCircleWebhook = onRequest(
-  { cors: true, region: "us-central1" },
+  {
+    cors: true,
+    region: "us-central1",
+    secrets: [
+      ZOHO_CLIENT_ID_SANDBOX,
+      ZOHO_CLIENT_SECRET_SANDBOX,
+      ZOHO_REFRESH_TOKEN_SANDBOX,
+      ZOHO_ACCOUNTS_DOMAIN_SANDBOX,
+      ZOHO_API_DOMAIN_SANDBOX,
+    ],
+  },
   async (req, res) => {
-    console.log("🎯 Stripe Webhook received", {
-      method: req.method,
-      hasBody: !!req.rawBody,
-    });
-
-    if (req.method !== "POST") {
-      res.status(405).send("Method Not Allowed");
-      return;
-    }
-
-    const sig = req.headers["stripe-signature"];
-    const rawBody = req.rawBody;
-
-    if (!rawBody || !sig || !configs.stripeCircleWebhookSecret) {
-      res.status(400).send("Missing required webhook data");
-      return;
-    }
-
-    let event: Stripe.Event;
-    try {
-      event = getStripeClient().webhooks.constructEvent(
-        rawBody,
-        sig as string,
-        configs.stripeCircleWebhookSecret as string,
-      );
-    } catch (err) {
-      console.error("❌ Webhook signature verification failed:", err);
-      res.status(400).send("Webhook signature verification failed");
-      return;
-    }
-
-    if (event.type !== "payment_intent.succeeded") {
-      res.status(200).send("Event type not handled");
-      return;
-    }
-
-    const piFromEvent = event.data.object as Stripe.PaymentIntent;
-
-    if (piFromEvent.status !== "succeeded") {
-      res.status(200).send("Payment not succeeded");
-      return;
-    }
-
-    // ✅ ВАЖНО: всегда берём свежий PI, чтобы подтянуть UTM/email/name/phone из update-payment-intent
-    const pi = await getStripeClient().paymentIntents.retrieve(piFromEvent.id);
-
-    const validation = validatePaymentIntent(pi);
-    if (!validation.isValid) {
-      console.error("❌ Invalid PaymentIntent:", {
-        id: pi.id,
-        errors: validation.errors,
-        metadata: pi.metadata,
-      });
-      res.status(400).send(`Invalid payment data: ${validation.errors.join(", ")}`);
-      return;
-    }
-
-    let recordResult;
-    try {
-      recordResult = await createPaymentRecordIfNotExists(pi, event.id);
-    } catch (error) {
-      console.error("❌ Failed to create payment record:", {
-        payment_intent_id: pi.id,
-        error: error instanceof Error ? error.message : String(error),
-      });
-      res.status(500).send("Failed to create payment record");
-      return;
-    }
-
-    if (recordResult.exists) {
-      res.status(200).send("Already processed");
-      return;
-    }
-
-    const amountMajor =
-      typeof pi.amount === "number" ? (pi.amount / 100).toFixed(2) : "0.00";
-
-    console.log("💰 Payment succeeded", {
-      payment_intent_id: pi.id,
-      email: validation.email,
-      product_type: validation.productType,
-      amount: `${amountMajor} ${(pi.currency ?? "").toUpperCase()}`,
-    });
+    const startedAt = Date.now();
+    const leaseId = `wh_${Date.now()}_${Math.random().toString(16).slice(2)}`;
 
     try {
-      // ✅ 1) Zoho sync (не валит webhook)
+      if (req.method !== "POST") {
+        res.status(405).send("Method Not Allowed");
+        return;
+      }
+
+      const sig = req.headers["stripe-signature"];
+      const rawBody = (req as any).rawBody;
+
+      if (!rawBody || !sig || !configs.stripeCircleWebhookSecret) {
+        res.status(400).send("Missing required webhook data");
+        return;
+      }
+
+      let event: Stripe.Event;
       try {
-        const metadata = pi.metadata || {};
-        const site = (metadata.site || "").toString(); // у тебя уже нормализован в Next
-        const customerId = pi.customer ? String(pi.customer) : undefined;
+        event = getStripeClient().webhooks.constructEvent(
+          rawBody,
+          sig as string,
+          configs.stripeCircleWebhookSecret,
+        );
+      } catch (e) {
+        console.error("Stripe signature verification failed", errToMessage(e));
+        res.status(400).send("Webhook signature verification failed");
+        return;
+      }
 
+      if (event.type !== "payment_intent.succeeded") {
+        res.status(200).send("Event type not handled");
+        return;
+      }
+
+      const piFromEvent = event.data.object as Stripe.PaymentIntent;
+      const pi = await getStripeClient().paymentIntents.retrieve(piFromEvent.id);
+
+      if (pi.status !== "succeeded") {
+        res.status(200).send("Payment not succeeded");
+        return;
+      }
+
+      const validation = validatePaymentIntent(pi);
+      if (!validation.isValid) {
+        console.error("Invalid PaymentIntent (no retry)", {
+          id: pi.id,
+          errors: validation.errors,
+          metadata: pi.metadata,
+          receipt_email: pi.receipt_email,
+        });
+        res.status(200).send(`Invalid payment data: ${validation.errors.join(", ")}`);
+        return;
+      }
+
+      // Idempotency / concurrency
+      const lease = await acquirePaymentLease(pi, event.id, leaseId);
+      if (lease.state === "already_completed") {
+        console.log("Already completed", { pi: pi.id, event: safeId(event.id) });
+        res.status(200).send("Already processed");
+        return;
+      }
+      if (lease.state === "locked_by_other") {
+        console.log("Locked by other", { pi: pi.id, event: safeId(event.id) });
+        res.status(200).send("In progress");
+        return;
+      }
+
+      const metadata = (pi.metadata || {}) as Record<string, string>;
+      const site = normalizeHost(cleanStr(metadata.site)) || "unknown";
+      const customerId = pi.customer ? String(pi.customer) : undefined;
+
+      console.log("Payment succeeded", {
+        payment_intent_id: pi.id,
+        email: validation.email,
+        product_type: validation.productType,
+        amount: `${(pi.amount / 100).toFixed(2)} ${(pi.currency ?? "").toUpperCase()}`,
+        site,
+        leaseId,
+      });
+
+      // Firestore funnel
+      await markFunnelStep(pi.id, "paid");
+
+      // Zoho contact (always try, even if delivery fails)
+      let contactId: string | undefined;
+      try {
         const { firstName, lastName } = splitName(metadata.name);
 
-        const productName = getProductName(validation.productType as ProductType);
-
-        const { contactId } = await createOrUpdateContact({
+        await createOrUpdateContact({
           email: validation.email,
           firstName,
           lastName,
-          phone: metadata.phone,
-          productType: validation.productType,
+          phone: cleanStr(metadata.phone),
+
+          productType: String(validation.productType),
           amount: typeof pi.amount === "number" ? pi.amount : 0,
           currency: pi.currency || "usd",
           site,
+
           stripePaymentIntentId: pi.id,
           stripeCustomerId: customerId,
-          utmSource: metadata.utm_source,
-          utmMedium: metadata.utm_medium,
-          utmCampaign: metadata.utm_campaign,
-          utmContent: metadata.utm_content,
-          utmTerm: metadata.utm_term,
-          pagePath: metadata.page_path,
+
+          utmSource: cleanStr(metadata.utm_source),
+          utmMedium: cleanStr(metadata.utm_medium),
+          utmCampaign: cleanStr(metadata.utm_campaign),
+          utmContent: cleanStr(metadata.utm_content),
+          utmTerm: cleanStr(metadata.utm_term),
+
+          pagePath: cleanStr(metadata.page_path),
+        }).then(async (c) => {
+          contactId = c.contactId;
+          await updateZohoContactId(pi.id, contactId!);
         });
 
-        const dealName = `${productName} - ${validation.email}`;
-        await createDeal({
-          contactId,
-          dealName,
-          amount: typeof pi.amount === "number" ? pi.amount : 0,
-          currency: pi.currency || "usd",
-          productType: validation.productType,
-          paymentIntentId: pi.id,
-          site,
-          customerId,
-          utmSource: metadata.utm_source,
-          utmMedium: metadata.utm_medium,
-          utmCampaign: metadata.utm_campaign,
-          utmContent: metadata.utm_content,
-          utmTerm: metadata.utm_term,
-          checkoutVariant: metadata.checkout_variant,
-          pagePath: metadata.page_path,
+        console.log("Zoho contact synced", { payment_intent_id: pi.id, contactId });
+      } catch (e) {
+        console.error("Zoho contact sync failed", {
+          payment_intent_id: pi.id,
+          error: errToMessage(e),
         });
-
-        console.log("✅ Zoho CRM synced (Contact + Deal)");
-      } catch (zohoError) {
-        console.error("⚠️ Zoho CRM sync failed (non-critical):", zohoError);
       }
 
-      // ✅ 2) Your business handlers
-      await processPayment(pi);
+      // Delivery (Circle etc.)
+      try {
+        await processPayment(pi);
+        await updateDeliveryStatus(pi.id, "delivered");
+        await markFunnelStep(pi.id, "delivered");
+      } catch (e) {
+        const msg = errToMessage(e);
+
+        console.error("Delivery failed", { payment_intent_id: pi.id, error: msg });
+
+        await updateDeliveryStatus(pi.id, "failed", msg);
+        await markFunnelStep(pi.id, "failed");
+        await updatePaymentStatus(pi.id, "failed", msg);
+
+        res.status(200).send("Accepted (delivery failed)");
+        return;
+      }
+
+      // Deal only after delivery success
+      try {
+        const existing = await getPaymentRecord(pi.id);
+
+        if (existing?.zoho_deal_id) {
+          console.log("Deal already exists", {
+            payment_intent_id: pi.id,
+            zoho_deal_id: existing.zoho_deal_id,
+          });
+        } else {
+          if (!contactId && existing?.zoho_contact_id) contactId = existing.zoho_contact_id;
+
+          if (!contactId) {
+            console.warn("No Zoho contactId, skipping deal creation", { payment_intent_id: pi.id });
+          } else {
+            const productName = getProductName(validation.productType as ProductType);
+            const dealName = `${productName} - ${validation.email}`;
+
+            const dealId = await createDeal({
+              contactId,
+              dealName,
+              amount: typeof pi.amount === "number" ? pi.amount : 0,
+              currency: pi.currency || "usd",
+              productType: String(validation.productType),
+              paymentIntentId: pi.id,
+              site,
+              customerId,
+
+              utmSource: cleanStr(metadata.utm_source),
+              utmMedium: cleanStr(metadata.utm_medium),
+              utmCampaign: cleanStr(metadata.utm_campaign),
+              utmContent: cleanStr(metadata.utm_content),
+              utmTerm: cleanStr(metadata.utm_term),
+
+              checkoutVariant: cleanStr(metadata.checkout_variant),
+              pagePath: cleanStr(metadata.page_path),
+            });
+
+            if (dealId) {
+              await updateZohoDealId(pi.id, dealId);
+              console.log("Zoho deal created", { payment_intent_id: pi.id, dealId });
+            } else {
+              console.warn("Zoho deal create returned null", { payment_intent_id: pi.id });
+            }
+          }
+        }
+      } catch (e) {
+        console.error("Zoho deal create failed", {
+          payment_intent_id: pi.id,
+          error: errToMessage(e),
+        });
+      }
 
       await updatePaymentStatus(pi.id, "completed");
+
+      console.log("Webhook finished", { payment_intent_id: pi.id, ms: Date.now() - startedAt });
       res.status(200).send("Success");
-    } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : String(error);
-      await updatePaymentStatus(pi.id, "failed", errorMsg);
-      console.error("❌ Payment processing failed:", {
-        payment_intent_id: pi.id,
-        error: errorMsg,
-      });
-      res.status(500).send("Payment processing failed");
+    } catch (e) {
+      console.error("Webhook fatal error", errToMessage(e));
+      res.status(200).send("Accepted");
     }
   },
 );

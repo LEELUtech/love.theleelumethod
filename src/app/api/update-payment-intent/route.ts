@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // app/api/update-payment-intent/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { getStripe } from "@/lib/stripe";
 import Stripe from "stripe";
-import { upsertContactCheckoutStartedSandbox } from "@/lib/zoho-functions.sandbox";
+import { getStripe } from "@/lib/stripe";
+import { upsertContactCheckoutStarted } from "@/lib/zoho-functions.sandbox";
 
 const stripe = getStripe();
 
@@ -31,21 +32,37 @@ type Body = {
   utmCampaign?: string;
   utmContent?: string;
   utmTerm?: string;
+
   checkoutVariant?: string;
   pagePath?: string;
 };
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+function clean(v?: string | null) {
+  const s = (v ?? "").trim();
+  return s ? s : undefined;
+}
+
+/**
+ * ✅ normalize host:
+ * - supports "https://domain:port/path"
+ * - strips port
+ * - strips trailing slashes
+ */
 function normalizeSite(raw?: string | null): string {
   const s = (raw || "").trim();
   if (!s) return "unknown";
+
   try {
     if (s.startsWith("http://") || s.startsWith("https://")) {
-      return new URL(s).host.toLowerCase();
+      const host = new URL(s).host.toLowerCase();
+      return host.split(":")[0];
     }
   } catch {}
-  return s.replace(/\/+$/, "").toLowerCase();
+
+  const host = s.replace(/\/+$/, "").toLowerCase();
+  return host.split(":")[0];
 }
 
 function getIncomingSite(req: Request): string {
@@ -54,6 +71,7 @@ function getIncomingSite(req: Request): string {
     req.headers.get("host") ||
     process.env.DOMAIN_URL ||
     "unknown";
+
   return normalizeSite(raw);
 }
 
@@ -68,7 +86,6 @@ function errToLogObject(e: any) {
   const status = e?.response?.status;
   const data = e?.response?.data;
   const headers = e?.response?.headers;
-
   return {
     status,
     data,
@@ -79,6 +96,75 @@ function errToLogObject(e: any) {
   };
 }
 
+/** whitelist: чтобы в metadata не улетал мусор */
+function buildMetadata(body: Body, pi: Stripe.PaymentIntent, siteFinal: string) {
+  const metadata: Record<string, string> = {
+    product_type: (pi.metadata?.product_type?.toString() || body.productType).trim(),
+    email: body.email.trim().toLowerCase(),
+    site: siteFinal,
+    updated_at: new Date().toISOString(),
+  };
+
+  // preserve immutable from create-intent
+  if (pi.metadata?.space_id) metadata.space_id = pi.metadata.space_id.toString();
+  if (pi.metadata?.created_at) metadata.created_at = pi.metadata.created_at.toString();
+  if (pi.metadata?.intent_token) metadata.intent_token = pi.metadata.intent_token.toString();
+
+  const firstName = clean(body.firstName);
+  const lastName = clean(body.lastName);
+  const fullName = clean([firstName, lastName].filter(Boolean).join(" "));
+  if (fullName) metadata.name = fullName;
+
+  const phone = clean(body.phone);
+  if (phone) metadata.phone = phone;
+
+  const address1 = clean(body.address1);
+  const address2 = clean(body.address2);
+  const city = clean(body.city);
+  const state = clean(body.state);
+  const postalCode = clean(body.postalCode);
+  const country = clean(body.country)?.toUpperCase();
+
+  if (address1) metadata.address_line1 = address1;
+  if (address2) metadata.address_line2 = address2;
+  if (city) metadata.city = city;
+  if (state) metadata.state = state;
+  if (postalCode) metadata.postal_code = postalCode;
+  if (country) metadata.country = country;
+
+  // compatibility_report special fields
+  if (metadata.product_type === "compatibility_report") {
+    const bd1 = clean(body.birthDate1);
+    const bd2 = clean(body.birthDate2);
+    if (!bd1 || !bd2) {
+      throw new Error("Missing birth dates for compatibility report");
+    }
+    metadata.birth_date_1 = bd1;
+    metadata.birth_date_2 = bd2;
+  }
+
+  // UTM / context
+  const utmSource = clean(body.utmSource);
+  const utmMedium = clean(body.utmMedium);
+  const utmCampaign = clean(body.utmCampaign);
+  const utmContent = clean(body.utmContent);
+  const utmTerm = clean(body.utmTerm);
+
+  if (utmSource) metadata.utm_source = utmSource;
+  if (utmMedium) metadata.utm_medium = utmMedium;
+  if (utmCampaign) metadata.utm_campaign = utmCampaign;
+  if (utmContent) metadata.utm_content = utmContent;
+  if (utmTerm) metadata.utm_term = utmTerm;
+
+  const checkoutVariant = clean(body.checkoutVariant);
+  const pagePath = clean(body.pagePath);
+
+  if (checkoutVariant) metadata.checkout_variant = checkoutVariant;
+  if (pagePath) metadata.page_path = pagePath;
+
+  return metadata;
+}
+
 export async function POST(req: NextRequest) {
   const requestId = `upi_${Date.now()}_${Math.random().toString(16).slice(2)}`;
 
@@ -87,10 +173,10 @@ export async function POST(req: NextRequest) {
 
     const incomingSite = getIncomingSite(req);
 
-    const intentId = body.intentId?.trim();
-    const intentToken = body.intentToken?.trim();
-    const productType = body.productType?.trim();
-    const email = body.email?.trim();
+    const intentId = clean(body.intentId);
+    const intentToken = clean(body.intentToken);
+    const productType = clean(body.productType);
+    const email = clean(body.email)?.toLowerCase();
 
     console.log("➡️ update-payment-intent START", {
       requestId,
@@ -110,8 +196,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid email format", requestId }, { status: 400 });
     }
 
+    // 1) retrieve PI
     const pi = await stripe.paymentIntents.retrieve(intentId);
 
+    // ✅ early exits: don't try to mutate finalized intents
+    if (pi.status === "canceled") {
+      return NextResponse.json({ ok: true, requestId, canceled: true }, { status: 200 });
+    }
+
+    // 2) security: token match
     const storedToken = (pi.metadata?.intent_token ?? "").toString();
     if (!storedToken || storedToken !== intentToken) {
       console.warn("⛔ Forbidden: intent token mismatch", {
@@ -123,11 +216,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Forbidden", requestId }, { status: 403 });
     }
 
-    // ✅ нормализуем storedSite чтобы пережить старые intents где было "http://..."
+    // 3) security: site match
     const storedSiteRaw = (pi.metadata?.site ?? "").toString();
     const storedSite = normalizeSite(storedSiteRaw);
 
-    if (storedSite && storedSite !== "unknown" && incomingSite !== "unknown" && storedSite !== incomingSite) {
+    if (
+      storedSite &&
+      storedSite !== "unknown" &&
+      incomingSite !== "unknown" &&
+      storedSite !== incomingSite
+    ) {
       console.warn("⛔ Forbidden: site mismatch", {
         requestId,
         intentId,
@@ -138,6 +236,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Forbidden", requestId }, { status: 403 });
     }
 
+    // 4) productType guard
     const existingType = (pi.metadata?.product_type ?? "").toString();
     if (existingType && existingType !== productType) {
       return NextResponse.json(
@@ -146,61 +245,71 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const metadata: Record<string, string> = {
-      product_type: existingType || productType,
-      email,
-      site: storedSite !== "unknown" ? storedSite : incomingSite, // ✅
-      updated_at: new Date().toISOString(),
-    };
+    const siteFinal = storedSite !== "unknown" ? storedSite : incomingSite;
 
-    if (pi.metadata?.space_id) metadata.space_id = pi.metadata.space_id.toString();
-    if (pi.metadata?.created_at) metadata.created_at = pi.metadata.created_at.toString();
-    if (pi.metadata?.intent_token) metadata.intent_token = pi.metadata.intent_token.toString();
+    // ✅ If already succeeded: do NOT update intent (Stripe may reject),
+    // but still do Zoho checkout-started best-effort for audit trail.
+    if (pi.status === "succeeded") {
+      let zoho: { contactId: string; isNew: boolean } | null = null;
+      try {
+        zoho = await upsertContactCheckoutStarted({
+          email,
+          firstName: body.firstName,
+          lastName: body.lastName,
+          phone: body.phone,
 
-    const firstName = body.firstName?.trim() || "";
-    const lastName = body.lastName?.trim() || "";
-    if (firstName || lastName) metadata.name = `${firstName} ${lastName}`.trim();
+          productType: existingType || productType,
+          checkoutVariant: body.checkoutVariant,
+          pagePath: body.pagePath,
+          site: siteFinal,
 
-    if (body.phone?.trim()) metadata.phone = body.phone.trim();
+          utmSource: body.utmSource,
+          utmMedium: body.utmMedium,
+          utmCampaign: body.utmCampaign,
+          utmContent: body.utmContent,
+          utmTerm: body.utmTerm,
 
-    if (body.address1?.trim()) metadata.address_line1 = body.address1.trim();
-    if (body.address2?.trim()) metadata.address_line2 = body.address2.trim();
-    if (body.city?.trim()) metadata.city = body.city.trim();
-    if (body.state?.trim()) metadata.state = body.state.trim();
-    if (body.postalCode?.trim()) metadata.postal_code = body.postalCode.trim();
-    if (body.country?.trim()) metadata.country = body.country.trim().toUpperCase();
-
-    if (productType === "compatibility_report") {
-      const bd1 = body.birthDate1?.trim();
-      const bd2 = body.birthDate2?.trim();
-      if (!bd1 || !bd2) {
-        return NextResponse.json(
-          { error: "Missing birth dates for compatibility report", requestId },
-          { status: 400 },
-        );
+          stripePaymentIntentId: pi.id,
+        });
+      } catch (e: any) {
+        console.error("⚠️ Zoho checkout-started upsert failed (pi already succeeded)", {
+          requestId,
+          ...errToLogObject(e),
+        });
       }
-      metadata.birth_date_1 = bd1;
-      metadata.birth_date_2 = bd2;
+
+      return NextResponse.json(
+        {
+          ok: true,
+          requestId,
+          intentId: pi.id,
+          site: siteFinal,
+          alreadySucceeded: true,
+          metadata: pi.metadata,
+          zoho,
+        },
+        { status: 200 },
+      );
     }
 
-    if (body.utmSource?.trim()) metadata.utm_source = body.utmSource.trim();
-    if (body.utmMedium?.trim()) metadata.utm_medium = body.utmMedium.trim();
-    if (body.utmCampaign?.trim()) metadata.utm_campaign = body.utmCampaign.trim();
-    if (body.utmContent?.trim()) metadata.utm_content = body.utmContent.trim();
-    if (body.utmTerm?.trim()) metadata.utm_term = body.utmTerm.trim();
+    // 5) build metadata
+    let metadata: Record<string, string>;
+    try {
+      metadata = buildMetadata({ ...body, email, productType: existingType || productType }, pi, siteFinal);
+    } catch (e: any) {
+      return NextResponse.json({ error: e?.message || "Invalid payload", requestId }, { status: 400 });
+    }
 
-    if (body.checkoutVariant?.trim()) metadata.checkout_variant = body.checkoutVariant.trim();
-    if (body.pagePath?.trim()) metadata.page_path = body.pagePath.trim();
-
+    // 6) update PI
     const updatedIntent = await stripe.paymentIntents.update(intentId, {
       receipt_email: email,
       metadata,
     });
 
-    // Zoho upsert (не ломаем чекаут если Zoho упал)
+    // 7) Zoho upsert (non-blocking)
     let zoho: { contactId: string; isNew: boolean } | null = null;
     try {
-      zoho = await upsertContactCheckoutStartedSandbox({
+      zoho = await upsertContactCheckoutStarted({
         email,
         firstName: body.firstName,
         lastName: body.lastName,
@@ -209,7 +318,7 @@ export async function POST(req: NextRequest) {
         productType: existingType || productType,
         checkoutVariant: body.checkoutVariant,
         pagePath: body.pagePath,
-        site: metadata.site,
+        site: siteFinal,
 
         utmSource: body.utmSource,
         utmMedium: body.utmMedium,
@@ -220,14 +329,14 @@ export async function POST(req: NextRequest) {
         stripePaymentIntentId: updatedIntent.id,
       });
     } catch (e: any) {
-      console.error("⚠️ Zoho upsert failed", { requestId, ...errToLogObject(e) });
+      console.error("⚠️ Zoho checkout-started upsert failed", { requestId, ...errToLogObject(e) });
     }
 
     return NextResponse.json({
       ok: true,
       requestId,
       intentId: updatedIntent.id,
-      site: metadata.site,
+      site: siteFinal,
       metadata: updatedIntent.metadata,
       zoho,
     });
@@ -236,13 +345,6 @@ export async function POST(req: NextRequest) {
 
     if (err instanceof Stripe.errors.StripeError) {
       return NextResponse.json({ error: err.message || "Stripe error", requestId }, { status: 400 });
-    }
-
-    if (err instanceof Error) {
-      return NextResponse.json(
-        { error: "Failed to update payment intent", details: err.message, requestId },
-        { status: 500 },
-      );
     }
 
     return NextResponse.json({ error: "Failed to update payment intent", requestId }, { status: 500 });

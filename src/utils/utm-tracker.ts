@@ -11,17 +11,11 @@ export interface UTMParams {
   utm_term?: string;
 }
 
-/**
- * Capture UTM params from URL on page load
- * Stores in sessionStorage for use during checkout
- * 
- * @returns UTMParams object if UTM params found, null otherwise
- */
 export function captureUTM(): UTMParams | null {
   if (typeof window === "undefined") return null;
 
   const params = new URLSearchParams(window.location.search);
-  
+
   const utm: UTMParams = {};
   const source = params.get("utm_source");
   const medium = params.get("utm_medium");
@@ -35,26 +29,21 @@ export function captureUTM(): UTMParams | null {
   if (content) utm.utm_content = content;
   if (term) utm.utm_term = term;
 
-  // Only store if at least one UTM param exists
-  if (Object.keys(utm).length > 0) {
-    sessionStorage.setItem("utm_params", JSON.stringify(utm));
-    return utm;
+  if (Object.keys(utm).length === 0) return null;
+
+  // ✅ first-touch: не перетираем существующее
+  const existing = window.localStorage.getItem("utm_params");
+  if (!existing) {
+    window.localStorage.setItem("utm_params", JSON.stringify(utm));
   }
 
-  return null;
+  return utm;
 }
 
-/**
- * Get stored UTM params from sessionStorage
- * 
- * @returns Stored UTM params or null if none found
- */
 export function getStoredUTM(): UTMParams | null {
   if (typeof window === "undefined") return null;
-  
-  const stored = sessionStorage.getItem("utm_params");
+  const stored = window.localStorage.getItem("utm_params");
   if (!stored) return null;
-  
   try {
     return JSON.parse(stored) as UTMParams;
   } catch {

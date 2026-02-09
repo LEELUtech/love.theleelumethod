@@ -140,7 +140,7 @@ export function StripeCardPart({
 						typeof window !== "undefined"
 							? window.location.pathname
 							: undefined,
-					checkoutVariant: productType, // Can be updated for A/B testing
+					// checkoutVariant: productType, // Can be updated for A/B testing
 				});
 			} catch (e: unknown) {
 				const msg =

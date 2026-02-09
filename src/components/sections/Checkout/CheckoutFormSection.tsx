@@ -33,6 +33,7 @@ import {
 	GUIDED_BREAKTHROUGH,
 	VIP_IMMERSION,
 } from "@/utils/constants";
+import { getStoredUTM } from "@/utils/utm-tracker"
 
 const pk = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!;
 const stripePromise = loadStripe(pk);
@@ -187,6 +188,51 @@ export default function CheckoutFormSection({
 		return isEmptyErrors(nextErrors);
 	}, [billing]);
 
+	const lastLeadEmailRef = React.useRef<string>("");
+	const leadAbortRef = React.useRef<AbortController | null>(null);
+
+	const captureLead = React.useCallback(async () => {
+		const email = (billing.email || "").trim().toLowerCase();
+		if (!email) return;
+
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (!emailRegex.test(email)) return;
+
+		if (lastLeadEmailRef.current === email) return;
+		lastLeadEmailRef.current = email;
+
+		const utm = getStoredUTM();
+
+		// cancel previous
+		leadAbortRef.current?.abort();
+		const controller = new AbortController();
+		leadAbortRef.current = controller;
+
+		const payload = {
+			email,
+			site: typeof window !== "undefined" ? window.location.host : undefined,
+			pagePath:
+				typeof window !== "undefined" ? window.location.pathname : undefined,
+			utmSource: utm?.utm_source,
+			utmMedium: utm?.utm_medium,
+			utmCampaign: utm?.utm_campaign,
+			utmContent: utm?.utm_content,
+			utmTerm: utm?.utm_term,
+		};
+
+		try {
+			await fetch("/api/lead-captured", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(payload),
+				signal: controller.signal,
+				keepalive: true,
+			});
+		} catch {
+			// silent
+		}
+	}, [billing.email]);
+
 	return (
 		<section className="relative bg-white py-[37px] md:py-[56px] lg:py-[37px] lg:h-[1497px] overflow-visible">
 			<div className="absolute inset-0 z-0">
@@ -274,6 +320,7 @@ export default function CheckoutFormSection({
 										placeholder="Email address"
 										value={billing.email}
 										onChange={(e) => setField("email", e.target.value)}
+										onBlur={captureLead}
 									/>
 									{showFieldError("email") ? (
 										<p className="mt-1 text-xs font-lato text-brand-primary">

@@ -17,15 +17,25 @@ const ALLOWED_PRODUCT_TYPES = new Set([
 
 type Body = { productType: string };
 
+/**
+ * ✅ normalize host:
+ * - supports "https://domain:port/path"
+ * - strips port
+ * - strips trailing slashes
+ */
 function normalizeSite(raw?: string | null): string {
   const s = (raw || "").trim();
   if (!s) return "unknown";
+
   try {
     if (s.startsWith("http://") || s.startsWith("https://")) {
-      return new URL(s).host.toLowerCase();
+      const host = new URL(s).host.toLowerCase();
+      return host.split(":")[0];
     }
   } catch {}
-  return s.replace(/\/+$/, "").toLowerCase();
+
+  const host = s.replace(/\/+$/, "").toLowerCase();
+  return host.split(":")[0];
 }
 
 function getIncomingSite(req: Request): string {
@@ -56,14 +66,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
-    const product = snap.data() as {
-      price?: number;
-      currency?: string;
-      space_id?: string;
-    };
+    const product = snap.data() as { price?: number; currency?: string; space_id?: string };
 
     const amount = typeof product.price === "number" ? product.price : 0;
     const currency = (product.currency ?? "USD").toLowerCase();
+
     if (!Number.isInteger(amount) || amount <= 0) {
       return NextResponse.json({ error: "Invalid product price" }, { status: 500 });
     }
@@ -73,7 +80,7 @@ export async function POST(req: NextRequest) {
 
     const metadata: Stripe.MetadataParam = {
       product_type: productType,
-      site: SITE, // ✅ всегда host, без протокола
+      site: SITE,
       created_at: new Date().toISOString(),
       intent_token: intentToken,
     };
@@ -95,7 +102,7 @@ export async function POST(req: NextRequest) {
       clientSecret: intent.client_secret,
       intentId: intent.id,
       intentToken,
-      site: SITE, // удобно дебажить
+      site: SITE,
     });
   } catch (err) {
     console.error("Error creating payment intent:", err);
