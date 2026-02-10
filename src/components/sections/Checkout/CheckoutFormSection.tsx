@@ -16,7 +16,6 @@ import useProductStore from "@/store/useProductStore";
 import { useCheckoutStore } from "@/store/useCheckoutStore";
 
 import { formatPriceFromCents } from "@/helpers";
-
 import {
 	type BillingForm,
 	validateBilling,
@@ -33,7 +32,7 @@ import {
 	GUIDED_BREAKTHROUGH,
 	VIP_IMMERSION,
 } from "@/utils/constants";
-import { getStoredUTM } from "@/utils/utm-tracker"
+import { getStoredUTM } from "@/utils/utm-tracker";
 
 const pk = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!;
 const stripePromise = loadStripe(pk);
@@ -68,6 +67,23 @@ interface CheckoutFormSectionProps {
 	productId: string;
 }
 
+// ✅ helper: собираем контекст (site/pagePath/utm) на клиенте
+function getClientContext() {
+	if (typeof window === "undefined") return {};
+	const utm = getStoredUTM();
+
+	return {
+		site: window.location.host,
+		pagePath: window.location.pathname,
+
+		utmSource: utm?.utm_source,
+		utmMedium: utm?.utm_medium,
+		utmCampaign: utm?.utm_campaign,
+		utmContent: utm?.utm_content,
+		utmTerm: utm?.utm_term,
+	};
+}
+
 export default function CheckoutFormSection({
 	productId,
 }: CheckoutFormSectionProps) {
@@ -87,6 +103,8 @@ export default function CheckoutFormSection({
 		reset,
 		markSuccess,
 		intentKey,
+		intentId,
+		intentToken,
 	} = useCheckoutStore();
 
 	// local state
@@ -96,6 +114,12 @@ export default function CheckoutFormSection({
 	const [errors, setErrors] = React.useState(() =>
 		validateBilling(initialBilling),
 	);
+
+	// ✅ фиксируем контекст 1 раз (чтобы create/lead/update использовали одинаковые значения)
+	const ctxRef = React.useRef<ReturnType<typeof getClientContext>>({});
+	React.useEffect(() => {
+		ctxRef.current = getClientContext();
+	}, []);
 
 	// derived
 	const priceLabel =
@@ -145,10 +169,12 @@ export default function CheckoutFormSection({
 		}
 
 		if (clientSecret && intentKey === expectedKey) return;
-
 		if (status !== "idle") return;
 
-		createIntent({ productType: productId }).catch(() => {});
+		// ✅ create-intent получает site/pagePath/utm*
+		createIntent({ productType: productId, ...(ctxRef.current || {}) }).catch(
+			() => {},
+		);
 	}, [
 		product,
 		productLoading,
@@ -181,57 +207,79 @@ export default function CheckoutFormSection({
 
 	const handleSubmitAttempt = React.useCallback(() => {
 		setSubmitAttempted(true);
-
 		const nextErrors = validateBilling(billing);
 		setErrors(nextErrors);
-
 		return isEmptyErrors(nextErrors);
 	}, [billing]);
 
-	const lastLeadEmailRef = React.useRef<string>("");
+	// --- lead-captured ---
+	const lastLeadEmailRef = React.useRef<string>(""); // дедуп blur
+	const lastLeadEmailWithPIRef = React.useRef<string>(""); // дедуп "с PI"
 	const leadAbortRef = React.useRef<AbortController | null>(null);
 
-	const captureLead = React.useCallback(async () => {
+	const captureLeadInternal = React.useCallback(
+		async (opts?: { force?: boolean }) => {
+			const email = (billing.email || "").trim().toLowerCase();
+			if (!email) return;
+
+			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+			if (!emailRegex.test(email)) return;
+
+			const hasPI = !!intentId && !!intentToken;
+
+			// обычный дедуп (blur)
+			if (!opts?.force && lastLeadEmailRef.current === email) return;
+
+			// отдельный дедуп для "догонялки с PI"
+			if (hasPI && lastLeadEmailWithPIRef.current === email) return;
+
+			lastLeadEmailRef.current = email;
+			if (hasPI) lastLeadEmailWithPIRef.current = email;
+
+			leadAbortRef.current?.abort();
+			const controller = new AbortController();
+			leadAbortRef.current = controller;
+
+			const payload = {
+				paymentIntentId: intentId || undefined,
+				intentToken: intentToken || undefined,
+				email,
+				...(ctxRef.current || {}),
+			};
+
+			try {
+				await fetch("/api/lead-captured", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(payload),
+					signal: controller.signal,
+					keepalive: true,
+				});
+			} catch {
+				// silent
+			}
+		},
+		[billing.email, intentId, intentToken],
+	);
+
+	// ✅ вот это и надо в onBlur
+	const onEmailBlur: React.FocusEventHandler<HTMLInputElement> =
+		React.useCallback(() => {
+			captureLeadInternal().catch(() => {});
+		}, [captureLeadInternal]);
+
+	// ✅ догонялка: если PI/token появились позже — отправим ещё раз (1 раз) уже с PI/token
+	React.useEffect(() => {
 		const email = (billing.email || "").trim().toLowerCase();
 		if (!email) return;
+		if (!intentId || !intentToken) return;
 
-		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		if (!emailRegex.test(email)) return;
+		captureLeadInternal({ force: true }).catch(() => {});
+	}, [intentId, intentToken, billing.email, captureLeadInternal]);
 
-		if (lastLeadEmailRef.current === email) return;
-		lastLeadEmailRef.current = email;
-
-		const utm = getStoredUTM();
-
-		// cancel previous
-		leadAbortRef.current?.abort();
-		const controller = new AbortController();
-		leadAbortRef.current = controller;
-
-		const payload = {
-			email,
-			site: typeof window !== "undefined" ? window.location.host : undefined,
-			pagePath:
-				typeof window !== "undefined" ? window.location.pathname : undefined,
-			utmSource: utm?.utm_source,
-			utmMedium: utm?.utm_medium,
-			utmCampaign: utm?.utm_campaign,
-			utmContent: utm?.utm_content,
-			utmTerm: utm?.utm_term,
-		};
-
-		try {
-			await fetch("/api/lead-captured", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(payload),
-				signal: controller.signal,
-				keepalive: true,
-			});
-		} catch {
-			// silent
-		}
-	}, [billing.email]);
+	// ------------------------------------------------------------
+	// ⬇️ ВСТАВЬ ТУТ ТВОЙ JSX вместо return null (как было раньше)
+	// ------------------------------------------------------------
 
 	return (
 		<section className="relative bg-white py-[37px] md:py-[56px] lg:py-[37px] lg:h-[1497px] overflow-visible">
@@ -320,7 +368,7 @@ export default function CheckoutFormSection({
 										placeholder="Email address"
 										value={billing.email}
 										onChange={(e) => setField("email", e.target.value)}
-										onBlur={captureLead}
+										  onBlur={onEmailBlur}
 									/>
 									{showFieldError("email") ? (
 										<p className="mt-1 text-xs font-lato text-brand-primary">

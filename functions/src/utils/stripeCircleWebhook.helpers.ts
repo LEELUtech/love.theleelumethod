@@ -17,26 +17,26 @@ export type DeliveryStatus = "not_started" | "delivered" | "failed";
 
 export type FunnelStep =
   | "unknown"
+  | "checkout_viewed"
   | "lead_captured"
   | "checkout_started"
   | "paid"
   | "delivered"
-  | "failed";
+  | "failed"
+  | "canceled"
+  | "abandoned"
+  | "delivery_failed";
 
-/**
- * payments/{payment_intent_id}
- * 1 документ = 1 покупка
- */
 export interface PaymentRecord {
   stripe_payment_intent_id: string;
-  stripe_event_id: string;
+  stripe_event_id?: string | null;
 
-  email: string;
-  product_type: ProductType;
+  email?: string | null;
+  product_type?: ProductType | null;
 
   amount: number | null; // cents
   currency: string | null;
-  status: string;
+  status: string | null;
 
   customer_id?: string | null;
 
@@ -67,8 +67,8 @@ export interface PaymentRecord {
 
   attempts: number;
 
-  created_at: Date;
-  processed_at: Date;
+  created_at: any;
+  processed_at: any;
 
   error?: string | null;
 }
@@ -87,26 +87,33 @@ export function getStripeClient(): Stripe {
   return stripe;
 }
 
-// --- tiny helpers ---
+// -------- tiny helpers --------
 export function cleanStr(v: unknown): string | undefined {
   const s = String(v ?? "").trim();
   return s ? s : undefined;
 }
 
+/**
+ * normalize host:
+ * - supports "https://domain:port/path"
+ * - strips port
+ * - strips trailing slashes
+ */
 export function normalizeHost(raw?: string): string | undefined {
   const s = (raw || "").trim();
   if (!s) return undefined;
 
   try {
     if (s.startsWith("http://") || s.startsWith("https://")) {
-      return new URL(s).host.toLowerCase();
+      const host = new URL(s).host.toLowerCase();
+      return host.split(":")[0];
     }
   } catch {
     // ignore
   }
 
-  // also remove trailing slashes
-  return s.replace(/\/+$/, "").toLowerCase();
+  const host = s.replace(/\/+$/, "").toLowerCase();
+  return host.split(":")[0];
 }
 
 export function splitName(full?: string) {
@@ -129,6 +136,16 @@ export function getProductName(productType: ProductType): string {
   return names[productType] || productType;
 }
 
+export function errToMessage(e: unknown): string {
+  if (e instanceof Error) return e.message;
+  try {
+    return JSON.stringify(e);
+  } catch {
+    return String(e);
+  }
+}
+
+// -------- validation --------
 export function validatePaymentIntent(pi: Stripe.PaymentIntent): {
   isValid: boolean;
   email: string;
@@ -158,9 +175,7 @@ export function validatePaymentIntent(pi: Stripe.PaymentIntent): {
   return { isValid: errors.length === 0, email, productType, errors };
 }
 
-/**
- * Delivery handlers (Circle etc.)
- */
+// -------- delivery handlers --------
 export async function processPayment(pi: Stripe.PaymentIntent): Promise<void> {
   const productType = pi.metadata?.product_type as ProductType;
 
@@ -182,6 +197,38 @@ export async function processPayment(pi: Stripe.PaymentIntent): Promise<void> {
   }
 }
 
+// -------- funnel / delivery advance-only --------
+const FUNNEL_RANK: Record<FunnelStep, number> = {
+  unknown: 0,
+  checkout_viewed: 10,
+  lead_captured: 20,
+  abandoned: 25,
+  checkout_started: 30,
+  paid: 40,
+  delivered: 50,
+  delivery_failed: 55,
+  failed: 60,
+  canceled: 60,
+};
+
+function shouldAdvanceFunnel(current?: string | null, next?: FunnelStep) {
+  const c = FUNNEL_RANK[(current || "unknown") as FunnelStep] ?? 0;
+  const n = FUNNEL_RANK[(next || "unknown") as FunnelStep] ?? 0;
+  return n >= c;
+}
+
+const DELIVERY_RANK: Record<DeliveryStatus, number> = {
+  not_started: 0,
+  delivered: 2,
+  failed: 1,
+};
+
+function shouldAdvanceDelivery(current?: DeliveryStatus | null, next?: DeliveryStatus) {
+  const c = DELIVERY_RANK[(current || "not_started") as DeliveryStatus] ?? 0;
+  const n = DELIVERY_RANK[(next || "not_started") as DeliveryStatus] ?? 0;
+  return n >= c;
+}
+
 function nowPlusMs(ms: number): Date {
   return new Date(Date.now() + ms);
 }
@@ -194,19 +241,173 @@ function toDateMaybe(v: any): Date | null {
   return isNaN(d.getTime()) ? null : d;
 }
 
-export function errToMessage(e: unknown): string {
-  if (e instanceof Error) return e.message;
-  try {
-    return JSON.stringify(e);
-  } catch {
-    return String(e);
-  }
+// -------- Firestore helpers --------
+export async function upsertPaymentBaseFromIntent(
+  pi: Stripe.PaymentIntent,
+  eventId?: string | null,
+): Promise<void> {
+  const metadata = (pi.metadata || {}) as Record<string, string>;
+  const site = normalizeHost(cleanStr(metadata.site)) || "unknown";
+
+  const email = String(pi.metadata?.email || pi.receipt_email || "").trim().toLowerCase();
+
+  await db.collection("payments").doc(pi.id).set(
+    {
+      stripe_payment_intent_id: pi.id,
+      stripe_event_id: eventId ?? null,
+
+      email: email || null,
+      product_type: (cleanStr(metadata.product_type) as ProductType) || null,
+
+      amount: typeof pi.amount === "number" ? pi.amount : null,
+      currency: pi.currency ?? null,
+      status: (pi.status as string) ?? null,
+
+      customer_id: pi.customer ? String(pi.customer) : null,
+
+      site,
+      page_path: cleanStr(metadata.page_path) ?? null,
+      checkout_variant: cleanStr(metadata.checkout_variant) ?? null,
+
+      utm_source: cleanStr(metadata.utm_source) ?? null,
+      utm_medium: cleanStr(metadata.utm_medium) ?? null,
+      utm_campaign: cleanStr(metadata.utm_campaign) ?? null,
+      utm_content: cleanStr(metadata.utm_content) ?? null,
+      utm_term: cleanStr(metadata.utm_term) ?? null,
+
+      metadata,
+
+      processed_at: new Date(),
+    },
+    { merge: true },
+  );
+}
+
+export async function getPaymentRecord(paymentIntentId: string): Promise<PaymentRecord | null> {
+  const snap = await db.collection("payments").doc(paymentIntentId).get();
+  return snap.exists ? (snap.data() as PaymentRecord) : null;
+}
+
+export async function markFunnelStepAdvanceOnly(
+  paymentIntentId: string,
+  step: FunnelStep,
+): Promise<void> {
+  const ref = db.collection("payments").doc(paymentIntentId);
+
+  await db.runTransaction(async (tx) => {
+    const snap = await tx.get(ref);
+    const current = snap.exists ? ((snap.data() as any)?.funnel_step as string | null) : null;
+
+    if (!snap.exists) {
+      tx.set(
+        ref,
+        {
+          stripe_payment_intent_id: paymentIntentId,
+          funnel_step: step,
+          processed_at: new Date(),
+          updated_at: new Date(),
+        },
+        { merge: true } as any,
+      );
+      return;
+    }
+
+    if (!shouldAdvanceFunnel(current, step)) {
+      tx.update(ref, { processed_at: new Date() });
+      return;
+    }
+
+    tx.update(ref, { funnel_step: step, processed_at: new Date() });
+  });
+}
+
+export async function updateDeliveryStatusAdvanceOnly(
+  paymentIntentId: string,
+  status: DeliveryStatus extends any ? "delivered" | "failed" : never,
+  error?: string,
+): Promise<void> {
+  const ref = db.collection("payments").doc(paymentIntentId);
+
+  await db.runTransaction(async (tx) => {
+    const snap = await tx.get(ref);
+    const current = snap.exists
+      ? (((snap.data() as any)?.delivery_status as DeliveryStatus | null) ?? null)
+      : null;
+
+    const next = status as DeliveryStatus;
+
+    if (!snap.exists) {
+      tx.set(
+        ref,
+        {
+          stripe_payment_intent_id: paymentIntentId,
+          delivery_status: next,
+          delivery_error: error || null,
+          processed_at: new Date(),
+          updated_at: new Date(),
+        },
+        { merge: true } as any,
+      );
+      return;
+    }
+
+    if (!shouldAdvanceDelivery(current, next)) {
+      // still can write error if none
+      if (error) tx.update(ref, { delivery_error: error, processed_at: new Date() });
+      else tx.update(ref, { processed_at: new Date() });
+      return;
+    }
+
+    tx.update(ref, {
+      delivery_status: next,
+      delivery_error: error || null,
+      processed_at: new Date(),
+    });
+  });
+}
+
+export async function updateZohoContactId(paymentIntentId: string, contactId: string): Promise<void> {
+  await db.collection("payments").doc(paymentIntentId).set(
+    {
+      zoho_contact_id: contactId,
+      zoho_synced_at: new Date(),
+      processed_at: new Date(),
+    },
+    { merge: true },
+  );
+}
+
+export async function updateZohoDealId(paymentIntentId: string, dealId: string): Promise<void> {
+  await db.collection("payments").doc(paymentIntentId).set(
+    {
+      zoho_deal_id: dealId,
+      zoho_synced_at: new Date(),
+      processed_at: new Date(),
+    },
+    { merge: true },
+  );
+}
+
+export async function updateProcessingStatus(
+  paymentIntentId: string,
+  processingStatus: ProcessingStatus,
+  error?: string,
+): Promise<void> {
+  const updates: Partial<PaymentRecord> = {
+    processing_status: processingStatus,
+    processed_at: new Date(),
+    locked_by: null,
+    lock_expires_at: null,
+  };
+  if (error) updates.error = error;
+
+  await db.collection("payments").doc(paymentIntentId).set(updates as any, { merge: true });
 }
 
 /**
  * Lease lock:
  * - prevents parallel webhook executions from creating multiple deals
- * - also supports retries after lock expiry
+ * - supports retries after lock expiry
  */
 export async function acquirePaymentLease(
   pi: Stripe.PaymentIntent,
@@ -230,10 +431,12 @@ export async function acquirePaymentLease(
     stripe_payment_intent_id: pi.id,
     stripe_event_id: eventId,
     email,
-    product_type: metadata.product_type as ProductType,
+    product_type: (cleanStr(metadata.product_type) as ProductType) || null,
+
     amount: typeof pi.amount === "number" ? pi.amount : null,
     currency: pi.currency ?? null,
-    status: pi.status,
+    status: (pi.status as string) ?? null,
+
     customer_id: pi.customer ? String(pi.customer) : null,
 
     site,
@@ -256,8 +459,10 @@ export async function acquirePaymentLease(
     if (!snap.exists) {
       const fresh: PaymentRecord = {
         ...recordBase,
+
         processing_status: "processing",
         funnel_step: "paid",
+
         delivery_status: "not_started",
         delivery_error: null,
 
@@ -296,10 +501,13 @@ export async function acquirePaymentLease(
       return { state: "locked_by_other" as const, record: existing };
     }
 
+    // advance-only funnel to paid
+    const nextFunnel = shouldAdvanceFunnel(existing.funnel_step ?? "unknown", "paid") ? "paid" : existing.funnel_step;
+
     tx.update(paymentRef, {
       ...recordBase,
       processing_status: "processing",
-      funnel_step: "paid",
+      funnel_step: nextFunnel,
       locked_by: leaseId,
       lock_expires_at: nowPlusMs(leaseMs),
       attempts: (existing.attempts || 0) + 1,
@@ -312,6 +520,7 @@ export async function acquirePaymentLease(
         ...existing,
         ...recordBase,
         processing_status: "processing",
+        funnel_step: nextFunnel as FunnelStep,
         locked_by: leaseId,
         lock_expires_at: nowPlusMs(leaseMs),
       } as PaymentRecord,
@@ -319,60 +528,4 @@ export async function acquirePaymentLease(
   });
 
   return out;
-}
-
-export async function getPaymentRecord(paymentIntentId: string): Promise<PaymentRecord | null> {
-  const snap = await db.collection("payments").doc(paymentIntentId).get();
-  return snap.exists ? (snap.data() as PaymentRecord) : null;
-}
-
-export async function markFunnelStep(paymentIntentId: string, step: FunnelStep): Promise<void> {
-  await db.collection("payments").doc(paymentIntentId).update({
-    funnel_step: step,
-    processed_at: new Date(),
-  });
-}
-
-export async function updateDeliveryStatus(
-  paymentIntentId: string,
-  status: "delivered" | "failed",
-  error?: string,
-): Promise<void> {
-  await db.collection("payments").doc(paymentIntentId).update({
-    delivery_status: status,
-    delivery_error: error || null,
-    processed_at: new Date(),
-  });
-}
-
-export async function updateZohoContactId(paymentIntentId: string, contactId: string): Promise<void> {
-  await db.collection("payments").doc(paymentIntentId).update({
-    zoho_contact_id: contactId,
-    zoho_synced_at: new Date(),
-    processed_at: new Date(),
-  });
-}
-
-export async function updateZohoDealId(paymentIntentId: string, dealId: string): Promise<void> {
-  await db.collection("payments").doc(paymentIntentId).update({
-    zoho_deal_id: dealId,
-    zoho_synced_at: new Date(),
-    processed_at: new Date(),
-  });
-}
-
-export async function updatePaymentStatus(
-  paymentIntentId: string,
-  processingStatus: "completed" | "failed",
-  error?: string,
-): Promise<void> {
-  const updates: Partial<PaymentRecord> = {
-    processing_status: processingStatus,
-    processed_at: new Date(),
-    locked_by: null,
-    lock_expires_at: null,
-  };
-  if (error) updates.error = error;
-
-  await db.collection("payments").doc(paymentIntentId).update(updates);
 }

@@ -4,7 +4,12 @@ import Stripe from "stripe";
 import { defineSecret } from "firebase-functions/params";
 
 import { configs } from "../configs/env";
-import { createOrUpdateContact, createDeal } from "../lib/zoho-crm";
+
+import {
+  createOrUpdateContact,
+  createDeal,
+  updateContactFunnelStepByEmail,
+} from "../lib/zoho-crm";
 
 import {
   cleanStr,
@@ -13,15 +18,16 @@ import {
   getProductName,
   validatePaymentIntent,
   acquirePaymentLease,
-  updatePaymentStatus,
-  getStripeClient,
-  processPayment,
-  ProductType,
-  updateDeliveryStatus,
+  upsertPaymentBaseFromIntent,
+  markFunnelStepAdvanceOnly,
+  updateDeliveryStatusAdvanceOnly,
   updateZohoContactId,
   updateZohoDealId,
   getPaymentRecord,
-  markFunnelStep,
+  updateProcessingStatus,
+  getStripeClient,
+  processPayment,
+  ProductType,
   errToMessage,
 } from "../utils/stripeCircleWebhook.helpers";
 
@@ -29,8 +35,6 @@ import {
 const ZOHO_CLIENT_ID_SANDBOX = defineSecret("ZOHO_CLIENT_ID_SANDBOX");
 const ZOHO_CLIENT_SECRET_SANDBOX = defineSecret("ZOHO_CLIENT_SECRET_SANDBOX");
 const ZOHO_REFRESH_TOKEN_SANDBOX = defineSecret("ZOHO_REFRESH_TOKEN_SANDBOX");
-
-// Optional (only if you store in Secret Manager)
 const ZOHO_ACCOUNTS_DOMAIN_SANDBOX = defineSecret("ZOHO_ACCOUNTS_DOMAIN_SANDBOX");
 const ZOHO_API_DOMAIN_SANDBOX = defineSecret("ZOHO_API_DOMAIN_SANDBOX");
 
@@ -68,9 +72,11 @@ export const stripeCircleWebhook = onRequest(
         return;
       }
 
+      const stripe = getStripeClient();
+
       let event: Stripe.Event;
       try {
-        event = getStripeClient().webhooks.constructEvent(
+        event = stripe.webhooks.constructEvent(
           rawBody,
           sig as string,
           configs.stripeCircleWebhookSecret,
@@ -81,14 +87,127 @@ export const stripeCircleWebhook = onRequest(
         return;
       }
 
-      if (event.type !== "payment_intent.succeeded") {
+      const handled = new Set([
+        "payment_intent.succeeded",
+        "payment_intent.payment_failed",
+        "payment_intent.canceled",
+      ] as const);
+
+      if (!handled.has(event.type as any)) {
         res.status(200).send("Event type not handled");
         return;
       }
 
       const piFromEvent = event.data.object as Stripe.PaymentIntent;
-      const pi = await getStripeClient().paymentIntents.retrieve(piFromEvent.id);
 
+      // Always re-fetch PI from Stripe (fresh status + metadata)
+      const pi = await stripe.paymentIntents.retrieve(piFromEvent.id);
+
+      const metadata = (pi.metadata || {}) as Record<string, string>;
+      const site = normalizeHost(cleanStr(metadata.site)) || "unknown";
+      const customerId = pi.customer ? String(pi.customer) : undefined;
+
+      const emailMaybe = (cleanStr(metadata.email) || cleanStr(pi.receipt_email) || "")
+        .trim()
+        .toLowerCase();
+
+      // ---------------------------------------------------
+      // FAILED / CANCELED
+      // ---------------------------------------------------
+      if (event.type === "payment_intent.payment_failed" || event.type === "payment_intent.canceled") {
+        const isCanceled = event.type === "payment_intent.canceled";
+        const msg = isCanceled
+          ? "Payment canceled"
+          : (pi.last_payment_error?.message || "Payment failed");
+
+        console.log("Payment failed/canceled", {
+          payment_intent_id: pi.id,
+          event: safeId(event.id),
+          type: event.type,
+          stripe_status: pi.status,
+          email: emailMaybe || undefined,
+          reason: msg,
+        });
+
+        // 0) Upsert Firestore base doc (best-effort)
+        try {
+          await upsertPaymentBaseFromIntent(pi, event.id);
+        } catch (e) {
+          console.error("Upsert payment base failed (failed/canceled)", {
+            payment_intent_id: pi.id,
+            error: errToMessage(e),
+          });
+        }
+
+        // 1) Firestore status updates (advance-only funnel + delivery)
+        try {
+          await markFunnelStepAdvanceOnly(pi.id, isCanceled ? "canceled" : "failed");
+          await updateDeliveryStatusAdvanceOnly(pi.id, "failed", msg);
+          await updateProcessingStatus(pi.id, "failed", msg);
+        } catch (e) {
+          console.error("Firestore update failed for failed/canceled", {
+            payment_intent_id: pi.id,
+            error: errToMessage(e),
+          });
+        }
+
+        // 2) Zoho best-effort
+        try {
+          const email = cleanStr(metadata.email) || cleanStr(pi.receipt_email);
+          const productType = cleanStr(metadata.product_type);
+
+          if (email && productType) {
+            const { firstName, lastName } = splitName(metadata.name);
+
+            const c = await createOrUpdateContact({
+              email: email.toLowerCase(),
+              firstName,
+              lastName,
+              phone: cleanStr(metadata.phone),
+
+              productType,
+              amount: typeof pi.amount === "number" ? pi.amount : 0,
+              currency: pi.currency || "usd",
+              site,
+
+              stripePaymentIntentId: pi.id,
+              stripeCustomerId: customerId,
+
+              utmSource: cleanStr(metadata.utm_source),
+              utmMedium: cleanStr(metadata.utm_medium),
+              utmCampaign: cleanStr(metadata.utm_campaign),
+              utmContent: cleanStr(metadata.utm_content),
+              utmTerm: cleanStr(metadata.utm_term),
+
+              pagePath: cleanStr(metadata.page_path),
+            });
+
+            try {
+              await updateZohoContactId(pi.id, c.contactId);
+            } catch {
+              // ignore
+            }
+
+            await updateContactFunnelStepByEmail({
+              email: email.toLowerCase(),
+              funnelStep: isCanceled ? "canceled" : "failed",
+              lastError: msg,
+            });
+          }
+        } catch (e) {
+          console.error("Zoho sync failed for failed/canceled (non-critical)", {
+            payment_intent_id: pi.id,
+            error: errToMessage(e),
+          });
+        }
+
+        res.status(200).send("Accepted");
+        return;
+      }
+
+      // ---------------------------------------------------
+      // SUCCEEDED
+      // ---------------------------------------------------
       if (pi.status !== "succeeded") {
         res.status(200).send("Payment not succeeded");
         return;
@@ -106,7 +225,17 @@ export const stripeCircleWebhook = onRequest(
         return;
       }
 
-      // Idempotency / concurrency
+      // Always upsert base doc early
+      try {
+        await upsertPaymentBaseFromIntent(pi, event.id);
+      } catch (e) {
+        console.error("Upsert payment base failed (succeeded)", {
+          payment_intent_id: pi.id,
+          error: errToMessage(e),
+        });
+      }
+
+      // Idempotency / concurrency (lease)
       const lease = await acquirePaymentLease(pi, event.id, leaseId);
       if (lease.state === "already_completed") {
         console.log("Already completed", { pi: pi.id, event: safeId(event.id) });
@@ -119,10 +248,6 @@ export const stripeCircleWebhook = onRequest(
         return;
       }
 
-      const metadata = (pi.metadata || {}) as Record<string, string>;
-      const site = normalizeHost(cleanStr(metadata.site)) || "unknown";
-      const customerId = pi.customer ? String(pi.customer) : undefined;
-
       console.log("Payment succeeded", {
         payment_intent_id: pi.id,
         email: validation.email,
@@ -132,15 +257,15 @@ export const stripeCircleWebhook = onRequest(
         leaseId,
       });
 
-      // Firestore funnel
-      await markFunnelStep(pi.id, "paid");
+      // Firestore: paid (advance-only)
+      await markFunnelStepAdvanceOnly(pi.id, "paid");
 
-      // Zoho contact (always try, even if delivery fails)
+      // Zoho contact (even if delivery fails)
       let contactId: string | undefined;
       try {
         const { firstName, lastName } = splitName(metadata.name);
 
-        await createOrUpdateContact({
+        const c = await createOrUpdateContact({
           email: validation.email,
           firstName,
           lastName,
@@ -161,9 +286,14 @@ export const stripeCircleWebhook = onRequest(
           utmTerm: cleanStr(metadata.utm_term),
 
           pagePath: cleanStr(metadata.page_path),
-        }).then(async (c) => {
-          contactId = c.contactId;
-          await updateZohoContactId(pi.id, contactId!);
+        });
+
+        contactId = c.contactId;
+        await updateZohoContactId(pi.id, contactId);
+
+        await updateContactFunnelStepByEmail({
+          email: validation.email,
+          funnelStep: "paid",
         });
 
         console.log("Zoho contact synced", { payment_intent_id: pi.id, contactId });
@@ -177,16 +307,35 @@ export const stripeCircleWebhook = onRequest(
       // Delivery (Circle etc.)
       try {
         await processPayment(pi);
-        await updateDeliveryStatus(pi.id, "delivered");
-        await markFunnelStep(pi.id, "delivered");
+
+        await updateDeliveryStatusAdvanceOnly(pi.id, "delivered");
+        await markFunnelStepAdvanceOnly(pi.id, "delivered");
+
+        await updateContactFunnelStepByEmail({
+          email: validation.email,
+          funnelStep: "delivered",
+        });
       } catch (e) {
         const msg = errToMessage(e);
 
         console.error("Delivery failed", { payment_intent_id: pi.id, error: msg });
 
-        await updateDeliveryStatus(pi.id, "failed", msg);
-        await markFunnelStep(pi.id, "failed");
-        await updatePaymentStatus(pi.id, "failed", msg);
+        await updateDeliveryStatusAdvanceOnly(pi.id, "failed", msg);
+        await markFunnelStepAdvanceOnly(pi.id, "failed");
+        await updateProcessingStatus(pi.id, "failed", msg);
+
+        try {
+          await updateContactFunnelStepByEmail({
+            email: validation.email,
+            funnelStep: "delivery_failed",
+            lastError: msg,
+          });
+        } catch (e2) {
+          console.error("Zoho funnel update failed (delivery_failed)", {
+            payment_intent_id: pi.id,
+            error: errToMessage(e2),
+          });
+        }
 
         res.status(200).send("Accepted (delivery failed)");
         return;
@@ -245,7 +394,7 @@ export const stripeCircleWebhook = onRequest(
         });
       }
 
-      await updatePaymentStatus(pi.id, "completed");
+      await updateProcessingStatus(pi.id, "completed");
 
       console.log("Webhook finished", { payment_intent_id: pi.id, ms: Date.now() - startedAt });
       res.status(200).send("Success");

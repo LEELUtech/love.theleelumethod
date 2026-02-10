@@ -66,7 +66,8 @@ function buildUpdateKey(
 		norm(p.country).toUpperCase(),
 		norm(p.birthDate1),
 		norm(p.birthDate2),
-		// Phase 2: Include UTM params in deduplication key
+
+		// UTM / context
 		norm(p.utmSource).toLowerCase(),
 		norm(p.utmMedium).toLowerCase(),
 		norm(p.utmCampaign),
@@ -74,6 +75,9 @@ function buildUpdateKey(
 		norm(p.utmTerm),
 		norm(p.checkoutVariant),
 		norm(p.pagePath),
+
+		// ✅ NEW: site учитываем в дедупе
+		norm(p.site),
 	].join("|");
 }
 
@@ -98,9 +102,9 @@ export const useCheckoutStore = create<CheckoutState>((set, get) => ({
 	updatePromise: null,
 
 	// Creates Stripe PaymentIntent with deduplication
-	createIntent: async ({ productType }) => {
+	createIntent: async (payload) => {
 		const { status, intentKey, clientSecret, createPromise } = get();
-		const nextKey = buildCreateKey(productType);
+		const nextKey = buildCreateKey(payload.productType);
 
 		// reuse if already ready for same product
 		if (status === "ready" && clientSecret && intentKey === nextKey) {
@@ -131,7 +135,7 @@ export const useCheckoutStore = create<CheckoutState>((set, get) => ({
 				const { data } = await api.post<CreateIntentResponse>(
 					"/api/create-payment-intent",
 					{
-						productType,
+						...payload, // ✅ теперь шлём site/pagePath/utm* если они есть
 					},
 				);
 
@@ -169,10 +173,8 @@ export const useCheckoutStore = create<CheckoutState>((set, get) => ({
 	// Updates PaymentIntent with billing data (deduplication by content)
 	updateIntent: async (payload) => {
 		const { intentId, intentToken, updateKey, updatePromise } = get();
-		if (!intentId)
-			throw new Error("No intentId in store. Create intent first.");
-		if (!intentToken)
-			throw new Error("No intentToken in store. Create intent first.");
+		if (!intentId) throw new Error("No intentId in store. Create intent first.");
+		if (!intentToken) throw new Error("No intentToken in store. Create intent first.");
 
 		const nextKey = buildUpdateKey(payload, intentId, intentToken);
 

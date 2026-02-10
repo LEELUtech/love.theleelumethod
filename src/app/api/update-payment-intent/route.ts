@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// app/api/update-payment-intent/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getStripe } from "@/lib/stripe";
 import { upsertContactCheckoutStarted } from "@/lib/zoho-functions.sandbox";
+import { db } from "@/lib/firebase";
+import { doc, setDoc, serverTimestamp, getDoc } from "firebase/firestore";
 
 const stripe = getStripe();
 
@@ -11,6 +12,9 @@ type Body = {
   intentId: string;
   intentToken: string;
   productType: string;
+
+  // ✅ front sends (supports 2 domains)
+  site?: string;
 
   email: string;
   firstName?: string;
@@ -44,12 +48,6 @@ function clean(v?: string | null) {
   return s ? s : undefined;
 }
 
-/**
- * ✅ normalize host:
- * - supports "https://domain:port/path"
- * - strips port
- * - strips trailing slashes
- */
 function normalizeSite(raw?: string | null): string {
   const s = (raw || "").trim();
   if (!s) return "unknown";
@@ -96,19 +94,67 @@ function errToLogObject(e: any) {
   };
 }
 
-/** whitelist: чтобы в metadata не улетал мусор */
+// ---- funnel step protection (no rollback) ----
+const STEP_RANK: Record<string, number> = {
+  unknown: 0,
+  checkout_viewed: 1,
+  lead_captured: 2,
+  checkout_started: 3,
+  paid: 4,
+  delivered: 5,
+  failed: 5,
+  canceled: 5,
+  abandoned: 5,
+};
+
+function shouldAdvance(current?: string | null, next?: string) {
+  const c = STEP_RANK[(current || "unknown").toString()] ?? 0;
+  const n = STEP_RANK[(next || "unknown").toString()] ?? 0;
+  return n >= c;
+}
+
+// ✅ patch-only setter (no null overwrites)
+function patchSet(target: Record<string, any>, key: string, value?: string) {
+  if (value === undefined) return;
+  target[key] = value;
+}
+
+async function markCheckoutStartedInFirestore(intentId: string, patch: Record<string, any>) {
+  try {
+    const paymentRef = doc(db, "payments", intentId);
+    const snap = await getDoc(paymentRef);
+    const currentStep = snap.exists()
+      ? ((snap.data() as any)?.funnel_step as string | undefined)
+      : undefined;
+
+    const canAdvance = shouldAdvance(currentStep, "checkout_started");
+
+    await setDoc(
+      paymentRef,
+      {
+        ...patch,
+        ...(canAdvance ? { funnel_step: "checkout_started" } : {}),
+        ...(canAdvance ? { checkout_started_at: serverTimestamp() } : {}),
+        processed_at: serverTimestamp(),
+        updated_at: serverTimestamp(),
+      },
+      { merge: true },
+    );
+  } catch (e) {
+    console.error("⚠️ Firestore checkout_started write failed", { intentId, e });
+  }
+}
+
 function buildMetadata(body: Body, pi: Stripe.PaymentIntent, siteFinal: string) {
+  // merge existing metadata (keeps intent_token)
   const metadata: Record<string, string> = {
+    ...(pi.metadata as any),
+
     product_type: (pi.metadata?.product_type?.toString() || body.productType).trim(),
     email: body.email.trim().toLowerCase(),
     site: siteFinal,
     updated_at: new Date().toISOString(),
   };
-
-  // preserve immutable from create-intent
-  if (pi.metadata?.space_id) metadata.space_id = pi.metadata.space_id.toString();
-  if (pi.metadata?.created_at) metadata.created_at = pi.metadata.created_at.toString();
-  if (pi.metadata?.intent_token) metadata.intent_token = pi.metadata.intent_token.toString();
 
   const firstName = clean(body.firstName);
   const lastName = clean(body.lastName);
@@ -132,18 +178,14 @@ function buildMetadata(body: Body, pi: Stripe.PaymentIntent, siteFinal: string) 
   if (postalCode) metadata.postal_code = postalCode;
   if (country) metadata.country = country;
 
-  // compatibility_report special fields
   if (metadata.product_type === "compatibility_report") {
     const bd1 = clean(body.birthDate1);
     const bd2 = clean(body.birthDate2);
-    if (!bd1 || !bd2) {
-      throw new Error("Missing birth dates for compatibility report");
-    }
+    if (!bd1 || !bd2) throw new Error("Missing birth dates for compatibility report");
     metadata.birth_date_1 = bd1;
     metadata.birth_date_2 = bd2;
   }
 
-  // UTM / context
   const utmSource = clean(body.utmSource);
   const utmMedium = clean(body.utmMedium);
   const utmCampaign = clean(body.utmCampaign);
@@ -165,6 +207,62 @@ function buildMetadata(body: Body, pi: Stripe.PaymentIntent, siteFinal: string) 
   return metadata;
 }
 
+/**
+ * ✅ Ensure Stripe Customer exists and is attached to this PaymentIntent.
+ * - If PI already has customer -> return it
+ * - Else create customer (idempotent by PI id) and attach
+ */
+async function ensureCustomerForIntent(opts: {
+  pi: Stripe.PaymentIntent;
+  email: string;
+  siteFinal: string;
+  body: Body;
+}): Promise<string | undefined> {
+  const { pi, email, siteFinal, body } = opts;
+
+  if (pi.customer) return String(pi.customer);
+
+  const fullName = clean([clean(body.firstName), clean(body.lastName)].filter(Boolean).join(" "));
+  const phone = clean(body.phone);
+
+  const address = {
+    line1: clean(body.address1),
+    line2: clean(body.address2),
+    city: clean(body.city),
+    state: clean(body.state),
+    postal_code: clean(body.postalCode),
+    country: clean(body.country)?.toUpperCase(),
+  };
+
+  // Remove empty address fields so Stripe doesn't store weird blanks
+  const addressClean: Stripe.AddressParam = Object.fromEntries(
+    Object.entries(address).filter(([, v]) => !!v),
+  ) as Stripe.AddressParam;
+
+  const customer = await stripe.customers.create(
+    {
+      email,
+      ...(fullName ? { name: fullName } : {}),
+      ...(phone ? { phone } : {}),
+      ...(Object.keys(addressClean).length ? { address: addressClean } : {}),
+      metadata: {
+        source: "checkout_update_intent",
+        intent_id: pi.id,
+        site: siteFinal,
+      },
+    },
+    {
+      // ✅ prevents creating multiple customers on retries
+      idempotencyKey: `cust_${pi.id}`,
+    },
+  );
+
+  // Attach customer to PI
+  await stripe.paymentIntents.update(pi.id, { customer: customer.id });
+
+  return customer.id;
+}
+
 export async function POST(req: NextRequest) {
   const requestId = `upi_${Date.now()}_${Math.random().toString(16).slice(2)}`;
 
@@ -172,6 +270,7 @@ export async function POST(req: NextRequest) {
     const body = (await req.json()) as Body;
 
     const incomingSite = getIncomingSite(req);
+    const bodySite = normalizeSite(body.site) || "unknown";
 
     const intentId = clean(body.intentId);
     const intentToken = clean(body.intentToken);
@@ -181,6 +280,7 @@ export async function POST(req: NextRequest) {
     console.log("➡️ update-payment-intent START", {
       requestId,
       incomingSite,
+      bodySite,
       intentId,
       productType,
       email,
@@ -196,15 +296,23 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid email format", requestId }, { status: 400 });
     }
 
-    // 1) retrieve PI
     const pi = await stripe.paymentIntents.retrieve(intentId);
 
-    // ✅ early exits: don't try to mutate finalized intents
     if (pi.status === "canceled") {
+      await markCheckoutStartedInFirestore(pi.id, {
+        stripe_payment_intent_id: pi.id,
+        email,
+        product_type: (pi.metadata?.product_type ?? productType)?.toString() || productType,
+        site: normalizeSite((pi.metadata?.site ?? "").toString()) || incomingSite,
+        status: pi.status,
+        metadata: (pi.metadata as any) ?? {},
+        customer_id: pi.customer ? String(pi.customer) : null,
+      });
+
       return NextResponse.json({ ok: true, requestId, canceled: true }, { status: 200 });
     }
 
-    // 2) security: token match
+    // token match
     const storedToken = (pi.metadata?.intent_token ?? "").toString();
     if (!storedToken || storedToken !== intentToken) {
       console.warn("⛔ Forbidden: intent token mismatch", {
@@ -216,27 +324,24 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Forbidden", requestId }, { status: 403 });
     }
 
-    // 3) security: site match
+    // site match (pi.metadata.site vs incoming host). we also accept body.site for multi-domain
     const storedSiteRaw = (pi.metadata?.site ?? "").toString();
     const storedSite = normalizeSite(storedSiteRaw);
 
-    if (
-      storedSite &&
-      storedSite !== "unknown" &&
-      incomingSite !== "unknown" &&
-      storedSite !== incomingSite
-    ) {
+    const anyIncoming = incomingSite !== "unknown" ? incomingSite : bodySite;
+    if (storedSite && storedSite !== "unknown" && anyIncoming !== "unknown" && storedSite !== anyIncoming) {
       console.warn("⛔ Forbidden: site mismatch", {
         requestId,
         intentId,
         storedSiteRaw,
         storedSite,
         incomingSite,
+        bodySite,
       });
       return NextResponse.json({ error: "Forbidden", requestId }, { status: 403 });
     }
 
-    // 4) productType guard
+    // productType guard
     const existingType = (pi.metadata?.product_type ?? "").toString();
     if (existingType && existingType !== productType) {
       return NextResponse.json(
@@ -245,18 +350,37 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const siteFinal = storedSite !== "unknown" ? storedSite : incomingSite;
+    const siteFinal =
+      storedSite !== "unknown"
+        ? storedSite
+        : (incomingSite !== "unknown" ? incomingSite : (bodySite !== "unknown" ? bodySite : "unknown"));
 
-    // ✅ If already succeeded: do NOT update intent (Stripe may reject),
-    // but still do Zoho checkout-started best-effort for audit trail.
+    // ✅ NEW: ensure customer exists + attached (so webhook can send Stripe_Customer_ID to Zoho)
+    let customerId: string | undefined;
+    try {
+      customerId = await ensureCustomerForIntent({ pi, email, siteFinal, body });
+    } catch (e) {
+      console.error("⚠️ ensureCustomerForIntent failed (non-fatal)", { requestId, intentId, e });
+      customerId = pi.customer ? String(pi.customer) : undefined;
+    }
+
+    // if already succeeded — do not mutate PI metadata/receipt_email (Stripe can still allow, but keep safe)
     if (pi.status === "succeeded") {
       let zoho: { contactId: string; isNew: boolean } | null = null;
+
       try {
         zoho = await upsertContactCheckoutStarted({
           email,
           firstName: body.firstName,
           lastName: body.lastName,
           phone: body.phone,
+
+          address1: body.address1,
+          address2: body.address2,
+          city: body.city,
+          state: body.state,
+          postalCode: body.postalCode,
+          country: body.country,
 
           productType: existingType || productType,
           checkoutVariant: body.checkoutVariant,
@@ -278,35 +402,96 @@ export async function POST(req: NextRequest) {
         });
       }
 
+      const patch: Record<string, any> = {
+        stripe_payment_intent_id: pi.id,
+        email,
+        product_type: existingType || productType,
+        site: siteFinal,
+        status: pi.status,
+        metadata: (pi.metadata as any) ?? {},
+        customer_id: customerId ?? (pi.customer ? String(pi.customer) : null),
+      };
+
+      patchSet(patch, "page_path", clean(body.pagePath));
+      patchSet(patch, "checkout_variant", clean(body.checkoutVariant));
+
+      patchSet(patch, "utm_source", clean(body.utmSource));
+      patchSet(patch, "utm_medium", clean(body.utmMedium));
+      patchSet(patch, "utm_campaign", clean(body.utmCampaign));
+      patchSet(patch, "utm_content", clean(body.utmContent));
+      patchSet(patch, "utm_term", clean(body.utmTerm));
+
+      patchSet(patch, "first_name", clean(body.firstName));
+      patchSet(patch, "last_name", clean(body.lastName));
+      patchSet(patch, "phone", clean(body.phone));
+      patchSet(patch, "address1", clean(body.address1));
+      patchSet(patch, "address2", clean(body.address2));
+      patchSet(patch, "city", clean(body.city));
+      patchSet(patch, "state", clean(body.state));
+      patchSet(patch, "postal_code", clean(body.postalCode));
+      patchSet(patch, "country", clean(body.country)?.toUpperCase());
+
+      await markCheckoutStartedInFirestore(pi.id, patch);
+
       return NextResponse.json(
-        {
-          ok: true,
-          requestId,
-          intentId: pi.id,
-          site: siteFinal,
-          alreadySucceeded: true,
-          metadata: pi.metadata,
-          zoho,
-        },
+        { ok: true, requestId, intentId: pi.id, site: siteFinal, alreadySucceeded: true, zoho, customerId },
         { status: 200 },
       );
     }
 
-    // 5) build metadata
+    // build metadata (merge)
     let metadata: Record<string, string>;
     try {
-      metadata = buildMetadata({ ...body, email, productType: existingType || productType }, pi, siteFinal);
+      metadata = buildMetadata(
+        { ...body, email, productType: existingType || productType },
+        pi,
+        siteFinal,
+      );
     } catch (e: any) {
       return NextResponse.json({ error: e?.message || "Invalid payload", requestId }, { status: 400 });
     }
 
-    // 6) update PI
+    // ✅ Also store customer_id in metadata (optional but handy for debugging)
+    if (customerId) metadata.stripe_customer_id = customerId;
+
     const updatedIntent = await stripe.paymentIntents.update(intentId, {
       receipt_email: email,
       metadata,
+      // customer already attached above (if it was missing)
     });
 
-    // 7) Zoho upsert (non-blocking)
+    const patch: Record<string, any> = {
+      stripe_payment_intent_id: updatedIntent.id,
+      email,
+      product_type: existingType || productType,
+      site: siteFinal,
+      status: updatedIntent.status,
+      metadata: (updatedIntent.metadata as any) ?? {},
+      customer_id: customerId ?? (updatedIntent.customer ? String(updatedIntent.customer) : null),
+    };
+
+    patchSet(patch, "page_path", clean(body.pagePath));
+    patchSet(patch, "checkout_variant", clean(body.checkoutVariant));
+
+    patchSet(patch, "utm_source", clean(body.utmSource));
+    patchSet(patch, "utm_medium", clean(body.utmMedium));
+    patchSet(patch, "utm_campaign", clean(body.utmCampaign));
+    patchSet(patch, "utm_content", clean(body.utmContent));
+    patchSet(patch, "utm_term", clean(body.utmTerm));
+
+    patchSet(patch, "first_name", clean(body.firstName));
+    patchSet(patch, "last_name", clean(body.lastName));
+    patchSet(patch, "phone", clean(body.phone));
+    patchSet(patch, "address1", clean(body.address1));
+    patchSet(patch, "address2", clean(body.address2));
+    patchSet(patch, "city", clean(body.city));
+    patchSet(patch, "state", clean(body.state));
+    patchSet(patch, "postal_code", clean(body.postalCode));
+    patchSet(patch, "country", clean(body.country)?.toUpperCase());
+
+    await markCheckoutStartedInFirestore(updatedIntent.id, patch);
+
+    // Zoho: checkout_started
     let zoho: { contactId: string; isNew: boolean } | null = null;
     try {
       zoho = await upsertContactCheckoutStarted({
@@ -314,6 +499,13 @@ export async function POST(req: NextRequest) {
         firstName: body.firstName,
         lastName: body.lastName,
         phone: body.phone,
+
+        address1: body.address1,
+        address2: body.address2,
+        city: body.city,
+        state: body.state,
+        postalCode: body.postalCode,
+        country: body.country,
 
         productType: existingType || productType,
         checkoutVariant: body.checkoutVariant,
@@ -337,16 +529,16 @@ export async function POST(req: NextRequest) {
       requestId,
       intentId: updatedIntent.id,
       site: siteFinal,
-      metadata: updatedIntent.metadata,
+      customerId: customerId ?? (updatedIntent.customer ? String(updatedIntent.customer) : null),
       zoho,
     });
   } catch (err: unknown) {
-    console.error("❌ Error updating payment intent:", { requestId, err });
+    console.error("❌ Error updating payment intent:", { err });
 
     if (err instanceof Stripe.errors.StripeError) {
-      return NextResponse.json({ error: err.message || "Stripe error", requestId }, { status: 400 });
+      return NextResponse.json({ error: err.message || "Stripe error" }, { status: 400 });
     }
 
-    return NextResponse.json({ error: "Failed to update payment intent", requestId }, { status: 500 });
+    return NextResponse.json({ error: "Failed to update payment intent" }, { status: 500 });
   }
 }
