@@ -21,9 +21,9 @@ export const configs = {
   zohoClientSecret: process.env.ZOHO_CLIENT_SECRET_SANDBOX || "",
   zohoRefreshToken: process.env.ZOHO_REFRESH_TOKEN_SANDBOX || "",
 
-  zohoAccountsDomain:
-    process.env.ZOHO_ACCOUNTS_DOMAIN_SANDBOX || "accounts.zoho.com",
+  zohoAccountsDomain: process.env.ZOHO_ACCOUNTS_DOMAIN_SANDBOX || "accounts.zoho.com",
 
-  zohoApiDomain:
-    process.env.ZOHO_API_DOMAIN_SANDBOX || "sandbox.zohoapis.com",
+  zohoApiDomain: process.env.ZOHO_API_DOMAIN_SANDBOX || "sandbox.zohoapis.com",
+
+  ZOHO_DEAL_LAYOUT_ID_SANDBOX: process.env.ZOHO_DEAL_LAYOUT_ID_SANDBOX || "6635378000008438675",
 };

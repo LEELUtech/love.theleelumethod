@@ -49,8 +49,10 @@ const DEAL_FIELDS = {
   Stripe_Payment_Intent_ID: "Stripe_Payment_Intent_ID",
   Purchase_Currency: "Purchase_Currency",
 
-  Source_Website: "Source_Website",
+  Site: "Site",
   Stripe_Customer_ID: "Stripe_Customer_ID",
+  Layout: "Layout",
+  Closing_Date: "Closing_Date",
 
   UTM_Source: "UTM_Source",
   UTM_Medium: "UTM_Medium",
@@ -86,7 +88,10 @@ function truncate(s: string, max: number) {
 
 function toZohoDateTime(d: Date = new Date()): string {
   // 2026-02-09T16:41:31.123Z -> 2026-02-09T16:41:31+00:00
-  return d.toISOString().replace(/\.\d{3}Z$/, "Z").replace(/Z$/, "+00:00");
+  return d
+    .toISOString()
+    .replace(/\.\d{3}Z$/, "Z")
+    .replace(/Z$/, "+00:00");
 }
 
 function ensureZohoConfig() {
@@ -103,11 +108,18 @@ function ensureZohoConfig() {
 }
 
 function asStringArray(v: unknown): string[] {
-  if (Array.isArray(v)) return v.map(String).map((x) => x.trim()).filter(Boolean);
+  if (Array.isArray(v))
+    return v
+      .map(String)
+      .map((x) => x.trim())
+      .filter(Boolean);
   if (typeof v === "string") {
     const s = v.trim();
     if (!s) return [];
-    return s.split(/[;,]/g).map((x) => x.trim()).filter(Boolean);
+    return s
+      .split(/[;,]/g)
+      .map((x) => x.trim())
+      .filter(Boolean);
   }
   return [];
 }
@@ -236,19 +248,15 @@ async function refreshZohoAccessToken(): Promise<string> {
   ensureZohoConfig();
 
   const url = `https://${configs.zohoAccountsDomain}/oauth/v2/token`;
-  const res = await axios.post(
-    url,
-    null,
-    {
-      params: {
-        refresh_token: configs.zohoRefreshToken,
-        client_id: configs.zohoClientId,
-        client_secret: configs.zohoClientSecret,
-        grant_type: "refresh_token",
-      },
-      timeout: 15000,
+  const res = await axios.post(url, null, {
+    params: {
+      refresh_token: configs.zohoRefreshToken,
+      client_id: configs.zohoClientId,
+      client_secret: configs.zohoClientSecret,
+      grant_type: "refresh_token",
     },
-  );
+    timeout: 15000,
+  });
 
   const accessToken = res.data?.access_token as string | undefined;
   const expiresInSec = Number(res.data?.expires_in ?? 0);
@@ -409,13 +417,16 @@ export async function createOrUpdateContact(data: {
 
   const existing = await findContactByEmail(email);
 
-  const amountMajor = typeof data.amount === "number" ? Math.round((data.amount / 100) * 100) / 100 : 0;
+  const amountMajor =
+    typeof data.amount === "number" ? Math.round((data.amount / 100) * 100) / 100 : 0;
   const currencyUpper = (data.currency || "usd").toUpperCase();
   const nowDT = toZohoDateTime(new Date());
 
   const purchasedValue = pickPurchasedProduct(data.productType, data.productNameForZoho);
 
-  const safeFirstName = cleanStr(data.firstName) ? truncate(cleanStr(data.firstName)!, 80) : undefined;
+  const safeFirstName = cleanStr(data.firstName)
+    ? truncate(cleanStr(data.firstName)!, 80)
+    : undefined;
   const safeLastName = cleanStr(data.lastName) ? truncate(cleanStr(data.lastName)!, 80) : undefined;
   const safePhone = cleanStr(data.phone) ? truncate(cleanStr(data.phone)!, 50) : undefined;
 
@@ -433,22 +444,77 @@ export async function createOrUpdateContact(data: {
       updateData[CONTACT_FIELDS.Stripe_Payment_Intent_ID] = cleanStr(data.stripePaymentIntentId);
     }
 
-    setIfEmpty(updateData, CONTACT_FIELDS.First_Product_Purchased, existing[CONTACT_FIELDS.First_Product_Purchased], data.productType);
-    setIfEmpty(updateData, CONTACT_FIELDS.First_Purchase_Date, existing[CONTACT_FIELDS.First_Purchase_Date], nowDT);
+    setIfEmpty(
+      updateData,
+      CONTACT_FIELDS.First_Product_Purchased,
+      existing[CONTACT_FIELDS.First_Product_Purchased],
+      data.productType,
+    );
+    setIfEmpty(
+      updateData,
+      CONTACT_FIELDS.First_Purchase_Date,
+      existing[CONTACT_FIELDS.First_Purchase_Date],
+      nowDT,
+    );
 
-    setIfEmpty(updateData, CONTACT_FIELDS.First_Name, existing[CONTACT_FIELDS.First_Name], safeFirstName);
-    setIfEmpty(updateData, CONTACT_FIELDS.Last_Name, existing[CONTACT_FIELDS.Last_Name], safeLastName);
+    setIfEmpty(
+      updateData,
+      CONTACT_FIELDS.First_Name,
+      existing[CONTACT_FIELDS.First_Name],
+      safeFirstName,
+    );
+    setIfEmpty(
+      updateData,
+      CONTACT_FIELDS.Last_Name,
+      existing[CONTACT_FIELDS.Last_Name],
+      safeLastName,
+    );
     setIfEmpty(updateData, CONTACT_FIELDS.Phone, existing[CONTACT_FIELDS.Phone], safePhone);
 
     setIfEmpty(updateData, CONTACT_FIELDS.Site, existing[CONTACT_FIELDS.Site], cleanStr(data.site));
-    setIfEmpty(updateData, CONTACT_FIELDS.Stripe_Customer_ID, existing[CONTACT_FIELDS.Stripe_Customer_ID], cleanStr(data.stripeCustomerId));
+    setIfEmpty(
+      updateData,
+      CONTACT_FIELDS.Stripe_Customer_ID,
+      existing[CONTACT_FIELDS.Stripe_Customer_ID],
+      cleanStr(data.stripeCustomerId),
+    );
 
-    setIfEmpty(updateData, CONTACT_FIELDS.First_UTM_Source, existing[CONTACT_FIELDS.First_UTM_Source], cleanStr(data.utmSource));
-    setIfEmpty(updateData, CONTACT_FIELDS.First_UTM_Medium, existing[CONTACT_FIELDS.First_UTM_Medium], cleanStr(data.utmMedium));
-    setIfEmpty(updateData, CONTACT_FIELDS.First_UTM_Campaign, existing[CONTACT_FIELDS.First_UTM_Campaign], cleanStr(data.utmCampaign));
-    setIfEmpty(updateData, CONTACT_FIELDS.First_UTM_Content, existing[CONTACT_FIELDS.First_UTM_Content], cleanStr(data.utmContent));
-    setIfEmpty(updateData, CONTACT_FIELDS.First_UTM_Term, existing[CONTACT_FIELDS.First_UTM_Term], cleanStr(data.utmTerm));
-    setIfEmpty(updateData, CONTACT_FIELDS.First_Landing_Page, existing[CONTACT_FIELDS.First_Landing_Page], cleanStr(data.pagePath));
+    setIfEmpty(
+      updateData,
+      CONTACT_FIELDS.First_UTM_Source,
+      existing[CONTACT_FIELDS.First_UTM_Source],
+      cleanStr(data.utmSource),
+    );
+    setIfEmpty(
+      updateData,
+      CONTACT_FIELDS.First_UTM_Medium,
+      existing[CONTACT_FIELDS.First_UTM_Medium],
+      cleanStr(data.utmMedium),
+    );
+    setIfEmpty(
+      updateData,
+      CONTACT_FIELDS.First_UTM_Campaign,
+      existing[CONTACT_FIELDS.First_UTM_Campaign],
+      cleanStr(data.utmCampaign),
+    );
+    setIfEmpty(
+      updateData,
+      CONTACT_FIELDS.First_UTM_Content,
+      existing[CONTACT_FIELDS.First_UTM_Content],
+      cleanStr(data.utmContent),
+    );
+    setIfEmpty(
+      updateData,
+      CONTACT_FIELDS.First_UTM_Term,
+      existing[CONTACT_FIELDS.First_UTM_Term],
+      cleanStr(data.utmTerm),
+    );
+    setIfEmpty(
+      updateData,
+      CONTACT_FIELDS.First_Landing_Page,
+      existing[CONTACT_FIELDS.First_Landing_Page],
+      cleanStr(data.pagePath),
+    );
 
     // multi-select Purchased_Products: add purchasedValue only if valid + not already present
     if (purchasedValue) {
@@ -488,15 +554,21 @@ export async function createOrUpdateContact(data: {
   if (purchasedValue) createData[CONTACT_FIELDS.Purchased_Products] = [purchasedValue];
 
   if (safePhone) createData[CONTACT_FIELDS.Phone] = safePhone;
-  if (cleanStr(data.stripeCustomerId)) createData[CONTACT_FIELDS.Stripe_Customer_ID] = cleanStr(data.stripeCustomerId);
+  if (cleanStr(data.stripeCustomerId))
+    createData[CONTACT_FIELDS.Stripe_Customer_ID] = cleanStr(data.stripeCustomerId);
   if (cleanStr(data.site)) createData[CONTACT_FIELDS.Site] = cleanStr(data.site);
 
-  if (cleanStr(data.utmSource)) createData[CONTACT_FIELDS.First_UTM_Source] = cleanStr(data.utmSource);
-  if (cleanStr(data.utmMedium)) createData[CONTACT_FIELDS.First_UTM_Medium] = cleanStr(data.utmMedium);
-  if (cleanStr(data.utmCampaign)) createData[CONTACT_FIELDS.First_UTM_Campaign] = cleanStr(data.utmCampaign);
-  if (cleanStr(data.utmContent)) createData[CONTACT_FIELDS.First_UTM_Content] = cleanStr(data.utmContent);
+  if (cleanStr(data.utmSource))
+    createData[CONTACT_FIELDS.First_UTM_Source] = cleanStr(data.utmSource);
+  if (cleanStr(data.utmMedium))
+    createData[CONTACT_FIELDS.First_UTM_Medium] = cleanStr(data.utmMedium);
+  if (cleanStr(data.utmCampaign))
+    createData[CONTACT_FIELDS.First_UTM_Campaign] = cleanStr(data.utmCampaign);
+  if (cleanStr(data.utmContent))
+    createData[CONTACT_FIELDS.First_UTM_Content] = cleanStr(data.utmContent);
   if (cleanStr(data.utmTerm)) createData[CONTACT_FIELDS.First_UTM_Term] = cleanStr(data.utmTerm);
-  if (cleanStr(data.pagePath)) createData[CONTACT_FIELDS.First_Landing_Page] = cleanStr(data.pagePath);
+  if (cleanStr(data.pagePath))
+    createData[CONTACT_FIELDS.First_Landing_Page] = cleanStr(data.pagePath);
 
   const createRes = await zohoRequest<any>({
     method: "POST",
@@ -507,13 +579,14 @@ export async function createOrUpdateContact(data: {
   console.log("ZOHO CONTACT POST OK", JSON.stringify(createRes));
 
   const newId = createRes?.data?.[0]?.details?.id;
-  if (!newId) throw new Error(`Failed to get new contact ID. Response: ${JSON.stringify(createRes)}`);
+  if (!newId)
+    throw new Error(`Failed to get new contact ID. Response: ${JSON.stringify(createRes)}`);
 
   return { contactId: newId, isNew: true };
 }
 
 // -------------------------
-// DEAL create
+// DEAL create (with Layout + Closing_Date)
 // -------------------------
 export async function createDeal(data: {
   contactId: string;
@@ -540,22 +613,41 @@ export async function createDeal(data: {
   const paymentIntentId = cleanStr(data.paymentIntentId);
   if (!paymentIntentId) throw new Error("paymentIntentId is required");
 
+  // dedupe by PI
   const existing = await findDealByPaymentIntentId(paymentIntentId);
   if (existing?.id) return existing.id;
 
-  const amountMajor = typeof data.amount === "number" ? Math.round((data.amount / 100) * 100) / 100 : 0;
+  const amountMajor =
+    typeof data.amount === "number" ? Math.round((data.amount / 100) * 100) / 100 : 0;
   const currencyUpper = (data.currency || "usd").toUpperCase();
 
+  // ✅ Closing_Date format required by Zoho: YYYY-MM-DD
+  const closingDate = new Date().toISOString().slice(0, 10);
+
+  // ✅ take from env (recommended). fallback to hardcoded if not set
+  const layoutId = cleanStr(process.env.ZOHO_DEAL_LAYOUT_ID_SANDBOX) || undefined;
+
+  if (!layoutId) {
+    console.warn(
+      "ZOHO: missing deal layout id (ZOHO_DEAL_LAYOUT_ID_SANDBOX). Deal will be created in default layout.",
+    );
+  }
+
   const dealData: Record<string, any> = {
-    [DEAL_FIELDS.Deal_Name]: cleanStr(data.dealName) ? truncate(cleanStr(data.dealName)!, 120) : `Purchase - ${paymentIntentId}`,
+    [DEAL_FIELDS.Deal_Name]: cleanStr(data.dealName)
+      ? truncate(cleanStr(data.dealName)!, 120)
+      : `Purchase - ${paymentIntentId}`,
+
     [DEAL_FIELDS.Amount]: amountMajor,
     [DEAL_FIELDS.Stage]: "Closed Won",
-
     [DEAL_FIELDS.Contact_Name]: { id: data.contactId },
 
     [DEAL_FIELDS.Product_Type]: cleanStr(data.productType) || undefined,
     [DEAL_FIELDS.Stripe_Payment_Intent_ID]: paymentIntentId,
     [DEAL_FIELDS.Purchase_Currency]: currencyUpper,
+
+    // ✅ required by your layout (keep it required in Zoho)
+    [DEAL_FIELDS.Closing_Date]: closingDate,
 
     [DEAL_FIELDS.Description]: [
       `Product: ${cleanStr(data.productType) || "-"}`,
@@ -566,8 +658,17 @@ export async function createDeal(data: {
       .join("\n"),
   };
 
-  if (cleanStr(data.site)) dealData[DEAL_FIELDS.Source_Website] = cleanStr(data.site);
-  if (cleanStr(data.customerId)) dealData[DEAL_FIELDS.Stripe_Customer_ID] = cleanStr(data.customerId);
+  // ✅ Force your layout so you don't affect other websites / setups
+  if (layoutId) {
+    dealData[DEAL_FIELDS.Layout] = { id: layoutId };
+  }
+
+  // Your custom deal field "Site"
+  if (cleanStr(data.site)) dealData[DEAL_FIELDS.Site] = cleanStr(data.site);
+
+  if (cleanStr(data.customerId)) {
+    dealData[DEAL_FIELDS.Stripe_Customer_ID] = cleanStr(data.customerId);
+  }
 
   if (cleanStr(data.utmSource)) dealData[DEAL_FIELDS.UTM_Source] = cleanStr(data.utmSource);
   if (cleanStr(data.utmMedium)) dealData[DEAL_FIELDS.UTM_Medium] = cleanStr(data.utmMedium);
@@ -575,8 +676,12 @@ export async function createDeal(data: {
   if (cleanStr(data.utmContent)) dealData[DEAL_FIELDS.UTM_Content] = cleanStr(data.utmContent);
   if (cleanStr(data.utmTerm)) dealData[DEAL_FIELDS.UTM_Term] = cleanStr(data.utmTerm);
 
-  if (cleanStr(data.checkoutVariant)) dealData[DEAL_FIELDS.Checkout_Variant] = cleanStr(data.checkoutVariant);
-  if (cleanStr(data.pagePath)) dealData[DEAL_FIELDS.Page_Path] = cleanStr(data.pagePath);
+  if (cleanStr(data.checkoutVariant)) {
+    dealData[DEAL_FIELDS.Checkout_Variant] = cleanStr(data.checkoutVariant);
+  }
+  if (cleanStr(data.pagePath)) {
+    dealData[DEAL_FIELDS.Page_Path] = cleanStr(data.pagePath);
+  }
 
   try {
     const createRes = await zohoRequest<any>({
@@ -585,13 +690,37 @@ export async function createDeal(data: {
       data: { data: [dealData] },
     });
 
-    console.log("ZOHO DEAL POST OK", JSON.stringify(createRes));
+    const row = createRes?.data?.[0];
 
-    const dealId = createRes?.data?.[0]?.details?.id;
-    return dealId || null;
+    if (!row) {
+      console.error("ZOHO DEAL POST: empty response", { createRes, dealData });
+      return null;
+    }
+
+    if (row.status === "error") {
+      console.error("ZOHO DEAL POST ERROR", {
+        code: row.code,
+        message: row.message,
+        details: row.details,
+        dealData,
+      });
+      return null;
+    }
+
+    const dealId = row?.details?.id;
+    if (!dealId) {
+      console.error("ZOHO DEAL POST: missing id in success response", { row, createRes });
+      return null;
+    }
+
+    return dealId;
   } catch (err: unknown) {
     if (axios.isAxiosError(err)) {
-      console.error("Zoho create deal error", err.response?.data || err.message);
+      console.error("Zoho create deal HTTP error", {
+        status: err.response?.status,
+        data: err.response?.data,
+        message: err.message,
+      });
       return null;
     }
     throw err;

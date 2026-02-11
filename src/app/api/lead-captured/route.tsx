@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { NextRequest, NextResponse } from "next/server";
 import { upsertContactLeadCaptured } from "@/lib/zoho-functions.sandbox";
 import { db } from "@/lib/firebase";
@@ -225,7 +225,7 @@ export async function POST(req: NextRequest) {
             { merge: true },
           );
         } else {
-          const prev = snap.data() as any;
+          const prev = snap.data();
           const prevStep = (prev?.funnel_step ?? null) as string | null;
 
           const nextStep =

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getStripe } from "@/lib/stripe";
@@ -13,7 +12,6 @@ type Body = {
   intentToken: string;
   productType: string;
 
-  // ✅ front sends (supports 2 domains)
   site?: string;
 
   email: string;
@@ -80,17 +78,34 @@ function safeTokenPreview(token?: string | null) {
   return `${t.slice(0, 6)}…${t.slice(-4)}`;
 }
 
-function errToLogObject(e: any) {
-  const status = e?.response?.status;
-  const data = e?.response?.data;
-  const headers = e?.response?.headers;
+type AxiosishError = {
+  response?: {
+    status?: number;
+    data?: unknown;
+    headers?: Record<string, unknown>;
+  };
+  config?: {
+    url?: string;
+    method?: string;
+  };
+  message?: string;
+};
+
+function errToLogObject(e: unknown) {
+  const ex = e as AxiosishError | null | undefined;
+  const status = ex?.response?.status;
+  const data = ex?.response?.data;
+  const headers = ex?.response?.headers;
+
   return {
     status,
     data,
-    zohoRequestId: headers?.["x-request-id"] ?? headers?.["X-Request-Id"],
-    url: e?.config?.url,
-    method: e?.config?.method,
-    message: e?.message,
+    zohoRequestId:
+      (headers?.["x-request-id"] as string | undefined) ??
+      (headers?.["X-Request-Id"] as string | undefined),
+    url: ex?.config?.url,
+    method: ex?.config?.method,
+    message: ex?.message,
   };
 }
 
@@ -113,42 +128,245 @@ function shouldAdvance(current?: string | null, next?: string) {
   return n >= c;
 }
 
-// ✅ patch-only setter (no null overwrites)
-function patchSet(target: Record<string, any>, key: string, value?: string) {
+// ✅ patch-only setter (no undefined overwrites)
+function patchSet(target: Record<string, unknown>, key: string, value?: unknown) {
   if (value === undefined) return;
   target[key] = value;
 }
 
-async function markCheckoutStartedInFirestore(intentId: string, patch: Record<string, any>) {
+// --------------------
+// 🔥 NON-DEGRADING helpers (Firestore)
+// --------------------
+function norm(v: unknown) {
+  return String(v ?? "").trim();
+}
+
+function digitsCount(v: unknown) {
+  const s = norm(v);
+  const m = s.match(/\d/g);
+  return m ? m.length : 0;
+}
+
+function isPlaceholderName(v: unknown) {
+  const s = norm(v).toLowerCase();
+  return !s || s === "unknown" || s === "lead" || s === "customer";
+}
+
+/**
+ * Text fields: обновляем только если:
+ * - текущего нет, или
+ * - новое "не хуже": длина >= текущей
+ */
+function patchSetIfBetterText(
+  patch: Record<string, unknown>,
+  key: string,
+  currentValue: unknown,
+  incoming?: string,
+) {
+  const next = clean(incoming);
+  if (next === undefined) return;
+
+  const cur = norm(currentValue);
+  const nxt = norm(next);
+
+  if (!nxt) return;
+
+  if (!cur) {
+    patch[key] = nxt;
+    return;
+  }
+
+  if (nxt.length >= cur.length) patch[key] = nxt;
+}
+
+/**
+ * Names: заполняем если пусто/заглушка, или если новое явно "лучше" (длиннее).
+ */
+function patchSetIfBetterName(
+  patch: Record<string, unknown>,
+  key: string,
+  currentValue: unknown,
+  incoming?: string,
+) {
+  const next = clean(incoming);
+  if (next === undefined) return;
+
+  const cur = norm(currentValue);
+  const nxt = norm(next);
+  if (!nxt) return;
+
+  if (!cur || isPlaceholderName(cur)) {
+    patch[key] = nxt;
+    return;
+  }
+
+  // если уже нормальное имя — обновляем только если стало длиннее (обычно полнее)
+  if (nxt.length > cur.length) patch[key] = nxt;
+}
+
+/**
+ * Phone: не перетирать на номер с меньшим количеством цифр.
+ */
+function patchSetIfBetterPhone(
+  patch: Record<string, unknown>,
+  key: string,
+  currentValue: unknown,
+  incoming?: string,
+) {
+  const next = clean(incoming);
+  if (next === undefined) return;
+
+  const cur = norm(currentValue);
+  const nxt = norm(next);
+
+  if (!nxt) return;
+
+  if (!cur) {
+    patch[key] = nxt;
+    return;
+  }
+
+  const curDigits = digitsCount(cur);
+  const nxtDigits = digitsCount(nxt);
+
+  if (nxtDigits < curDigits) return;
+
+  // если цифр больше — точно лучше; если столько же — пусть будет длиннее/полнее
+  if (nxtDigits > curDigits || nxt.length >= cur.length) patch[key] = nxt;
+}
+
+// --------------------
+// Firestore write (non-degrading)
+// --------------------
+async function markCheckoutStartedInFirestore(intentId: string, patchIncoming: Record<string, unknown>) {
   try {
     const paymentRef = doc(db, "payments", intentId);
     const snap = await getDoc(paymentRef);
-    const currentStep = snap.exists()
-      ? ((snap.data() as any)?.funnel_step as string | undefined)
-      : undefined;
+
+    const existing = snap.exists() ? (snap.data() as Record<string, unknown>) : {};
+    const currentStep = (existing["funnel_step"] as string | undefined) ?? undefined;
 
     const canAdvance = shouldAdvance(currentStep, "checkout_started");
 
-    await setDoc(
-      paymentRef,
-      {
-        ...patch,
-        ...(canAdvance ? { funnel_step: "checkout_started" } : {}),
-        ...(canAdvance ? { checkout_started_at: serverTimestamp() } : {}),
-        processed_at: serverTimestamp(),
-        updated_at: serverTimestamp(),
-      },
-      { merge: true },
-    );
+    // ✅ ВАЖНО: не делаем `{...patchIncoming}` целиком,
+    // иначе "хуже" значения попадут в патч и перетрут.
+    const guardedKeys = new Set([
+      "first_name",
+      "last_name",
+      "phone",
+      "address1",
+      "address2",
+      "city",
+      "state",
+      "postal_code",
+      "country",
+    ]);
+
+    const patch: Record<string, unknown> = {};
+
+    // копируем только безопасные ключи (не guarded)
+    for (const [k, v] of Object.entries(patchIncoming || {})) {
+      if (guardedKeys.has(k)) continue;
+      if (v === undefined) continue;
+      patch[k] = v;
+    }
+
+    // funnel + timestamps
+    if (canAdvance) {
+      patch.funnel_step = "checkout_started";
+      patch.checkout_started_at = serverTimestamp();
+    }
+    patch.processed_at = serverTimestamp();
+    patch.updated_at = serverTimestamp();
+
+    // ✅ non-degrading для guarded полей
+    if ("first_name" in patchIncoming) {
+      patchSetIfBetterName(
+        patch,
+        "first_name",
+        existing["first_name"],
+        (patchIncoming as Record<string, unknown>)["first_name"] as string | undefined,
+      );
+    }
+    if ("last_name" in patchIncoming) {
+      patchSetIfBetterName(
+        patch,
+        "last_name",
+        existing["last_name"],
+        (patchIncoming as Record<string, unknown>)["last_name"] as string | undefined,
+      );
+    }
+
+    if ("phone" in patchIncoming) {
+      patchSetIfBetterPhone(
+        patch,
+        "phone",
+        existing["phone"],
+        (patchIncoming as Record<string, unknown>)["phone"] as string | undefined,
+      );
+    }
+
+    if ("address1" in patchIncoming) {
+      patchSetIfBetterText(
+        patch,
+        "address1",
+        existing["address1"],
+        (patchIncoming as Record<string, unknown>)["address1"] as string | undefined,
+      );
+    }
+    if ("address2" in patchIncoming) {
+      patchSetIfBetterText(
+        patch,
+        "address2",
+        existing["address2"],
+        (patchIncoming as Record<string, unknown>)["address2"] as string | undefined,
+      );
+    }
+
+    if ("city" in patchIncoming) {
+      patchSetIfBetterText(
+        patch,
+        "city",
+        existing["city"],
+        (patchIncoming as Record<string, unknown>)["city"] as string | undefined,
+      );
+    }
+    if ("state" in patchIncoming) {
+      patchSetIfBetterText(
+        patch,
+        "state",
+        existing["state"],
+        (patchIncoming as Record<string, unknown>)["state"] as string | undefined,
+      );
+    }
+    if ("postal_code" in patchIncoming) {
+      patchSetIfBetterText(
+        patch,
+        "postal_code",
+        existing["postal_code"],
+        (patchIncoming as Record<string, unknown>)["postal_code"] as string | undefined,
+      );
+    }
+
+    if ("country" in patchIncoming) {
+      patchSetIfBetterText(
+        patch,
+        "country",
+        existing["country"],
+        (patchIncoming as Record<string, unknown>)["country"] as string | undefined,
+      );
+    }
+
+    await setDoc(paymentRef, patch, { merge: true });
   } catch (e) {
     console.error("⚠️ Firestore checkout_started write failed", { intentId, e });
   }
 }
 
 function buildMetadata(body: Body, pi: Stripe.PaymentIntent, siteFinal: string) {
-  // merge existing metadata (keeps intent_token)
+  // merge existing metadata (keeps intent_token + old keys)
   const metadata: Record<string, string> = {
-    ...(pi.metadata as any),
+    ...(pi.metadata as Record<string, string>),
 
     product_type: (pi.metadata?.product_type?.toString() || body.productType).trim(),
     email: body.email.trim().toLowerCase(),
@@ -208,9 +426,7 @@ function buildMetadata(body: Body, pi: Stripe.PaymentIntent, siteFinal: string) 
 }
 
 /**
- * ✅ Ensure Stripe Customer exists and is attached to this PaymentIntent.
- * - If PI already has customer -> return it
- * - Else create customer (idempotent by PI id) and attach
+ * ✅ Ensure Stripe Customer exists and attached to PI
  */
 async function ensureCustomerForIntent(opts: {
   pi: Stripe.PaymentIntent;
@@ -234,7 +450,6 @@ async function ensureCustomerForIntent(opts: {
     country: clean(body.country)?.toUpperCase(),
   };
 
-  // Remove empty address fields so Stripe doesn't store weird blanks
   const addressClean: Stripe.AddressParam = Object.fromEntries(
     Object.entries(address).filter(([, v]) => !!v),
   ) as Stripe.AddressParam;
@@ -251,13 +466,9 @@ async function ensureCustomerForIntent(opts: {
         site: siteFinal,
       },
     },
-    {
-      // ✅ prevents creating multiple customers on retries
-      idempotencyKey: `cust_${pi.id}`,
-    },
+    { idempotencyKey: `cust_${pi.id}` },
   );
 
-  // Attach customer to PI
   await stripe.paymentIntents.update(pi.id, { customer: customer.id });
 
   return customer.id;
@@ -305,14 +516,13 @@ export async function POST(req: NextRequest) {
         product_type: (pi.metadata?.product_type ?? productType)?.toString() || productType,
         site: normalizeSite((pi.metadata?.site ?? "").toString()) || incomingSite,
         status: pi.status,
-        metadata: (pi.metadata as any) ?? {},
+        metadata: (pi.metadata as Record<string, string>) ?? {},
         customer_id: pi.customer ? String(pi.customer) : null,
       });
 
       return NextResponse.json({ ok: true, requestId, canceled: true }, { status: 200 });
     }
 
-    // token match
     const storedToken = (pi.metadata?.intent_token ?? "").toString();
     if (!storedToken || storedToken !== intentToken) {
       console.warn("⛔ Forbidden: intent token mismatch", {
@@ -324,7 +534,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Forbidden", requestId }, { status: 403 });
     }
 
-    // site match (pi.metadata.site vs incoming host). we also accept body.site for multi-domain
     const storedSiteRaw = (pi.metadata?.site ?? "").toString();
     const storedSite = normalizeSite(storedSiteRaw);
 
@@ -341,7 +550,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Forbidden", requestId }, { status: 403 });
     }
 
-    // productType guard
     const existingType = (pi.metadata?.product_type ?? "").toString();
     if (existingType && existingType !== productType) {
       return NextResponse.json(
@@ -353,9 +561,12 @@ export async function POST(req: NextRequest) {
     const siteFinal =
       storedSite !== "unknown"
         ? storedSite
-        : (incomingSite !== "unknown" ? incomingSite : (bodySite !== "unknown" ? bodySite : "unknown"));
+        : incomingSite !== "unknown"
+          ? incomingSite
+          : bodySite !== "unknown"
+            ? bodySite
+            : "unknown";
 
-    // ✅ NEW: ensure customer exists + attached (so webhook can send Stripe_Customer_ID to Zoho)
     let customerId: string | undefined;
     try {
       customerId = await ensureCustomerForIntent({ pi, email, siteFinal, body });
@@ -364,7 +575,7 @@ export async function POST(req: NextRequest) {
       customerId = pi.customer ? String(pi.customer) : undefined;
     }
 
-    // if already succeeded — do not mutate PI metadata/receipt_email (Stripe can still allow, but keep safe)
+    // ✅ если уже succeeded — Stripe PI не трогаем, но Firestore/Zoho можем дозаполнить (non-degrading)
     if (pi.status === "succeeded") {
       let zoho: { contactId: string; isNew: boolean } | null = null;
 
@@ -395,20 +606,20 @@ export async function POST(req: NextRequest) {
 
           stripePaymentIntentId: pi.id,
         });
-      } catch (e: any) {
+      } catch (e: unknown) {
         console.error("⚠️ Zoho checkout-started upsert failed (pi already succeeded)", {
           requestId,
           ...errToLogObject(e),
         });
       }
 
-      const patch: Record<string, any> = {
+      const patch: Record<string, unknown> = {
         stripe_payment_intent_id: pi.id,
         email,
         product_type: existingType || productType,
         site: siteFinal,
         status: pi.status,
-        metadata: (pi.metadata as any) ?? {},
+        metadata: (pi.metadata as Record<string, string>) ?? {},
         customer_id: customerId ?? (pi.customer ? String(pi.customer) : null),
       };
 
@@ -421,6 +632,7 @@ export async function POST(req: NextRequest) {
       patchSet(patch, "utm_content", clean(body.utmContent));
       patchSet(patch, "utm_term", clean(body.utmTerm));
 
+      // guarded поля — попадут в markCheckoutStartedInFirestore и будут non-degrading
       patchSet(patch, "first_name", clean(body.firstName));
       patchSet(patch, "last_name", clean(body.lastName));
       patchSet(patch, "phone", clean(body.phone));
@@ -442,31 +654,26 @@ export async function POST(req: NextRequest) {
     // build metadata (merge)
     let metadata: Record<string, string>;
     try {
-      metadata = buildMetadata(
-        { ...body, email, productType: existingType || productType },
-        pi,
-        siteFinal,
-      );
-    } catch (e: any) {
-      return NextResponse.json({ error: e?.message || "Invalid payload", requestId }, { status: 400 });
+      metadata = buildMetadata({ ...body, email, productType: existingType || productType }, pi, siteFinal);
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : undefined;
+      return NextResponse.json({ error: msg || "Invalid payload", requestId }, { status: 400 });
     }
 
-    // ✅ Also store customer_id in metadata (optional but handy for debugging)
     if (customerId) metadata.stripe_customer_id = customerId;
 
     const updatedIntent = await stripe.paymentIntents.update(intentId, {
       receipt_email: email,
       metadata,
-      // customer already attached above (if it was missing)
     });
 
-    const patch: Record<string, any> = {
+    const patch: Record<string, unknown> = {
       stripe_payment_intent_id: updatedIntent.id,
       email,
       product_type: existingType || productType,
       site: siteFinal,
       status: updatedIntent.status,
-      metadata: (updatedIntent.metadata as any) ?? {},
+      metadata: (updatedIntent.metadata as Record<string, string>) ?? {},
       customer_id: customerId ?? (updatedIntent.customer ? String(updatedIntent.customer) : null),
     };
 
@@ -479,6 +686,7 @@ export async function POST(req: NextRequest) {
     patchSet(patch, "utm_content", clean(body.utmContent));
     patchSet(patch, "utm_term", clean(body.utmTerm));
 
+    // guarded поля — non-degrading внутри markCheckoutStartedInFirestore
     patchSet(patch, "first_name", clean(body.firstName));
     patchSet(patch, "last_name", clean(body.lastName));
     patchSet(patch, "phone", clean(body.phone));
@@ -491,7 +699,7 @@ export async function POST(req: NextRequest) {
 
     await markCheckoutStartedInFirestore(updatedIntent.id, patch);
 
-    // Zoho: checkout_started
+    // Zoho: checkout_started (у тебя уже должно быть non-degrading на стороне Zoho функций)
     let zoho: { contactId: string; isNew: boolean } | null = null;
     try {
       zoho = await upsertContactCheckoutStarted({
@@ -520,7 +728,7 @@ export async function POST(req: NextRequest) {
 
         stripePaymentIntentId: updatedIntent.id,
       });
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error("⚠️ Zoho checkout-started upsert failed", { requestId, ...errToLogObject(e) });
     }
 

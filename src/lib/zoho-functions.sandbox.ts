@@ -1,6 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/lib/zoho-functions.sandbox.ts
 import { zohoRequest } from "@/lib/zoho-client.sandbox";
+
+const ZOHO_CONTACT_LAYOUT_ID = process.env.ZOHO_CONTACT_LAYOUT_ID_SANDBOX;
 
 type UTM = {
   utmSource?: string;
@@ -18,7 +19,6 @@ function cleanStr(v?: string | null) {
 }
 
 function toZohoDateTime(d: Date = new Date()): string {
-  // 2026-02-09T16:41:31.123Z -> 2026-02-09T16:41:31+00:00
   return d.toISOString().replace(/\.\d{3}Z$/, "Z").replace(/Z$/, "+00:00");
 }
 
@@ -50,7 +50,12 @@ function normalizeStep(v: any): FunnelStep | undefined {
   return undefined;
 }
 
-/** обновляем funnel_step только если это "движение вперёд" */
+function attachLayoutIfPresent(obj: Record<string, any>, layoutId?: string) {
+  const id = cleanStr(layoutId);
+  if (!id) return;
+  obj.Layout = { id };
+}
+
 function shouldAdvanceFunnel(existingStep: any, nextStep: FunnelStep) {
   const ex = normalizeStep(existingStep);
   if (!ex) return true;
@@ -67,7 +72,6 @@ function guessLeadSource(utmSource?: string) {
   return undefined;
 }
 
-/** ставим поле ТОЛЬКО если в CRM оно пустое */
 function setIfEmpty(obj: Record<string, any>, key: string, current: any, next?: any) {
   const val = typeof next === "string" ? cleanStr(next) : next;
   if (val === undefined || val === null) return;
@@ -79,23 +83,93 @@ function isPlaceholderName(v: any) {
   return !s || s === "unknown" || s === "lead" || s === "customer";
 }
 
-/** ставим поле если в CRM пусто ИЛИ заглушка */
 function setIfEmptyOrPlaceholder(obj: Record<string, any>, key: string, current: any, next?: any) {
   const val = typeof next === "string" ? cleanStr(next) : next;
   if (val === undefined || val === null) return;
   if (!current || isPlaceholderName(current)) obj[key] = val;
 }
 
-/** ставим поле если значение реально изменилось (для phone/address и т.п.) */
-function setIfChanged(obj: Record<string, any>, key: string, current: any, next?: any) {
+// ------------------------
+// ✅ “best-value” setters (Zoho) to avoid degrading data
+// ------------------------
+function norm(v: any) {
+  return String(v ?? "").trim();
+}
+
+function digitsCount(v: any) {
+  const s = norm(v);
+  const m = s.match(/\d/g);
+  return m ? m.length : 0;
+}
+
+function lineCount(s: string) {
+  return s.split(/\r?\n/).map((x) => x.trim()).filter(Boolean).length;
+}
+
+function setIfBetterText(obj: Record<string, any>, key: string, current: any, next?: any) {
   const val = typeof next === "string" ? cleanStr(next) : next;
   if (val === undefined || val === null) return;
 
-  const cur = typeof current === "string" ? current.trim() : current ?? undefined;
-  if (cur !== val) obj[key] = val;
+  const cur = norm(current);
+  const nxt = norm(val);
+
+  if (!nxt) return;
+
+  if (!cur) {
+    obj[key] = nxt;
+    return;
+  }
+
+  // only if new is not shorter
+  if (nxt.length >= cur.length) obj[key] = nxt;
 }
 
-/** аккуратно добавляем строку в Description, не раздувая > 3000 */
+function setIfBetterPhone(obj: Record<string, any>, key: string, current: any, next?: any) {
+  const val = typeof next === "string" ? cleanStr(next) : next;
+  if (val === undefined || val === null) return;
+
+  const cur = norm(current);
+  const nxt = norm(val);
+  if (!nxt) return;
+
+  if (!cur) {
+    obj[key] = nxt;
+    return;
+  }
+
+  const curDigits = digitsCount(cur);
+  const nxtDigits = digitsCount(nxt);
+
+  if (nxtDigits < curDigits) return;
+
+  if (nxtDigits > curDigits || nxt.length >= cur.length) obj[key] = nxt;
+}
+
+/**
+ * Mailing_Street non-degrading:
+ * - если в CRM 2 строки, а новое 1 строка -> НЕ перетирать
+ * - иначе обновлять только если новое “не хуже”
+ */
+function setIfBetterMailingStreet(obj: Record<string, any>, key: string, current: any, nextStreet?: string) {
+  const nxt = cleanStr(nextStreet);
+  if (!nxt) return;
+
+  const cur = norm(current);
+  if (!cur) {
+    obj[key] = nxt;
+    return;
+  }
+
+  const curLines = lineCount(cur);
+  const nxtLines = lineCount(nxt);
+
+  if (curLines >= 2 && nxtLines < curLines) return;
+
+  if (nxtLines > curLines || nxt.length >= cur.length) {
+    obj[key] = nxt;
+  }
+}
+
 function appendDescription(existingDesc: string | undefined, line: string) {
   const l = cleanStr(line);
   if (!l) return undefined;
@@ -141,7 +215,6 @@ function buildCheckoutStartedLine(input: {
   return parts.join(" | ");
 }
 
-/** ключ для дедупа checkout-started (стабильный, без PI) */
 function buildCheckoutStartedDedupeKey(input: {
   productType: string;
   checkoutVariant?: string;
@@ -159,8 +232,6 @@ function buildCheckoutStartedDedupeKey(input: {
 
 /**
  * ✅ ЭТАП 1 — Lead Captured (onBlur)
- * - first-touch only (utm/landing/site/lead_source)
- * - НЕ трогаем имя/телефон/адрес
  */
 export async function upsertContactLeadCaptured(
   input: { email: string; site?: string; pagePath?: string } & UTM,
@@ -175,7 +246,6 @@ export async function upsertContactLeadCaptured(
   if (existing?.id) {
     const updateData: Record<string, any> = { id: existing.id };
 
-    // first-touch attribution (only if empty)
     setIfEmpty(updateData, "First_UTM_Source", existing.First_UTM_Source, input.utmSource);
     setIfEmpty(updateData, "First_UTM_Medium", existing.First_UTM_Medium, input.utmMedium);
     setIfEmpty(updateData, "First_UTM_Campaign", existing.First_UTM_Campaign, input.utmCampaign);
@@ -183,11 +253,9 @@ export async function upsertContactLeadCaptured(
     setIfEmpty(updateData, "First_UTM_Term", existing.First_UTM_Term, input.utmTerm);
     setIfEmpty(updateData, "First_Landing_Page", existing.First_Landing_Page, input.pagePath);
 
-    // site + lead source (only if empty)
     setIfEmpty(updateData, "Site", existing.Site, input.site);
     setIfEmpty(updateData, "Lead_Source", existing.Lead_Source, leadSource);
 
-    // funnel advance only
     if (shouldAdvanceFunnel(existing.Funnel_Step, "lead_captured")) {
       updateData.Funnel_Step = "lead_captured";
       updateData.Funnel_Updated_At = nowDT;
@@ -203,7 +271,6 @@ export async function upsertContactLeadCaptured(
     return { contactId: existing.id, isNew: false };
   }
 
-  // CREATE NEW
   const createData: Record<string, any> = {
     Email: email,
     First_Name: "Unknown",
@@ -211,6 +278,9 @@ export async function upsertContactLeadCaptured(
     Funnel_Step: "lead_captured",
     Funnel_Updated_At: nowDT,
   };
+
+  attachLayoutIfPresent(createData, ZOHO_CONTACT_LAYOUT_ID);
+
 
   if (leadSource) createData.Lead_Source = leadSource;
 
@@ -234,10 +304,8 @@ export async function upsertContactLeadCaptured(
 
 /**
  * ✅ ЭТАП 2 — Checkout Started (Pay)
- * - пишет все поля (name/phone/address)
- * - first-touch fields only if empty
- * - (опционально) last-touch UTM — пишем если изменилось
- * - Funnel + Checkout_Status advance only
+ * - НЕ деградирует адрес/телефон (best-value)
+ * - funnel advance-only
  */
 export async function upsertContactCheckoutStarted(
   input: {
@@ -247,7 +315,6 @@ export async function upsertContactCheckoutStarted(
     lastName?: string;
     phone?: string;
 
-    // address fields from FE
     address1?: string;
     address2?: string;
     city?: string;
@@ -273,7 +340,7 @@ export async function upsertContactCheckoutStarted(
   // normalize address -> Zoho Mailing_*
   const a1 = cleanStr(input.address1);
   const a2 = cleanStr(input.address2);
-  const mailingStreet = cleanStr([a1, a2].filter(Boolean).join("\n"));
+  const mailingStreet = cleanStr([a1, a2].filter(Boolean).join(" / "));
   const mailingCity = cleanStr(input.city);
   const mailingState = cleanStr(input.state);
   const mailingZip = cleanStr(input.postalCode);
@@ -282,20 +349,21 @@ export async function upsertContactCheckoutStarted(
   if (existing?.id) {
     const updateData: Record<string, any> = { id: existing.id };
 
-    // name: fill if empty/placeholder
+    // name: fill if empty/placeholder (НЕ перетираем нормальные)
     setIfEmptyOrPlaceholder(updateData, "First_Name", existing.First_Name, input.firstName);
     setIfEmptyOrPlaceholder(updateData, "Last_Name", existing.Last_Name, input.lastName);
 
-    // phone/address: write if changed (чтобы “сразу появлялось”)
-    setIfChanged(updateData, "Phone", existing.Phone, input.phone);
+    // ✅ Phone: only if better (never degrade)
+    setIfBetterPhone(updateData, "Phone", existing.Phone, input.phone);
 
-    setIfChanged(updateData, "Mailing_Street", existing.Mailing_Street, mailingStreet);
-    setIfChanged(updateData, "Mailing_City", existing.Mailing_City, mailingCity);
-    setIfChanged(updateData, "Mailing_State", existing.Mailing_State, mailingState);
-    setIfChanged(updateData, "Mailing_Zip", existing.Mailing_Zip, mailingZip);
-    setIfChanged(updateData, "Mailing_Country", existing.Mailing_Country, mailingCountry);
+    // ✅ Address: only if better (never degrade)
+    setIfBetterMailingStreet(updateData, "Mailing_Street", existing.Mailing_Street, mailingStreet);
+    setIfBetterText(updateData, "Mailing_City", existing.Mailing_City, mailingCity);
+    setIfBetterText(updateData, "Mailing_State", existing.Mailing_State, mailingState);
+    setIfBetterText(updateData, "Mailing_Zip", existing.Mailing_Zip, mailingZip);
+    setIfBetterText(updateData, "Mailing_Country", existing.Mailing_Country, mailingCountry);
 
-    // first-touch attribution (only if empty)
+    // first-touch attribution: only if empty (как и было)
     setIfEmpty(updateData, "First_UTM_Source", existing.First_UTM_Source, input.utmSource);
     setIfEmpty(updateData, "First_UTM_Medium", existing.First_UTM_Medium, input.utmMedium);
     setIfEmpty(updateData, "First_UTM_Campaign", existing.First_UTM_Campaign, input.utmCampaign);
@@ -303,19 +371,19 @@ export async function upsertContactCheckoutStarted(
     setIfEmpty(updateData, "First_UTM_Term", existing.First_UTM_Term, input.utmTerm);
     setIfEmpty(updateData, "First_Landing_Page", existing.First_Landing_Page, input.pagePath);
 
-    // ✅ last-touch attribution (обычно заказчики хотят это тоже)
-    // Если у тебя в Zoho нет этих полей — просто удали блок.
-    setIfChanged(updateData, "Last_UTM_Source", existing.Last_UTM_Source, input.utmSource);
-    setIfChanged(updateData, "Last_UTM_Medium", existing.Last_UTM_Medium, input.utmMedium);
-    setIfChanged(updateData, "Last_UTM_Campaign", existing.Last_UTM_Campaign, input.utmCampaign);
-    setIfChanged(updateData, "Last_UTM_Content", existing.Last_UTM_Content, input.utmContent);
-    setIfChanged(updateData, "Last_UTM_Term", existing.Last_UTM_Term, input.utmTerm);
-    setIfChanged(updateData, "Last_Landing_Page", existing.Last_Landing_Page, input.pagePath);
+    // last-touch: тоже non-degrading (чтобы не затирать хорошее пустым/коротким)
+    // setIfBetterText(updateData, "Last_UTM_Source", existing.Last_UTM_Source, input.utmSource);
+    // setIfBetterText(updateData, "Last_UTM_Medium", existing.Last_UTM_Medium, input.utmMedium);
+    // setIfBetterText(updateData, "Last_UTM_Campaign", existing.Last_UTM_Campaign, input.utmCampaign);
+    // setIfBetterText(updateData, "Last_UTM_Content", existing.Last_UTM_Content, input.utmContent);
+    // setIfBetterText(updateData, "Last_UTM_Term", existing.Last_UTM_Term, input.utmTerm);
+    // setIfBetterText(updateData, "Last_Landing_Page", existing.Last_Landing_Page, input.pagePath);
 
+    // Site + Lead Source: only if empty (как и было)
     setIfEmpty(updateData, "Site", existing.Site, input.site);
     setIfEmpty(updateData, "Lead_Source", existing.Lead_Source, leadSource);
 
-    // always store latest PI
+    // always store latest PI (это ок, не "ухудшает")
     if (cleanStr(input.stripePaymentIntentId)) {
       updateData.Stripe_Payment_Intent_ID = input.stripePaymentIntentId!.trim();
     }
@@ -357,7 +425,7 @@ export async function upsertContactCheckoutStarted(
     return { contactId: existing.id, isNew: false };
   }
 
-  // CREATE NEW
+  // CREATE NEW (тут можно писать все поля — нечего "перетирать")
   const createData: Record<string, any> = {
     Email: email,
     First_Name: cleanStr(input.firstName) || "Unknown",
@@ -366,6 +434,8 @@ export async function upsertContactCheckoutStarted(
     Funnel_Updated_At: nowDT,
     Checkout_Status: "Checkout Started",
   };
+
+  attachLayoutIfPresent(createData, ZOHO_CONTACT_LAYOUT_ID);
 
   if (cleanStr(input.phone)) createData.Phone = input.phone!.trim();
 
@@ -388,24 +458,16 @@ export async function upsertContactCheckoutStarted(
   if (cleanStr(input.site)) createData.Site = input.site!.trim();
 
   // last-touch
-  if (cleanStr(input.utmSource)) createData.Last_UTM_Source = input.utmSource!.trim();
-  if (cleanStr(input.utmMedium)) createData.Last_UTM_Medium = input.utmMedium!.trim();
-  if (cleanStr(input.utmCampaign)) createData.Last_UTM_Campaign = input.utmCampaign!.trim();
-  if (cleanStr(input.utmContent)) createData.Last_UTM_Content = input.utmContent!.trim();
-  if (cleanStr(input.utmTerm)) createData.Last_UTM_Term = input.utmTerm!.trim();
-  if (cleanStr(input.pagePath)) createData.Last_Landing_Page = input.pagePath!.trim();
+  // if (cleanStr(input.utmSource)) createData.Last_UTM_Source = input.utmSource!.trim();
+  // if (cleanStr(input.utmMedium)) createData.Last_UTM_Medium = input.utmMedium!.trim();
+  // if (cleanStr(input.utmCampaign)) createData.Last_UTM_Campaign = input.utmCampaign!.trim();
+  // if (cleanStr(input.utmContent)) createData.Last_UTM_Content = input.utmContent!.trim();
+  // if (cleanStr(input.utmTerm)) createData.Last_UTM_Term = input.utmTerm!.trim();
+  // if (cleanStr(input.pagePath)) createData.Last_Landing_Page = input.pagePath!.trim();
 
   if (cleanStr(input.stripePaymentIntentId)) {
     createData.Stripe_Payment_Intent_ID = input.stripePaymentIntentId!.trim();
   }
-
-  createData.Description = buildCheckoutStartedLine({
-    productType: input.productType,
-    checkoutVariant: input.checkoutVariant,
-    pagePath: input.pagePath,
-    site: input.site,
-    stripePaymentIntentId: input.stripePaymentIntentId,
-  });
 
   const url = `https://${process.env.ZOHO_API_DOMAIN_SANDBOX}/crm/v2/Contacts`;
   const created = await zohoRequest({ method: "POST", url, data: { data: [createData] } });

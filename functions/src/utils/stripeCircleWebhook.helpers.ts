@@ -3,8 +3,8 @@ import Stripe from "stripe";
 import { db } from "../configs/firebase";
 import { configs } from "../configs/env";
 
-import { handleCompatibilityReport } from "../utils/compatibility-report/compatibility-report";
-import { handleProtocolEssentials } from "../utils/protocol-essentials/protocol-essentials";
+// import { handleCompatibilityReport } from "../utils/compatibility-report/compatibility-report";
+// import { handleProtocolEssentials } from "../utils/protocol-essentials/protocol-essentials";
 
 export type ProductType =
   | "compatibility_report"
@@ -71,6 +71,8 @@ export interface PaymentRecord {
   processed_at: any;
 
   error?: string | null;
+
+  [key: string]: any;
 }
 
 let stripe: Stripe | null = null;
@@ -181,10 +183,12 @@ export async function processPayment(pi: Stripe.PaymentIntent): Promise<void> {
 
   switch (productType) {
   case "compatibility_report":
-    await handleCompatibilityReport(pi);
+    // await handleCompatibilityReport(pi);
+    console.log("Compatibility Report handler is currently disabled.");
     break;
   case "protocol_essentials":
-    await handleProtocolEssentials(pi);
+    // await handleProtocolEssentials(pi);
+    console.log("Protocol Essentials handler is currently disabled.");
     break;
   case "guided_breakthrough":
     console.log("Guided Breakthrough handler is currently disabled.");

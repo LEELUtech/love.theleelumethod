@@ -37,6 +37,7 @@ const ZOHO_CLIENT_SECRET_SANDBOX = defineSecret("ZOHO_CLIENT_SECRET_SANDBOX");
 const ZOHO_REFRESH_TOKEN_SANDBOX = defineSecret("ZOHO_REFRESH_TOKEN_SANDBOX");
 const ZOHO_ACCOUNTS_DOMAIN_SANDBOX = defineSecret("ZOHO_ACCOUNTS_DOMAIN_SANDBOX");
 const ZOHO_API_DOMAIN_SANDBOX = defineSecret("ZOHO_API_DOMAIN_SANDBOX");
+const ZOHO_DEAL_LAYOUT_ID_SANDBOX = defineSecret("ZOHO_DEAL_LAYOUT_ID_SANDBOX");
 
 function safeId(id: string) {
   return id.length > 10 ? `${id.slice(0, 6)}…${id.slice(-4)}` : id;
@@ -52,6 +53,7 @@ export const stripeCircleWebhook = onRequest(
       ZOHO_REFRESH_TOKEN_SANDBOX,
       ZOHO_ACCOUNTS_DOMAIN_SANDBOX,
       ZOHO_API_DOMAIN_SANDBOX,
+      ZOHO_DEAL_LAYOUT_ID_SANDBOX,
     ],
   },
   async (req, res) => {
