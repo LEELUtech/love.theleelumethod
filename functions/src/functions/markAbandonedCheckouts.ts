@@ -1,3 +1,4 @@
+// functions/src/scheduler/markAbandonedCheckouts.ts
 import { onSchedule } from "firebase-functions/v2/scheduler";
 import { logger } from "firebase-functions";
 import { defineSecret } from "firebase-functions/params";
@@ -6,30 +7,65 @@ import * as admin from "firebase-admin";
 import { db } from "../configs/firebase";
 import { updateContactFunnelStepByEmail } from "../lib/zoho-crm";
 
-// ✅ attach secrets to scheduler too (v2!)
-const ZOHO_CLIENT_ID_SANDBOX = defineSecret("ZOHO_CLIENT_ID_SANDBOX");
-const ZOHO_CLIENT_SECRET_SANDBOX = defineSecret("ZOHO_CLIENT_SECRET_SANDBOX");
-const ZOHO_REFRESH_TOKEN_SANDBOX = defineSecret("ZOHO_REFRESH_TOKEN_SANDBOX");
-const ZOHO_ACCOUNTS_DOMAIN_SANDBOX = defineSecret("ZOHO_ACCOUNTS_DOMAIN_SANDBOX");
-const ZOHO_API_DOMAIN_SANDBOX = defineSecret("ZOHO_API_DOMAIN_SANDBOX");
+// attach secrets to scheduler too (v2!)
+const ZOHO_CLIENT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_ID_LILYCHYSTOFAT");
+const ZOHO_CLIENT_SECRET_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_SECRET_LILYCHYSTOFAT");
+const ZOHO_REFRESH_TOKEN_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_LILYCHYSTOFAT");
+const ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT");
+const ZOHO_API_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_API_DOMAIN_LILYCHYSTOFAT");
 
 // ---- config ----
 const ABANDONED_TIMEOUT_MIN = 10;
 const SCAN_LIMIT = 500;
 
-// Мы маркируем abandoned только на ранних шагах
-type AbandonableStep = "checkout_viewed" | "lead_captured";
+// Firestore steps
+type FunnelStep =
+  | "unknown"
+  | "checkout_viewed"
+  | "lead_captured"
+  | "abandoned"
+  | "checkout_started"
+  | "paid"
+  | "delivered"
+  | "delivery_failed"
+  | "failed"
+  | "canceled";
+
 type ProcessingStatus = "processing" | "completed" | "failed";
+
+const FUNNEL_RANK: Record<FunnelStep, number> = {
+  unknown: 0,
+  checkout_viewed: 10,
+  lead_captured: 20,
+  abandoned: 25,
+  checkout_started: 30,
+  paid: 40,
+  delivered: 50,
+  delivery_failed: 55,
+  failed: 60,
+  canceled: 60,
+};
+
+function normalizeStep(v: unknown): FunnelStep {
+  const s = String(v ?? "").trim() as FunnelStep;
+  return (s && s in FUNNEL_RANK ? s : "unknown") as FunnelStep;
+}
+
+function shouldAdvance(current: unknown, next: FunnelStep) {
+  const c = FUNNEL_RANK[normalizeStep(current)] ?? 0;
+  const n = FUNNEL_RANK[next] ?? 0;
+  return n >= c;
+}
 
 function minutes(n: number) {
   return n * 60 * 1000;
 }
 
-function isTimestamp(v: any): v is admin.firestore.Timestamp {
-  return v && typeof v.toMillis === "function";
+function isTimestamp(v: unknown): v is admin.firestore.Timestamp {
+  return !!v && typeof (v as { toMillis?: unknown }).toMillis === "function";
 }
 
-function safeLowerEmail(v: any) {
+function safeLowerEmail(v: unknown) {
   const s = String(v ?? "").trim().toLowerCase();
   return s || "";
 }
@@ -37,14 +73,14 @@ function safeLowerEmail(v: any) {
 export const markAbandonedCheckouts = onSchedule(
   {
     region: "us-central1",
-    schedule: "every 5 minutes",
+    schedule: "0 */5 * * *",
     timeZone: "UTC",
     secrets: [
-      ZOHO_CLIENT_ID_SANDBOX,
-      ZOHO_CLIENT_SECRET_SANDBOX,
-      ZOHO_REFRESH_TOKEN_SANDBOX,
-      ZOHO_ACCOUNTS_DOMAIN_SANDBOX,
-      ZOHO_API_DOMAIN_SANDBOX,
+      ZOHO_CLIENT_ID_LILYCHYSTOFAT,
+      ZOHO_CLIENT_SECRET_LILYCHYSTOFAT,
+      ZOHO_REFRESH_TOKEN_LILYCHYSTOFAT,
+      ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT,
+      ZOHO_API_DOMAIN_LILYCHYSTOFAT,
     ],
   },
   async () => {
@@ -56,18 +92,20 @@ export const markAbandonedCheckouts = onSchedule(
     logger.info("markAbandonedCheckouts: scan start", {
       timeoutMin: ABANDONED_TIMEOUT_MIN,
       cutoffISO: new Date(cutoffMs).toISOString(),
+      scanLimit: SCAN_LIMIT,
     });
 
     let snap: admin.firestore.QuerySnapshot;
     try {
-      // base query only by processed_at to avoid composite index
+
       snap = await db
         .collection("payments")
         .where("processed_at", "<", cutoffTs)
         .limit(SCAN_LIMIT)
         .get();
-    } catch (e: any) {
-      logger.error("markAbandonedCheckouts base query failed", { error: e?.message || String(e) });
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      logger.error("markAbandonedCheckouts base query failed", { error: msg });
       return;
     }
 
@@ -76,27 +114,29 @@ export const markAbandonedCheckouts = onSchedule(
       return;
     }
 
-    const abandonableSteps: AbandonableStep[] = ["checkout_viewed", "lead_captured"];
-
-    // Сначала кандидаты (дешёвый фильтр), потом транзакции (точная проверка)
     const candidates = snap.docs
-      .map((d) => ({ id: d.id, ref: d.ref, data: d.data() as any }))
+      .map((d) => ({ id: d.id, ref: d.ref, data: d.data() as Record<string, unknown> }))
       .filter(({ data }) => {
         const processingStatus = (data.processing_status ?? null) as ProcessingStatus | null;
         if (processingStatus !== "processing") return false;
 
-        const step = (data.funnel_step ?? null) as string | null;
-        if (!step || !abandonableSteps.includes(step as AbandonableStep)) return false;
+        const step = normalizeStep(data.funnel_step);
+        if (step !== "checkout_viewed" && step !== "lead_captured") return false;
 
         const pa = data.processed_at;
         if (!isTimestamp(pa)) return false;
         if (pa.toMillis() >= cutoffMs) return false;
 
+        const stripeStatus = String(data.status ?? "");
+        if (stripeStatus === "succeeded") return false;
+
         return true;
       });
 
     if (!candidates.length) {
-      logger.info("markAbandonedCheckouts: nothing to do after filter", { ms: Date.now() - startedAt });
+      logger.info("markAbandonedCheckouts: nothing to do after filter", {
+        ms: Date.now() - startedAt,
+      });
       return;
     }
 
@@ -106,13 +146,13 @@ export const markAbandonedCheckouts = onSchedule(
         id: c.id,
         step: c.data?.funnel_step,
         status: c.data?.processing_status,
-        processed_at: isTimestamp(c.data?.processed_at) ? c.data.processed_at.toDate().toISOString() : null,
+        processed_at: isTimestamp(c.data?.processed_at)
+          ? (c.data.processed_at as admin.firestore.Timestamp).toDate().toISOString()
+          : null,
       })),
     });
 
     const now = admin.firestore.FieldValue.serverTimestamp();
-
-    // Обновляем только если ДО СИХ ПОР документ подходит (transaction prevents race)
     const updated: Array<{ id: string; email: string }> = [];
 
     for (const c of candidates) {
@@ -121,17 +161,18 @@ export const markAbandonedCheckouts = onSchedule(
           const fresh = await tx.get(c.ref);
           if (!fresh.exists) return { updated: false as const, email: "" };
 
-          const d = fresh.data() as any;
+          const d = fresh.data() as Record<string, unknown>;
 
           const processingStatus = (d.processing_status ?? null) as ProcessingStatus | null;
           if (processingStatus !== "processing") return { updated: false as const, email: "" };
 
-          const step = String(d.funnel_step ?? "");
-          if (!abandonableSteps.includes(step as AbandonableStep)) return { updated: false as const, email: "" };
+          const step = normalizeStep(d.funnel_step);
 
-          // если уже ушли дальше — не трогаем
-          // (если ты добавишь rank-логику, можно сделать ещё жёстче)
-          if (step === "checkout_started" || step === "paid" || step === "delivered" || step === "failed" || step === "canceled" || step === "abandoned") {
+          if (!shouldAdvance(step, "abandoned")) {
+            return { updated: false as const, email: "" };
+          }
+
+          if (step !== "checkout_viewed" && step !== "lead_captured") {
             return { updated: false as const, email: "" };
           }
 
@@ -139,7 +180,6 @@ export const markAbandonedCheckouts = onSchedule(
           if (!isTimestamp(pa)) return { updated: false as const, email: "" };
           if (pa.toMillis() >= cutoffMs) return { updated: false as const, email: "" };
 
-          // дополнительная защита: если Stripe status уже succeeded — не ставим abandoned
           const stripeStatus = String(d.status ?? "");
           if (stripeStatus === "succeeded") return { updated: false as const, email: "" };
 
@@ -147,21 +187,20 @@ export const markAbandonedCheckouts = onSchedule(
             funnel_step: "abandoned",
             abandoned_at: now,
             processed_at: now,
-            // можно хранить причину (удобно для дебага)
             abandoned_reason: `timeout_${ABANDONED_TIMEOUT_MIN}m`,
           });
 
-          const email = safeLowerEmail(d.email || d?.metadata?.email);
+          const meta = (d.metadata ?? null) as Record<string, unknown> | null;
+          const email = safeLowerEmail(d.email || meta?.email);
           return { updated: true as const, email };
         });
 
-        if (result.updated) {
-          updated.push({ id: c.id, email: result.email });
-        }
-      } catch (e: any) {
+        if (result.updated) updated.push({ id: c.id, email: result.email });
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : String(e);
         logger.warn("markAbandonedCheckouts: transaction failed", {
           payment_intent_id: c.id,
-          error: e?.message || String(e),
+          error: msg,
         });
       }
     }
@@ -173,11 +212,10 @@ export const markAbandonedCheckouts = onSchedule(
       return;
     }
 
-    // Zoho update (best-effort) — только для реально обновлённых
+    // Zoho update (best-effort)
     const results = await Promise.allSettled(
       updated.map(async (p) => {
         if (!p.email) return;
-
         await updateContactFunnelStepByEmail({
           email: p.email,
           funnelStep: "abandoned",
@@ -191,13 +229,19 @@ export const markAbandonedCheckouts = onSchedule(
       .filter((x) => x.r.status === "rejected")
       .slice(0, 5)
       .map(({ r, i }) => {
-        const reason: any = (r as PromiseRejectedResult).reason;
+        const reason = (r as PromiseRejectedResult).reason as unknown;
+        const resp = (reason as { response?: { status?: unknown; data?: unknown } })?.response;
+        const status = resp?.status;
+        const data = resp?.data;
+        const message =
+          reason instanceof Error ? reason.message : typeof reason === "string" ? reason : String(reason);
+
         return {
           payment_intent_id: updated[i]?.id,
           email: updated[i]?.email,
-          status: reason?.response?.status,
-          data: reason?.response?.data,
-          message: reason?.message || String(reason),
+          status,
+          data,
+          message,
         };
       });
 

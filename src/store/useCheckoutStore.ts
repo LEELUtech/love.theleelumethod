@@ -76,7 +76,7 @@ function buildUpdateKey(
 		norm(p.checkoutVariant),
 		norm(p.pagePath),
 
-		// ✅ NEW: site учитываем в дедупе
+		// NEW: site is now considered in deduplication
 		norm(p.site),
 	].join("|");
 }
@@ -135,7 +135,7 @@ export const useCheckoutStore = create<CheckoutState>((set, get) => ({
 				const { data } = await api.post<CreateIntentResponse>(
 					"/api/create-payment-intent",
 					{
-						...payload, // ✅ теперь шлём site/pagePath/utm* если они есть
+						...payload, // Now we send site/pagePath/utm* if they exist
 					},
 				);
 

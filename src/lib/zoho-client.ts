@@ -1,5 +1,5 @@
 
-import { getValidSandboxAccessToken } from "@/lib/zoho-token-manager.sandbox";
+import { getValidSandboxAccessToken } from "@/lib/zoho-token-manager";
 import axios, { AxiosRequestConfig } from "axios";
 
 export async function zohoRequest<T = unknown>(config: AxiosRequestConfig): Promise<T> {

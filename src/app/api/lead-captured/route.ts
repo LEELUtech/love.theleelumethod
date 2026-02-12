@@ -1,6 +1,6 @@
-
+// app/api/lead-captured/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { upsertContactLeadCaptured } from "@/lib/zoho-functions.sandbox";
+import { upsertContactLeadCaptured } from "@/lib/zoho-functions";
 import { db } from "@/lib/firebase";
 import {
   collection,
@@ -23,6 +23,7 @@ type Body = {
   pagePath?: string;
   site?: string;
 
+  // first-touch from client (stored first utm)
   utmSource?: string;
   utmMedium?: string;
   utmCampaign?: string;
@@ -41,12 +42,14 @@ function clean(v?: string | null) {
 function normalizeSite(raw?: string | null): string | undefined {
   const s = (raw || "").trim();
   if (!s) return undefined;
+
   try {
     if (s.startsWith("http://") || s.startsWith("https://")) {
       const host = new URL(s).host.toLowerCase();
       return host.split(":")[0];
     }
   } catch {}
+
   const host = s.replace(/\/+$/, "").toLowerCase();
   return host.split(":")[0];
 }
@@ -89,10 +92,16 @@ function funnelRank(step?: string | null) {
   }
 }
 
-// patch-only helper (no null overwrites)
-function patchSet(target: Record<string, unknown>, key: string, value?: string) {
+// patch-only helper (no undefined overwrites)
+function patchSet(target: Record<string, unknown>, key: string, value?: unknown) {
   if (value === undefined) return;
   target[key] = value;
+}
+
+function isEmptyVal(v: unknown) {
+  if (v === null || v === undefined) return true;
+  if (typeof v === "string" && !v.trim()) return true;
+  return false;
 }
 
 export async function POST(req: NextRequest) {
@@ -109,11 +118,12 @@ export async function POST(req: NextRequest) {
     const site = normalizeSite(body.site) || getIncomingSite(req);
     const pagePath = clean(body.pagePath);
 
-    const utmSource = clean(body.utmSource);
-    const utmMedium = clean(body.utmMedium);
-    const utmCampaign = clean(body.utmCampaign);
-    const utmContent = clean(body.utmContent);
-    const utmTerm = clean(body.utmTerm);
+    // FIRST-touch inputs
+    const utmFirstSource = clean(body.utmSource);
+    const utmFirstMedium = clean(body.utmMedium);
+    const utmFirstCampaign = clean(body.utmCampaign);
+    const utmFirstContent = clean(body.utmContent);
+    const utmFirstTerm = clean(body.utmTerm);
 
     // Resolve PI id: id first, else token -> doc id
     let paymentIntentId = clean(body.paymentIntentId);
@@ -123,7 +133,7 @@ export async function POST(req: NextRequest) {
       paymentIntentId = (await findPaymentDocIdByIntentToken(intentToken)) ?? undefined;
     }
 
-    // 🔒 Security: if PI id exists, token must exist and match Stripe metadata
+    // Security: if PI id exists, token must exist and match Stripe metadata
     if (paymentIntentId) {
       if (!intentToken) {
         return NextResponse.json(
@@ -142,7 +152,7 @@ export async function POST(req: NextRequest) {
           );
         }
       } catch (e) {
-        console.error("⚠️ Stripe retrieve failed (token check)", { requestId, paymentIntentId, e });
+        console.error("Stripe retrieve failed (token check)", { requestId, paymentIntentId, e });
         return NextResponse.json(
           { ok: true, ignored: true, reason: "stripe_unavailable", requestId },
           { status: 200 },
@@ -150,23 +160,23 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 1) Zoho (non-critical)
+    // 1) Zoho (non-critical) — writes First_UTM_* and lead_captured
     try {
       await upsertContactLeadCaptured({
         email,
         site,
         pagePath,
-        utmSource,
-        utmMedium,
-        utmCampaign,
-        utmContent,
-        utmTerm,
+        utmSource: utmFirstSource,
+        utmMedium: utmFirstMedium,
+        utmCampaign: utmFirstCampaign,
+        utmContent: utmFirstContent,
+        utmTerm: utmFirstTerm,
       });
     } catch (e) {
-      console.error("⚠️ Zoho lead-captured failed (non-critical)", { requestId, e });
+      console.error("Zoho lead-captured failed (non-critical)", { requestId, e });
     }
 
-    // 2) Firestore (non-critical) - patch-only + advance-only
+    // 2) Firestore (non-critical) — schema: utm_first_* + (optional mirror) utm_last_*
     try {
       if (paymentIntentId) {
         const paymentRef = doc(collection(db, "payments"), paymentIntentId);
@@ -192,11 +202,23 @@ export async function POST(req: NextRequest) {
               page_path: pagePath ?? null,
               checkout_variant: null,
 
-              utm_source: utmSource ?? null,
-              utm_medium: utmMedium ?? null,
-              utm_campaign: utmCampaign ?? null,
-              utm_content: utmContent ?? null,
-              utm_term: utmTerm ?? null,
+              // first-touch
+              utm_first_source: utmFirstSource ?? null,
+              utm_first_medium: utmFirstMedium ?? null,
+              utm_first_campaign: utmFirstCampaign ?? null,
+              utm_first_content: utmFirstContent ?? null,
+              utm_first_term: utmFirstTerm ?? null,
+
+              // on lead-captured we MAY mirror first-touch into last-touch
+              // update-intent will overwrite last-touch later with true last-touch
+              utm_last_source: utmFirstSource ?? null,
+              utm_last_medium: utmFirstMedium ?? null,
+              utm_last_campaign: utmFirstCampaign ?? null,
+              utm_last_content: utmFirstContent ?? null,
+              utm_last_term: utmFirstTerm ?? null,
+
+              first_touch_at: serverTimestamp(),
+              last_touch_at: serverTimestamp(),
 
               metadata: {
                 ...(intentToken ? { intent_token: intentToken } : {}),
@@ -225,9 +247,10 @@ export async function POST(req: NextRequest) {
             { merge: true },
           );
         } else {
-          const prev = snap.data();
-          const prevStep = (prev?.funnel_step ?? null) as string | null;
+          const prev = (snap.data() as Record<string, unknown>) ?? {};
+          const prevStep = (prev?.["funnel_step"] ?? null) as string | null;
 
+          // keep more advanced step if already progressed
           const nextStep =
             funnelRank(prevStep) >= funnelRank("checkout_started") ? prevStep : "lead_captured";
 
@@ -239,36 +262,70 @@ export async function POST(req: NextRequest) {
 
           if (site) patchSet(patch, "site", site);
           if (pagePath) patchSet(patch, "page_path", pagePath);
-          if (utmSource) patchSet(patch, "utm_source", utmSource);
-          if (utmMedium) patchSet(patch, "utm_medium", utmMedium);
-          if (utmCampaign) patchSet(patch, "utm_campaign", utmCampaign);
-          if (utmContent) patchSet(patch, "utm_content", utmContent);
-          if (utmTerm) patchSet(patch, "utm_term", utmTerm);
+
+          // first-touch: set ONLY if missing
+          if (isEmptyVal(prev["utm_first_source"]) && utmFirstSource)
+            patchSet(patch, "utm_first_source", utmFirstSource);
+          if (isEmptyVal(prev["utm_first_medium"]) && utmFirstMedium)
+            patchSet(patch, "utm_first_medium", utmFirstMedium);
+          if (isEmptyVal(prev["utm_first_campaign"]) && utmFirstCampaign)
+            patchSet(patch, "utm_first_campaign", utmFirstCampaign);
+          if (isEmptyVal(prev["utm_first_content"]) && utmFirstContent)
+            patchSet(patch, "utm_first_content", utmFirstContent);
+          if (isEmptyVal(prev["utm_first_term"]) && utmFirstTerm)
+            patchSet(patch, "utm_first_term", utmFirstTerm);
+
+          // OPTIONAL: mirror first-touch to last-touch on lead-captured (can be removed if you want)
+          if (utmFirstSource) patchSet(patch, "utm_last_source", utmFirstSource);
+          if (utmFirstMedium) patchSet(patch, "utm_last_medium", utmFirstMedium);
+          if (utmFirstCampaign) patchSet(patch, "utm_last_campaign", utmFirstCampaign);
+          if (utmFirstContent) patchSet(patch, "utm_last_content", utmFirstContent);
+          if (utmFirstTerm) patchSet(patch, "utm_last_term", utmFirstTerm);
+
+          // timestamps
+          patch["last_touch_at"] = serverTimestamp();
+          if (isEmptyVal(prev["first_touch_at"])) patch["first_touch_at"] = serverTimestamp();
 
           await setDoc(paymentRef, patch, { merge: true });
         }
       }
     } catch (e) {
-      console.error("⚠️ Firestore lead-captured update failed (non-critical)", { requestId, e });
+      console.error("Firestore lead-captured update failed (non-critical)", { requestId, e });
     }
 
     // 3) Stripe metadata update (non-critical) - MERGE (do not lose intent_token)
+    // lead-captured writes FIRST-touch keys: utm_first_*
     try {
       if (paymentIntentId) {
         const pi = await stripe.paymentIntents.retrieve(paymentIntentId);
-        const existing = pi.metadata ?? {};
+        const existing = (pi.metadata ?? {}) as Record<string, string>;
 
         const md: Record<string, string> = {
           ...existing,
+
           intent_token: existing.intent_token || intentToken || "",
           email,
+
           ...(site ? { site } : {}),
           ...(pagePath ? { page_path: pagePath } : {}),
-          ...(utmSource ? { utm_source: utmSource } : {}),
-          ...(utmMedium ? { utm_medium: utmMedium } : {}),
-          ...(utmCampaign ? { utm_campaign: utmCampaign } : {}),
-          ...(utmContent ? { utm_content: utmContent } : {}),
-          ...(utmTerm ? { utm_term: utmTerm } : {}),
+
+          // FIRST TOUCH ONLY — do NOT overwrite if already present
+          ...(utmFirstSource && !clean(existing.utm_first_source)
+            ? { utm_first_source: utmFirstSource }
+            : {}),
+          ...(utmFirstMedium && !clean(existing.utm_first_medium)
+            ? { utm_first_medium: utmFirstMedium }
+            : {}),
+          ...(utmFirstCampaign && !clean(existing.utm_first_campaign)
+            ? { utm_first_campaign: utmFirstCampaign }
+            : {}),
+          ...(utmFirstContent && !clean(existing.utm_first_content)
+            ? { utm_first_content: utmFirstContent }
+            : {}),
+          ...(utmFirstTerm && !clean(existing.utm_first_term)
+            ? { utm_first_term: utmFirstTerm }
+            : {}),
+
           updated_at: new Date().toISOString(),
         };
 
@@ -277,12 +334,12 @@ export async function POST(req: NextRequest) {
         await stripe.paymentIntents.update(paymentIntentId, { metadata: md });
       }
     } catch (e) {
-      console.error("⚠️ Stripe metadata update failed (non-critical)", { requestId, e });
+      console.error("Stripe metadata update failed (non-critical)", { requestId, e });
     }
 
     return NextResponse.json({ ok: true, requestId }, { status: 200 });
   } catch (err: unknown) {
-    console.error("❌ lead-captured fatal:", { requestId, err });
+    console.error("lead-captured fatal:", { requestId, err });
     return NextResponse.json({ ok: false, requestId }, { status: 200 });
   }
 }

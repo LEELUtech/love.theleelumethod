@@ -1,8 +1,3 @@
-/**
- * UTM Tracking Utility
- * Captures and stores UTM parameters for Zoho CRM attribution
- */
-
 export interface UTMParams {
   utm_source?: string;
   utm_medium?: string;
@@ -11,7 +6,10 @@ export interface UTMParams {
   utm_term?: string;
 }
 
-export function captureUTM(): UTMParams | null {
+const FIRST_KEY = "utm_first";
+const LAST_KEY = "utm_last";
+
+function readUTMFromUrl(): UTMParams | null {
   if (typeof window === "undefined") return null;
 
   const params = new URLSearchParams(window.location.search);
@@ -29,20 +27,36 @@ export function captureUTM(): UTMParams | null {
   if (content) utm.utm_content = content;
   if (term) utm.utm_term = term;
 
-  if (Object.keys(utm).length === 0) return null;
-
-  // ✅ first-touch: не перетираем существующее
-  const existing = window.localStorage.getItem("utm_params");
-  if (!existing) {
-    window.localStorage.setItem("utm_params", JSON.stringify(utm));
-  }
-
-  return utm;
+  return Object.keys(utm).length ? utm : null;
 }
 
-export function getStoredUTM(): UTMParams | null {
+/**
+ * Capture UTM:
+ * - first-touch: store once
+ * - last-touch: always overwrite when UTM exists in URL
+ */
+export function captureUTM(): { first?: UTMParams; last?: UTMParams } {
+  const utm = readUTMFromUrl();
+  if (!utm) return {};
+
+  // last-touch always updated
+  localStorage.setItem(LAST_KEY, JSON.stringify(utm));
+
+  // first-touch only if missing
+  const existingFirst = localStorage.getItem(FIRST_KEY);
+  if (!existingFirst) {
+    localStorage.setItem(FIRST_KEY, JSON.stringify(utm));
+  }
+
+  return {
+    first: existingFirst ? undefined : utm,
+    last: utm,
+  };
+}
+
+export function getStoredFirstUTM(): UTMParams | null {
   if (typeof window === "undefined") return null;
-  const stored = window.localStorage.getItem("utm_params");
+  const stored = localStorage.getItem(FIRST_KEY);
   if (!stored) return null;
   try {
     return JSON.parse(stored) as UTMParams;
@@ -51,10 +65,20 @@ export function getStoredUTM(): UTMParams | null {
   }
 }
 
-/**
- * Clear stored UTM params from sessionStorage
- */
+export function getStoredLastUTM(): UTMParams | null {
+  if (typeof window === "undefined") return null;
+  const stored = localStorage.getItem(LAST_KEY);
+  if (!stored) return null;
+  try {
+    return JSON.parse(stored) as UTMParams;
+  } catch {
+    return null;
+  }
+}
+
+/** Clear both */
 export function clearStoredUTM(): void {
   if (typeof window === "undefined") return;
-  sessionStorage.removeItem("utm_params");
+  localStorage.removeItem(FIRST_KEY);
+  localStorage.removeItem(LAST_KEY);
 }

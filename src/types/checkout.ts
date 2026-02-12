@@ -68,7 +68,7 @@ export type UpdateIntentPayload = {
 	checkoutVariant?: string;
 	pagePath?: string;
 
-	// ✅ NEW
+	// NEW
 	site?: string;
 };
 

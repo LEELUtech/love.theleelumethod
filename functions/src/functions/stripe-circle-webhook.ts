@@ -5,11 +5,7 @@ import { defineSecret } from "firebase-functions/params";
 
 import { configs } from "../configs/env";
 
-import {
-  createOrUpdateContact,
-  createDeal,
-  updateContactFunnelStepByEmail,
-} from "../lib/zoho-crm";
+import { createOrUpdateContact, createDeal, updateContactFunnelStepByEmail } from "../lib/zoho-crm";
 
 import {
   cleanStr,
@@ -32,28 +28,44 @@ import {
 } from "../utils/stripeCircleWebhook.helpers";
 
 // Secrets must be attached to this function (Firebase v2)
-const ZOHO_CLIENT_ID_SANDBOX = defineSecret("ZOHO_CLIENT_ID_SANDBOX");
-const ZOHO_CLIENT_SECRET_SANDBOX = defineSecret("ZOHO_CLIENT_SECRET_SANDBOX");
-const ZOHO_REFRESH_TOKEN_SANDBOX = defineSecret("ZOHO_REFRESH_TOKEN_SANDBOX");
-const ZOHO_ACCOUNTS_DOMAIN_SANDBOX = defineSecret("ZOHO_ACCOUNTS_DOMAIN_SANDBOX");
-const ZOHO_API_DOMAIN_SANDBOX = defineSecret("ZOHO_API_DOMAIN_SANDBOX");
-const ZOHO_DEAL_LAYOUT_ID_SANDBOX = defineSecret("ZOHO_DEAL_LAYOUT_ID_SANDBOX");
+const ZOHO_CLIENT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_ID_LILYCHYSTOFAT");
+const ZOHO_CLIENT_SECRET_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_SECRET_LILYCHYSTOFAT");
+const ZOHO_REFRESH_TOKEN_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_LILYCHYSTOFAT");
+const ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT");
+const ZOHO_API_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_API_DOMAIN_LILYCHYSTOFAT");
+const ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT");
 
 function safeId(id: string) {
   return id.length > 10 ? `${id.slice(0, 6)}…${id.slice(-4)}` : id;
 }
+
+const HANDLED_EVENT_TYPES = [
+  "payment_intent.succeeded",
+  "payment_intent.payment_failed",
+  "payment_intent.canceled",
+] as const;
+
+type HandledEventType = (typeof HANDLED_EVENT_TYPES)[number];
+
+function isHandledEventType(v: unknown): v is HandledEventType {
+  return typeof v === "string" && (HANDLED_EVENT_TYPES as readonly string[]).includes(v);
+}
+
+type StripeRawBodyRequest = {
+  rawBody?: Buffer;
+};
 
 export const stripeCircleWebhook = onRequest(
   {
     cors: true,
     region: "us-central1",
     secrets: [
-      ZOHO_CLIENT_ID_SANDBOX,
-      ZOHO_CLIENT_SECRET_SANDBOX,
-      ZOHO_REFRESH_TOKEN_SANDBOX,
-      ZOHO_ACCOUNTS_DOMAIN_SANDBOX,
-      ZOHO_API_DOMAIN_SANDBOX,
-      ZOHO_DEAL_LAYOUT_ID_SANDBOX,
+      ZOHO_CLIENT_ID_LILYCHYSTOFAT,
+      ZOHO_CLIENT_SECRET_LILYCHYSTOFAT,
+      ZOHO_REFRESH_TOKEN_LILYCHYSTOFAT,
+      ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT,
+      ZOHO_API_DOMAIN_LILYCHYSTOFAT,
+      ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT,
     ],
   },
   async (req, res) => {
@@ -67,12 +79,15 @@ export const stripeCircleWebhook = onRequest(
       }
 
       const sig = req.headers["stripe-signature"];
-      const rawBody = (req as any).rawBody;
+      const rawBody = (req as unknown as StripeRawBodyRequest).rawBody;
 
       if (!rawBody || !sig || !configs.stripeCircleWebhookSecret) {
         res.status(400).send("Missing required webhook data");
         return;
       }
+
+      // Deal layoutId from Firebase Secret (passed to createDeal)
+      const dealLayoutId = cleanStr(ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT.value());
 
       const stripe = getStripeClient();
 
@@ -89,13 +104,7 @@ export const stripeCircleWebhook = onRequest(
         return;
       }
 
-      const handled = new Set([
-        "payment_intent.succeeded",
-        "payment_intent.payment_failed",
-        "payment_intent.canceled",
-      ] as const);
-
-      if (!handled.has(event.type as any)) {
+      if (!isHandledEventType(event.type)) {
         res.status(200).send("Event type not handled");
         return;
       }
@@ -106,6 +115,16 @@ export const stripeCircleWebhook = onRequest(
       const pi = await stripe.paymentIntents.retrieve(piFromEvent.id);
 
       const metadata = (pi.metadata || {}) as Record<string, string>;
+
+      const utmLastSource = cleanStr(metadata.utm_last_source) || cleanStr(metadata.utm_source);
+      const utmLastMedium = cleanStr(metadata.utm_last_medium) || cleanStr(metadata.utm_medium);
+      const utmLastCampaign =
+        cleanStr(metadata.utm_last_campaign) || cleanStr(metadata.utm_campaign);
+      const utmLastContent = cleanStr(metadata.utm_last_content) || cleanStr(metadata.utm_content);
+      const utmLastTerm = cleanStr(metadata.utm_last_term) || cleanStr(metadata.utm_term);
+
+      const lastPagePath = cleanStr(metadata.page_path);
+
       const site = normalizeHost(cleanStr(metadata.site)) || "unknown";
       const customerId = pi.customer ? String(pi.customer) : undefined;
 
@@ -116,11 +135,14 @@ export const stripeCircleWebhook = onRequest(
       // ---------------------------------------------------
       // FAILED / CANCELED
       // ---------------------------------------------------
-      if (event.type === "payment_intent.payment_failed" || event.type === "payment_intent.canceled") {
+      if (
+        event.type === "payment_intent.payment_failed" ||
+        event.type === "payment_intent.canceled"
+      ) {
         const isCanceled = event.type === "payment_intent.canceled";
         const msg = isCanceled
           ? "Payment canceled"
-          : (pi.last_payment_error?.message || "Payment failed");
+          : pi.last_payment_error?.message || "Payment failed";
 
         console.log("Payment failed/canceled", {
           payment_intent_id: pi.id,
@@ -144,7 +166,6 @@ export const stripeCircleWebhook = onRequest(
         // 1) Firestore status updates (advance-only funnel + delivery)
         try {
           await markFunnelStepAdvanceOnly(pi.id, isCanceled ? "canceled" : "failed");
-          await updateDeliveryStatusAdvanceOnly(pi.id, "failed", msg);
           await updateProcessingStatus(pi.id, "failed", msg);
         } catch (e) {
           console.error("Firestore update failed for failed/canceled", {
@@ -175,13 +196,13 @@ export const stripeCircleWebhook = onRequest(
               stripePaymentIntentId: pi.id,
               stripeCustomerId: customerId,
 
-              utmSource: cleanStr(metadata.utm_source),
-              utmMedium: cleanStr(metadata.utm_medium),
-              utmCampaign: cleanStr(metadata.utm_campaign),
-              utmContent: cleanStr(metadata.utm_content),
-              utmTerm: cleanStr(metadata.utm_term),
+              utmSource: utmLastSource,
+              utmMedium: utmLastMedium,
+              utmCampaign: utmLastCampaign,
+              utmContent: utmLastContent,
+              utmTerm: utmLastTerm,
 
-              pagePath: cleanStr(metadata.page_path),
+              pagePath: lastPagePath,
             });
 
             try {
@@ -281,13 +302,13 @@ export const stripeCircleWebhook = onRequest(
           stripePaymentIntentId: pi.id,
           stripeCustomerId: customerId,
 
-          utmSource: cleanStr(metadata.utm_source),
-          utmMedium: cleanStr(metadata.utm_medium),
-          utmCampaign: cleanStr(metadata.utm_campaign),
-          utmContent: cleanStr(metadata.utm_content),
-          utmTerm: cleanStr(metadata.utm_term),
+          utmSource: utmLastSource,
+          utmMedium: utmLastMedium,
+          utmCampaign: utmLastCampaign,
+          utmContent: utmLastContent,
+          utmTerm: utmLastTerm,
 
-          pagePath: cleanStr(metadata.page_path),
+          pagePath: lastPagePath,
         });
 
         contactId = c.contactId;
@@ -323,7 +344,7 @@ export const stripeCircleWebhook = onRequest(
         console.error("Delivery failed", { payment_intent_id: pi.id, error: msg });
 
         await updateDeliveryStatusAdvanceOnly(pi.id, "failed", msg);
-        await markFunnelStepAdvanceOnly(pi.id, "failed");
+        await markFunnelStepAdvanceOnly(pi.id, "delivery_failed");
         await updateProcessingStatus(pi.id, "failed", msg);
 
         try {
@@ -371,14 +392,17 @@ export const stripeCircleWebhook = onRequest(
               site,
               customerId,
 
-              utmSource: cleanStr(metadata.utm_source),
-              utmMedium: cleanStr(metadata.utm_medium),
-              utmCampaign: cleanStr(metadata.utm_campaign),
-              utmContent: cleanStr(metadata.utm_content),
-              utmTerm: cleanStr(metadata.utm_term),
+              utmSource: utmLastSource,
+              utmMedium: utmLastMedium,
+              utmCampaign: utmLastCampaign,
+              utmContent: utmLastContent,
+              utmTerm: utmLastTerm,
+
+              pagePath: lastPagePath,
 
               checkoutVariant: cleanStr(metadata.checkout_variant),
-              pagePath: cleanStr(metadata.page_path),
+
+              layoutId: dealLayoutId,
             });
 
             if (dealId) {

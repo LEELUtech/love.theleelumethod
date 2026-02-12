@@ -2,7 +2,12 @@ import { QuizResultOrb } from "@/components/sections/QuizResult/QuizResultOrb";
 import Image from "next/image";
 import React from "react";
 
-const ProfileGlitchSection = () => {
+interface ProfileGlitchSectionProps {
+	description: string;
+	secondaryDescription: string;
+}
+
+const ProfileGlitchSection = ({ description, secondaryDescription }: ProfileGlitchSectionProps) => {
 	return (
 		<section className="relative overflow-hidden">
 			{/* background */}
@@ -47,12 +52,7 @@ const ProfileGlitchSection = () => {
 							</p>
 
 							<p className="mt-4 font-lato font-medium text-body leading-[1.7] text-[#5A5757]">
-								You have taken on the role of the “Architect” in this
-								relationship—managing the emotions, planning the future, and
-								trying to “fix” his potential. You believe that if you just love
-								him harder or better, he will finally step up. Biologically, you
-								are in a state of hyper-vigilance. You mistake your anxiety
-								about his behavior for “passion.”
+							{description}
 							</p>
 						</div>
 					</div>
@@ -86,11 +86,7 @@ const ProfileGlitchSection = () => {
 							</p>
 
 							<p className="mt-4 font-lato font-medium text-body leading-[1.7] text-[#5A5757]">
-								You are likely operating in a 1 Vibration (The Masculine/Leader)
-								while he has retreated into a passive frequency. By
-								over-functioning, you are mathematically blocking him from
-								assuming the role you want him to take. You are filling the
-								space he needs to occupy.
+							{secondaryDescription}
 							</p>
 						</div>
 					</div>

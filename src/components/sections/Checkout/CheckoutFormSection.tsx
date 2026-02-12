@@ -32,7 +32,7 @@ import {
 	GUIDED_BREAKTHROUGH,
 	VIP_IMMERSION,
 } from "@/utils/constants";
-import { getStoredUTM } from "@/utils/utm-tracker";
+import { getStoredFirstUTM } from "@/utils/utm-tracker";
 
 const pk = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!;
 const stripePromise = loadStripe(pk);
@@ -67,21 +67,21 @@ interface CheckoutFormSectionProps {
 	productId: string;
 }
 
-// ✅ helper: собираем контекст (site/pagePath/utm) на клиенте
+// helper: collect context (site/pagePath/utm) on client side
 function getClientContext() {
-	if (typeof window === "undefined") return {};
-	const utm = getStoredUTM();
+  if (typeof window === "undefined") return {};
+  const utm = getStoredFirstUTM();
 
-	return {
-		site: window.location.host,
-		pagePath: window.location.pathname,
+  return {
+    site: window.location.host,
+    pagePath: window.location.pathname,
 
-		utmSource: utm?.utm_source,
-		utmMedium: utm?.utm_medium,
-		utmCampaign: utm?.utm_campaign,
-		utmContent: utm?.utm_content,
-		utmTerm: utm?.utm_term,
-	};
+    utmSource: utm?.utm_source,
+    utmMedium: utm?.utm_medium,
+    utmCampaign: utm?.utm_campaign,
+    utmContent: utm?.utm_content,
+    utmTerm: utm?.utm_term,
+  };
 }
 
 export default function CheckoutFormSection({
@@ -115,10 +115,12 @@ export default function CheckoutFormSection({
 		validateBilling(initialBilling),
 	);
 
-	// ✅ фиксируем контекст 1 раз (чтобы create/lead/update использовали одинаковые значения)
-	const ctxRef = React.useRef<ReturnType<typeof getClientContext>>({});
+	// ctx as state (not ref) - fixed once after mount
+	type ClientCtx = ReturnType<typeof getClientContext>;
+	const [ctx, setCtx] = React.useState<ClientCtx>({});
+
 	React.useEffect(() => {
-		ctxRef.current = getClientContext();
+		setCtx(getClientContext());
 	}, []);
 
 	// derived
@@ -171,10 +173,8 @@ export default function CheckoutFormSection({
 		if (clientSecret && intentKey === expectedKey) return;
 		if (status !== "idle") return;
 
-		// ✅ create-intent получает site/pagePath/utm*
-		createIntent({ productType: productId, ...(ctxRef.current || {}) }).catch(
-			() => {},
-		);
+		// create-intent receives first-touch ctx
+		createIntent({ productType: productId, ...(ctx || {}) }).catch(() => {});
 	}, [
 		product,
 		productLoading,
@@ -184,6 +184,7 @@ export default function CheckoutFormSection({
 		status,
 		createIntent,
 		reset,
+		ctx, // important
 	]);
 
 	React.useEffect(() => {
@@ -213,8 +214,8 @@ export default function CheckoutFormSection({
 	}, [billing]);
 
 	// --- lead-captured ---
-	const lastLeadEmailRef = React.useRef<string>(""); // дедуп blur
-	const lastLeadEmailWithPIRef = React.useRef<string>(""); // дедуп "с PI"
+	const lastLeadEmailRef = React.useRef<string>("");
+	const lastLeadEmailWithPIRef = React.useRef<string>(""); 
 	const leadAbortRef = React.useRef<AbortController | null>(null);
 
 	const captureLeadInternal = React.useCallback(
@@ -227,10 +228,10 @@ export default function CheckoutFormSection({
 
 			const hasPI = !!intentId && !!intentToken;
 
-			// обычный дедуп (blur)
+			// regular deduplication (blur)
 			if (!opts?.force && lastLeadEmailRef.current === email) return;
 
-			// отдельный дедуп для "догонялки с PI"
+			// separate deduplication for "catch-up with PI"
 			if (hasPI && lastLeadEmailWithPIRef.current === email) return;
 
 			lastLeadEmailRef.current = email;
@@ -244,7 +245,7 @@ export default function CheckoutFormSection({
 				paymentIntentId: intentId || undefined,
 				intentToken: intentToken || undefined,
 				email,
-				...(ctxRef.current || {}),
+				...(ctx || {}), // ctx state
 			};
 
 			try {
@@ -259,16 +260,15 @@ export default function CheckoutFormSection({
 				// silent
 			}
 		},
-		[billing.email, intentId, intentToken],
+		[billing.email, intentId, intentToken, ctx], // added ctx
 	);
 
-	// ✅ вот это и надо в onBlur
 	const onEmailBlur: React.FocusEventHandler<HTMLInputElement> =
 		React.useCallback(() => {
 			captureLeadInternal().catch(() => {});
 		}, [captureLeadInternal]);
 
-	// ✅ догонялка: если PI/token появились позже — отправим ещё раз (1 раз) уже с PI/token
+	// catch-up: if PI/token appeared later - send again (once) with PI/token
 	React.useEffect(() => {
 		const email = (billing.email || "").trim().toLowerCase();
 		if (!email) return;
@@ -276,10 +276,6 @@ export default function CheckoutFormSection({
 
 		captureLeadInternal({ force: true }).catch(() => {});
 	}, [intentId, intentToken, billing.email, captureLeadInternal]);
-
-	// ------------------------------------------------------------
-	// ⬇️ ВСТАВЬ ТУТ ТВОЙ JSX вместо return null (как было раньше)
-	// ------------------------------------------------------------
 
 	return (
 		<section className="relative bg-white py-[37px] md:py-[56px] lg:py-[37px] lg:h-[1497px] overflow-visible">
@@ -368,7 +364,7 @@ export default function CheckoutFormSection({
 										placeholder="Email address"
 										value={billing.email}
 										onChange={(e) => setField("email", e.target.value)}
-										  onBlur={onEmailBlur}
+										onBlur={onEmailBlur}
 									/>
 									{showFieldError("email") ? (
 										<p className="mt-1 text-xs font-lato text-brand-primary">
@@ -491,6 +487,7 @@ export default function CheckoutFormSection({
 										clientSecret={clientSecret}
 										productType={productId}
 										billing={billing}
+										ctx={ctx}
 										onSubmitAttempt={handleSubmitAttempt}
 										loading={productLoading}
 										productName={product?.name}

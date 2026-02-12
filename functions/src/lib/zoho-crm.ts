@@ -1,8 +1,6 @@
+// functions/src/lib/zoho-crm.ts
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import { configs } from "../configs/env";
-
-let cachedAccessToken: string | null = null;
-let cachedAccessTokenExpiresAt = 0;
 
 // -------------------------
 // Zoho field API names (1 place to edit)
@@ -33,10 +31,25 @@ const CONTACT_FIELDS = {
   First_UTM_Term: "First_UTM_Term",
   First_Landing_Page: "First_Landing_Page",
 
+  Last_UTM_Source: "Last_UTM_Source",
+  Last_UTM_Medium: "Last_UTM_Medium",
+  Last_UTM_Campaign: "Last_UTM_Campaign",
+  Last_UTM_Content: "Last_UTM_Content",
+  Last_UTM_Term: "Last_UTM_Term",
+  Last_Landing_Page: "Last_Landing_Page",
+
   Funnel_Step: "Funnel_Step",
   Funnel_Updated_At: "Funnel_Updated_At",
   Checkout_Status: "Checkout_Status",
   Last_Checkout_Error: "Last_Checkout_Error",
+
+  Has_Lead_Captured: "Has_Lead_Captured",
+  Has_Checkout_Started: "Has_Checkout_Started",
+  Has_Payment_Failed: "Has_Payment_Failed",
+  Has_Paid: "Has_Paid",
+  Has_Delivered: "Has_Delivered",
+  Has_Delivery_Failed: "Has_Delivery_Failed",
+  Has_Abandoned: "Has_Abandoned",
 } as const;
 
 const DEAL_FIELDS = {
@@ -95,16 +108,22 @@ function toZohoDateTime(d: Date = new Date()): string {
 }
 
 function ensureZohoConfig() {
-  if (!configs.zohoRefreshToken) throw new Error("ZOHO_REFRESH_TOKEN_SANDBOX is missing");
-  if (!configs.zohoClientId) throw new Error("ZOHO_CLIENT_ID_SANDBOX is missing");
-  if (!configs.zohoClientSecret) throw new Error("ZOHO_CLIENT_SECRET_SANDBOX is missing");
-  if (!configs.zohoAccountsDomain) throw new Error("ZOHO_ACCOUNTS_DOMAIN_SANDBOX is missing");
-  if (!configs.zohoApiDomain) throw new Error("ZOHO_API_DOMAIN_SANDBOX is missing");
+  if (!configs.zohoRefreshToken) throw new Error("ZOHO_REFRESH_TOKEN_LILYCHYSTOFAT is missing");
+  if (!configs.zohoClientId) throw new Error("ZOHO_CLIENT_ID_LILYCHYSTOFAT is missing");
+  if (!configs.zohoClientSecret) throw new Error("ZOHO_CLIENT_SECRET_LILYCHYSTOFAT is missing");
+  if (!configs.zohoAccountsDomain) throw new Error("ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT is missing");
+  if (!configs.zohoApiDomain) throw new Error("ZOHO_API_DOMAIN_LILYCHYSTOFAT is missing");
 
-  // safety: sandbox only (remove if you will support prod)
-  if (configs.zohoApiDomain !== "sandbox.zohoapis.com") {
-    throw new Error(`Zoho API domain is not sandbox: ${configs.zohoApiDomain}`);
-  }
+}
+
+function setTrueIfNotTrue(obj: Record<string, unknown>, key: string, existingValue: unknown) {
+  const isAlreadyTrue =
+    existingValue === true ||
+    existingValue === "true" ||
+    existingValue === 1 ||
+    existingValue === "1";
+
+  if (!isAlreadyTrue) obj[key] = true;
 }
 
 function asStringArray(v: unknown): string[] {
@@ -136,7 +155,7 @@ function sameSet(a: string[], b: string[]) {
   return true;
 }
 
-function setIfEmpty(obj: Record<string, any>, key: string, current: any, next?: any) {
+function setIfEmpty(obj: Record<string, unknown>, key: string, current: unknown, next?: unknown) {
   const v = typeof next === "string" ? cleanStr(next) : next;
   if (v === undefined || v === null) return;
   if (!current) obj[key] = v;
@@ -153,10 +172,65 @@ function pickPurchasedProduct(productType: string, override?: string) {
 }
 
 // -------------------------
+// non-degrading helpers (name/phone)
+// -------------------------
+function norm(v: unknown) {
+  return String(v ?? "").trim();
+}
+
+function digitsCount(v: unknown) {
+  const s = norm(v);
+  const m = s.match(/\d/g);
+  return m ? m.length : 0;
+}
+
+function isPlaceholderName(v: unknown) {
+  const s = norm(v).toLowerCase();
+  return !s || s === "unknown" || s === "lead" || s === "customer";
+}
+
+function setIfEmptyOrPlaceholder(
+  obj: Record<string, unknown>,
+  key: string,
+  current: unknown,
+  next?: unknown,
+) {
+  const v = typeof next === "string" ? cleanStr(next) : next;
+  if (v === undefined || v === null) return;
+  if (!current || isPlaceholderName(current)) obj[key] = v;
+}
+
+function setIfBetterPhone(
+  obj: Record<string, unknown>,
+  key: string,
+  current: unknown,
+  next?: unknown,
+) {
+  const v = typeof next === "string" ? cleanStr(next) : next;
+  if (v === undefined || v === null) return;
+
+  const cur = norm(current);
+  const nxt = norm(v);
+  if (!nxt) return;
+
+  if (!cur) {
+    obj[key] = nxt;
+    return;
+  }
+
+  const curDigits = digitsCount(cur);
+  const nxtDigits = digitsCount(nxt);
+
+  if (nxtDigits < curDigits) return;
+
+  if (nxtDigits > curDigits || nxt.length >= cur.length) obj[key] = nxt;
+}
+
+// -------------------------
 // Funnel mapping (Zoho picklist values)
 // -------------------------
 /**
- * По твоему скрину Funnel_Step в Zoho:
+ * Zoho Funnel_Step picklist values (как у тебя):
  * - lead_captured
  * - checkout_started
  * - abandoned
@@ -164,7 +238,6 @@ function pickPurchasedProduct(productType: string, override?: string) {
  * - paid
  * - delivered
  * - delivery_failed
- * (checkout_viewed — если его реально нет в picklist, лучше НЕ писать его)
  */
 export type ZohoFunnelStep =
   | "lead_captured"
@@ -176,7 +249,7 @@ export type ZohoFunnelStep =
   | "delivery_failed";
 
 /**
- * App / Firestore шаги:
+ * App steps:
  */
 export type AppFunnelStep =
   | "checkout_viewed"
@@ -191,16 +264,13 @@ export type AppFunnelStep =
 
 function toZohoFunnelStep(step: AppFunnelStep): ZohoFunnelStep {
   if (step === "failed") return "payment_failed";
-  if (step === "canceled") return "payment_failed"; // canceled отдельно нет — маппим сюда
+  if (step === "canceled") return "payment_failed";
   if (step === "delivery_failed") return "delivery_failed";
   if (step === "paid") return "paid";
   if (step === "delivered") return "delivered";
   if (step === "abandoned") return "abandoned";
   if (step === "checkout_started") return "checkout_started";
   if (step === "lead_captured") return "lead_captured";
-
-  // checkout_viewed: если в Zoho нет такого значения — не пишем его никогда,
-  // но сюда мы всё равно не должны приходить (см. updateContactFunnelStepByEmail).
   return "lead_captured";
 }
 
@@ -221,7 +291,6 @@ function normalizeZohoStep(v: unknown): ZohoFunnelStep | undefined {
   return undefined;
 }
 
-/** advance-only funnel in Zoho */
 function shouldAdvanceZoho(existing: unknown, next: ZohoFunnelStep) {
   const ex = normalizeZohoStep(existing);
   if (!ex) return true;
@@ -244,6 +313,9 @@ function toZohoCheckoutStatus(step: ZohoFunnelStep, original?: AppFunnelStep) {
 // -------------------------
 // OAuth token
 // -------------------------
+let cachedAccessToken: string | null = null;
+let cachedAccessTokenExpiresAt = 0;
+
 async function refreshZohoAccessToken(): Promise<string> {
   ensureZohoConfig();
 
@@ -283,10 +355,10 @@ function sleep(ms: number) {
 
 // -------------------------
 // request wrapper with retries
-// - 401 / invalid token => refresh once
-// - 429 / 5xx => exponential backoff
+// - 401 => refresh once
+// - 429/5xx => backoff retry
 // -------------------------
-async function zohoRequest<T = any>(
+async function zohoRequest<T = unknown>(
   config: AxiosRequestConfig,
   opts?: { attempt?: number; refreshed?: boolean },
 ): Promise<T> {
@@ -307,10 +379,17 @@ async function zohoRequest<T = any>(
   try {
     const res = await axios.request<T>(finalConfig);
     return res.data;
-  } catch (err) {
-    const e = err as AxiosError<any>;
+  } catch (err: unknown) {
+    const e = err as AxiosError<unknown>;
     const status = e.response?.status;
-    const zohoCode = e.response?.data?.code || e.response?.data?.data?.[0]?.code;
+
+    const respData = (e.response?.data as Record<string, unknown> | undefined) ?? undefined;
+
+    const zohoCode =
+      (respData?.["code"] as string | undefined) ||
+      ((
+        (respData?.["data"] as unknown[] | undefined)?.[0] as Record<string, unknown> | undefined
+      )?.["code"] as string | undefined);
 
     const isAuthIssue =
       status === 401 || zohoCode === "INVALID_TOKEN" || zohoCode === "AUTHENTICATION_FAILURE";
@@ -327,7 +406,6 @@ async function zohoRequest<T = any>(
       attempt,
     });
 
-    // 1) refresh token once on auth issues
     if (isAuthIssue && !refreshed) {
       cachedAccessToken = null;
       cachedAccessTokenExpiresAt = 0;
@@ -335,9 +413,8 @@ async function zohoRequest<T = any>(
       return zohoRequest<T>(config, { attempt, refreshed: true });
     }
 
-    // 2) retry on 429/5xx with backoff (max 3 retries)
     if (isRetryable && attempt < 3) {
-      const base = 400; // ms
+      const base = 400;
       const backoff = base * Math.pow(2, attempt) + Math.floor(Math.random() * 150);
       await sleep(backoff);
       return zohoRequest<T>(config, { attempt: attempt + 1, refreshed });
@@ -350,13 +427,13 @@ async function zohoRequest<T = any>(
 // -------------------------
 // search helpers
 // -------------------------
-async function findContactByEmail(email: string): Promise<any | null> {
+async function findContactByEmail(email: string): Promise<Record<string, unknown> | null> {
   const criteria = encodeURIComponent(`(Email:equals:${email})`);
   const url = `https://${configs.zohoApiDomain}/crm/v2/Contacts/search?criteria=${criteria}`;
 
   try {
-    const data = await zohoRequest<any>({ method: "GET", url });
-    return data?.data?.[0] ?? null;
+    const data = await zohoRequest<Record<string, unknown>>({ method: "GET", url });
+    return (data as any)?.data?.[0] ?? null;
   } catch (err: unknown) {
     if (axios.isAxiosError(err)) {
       const status = err.response?.status;
@@ -366,7 +443,9 @@ async function findContactByEmail(email: string): Promise<any | null> {
   }
 }
 
-async function findDealByPaymentIntentId(paymentIntentId: string): Promise<any | null> {
+async function findDealByPaymentIntentId(
+  paymentIntentId: string,
+): Promise<Record<string, unknown> | null> {
   const pi = cleanStr(paymentIntentId);
   if (!pi) return null;
 
@@ -374,8 +453,8 @@ async function findDealByPaymentIntentId(paymentIntentId: string): Promise<any |
   const url = `https://${configs.zohoApiDomain}/crm/v2/Deals/search?criteria=${criteria}`;
 
   try {
-    const data = await zohoRequest<any>({ method: "GET", url });
-    return data?.data?.[0] ?? null;
+    const data = await zohoRequest<Record<string, unknown>>({ method: "GET", url });
+    return (data as any)?.data?.[0] ?? null;
   } catch (err: unknown) {
     if (axios.isAxiosError(err)) {
       const status = err.response?.status;
@@ -386,7 +465,7 @@ async function findDealByPaymentIntentId(paymentIntentId: string): Promise<any |
 }
 
 // -------------------------
-// CONTACT upsert (purchase)
+// CONTACT upsert (purchase) - non-degrading names/phone
 // -------------------------
 export async function createOrUpdateContact(data: {
   email: string;
@@ -431,7 +510,7 @@ export async function createOrUpdateContact(data: {
   const safePhone = cleanStr(data.phone) ? truncate(cleanStr(data.phone)!, 50) : undefined;
 
   if (existing?.id) {
-    const updateData: Record<string, any> = {
+    const updateData: Record<string, unknown> = {
       id: existing.id,
 
       [CONTACT_FIELDS.Last_Product_Purchased]: cleanStr(data.productType) || undefined,
@@ -444,6 +523,7 @@ export async function createOrUpdateContact(data: {
       updateData[CONTACT_FIELDS.Stripe_Payment_Intent_ID] = cleanStr(data.stripePaymentIntentId);
     }
 
+    // first purchase fields (only if empty)
     setIfEmpty(
       updateData,
       CONTACT_FIELDS.First_Product_Purchased,
@@ -457,20 +537,24 @@ export async function createOrUpdateContact(data: {
       nowDT,
     );
 
-    setIfEmpty(
+    // ✅ name: fill if empty OR placeholder
+    setIfEmptyOrPlaceholder(
       updateData,
       CONTACT_FIELDS.First_Name,
       existing[CONTACT_FIELDS.First_Name],
       safeFirstName,
     );
-    setIfEmpty(
+    setIfEmptyOrPlaceholder(
       updateData,
       CONTACT_FIELDS.Last_Name,
       existing[CONTACT_FIELDS.Last_Name],
       safeLastName,
     );
-    setIfEmpty(updateData, CONTACT_FIELDS.Phone, existing[CONTACT_FIELDS.Phone], safePhone);
 
+    // ✅ phone: only if better
+    setIfBetterPhone(updateData, CONTACT_FIELDS.Phone, existing[CONTACT_FIELDS.Phone], safePhone);
+
+    // site/customer id: only if empty (safe)
     setIfEmpty(updateData, CONTACT_FIELDS.Site, existing[CONTACT_FIELDS.Site], cleanStr(data.site));
     setIfEmpty(
       updateData,
@@ -479,6 +563,7 @@ export async function createOrUpdateContact(data: {
       cleanStr(data.stripeCustomerId),
     );
 
+    // first-touch attribution: only if empty
     setIfEmpty(
       updateData,
       CONTACT_FIELDS.First_UTM_Source,
@@ -516,6 +601,16 @@ export async function createOrUpdateContact(data: {
       cleanStr(data.pagePath),
     );
 
+    updateData[CONTACT_FIELDS.Last_UTM_Source] = cleanStr(data.utmSource);
+    updateData[CONTACT_FIELDS.Last_UTM_Medium] = cleanStr(data.utmMedium);
+    updateData[CONTACT_FIELDS.Last_UTM_Campaign] = cleanStr(data.utmCampaign);
+    updateData[CONTACT_FIELDS.Last_UTM_Content] = cleanStr(data.utmContent);
+    updateData[CONTACT_FIELDS.Last_UTM_Term] = cleanStr(data.utmTerm);
+
+    if (cleanStr(data.pagePath)) {
+      updateData[CONTACT_FIELDS.Last_Landing_Page] = cleanStr(data.pagePath);
+    }
+
     // multi-select Purchased_Products: add purchasedValue only if valid + not already present
     if (purchasedValue) {
       const current = uniq(asStringArray(existing[CONTACT_FIELDS.Purchased_Products]));
@@ -523,18 +618,18 @@ export async function createOrUpdateContact(data: {
       if (!sameSet(current, next)) updateData[CONTACT_FIELDS.Purchased_Products] = next;
     }
 
-    const resp = await zohoRequest<any>({
+    const resp = await zohoRequest<Record<string, unknown>>({
       method: "PUT",
       url: `https://${configs.zohoApiDomain}/crm/v2/Contacts`,
       data: { data: [updateData] },
     });
 
     console.log("ZOHO CONTACT PUT OK", JSON.stringify(resp));
-    return { contactId: existing.id, isNew: false };
+    return { contactId: existing.id as string, isNew: false };
   }
 
   // CREATE NEW
-  const createData: Record<string, any> = {
+  const createData: Record<string, unknown> = {
     [CONTACT_FIELDS.Email]: email,
     [CONTACT_FIELDS.First_Name]: safeFirstName || "Unknown",
     [CONTACT_FIELDS.Last_Name]: safeLastName || "Customer",
@@ -570,7 +665,24 @@ export async function createOrUpdateContact(data: {
   if (cleanStr(data.pagePath))
     createData[CONTACT_FIELDS.First_Landing_Page] = cleanStr(data.pagePath);
 
-  const createRes = await zohoRequest<any>({
+  if (cleanStr(data.utmSource))
+    createData[CONTACT_FIELDS.Last_UTM_Source] = cleanStr(data.utmSource);
+
+  if (cleanStr(data.utmMedium))
+    createData[CONTACT_FIELDS.Last_UTM_Medium] = cleanStr(data.utmMedium);
+
+  if (cleanStr(data.utmCampaign))
+    createData[CONTACT_FIELDS.Last_UTM_Campaign] = cleanStr(data.utmCampaign);
+
+  if (cleanStr(data.utmContent))
+    createData[CONTACT_FIELDS.Last_UTM_Content] = cleanStr(data.utmContent);
+
+  if (cleanStr(data.utmTerm)) createData[CONTACT_FIELDS.Last_UTM_Term] = cleanStr(data.utmTerm);
+
+  if (cleanStr(data.pagePath))
+    createData[CONTACT_FIELDS.Last_Landing_Page] = cleanStr(data.pagePath);
+
+  const createRes = await zohoRequest<Record<string, unknown>>({
     method: "POST",
     url: `https://${configs.zohoApiDomain}/crm/v2/Contacts`,
     data: { data: [createData] },
@@ -578,7 +690,7 @@ export async function createOrUpdateContact(data: {
 
   console.log("ZOHO CONTACT POST OK", JSON.stringify(createRes));
 
-  const newId = createRes?.data?.[0]?.details?.id;
+  const newId = (createRes as any)?.data?.[0]?.details?.id as string | undefined;
   if (!newId)
     throw new Error(`Failed to get new contact ID. Response: ${JSON.stringify(createRes)}`);
 
@@ -586,7 +698,7 @@ export async function createOrUpdateContact(data: {
 }
 
 // -------------------------
-// DEAL create (with Layout + Closing_Date)
+// DEAL create - layoutId from param (not process.env)
 // -------------------------
 export async function createDeal(data: {
   contactId: string;
@@ -609,31 +721,26 @@ export async function createDeal(data: {
 
   checkoutVariant?: string;
   pagePath?: string;
+
+  layoutId?: string; // pass from webhook: ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT.value()
 }): Promise<string | null> {
   const paymentIntentId = cleanStr(data.paymentIntentId);
   if (!paymentIntentId) throw new Error("paymentIntentId is required");
 
   // dedupe by PI
   const existing = await findDealByPaymentIntentId(paymentIntentId);
-  if (existing?.id) return existing.id;
+  if (existing?.id) return existing.id as string;
 
   const amountMajor =
     typeof data.amount === "number" ? Math.round((data.amount / 100) * 100) / 100 : 0;
   const currencyUpper = (data.currency || "usd").toUpperCase();
 
-  // ✅ Closing_Date format required by Zoho: YYYY-MM-DD
+  // Zoho required format: YYYY-MM-DD
   const closingDate = new Date().toISOString().slice(0, 10);
 
-  // ✅ take from env (recommended). fallback to hardcoded if not set
-  const layoutId = cleanStr(process.env.ZOHO_DEAL_LAYOUT_ID_SANDBOX) || undefined;
+  const layoutId = cleanStr(data.layoutId);
 
-  if (!layoutId) {
-    console.warn(
-      "ZOHO: missing deal layout id (ZOHO_DEAL_LAYOUT_ID_SANDBOX). Deal will be created in default layout.",
-    );
-  }
-
-  const dealData: Record<string, any> = {
+  const dealData: Record<string, unknown> = {
     [DEAL_FIELDS.Deal_Name]: cleanStr(data.dealName)
       ? truncate(cleanStr(data.dealName)!, 120)
       : `Purchase - ${paymentIntentId}`,
@@ -646,7 +753,6 @@ export async function createDeal(data: {
     [DEAL_FIELDS.Stripe_Payment_Intent_ID]: paymentIntentId,
     [DEAL_FIELDS.Purchase_Currency]: currencyUpper,
 
-    // ✅ required by your layout (keep it required in Zoho)
     [DEAL_FIELDS.Closing_Date]: closingDate,
 
     [DEAL_FIELDS.Description]: [
@@ -657,13 +763,10 @@ export async function createDeal(data: {
       .filter(Boolean)
       .join("\n"),
   };
+  
+  // Force layout (if provided)
+  if (layoutId) dealData[DEAL_FIELDS.Layout] = { id: layoutId };
 
-  // ✅ Force your layout so you don't affect other websites / setups
-  if (layoutId) {
-    dealData[DEAL_FIELDS.Layout] = { id: layoutId };
-  }
-
-  // Your custom deal field "Site"
   if (cleanStr(data.site)) dealData[DEAL_FIELDS.Site] = cleanStr(data.site);
 
   if (cleanStr(data.customerId)) {
@@ -684,13 +787,13 @@ export async function createDeal(data: {
   }
 
   try {
-    const createRes = await zohoRequest<any>({
+    const createRes = await zohoRequest<Record<string, unknown>>({
       method: "POST",
       url: `https://${configs.zohoApiDomain}/crm/v2/Deals`,
       data: { data: [dealData] },
     });
 
-    const row = createRes?.data?.[0];
+    const row = (createRes as any)?.data?.[0];
 
     if (!row) {
       console.error("ZOHO DEAL POST: empty response", { createRes, dealData });
@@ -707,7 +810,7 @@ export async function createDeal(data: {
       return null;
     }
 
-    const dealId = row?.details?.id;
+    const dealId = row?.details?.id as string | undefined;
     if (!dealId) {
       console.error("ZOHO DEAL POST: missing id in success response", { row, createRes });
       return null;
@@ -742,17 +845,118 @@ export async function updateContactFunnelStepByEmail(params: {
   const existing = await findContactByEmail(email);
   if (!existing?.id) return null;
 
-  // ✅ НЕ пишем checkout_viewed в Zoho (если его нет в picklist — будет ошибка)
+  // do not write checkout_viewed (if not in picklist)
   if (params.funnelStep === "checkout_viewed") {
-    return { contactId: existing.id };
+    return { contactId: existing.id as string };
   }
 
   const zohoStep = toZohoFunnelStep(params.funnelStep);
 
-  // ✅ advance-only (если в CRM уже paid/delivered, то abandoned не перетрёт)
+  // advance-only
   if (!shouldAdvanceZoho(existing[CONTACT_FIELDS.Funnel_Step], zohoStep)) {
-    // но статус/ошибку можно обновить (например, lastError), без step
-    const patch: Record<string, any> = { id: existing.id };
+    const patch: Record<string, unknown> = { id: existing.id };
+
+    // set flags even if not advancing
+    if (zohoStep === "lead_captured") {
+      setTrueIfNotTrue(
+        patch,
+        CONTACT_FIELDS.Has_Lead_Captured,
+        existing[CONTACT_FIELDS.Has_Lead_Captured],
+      );
+    }
+
+    if (zohoStep === "checkout_started") {
+      setTrueIfNotTrue(
+        patch,
+        CONTACT_FIELDS.Has_Lead_Captured,
+        existing[CONTACT_FIELDS.Has_Lead_Captured],
+      );
+      setTrueIfNotTrue(
+        patch,
+        CONTACT_FIELDS.Has_Checkout_Started,
+        existing[CONTACT_FIELDS.Has_Checkout_Started],
+      );
+    }
+
+    if (zohoStep === "paid") {
+      setTrueIfNotTrue(
+        patch,
+        CONTACT_FIELDS.Has_Lead_Captured,
+        existing[CONTACT_FIELDS.Has_Lead_Captured],
+      );
+      setTrueIfNotTrue(
+        patch,
+        CONTACT_FIELDS.Has_Checkout_Started,
+        existing[CONTACT_FIELDS.Has_Checkout_Started],
+      );
+      setTrueIfNotTrue(patch, CONTACT_FIELDS.Has_Paid, existing[CONTACT_FIELDS.Has_Paid]);
+    }
+
+    if (zohoStep === "delivered") {
+      setTrueIfNotTrue(
+        patch,
+        CONTACT_FIELDS.Has_Lead_Captured,
+        existing[CONTACT_FIELDS.Has_Lead_Captured],
+      );
+      setTrueIfNotTrue(
+        patch,
+        CONTACT_FIELDS.Has_Checkout_Started,
+        existing[CONTACT_FIELDS.Has_Checkout_Started],
+      );
+      setTrueIfNotTrue(patch, CONTACT_FIELDS.Has_Paid, existing[CONTACT_FIELDS.Has_Paid]);
+      setTrueIfNotTrue(patch, CONTACT_FIELDS.Has_Delivered, existing[CONTACT_FIELDS.Has_Delivered]);
+    }
+
+    if (zohoStep === "abandoned") {
+      setTrueIfNotTrue(
+        patch,
+        CONTACT_FIELDS.Has_Lead_Captured,
+        existing[CONTACT_FIELDS.Has_Lead_Captured],
+      );
+      setTrueIfNotTrue(
+        patch,
+        CONTACT_FIELDS.Has_Checkout_Started,
+        existing[CONTACT_FIELDS.Has_Checkout_Started],
+      );
+      setTrueIfNotTrue(patch, CONTACT_FIELDS.Has_Abandoned, existing[CONTACT_FIELDS.Has_Abandoned]);
+    }
+
+    if (zohoStep === "payment_failed") {
+      setTrueIfNotTrue(
+        patch,
+        CONTACT_FIELDS.Has_Lead_Captured,
+        existing[CONTACT_FIELDS.Has_Lead_Captured],
+      );
+      setTrueIfNotTrue(
+        patch,
+        CONTACT_FIELDS.Has_Checkout_Started,
+        existing[CONTACT_FIELDS.Has_Checkout_Started],
+      );
+      setTrueIfNotTrue(
+        patch,
+        CONTACT_FIELDS.Has_Payment_Failed,
+        existing[CONTACT_FIELDS.Has_Payment_Failed],
+      );
+    }
+
+    if (zohoStep === "delivery_failed") {
+      setTrueIfNotTrue(
+        patch,
+        CONTACT_FIELDS.Has_Lead_Captured,
+        existing[CONTACT_FIELDS.Has_Lead_Captured],
+      );
+      setTrueIfNotTrue(
+        patch,
+        CONTACT_FIELDS.Has_Checkout_Started,
+        existing[CONTACT_FIELDS.Has_Checkout_Started],
+      );
+      setTrueIfNotTrue(patch, CONTACT_FIELDS.Has_Paid, existing[CONTACT_FIELDS.Has_Paid]);
+      setTrueIfNotTrue(
+        patch,
+        CONTACT_FIELDS.Has_Delivery_Failed,
+        existing[CONTACT_FIELDS.Has_Delivery_Failed],
+      );
+    }
 
     const errMsg = cleanStr(params.lastError);
     if (errMsg) patch[CONTACT_FIELDS.Last_Checkout_Error] = truncate(errMsg, 240);
@@ -760,33 +964,140 @@ export async function updateContactFunnelStepByEmail(params: {
     const st = cleanStr(params.checkoutStatus);
     if (st) patch[CONTACT_FIELDS.Checkout_Status] = truncate(st, 60);
 
-    if (Object.keys(patch).length === 1) return { contactId: existing.id };
+    if (Object.keys(patch).length === 1) return { contactId: existing.id as string };
 
-    await zohoRequest<any>({
+    await zohoRequest<Record<string, unknown>>({
       method: "PUT",
       url: `https://${configs.zohoApiDomain}/crm/v2/Contacts`,
       data: { data: [patch] },
     });
 
-    return { contactId: existing.id };
+    return { contactId: existing.id as string };
   }
 
-  const updateData: Record<string, any> = {
+  const updateData: Record<string, unknown> = {
     id: existing.id,
     [CONTACT_FIELDS.Funnel_Step]: zohoStep,
     [CONTACT_FIELDS.Funnel_Updated_At]: toZohoDateTime(new Date()),
   };
 
-  // Checkout_Status: если не передали — ставим автоматически
+  if (zohoStep === "lead_captured") {
+    setTrueIfNotTrue(
+      updateData,
+      CONTACT_FIELDS.Has_Lead_Captured,
+      existing[CONTACT_FIELDS.Has_Lead_Captured],
+    );
+  }
+
+  if (zohoStep === "checkout_started") {
+    setTrueIfNotTrue(
+      updateData,
+      CONTACT_FIELDS.Has_Lead_Captured,
+      existing[CONTACT_FIELDS.Has_Lead_Captured],
+    );
+    setTrueIfNotTrue(
+      updateData,
+      CONTACT_FIELDS.Has_Checkout_Started,
+      existing[CONTACT_FIELDS.Has_Checkout_Started],
+    );
+  }
+
+  if (zohoStep === "paid") {
+    setTrueIfNotTrue(
+      updateData,
+      CONTACT_FIELDS.Has_Lead_Captured,
+      existing[CONTACT_FIELDS.Has_Lead_Captured],
+    );
+    setTrueIfNotTrue(
+      updateData,
+      CONTACT_FIELDS.Has_Checkout_Started,
+      existing[CONTACT_FIELDS.Has_Checkout_Started],
+    );
+    setTrueIfNotTrue(updateData, CONTACT_FIELDS.Has_Paid, existing[CONTACT_FIELDS.Has_Paid]);
+  }
+
+  if (zohoStep === "delivered") {
+    setTrueIfNotTrue(
+      updateData,
+      CONTACT_FIELDS.Has_Lead_Captured,
+      existing[CONTACT_FIELDS.Has_Lead_Captured],
+    );
+    setTrueIfNotTrue(
+      updateData,
+      CONTACT_FIELDS.Has_Checkout_Started,
+      existing[CONTACT_FIELDS.Has_Checkout_Started],
+    );
+    setTrueIfNotTrue(updateData, CONTACT_FIELDS.Has_Paid, existing[CONTACT_FIELDS.Has_Paid]);
+    setTrueIfNotTrue(
+      updateData,
+      CONTACT_FIELDS.Has_Delivered,
+      existing[CONTACT_FIELDS.Has_Delivered],
+    );
+  }
+
+  if (zohoStep === "abandoned") {
+    setTrueIfNotTrue(
+      updateData,
+      CONTACT_FIELDS.Has_Lead_Captured,
+      existing[CONTACT_FIELDS.Has_Lead_Captured],
+    );
+    setTrueIfNotTrue(
+      updateData,
+      CONTACT_FIELDS.Has_Checkout_Started,
+      existing[CONTACT_FIELDS.Has_Checkout_Started],
+    );
+    setTrueIfNotTrue(
+      updateData,
+      CONTACT_FIELDS.Has_Abandoned,
+      existing[CONTACT_FIELDS.Has_Abandoned],
+    );
+  }
+
+  if (zohoStep === "payment_failed") {
+    setTrueIfNotTrue(
+      updateData,
+      CONTACT_FIELDS.Has_Lead_Captured,
+      existing[CONTACT_FIELDS.Has_Lead_Captured],
+    );
+    setTrueIfNotTrue(
+      updateData,
+      CONTACT_FIELDS.Has_Checkout_Started,
+      existing[CONTACT_FIELDS.Has_Checkout_Started],
+    );
+    setTrueIfNotTrue(
+      updateData,
+      CONTACT_FIELDS.Has_Payment_Failed,
+      existing[CONTACT_FIELDS.Has_Payment_Failed],
+    );
+  }
+
+  if (zohoStep === "delivery_failed") {
+    setTrueIfNotTrue(
+      updateData,
+      CONTACT_FIELDS.Has_Lead_Captured,
+      existing[CONTACT_FIELDS.Has_Lead_Captured],
+    );
+    setTrueIfNotTrue(
+      updateData,
+      CONTACT_FIELDS.Has_Checkout_Started,
+      existing[CONTACT_FIELDS.Has_Checkout_Started],
+    );
+    setTrueIfNotTrue(updateData, CONTACT_FIELDS.Has_Paid, existing[CONTACT_FIELDS.Has_Paid]);
+    setTrueIfNotTrue(
+      updateData,
+      CONTACT_FIELDS.Has_Delivery_Failed,
+      existing[CONTACT_FIELDS.Has_Delivery_Failed],
+    );
+  }
+
   const autoStatus = toZohoCheckoutStatus(zohoStep, params.funnelStep);
   const statusToWrite = cleanStr(params.checkoutStatus) || cleanStr(autoStatus);
   if (statusToWrite) updateData[CONTACT_FIELDS.Checkout_Status] = truncate(statusToWrite, 60);
 
-  // Last_Checkout_Error: ограничим длину
   const errMsg = cleanStr(params.lastError);
   if (errMsg) updateData[CONTACT_FIELDS.Last_Checkout_Error] = truncate(errMsg, 240);
 
-  const resp = await zohoRequest<any>({
+  const resp = await zohoRequest<Record<string, unknown>>({
     method: "PUT",
     url: `https://${configs.zohoApiDomain}/crm/v2/Contacts`,
     data: { data: [updateData] },
@@ -794,5 +1105,5 @@ export async function updateContactFunnelStepByEmail(params: {
 
   console.log("ZOHO FUNNEL PUT OK", JSON.stringify(resp));
 
-  return { contactId: existing.id };
+  return { contactId: existing.id as string };
 }

@@ -35,12 +35,21 @@ function cleanStr(v: unknown) {
   return s ? s : undefined;
 }
 
-function safeJsonParse<T = any>(text: string): T | null {
+function safeJsonParse<T = unknown>(text: string): T | null {
   try {
     return JSON.parse(text) as T;
   } catch {
     return null;
   }
+}
+
+function isRecord(v: unknown): v is Record<string, unknown> {
+  return typeof v === "object" && v !== null;
+}
+
+function isCircleNotFound(v: unknown): v is CircleMemberNotFound {
+  if (!isRecord(v)) return false;
+  return v.success === false;
 }
 
 function isIdempotentGrantError(status: number, bodyText: string) {
@@ -62,9 +71,10 @@ function isIdempotentGrantError(status: number, bodyText: string) {
   if (lower.includes("invited")) return true;
 
   // If Circle returns a structured message field
-  const parsed = safeJsonParse<any>(bodyText);
-  const msg = cleanStr(parsed?.message)?.toLowerCase();
-  if (msg && (msg.includes("already") || msg.includes("exists") || msg.includes("invited"))) return true;
+  const parsed = safeJsonParse<unknown>(bodyText);
+  const msg = isRecord(parsed) ? cleanStr(parsed.message)?.toLowerCase() : undefined;
+  if (msg && (msg.includes("already") || msg.includes("exists") || msg.includes("invited")))
+    return true;
 
   return false;
 }
@@ -92,13 +102,13 @@ async function makeCircleRequest<T>(
 
   // Search endpoint returns 404 when not found
   if (!response.ok && response.status === 404) {
-    return response.json();
+    return (await response.json()) as T;
   }
 
   if (!response.ok) {
     const bodyText = await response.text();
 
-    // ✅ Do not fail delivery on "already invited/already has access"
+    // Do not fail delivery on "already invited/already has access"
     if (cfg?.tolerateIdempotentGrantErrors && isIdempotentGrantError(response.status, bodyText)) {
       console.log("[Circle] Non-fatal grant error (treated as success)", {
         endpoint,
@@ -107,13 +117,18 @@ async function makeCircleRequest<T>(
       });
 
       // Return a fake "success" response shape
-      return { success: true, message: "Already has access / invite exists" } as any as T;
+      const fake: GrantAccessResponse = {
+        success: true,
+        message: "Already has access / invite exists",
+      };
+
+      return fake as unknown as T;
     }
 
     throw new Error(`Circle API Error: ${response.status} - ${bodyText}`);
   }
 
-  return response.json();
+  return (await response.json()) as T;
 }
 
 export async function findCircleMemberByEmail(email: string): Promise<CircleMember | null> {
@@ -126,8 +141,8 @@ export async function findCircleMemberByEmail(email: string): Promise<CircleMemb
 
   console.log("[Circle Search] Response:", JSON.stringify(response));
 
-  if ("success" in (response as any) && (response as any).success === false) return null;
-  return response as CircleMember;
+  if (isCircleNotFound(response)) return null;
+  return response;
 }
 
 export async function createCircleMember(email: string, name: string): Promise<CircleMember> {
@@ -154,7 +169,7 @@ export async function grantCircleSpaceAccess(email: string, spaceId: string): Pr
         space_id: parseInt(spaceId, 10),
       }),
     },
-    { tolerateIdempotentGrantErrors: true }, // ✅ key change
+    { tolerateIdempotentGrantErrors: true }, // key change
   );
 
   console.log(`[Circle] Space access result: ${response.message}`);
@@ -172,7 +187,7 @@ export async function grantCircleCourseAccess(email: string, courseId: string): 
         course_id: parseInt(courseId, 10),
       }),
     },
-    { tolerateIdempotentGrantErrors: true }, // ✅ key change
+    { tolerateIdempotentGrantErrors: true }, // key change
   );
 
   console.log(`[Circle] Course access result: ${response.message}`);

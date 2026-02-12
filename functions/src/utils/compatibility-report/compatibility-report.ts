@@ -20,7 +20,7 @@ export async function handleCompatibilityReport(pi: Stripe.PaymentIntent) {
     throw new Error("Missing required fields for compatibility report");
   }
 
-  console.log("💕 Processing compatibility report for:", email);
+  console.log("Processing compatibility report for:", email);
 
   // Calculate compatibility
   const compatibility = calculateCompatibility(birthDate1, birthDate2);
@@ -88,7 +88,7 @@ export async function handleCompatibilityReport(pi: Stripe.PaymentIntent) {
     ],
   });
 
-  console.log("✅ Compatibility report sent to:", email);
+  console.log("Compatibility report sent to:", email);
 
   return {
     compatibility_type: compatibility.type,

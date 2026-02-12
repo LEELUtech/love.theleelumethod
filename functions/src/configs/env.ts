@@ -17,13 +17,13 @@ export const configs = {
   circleCommunityUrl: process.env.CIRCLE_COMMUNITY_URL || "",
 
   // ====== ZOHO (SANDBOX) ======
-  zohoClientId: process.env.ZOHO_CLIENT_ID_SANDBOX || "",
-  zohoClientSecret: process.env.ZOHO_CLIENT_SECRET_SANDBOX || "",
-  zohoRefreshToken: process.env.ZOHO_REFRESH_TOKEN_SANDBOX || "",
+  zohoClientId: process.env.ZOHO_CLIENT_ID_LILYCHYSTOFAT || "",
+  zohoClientSecret: process.env.ZOHO_CLIENT_SECRET_LILYCHYSTOFAT || "",
+  zohoRefreshToken: process.env.ZOHO_REFRESH_TOKEN_LILYCHYSTOFAT || "",
 
-  zohoAccountsDomain: process.env.ZOHO_ACCOUNTS_DOMAIN_SANDBOX || "accounts.zoho.com",
+  zohoAccountsDomain: process.env.ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT || "accounts.zoho.com",
 
-  zohoApiDomain: process.env.ZOHO_API_DOMAIN_SANDBOX || "sandbox.zohoapis.com",
+  zohoApiDomain: process.env.ZOHO_API_DOMAIN_LILYCHYSTOFAT || "sandbox.zohoapis.com",
 
-  ZOHO_DEAL_LAYOUT_ID_SANDBOX: process.env.ZOHO_DEAL_LAYOUT_ID_SANDBOX || "6635378000008438675",
+  zohoDealLayoutId: process.env.ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT,
 };

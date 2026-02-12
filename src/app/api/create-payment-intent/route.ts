@@ -1,6 +1,13 @@
+// app/api/create-payment-intent/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/firebase";
-import { collection, doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  setDoc,
+  serverTimestamp,
+} from "firebase/firestore";
 import { getStripe } from "@/lib/stripe";
 import Stripe from "stripe";
 import { randomUUID } from "crypto";
@@ -17,9 +24,10 @@ const ALLOWED_PRODUCT_TYPES = new Set([
 type Body = {
   productType: string;
 
-  site?: string;
+  // page context from client
   pagePath?: string;
 
+  // FIRST-touch UTM from client
   utmSource?: string;
   utmMedium?: string;
   utmCampaign?: string;
@@ -74,15 +82,21 @@ export async function POST(req: NextRequest) {
 
     const productType = clean(body.productType);
     if (!productType) {
-      return NextResponse.json({ error: "Missing required field: productType" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing required field: productType" },
+        { status: 400 },
+      );
     }
     if (!ALLOWED_PRODUCT_TYPES.has(productType)) {
       return NextResponse.json({ error: "Unknown productType" }, { status: 400 });
     }
 
+    // product
     const ref = doc(collection(db, "offerings"), productType);
     const snap = await getDoc(ref);
-    if (!snap.exists()) return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    if (!snap.exists()) {
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    }
 
     const product = snap.data() as { price?: number; currency?: string; space_id?: string };
 
@@ -93,14 +107,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid product price" }, { status: 500 });
     }
 
-    const site = normalizeSite(body.site) || getIncomingSite(req);
+    // site only from server
+    const site = getIncomingSite(req);
     const pagePath = clean(body.pagePath);
 
-    const utmSource = clean(body.utmSource);
-    const utmMedium = clean(body.utmMedium);
-    const utmCampaign = clean(body.utmCampaign);
-    const utmContent = clean(body.utmContent);
-    const utmTerm = clean(body.utmTerm);
+    // FIRST-touch UTM only (create-intent)
+    const utmFirstSource = clean(body.utmSource);
+    const utmFirstMedium = clean(body.utmMedium);
+    const utmFirstCampaign = clean(body.utmCampaign);
+    const utmFirstContent = clean(body.utmContent);
+    const utmFirstTerm = clean(body.utmTerm);
 
     const intentToken = randomUUID();
 
@@ -110,15 +126,13 @@ export async function POST(req: NextRequest) {
       site,
       ...(pagePath ? { page_path: pagePath } : {}),
 
-      ...(utmSource ? { utm_source: utmSource } : {}),
-      ...(utmMedium ? { utm_medium: utmMedium } : {}),
-      ...(utmCampaign ? { utm_campaign: utmCampaign } : {}),
-      ...(utmContent ? { utm_content: utmContent } : {}),
-      ...(utmTerm ? { utm_term: utmTerm } : {}),
+      ...(utmFirstSource ? { utm_first_source: utmFirstSource } : {}),
+      ...(utmFirstMedium ? { utm_first_medium: utmFirstMedium } : {}),
+      ...(utmFirstCampaign ? { utm_first_campaign: utmFirstCampaign } : {}),
+      ...(utmFirstContent ? { utm_first_content: utmFirstContent } : {}),
+      ...(utmFirstTerm ? { utm_first_term: utmFirstTerm } : {}),
 
-      created_at: new Date().toISOString(),
       intent_token: intentToken,
-
       ...(product.space_id ? { space_id: String(product.space_id) } : {}),
     });
 
@@ -135,7 +149,10 @@ export async function POST(req: NextRequest) {
     );
 
     if (!intent.client_secret) {
-      return NextResponse.json({ error: "Stripe did not return client_secret" }, { status: 500 });
+      return NextResponse.json(
+        { error: "Stripe did not return client_secret" },
+        { status: 500 },
+      );
     }
 
     // Firestore: checkout_viewed
@@ -159,12 +176,23 @@ export async function POST(req: NextRequest) {
           page_path: pagePath ?? null,
           checkout_variant: null,
 
-          utm_source: utmSource ?? null,
-          utm_medium: utmMedium ?? null,
-          utm_campaign: utmCampaign ?? null,
-          utm_content: utmContent ?? null,
-          utm_term: utmTerm ?? null,
+          // store BOTH groups, but create fills only FIRST
+          utm_first_source: utmFirstSource ?? null,
+          utm_first_medium: utmFirstMedium ?? null,
+          utm_first_campaign: utmFirstCampaign ?? null,
+          utm_first_content: utmFirstContent ?? null,
+          utm_first_term: utmFirstTerm ?? null,
 
+          utm_last_source: null,
+          utm_last_medium: null,
+          utm_last_campaign: null,
+          utm_last_content: null,
+          utm_last_term: null,
+
+          first_touch_at: serverTimestamp(),
+          last_touch_at: null,
+
+          // raw metadata snapshot (ok)
           metadata: metadata as Record<string, string>,
 
           processing_status: "processing",
@@ -190,7 +218,10 @@ export async function POST(req: NextRequest) {
         { merge: true },
       );
     } catch (e) {
-      console.error("⚠️ Failed to write checkout_viewed to Firestore", { intentId: intent.id, e });
+      console.error("Failed to write checkout_viewed to Firestore", {
+        intentId: intent.id,
+        e,
+      });
     }
 
     return NextResponse.json({
@@ -202,6 +233,9 @@ export async function POST(req: NextRequest) {
     });
   } catch (err) {
     console.error("Error creating payment intent:", err);
-    return NextResponse.json({ error: "Failed to create payment intent" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to create payment intent" },
+      { status: 500 },
+    );
   }
 }

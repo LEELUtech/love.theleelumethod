@@ -3,9 +3,6 @@ import Stripe from "stripe";
 import { db } from "../configs/firebase";
 import { configs } from "../configs/env";
 
-// import { handleCompatibilityReport } from "../utils/compatibility-report/compatibility-report";
-// import { handleProtocolEssentials } from "../utils/protocol-essentials/protocol-essentials";
-
 export type ProductType =
   | "compatibility_report"
   | "protocol_essentials"
@@ -44,11 +41,17 @@ export interface PaymentRecord {
   page_path?: string | null;
   checkout_variant?: string | null;
 
-  utm_source?: string | null;
-  utm_medium?: string | null;
-  utm_campaign?: string | null;
-  utm_content?: string | null;
-  utm_term?: string | null;
+  utm_first_source?: string | null;
+  utm_first_medium?: string | null;
+  utm_first_campaign?: string | null;
+  utm_first_content?: string | null;
+  utm_first_term?: string | null;
+
+  utm_last_source?: string | null;
+  utm_last_medium?: string | null;
+  utm_last_campaign?: string | null;
+  utm_last_content?: string | null;
+  utm_last_term?: string | null;
 
   metadata: Record<string, string>;
 
@@ -67,12 +70,13 @@ export interface PaymentRecord {
 
   attempts: number;
 
-  created_at: any;
-  processed_at: any;
+  created_at: FirebaseFirestore.Timestamp | FirebaseFirestore.FieldValue | Date;
+  processed_at: FirebaseFirestore.Timestamp | FirebaseFirestore.FieldValue | Date;
+  updated_at?: FirebaseFirestore.Timestamp | FirebaseFirestore.FieldValue | Date;
 
   error?: string | null;
 
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 let stripe: Stripe | null = null;
@@ -95,12 +99,6 @@ export function cleanStr(v: unknown): string | undefined {
   return s ? s : undefined;
 }
 
-/**
- * normalize host:
- * - supports "https://domain:port/path"
- * - strips port
- * - strips trailing slashes
- */
 export function normalizeHost(raw?: string): string | undefined {
   const s = (raw || "").trim();
   if (!s) return undefined;
@@ -158,7 +156,9 @@ export function validatePaymentIntent(pi: Stripe.PaymentIntent): {
 
   const productType = (pi.metadata?.product_type || "") as ProductType | "";
   const emailRaw = pi.metadata?.email || pi.receipt_email || "";
-  const email = String(emailRaw || "").trim().toLowerCase();
+  const email = String(emailRaw || "")
+    .trim()
+    .toLowerCase();
 
   if (!productType) errors.push("Missing product_type in metadata");
   if (!email) errors.push("Missing email in metadata or receipt_email");
@@ -183,11 +183,9 @@ export async function processPayment(pi: Stripe.PaymentIntent): Promise<void> {
 
   switch (productType) {
   case "compatibility_report":
-    // await handleCompatibilityReport(pi);
     console.log("Compatibility Report handler is currently disabled.");
     break;
   case "protocol_essentials":
-    // await handleProtocolEssentials(pi);
     console.log("Protocol Essentials handler is currently disabled.");
     break;
   case "guided_breakthrough":
@@ -223,8 +221,8 @@ function shouldAdvanceFunnel(current?: string | null, next?: FunnelStep) {
 
 const DELIVERY_RANK: Record<DeliveryStatus, number> = {
   not_started: 0,
-  delivered: 2,
   failed: 1,
+  delivered: 2,
 };
 
 function shouldAdvanceDelivery(current?: DeliveryStatus | null, next?: DeliveryStatus) {
@@ -237,11 +235,16 @@ function nowPlusMs(ms: number): Date {
   return new Date(Date.now() + ms);
 }
 
-function toDateMaybe(v: any): Date | null {
+function toDateMaybe(v: unknown): Date | null {
   if (!v) return null;
   if (v instanceof Date) return v;
-  if (typeof v?.toDate === "function") return v.toDate();
-  const d = new Date(v);
+
+  if (typeof v === "object" && v !== null && "toDate" in v) {
+    const maybe = v as { toDate?: () => Date };
+    if (typeof maybe.toDate === "function") return maybe.toDate();
+  }
+
+  const d = new Date(v as never);
   return isNaN(d.getTime()) ? null : d;
 }
 
@@ -252,39 +255,60 @@ export async function upsertPaymentBaseFromIntent(
 ): Promise<void> {
   const metadata = (pi.metadata || {}) as Record<string, string>;
   const site = normalizeHost(cleanStr(metadata.site)) || "unknown";
+  const email = String(pi.metadata?.email || pi.receipt_email || "")
+    .trim()
+    .toLowerCase();
 
-  const email = String(pi.metadata?.email || pi.receipt_email || "").trim().toLowerCase();
+  const ref = db.collection("payments").doc(pi.id);
 
-  await db.collection("payments").doc(pi.id).set(
-    {
-      stripe_payment_intent_id: pi.id,
-      stripe_event_id: eventId ?? null,
+  await db.runTransaction(async (tx) => {
+    const snap = await tx.get(ref);
+    const exists = snap.exists;
 
-      email: email || null,
-      product_type: (cleanStr(metadata.product_type) as ProductType) || null,
+    tx.set(
+      ref,
+      {
+        stripe_payment_intent_id: pi.id,
+        stripe_event_id: eventId ?? null,
 
-      amount: typeof pi.amount === "number" ? pi.amount : null,
-      currency: pi.currency ?? null,
-      status: (pi.status as string) ?? null,
+        email: email || null,
+        product_type: (cleanStr(metadata.product_type) as ProductType) || null,
 
-      customer_id: pi.customer ? String(pi.customer) : null,
+        amount: typeof pi.amount === "number" ? pi.amount : null,
+        currency: pi.currency ?? null,
+        status: (pi.status as string) ?? null,
 
-      site,
-      page_path: cleanStr(metadata.page_path) ?? null,
-      checkout_variant: cleanStr(metadata.checkout_variant) ?? null,
+        customer_id: pi.customer ? String(pi.customer) : null,
 
-      utm_source: cleanStr(metadata.utm_source) ?? null,
-      utm_medium: cleanStr(metadata.utm_medium) ?? null,
-      utm_campaign: cleanStr(metadata.utm_campaign) ?? null,
-      utm_content: cleanStr(metadata.utm_content) ?? null,
-      utm_term: cleanStr(metadata.utm_term) ?? null,
+        site,
+        page_path: cleanStr(metadata.page_path) ?? null,
+        checkout_variant: cleanStr(metadata.checkout_variant) ?? null,
 
-      metadata,
+        utm_first_source: cleanStr(metadata.utm_first_source) ?? null,
+        utm_first_medium: cleanStr(metadata.utm_first_medium) ?? null,
+        utm_first_campaign: cleanStr(metadata.utm_first_campaign) ?? null,
+        utm_first_content: cleanStr(metadata.utm_first_content) ?? null,
+        utm_first_term: cleanStr(metadata.utm_first_term) ?? null,
 
-      processed_at: new Date(),
-    },
-    { merge: true },
-  );
+        utm_last_source:
+          cleanStr(metadata.utm_last_source) ?? cleanStr(metadata.utm_source) ?? null,
+        utm_last_medium:
+          cleanStr(metadata.utm_last_medium) ?? cleanStr(metadata.utm_medium) ?? null,
+        utm_last_campaign:
+          cleanStr(metadata.utm_last_campaign) ?? cleanStr(metadata.utm_campaign) ?? null,
+        utm_last_content:
+          cleanStr(metadata.utm_last_content) ?? cleanStr(metadata.utm_content) ?? null,
+        utm_last_term: cleanStr(metadata.utm_last_term) ?? cleanStr(metadata.utm_term) ?? null,
+
+        metadata,
+
+        processed_at: new Date(),
+        updated_at: new Date(),
+        ...(exists ? {} : { created_at: new Date() }),
+      },
+      { merge: true },
+    );
+  });
 }
 
 export async function getPaymentRecord(paymentIntentId: string): Promise<PaymentRecord | null> {
@@ -300,7 +324,9 @@ export async function markFunnelStepAdvanceOnly(
 
   await db.runTransaction(async (tx) => {
     const snap = await tx.get(ref);
-    const current = snap.exists ? ((snap.data() as any)?.funnel_step as string | null) : null;
+    const current = snap.exists
+      ? ((snap.data() as PaymentRecord)?.funnel_step as string | null)
+      : null;
 
     if (!snap.exists) {
       tx.set(
@@ -310,24 +336,25 @@ export async function markFunnelStepAdvanceOnly(
           funnel_step: step,
           processed_at: new Date(),
           updated_at: new Date(),
+          created_at: new Date(),
         },
-        { merge: true } as any,
+        { merge: true },
       );
       return;
     }
 
     if (!shouldAdvanceFunnel(current, step)) {
-      tx.update(ref, { processed_at: new Date() });
+      tx.update(ref, { processed_at: new Date(), updated_at: new Date() });
       return;
     }
 
-    tx.update(ref, { funnel_step: step, processed_at: new Date() });
+    tx.update(ref, { funnel_step: step, processed_at: new Date(), updated_at: new Date() });
   });
 }
 
 export async function updateDeliveryStatusAdvanceOnly(
   paymentIntentId: string,
-  status: DeliveryStatus extends any ? "delivered" | "failed" : never,
+  status: "delivered" | "failed",
   error?: string,
 ): Promise<void> {
   const ref = db.collection("payments").doc(paymentIntentId);
@@ -335,7 +362,7 @@ export async function updateDeliveryStatusAdvanceOnly(
   await db.runTransaction(async (tx) => {
     const snap = await tx.get(ref);
     const current = snap.exists
-      ? (((snap.data() as any)?.delivery_status as DeliveryStatus | null) ?? null)
+      ? (((snap.data() as PaymentRecord)?.delivery_status as DeliveryStatus | null) ?? null)
       : null;
 
     const next = status as DeliveryStatus;
@@ -349,16 +376,17 @@ export async function updateDeliveryStatusAdvanceOnly(
           delivery_error: error || null,
           processed_at: new Date(),
           updated_at: new Date(),
+          created_at: new Date(),
         },
-        { merge: true } as any,
+        { merge: true },
       );
       return;
     }
 
     if (!shouldAdvanceDelivery(current, next)) {
-      // still can write error if none
-      if (error) tx.update(ref, { delivery_error: error, processed_at: new Date() });
-      else tx.update(ref, { processed_at: new Date() });
+      if (error)
+        tx.update(ref, { delivery_error: error, processed_at: new Date(), updated_at: new Date() });
+      else tx.update(ref, { processed_at: new Date(), updated_at: new Date() });
       return;
     }
 
@@ -366,16 +394,21 @@ export async function updateDeliveryStatusAdvanceOnly(
       delivery_status: next,
       delivery_error: error || null,
       processed_at: new Date(),
+      updated_at: new Date(),
     });
   });
 }
 
-export async function updateZohoContactId(paymentIntentId: string, contactId: string): Promise<void> {
+export async function updateZohoContactId(
+  paymentIntentId: string,
+  contactId: string,
+): Promise<void> {
   await db.collection("payments").doc(paymentIntentId).set(
     {
       zoho_contact_id: contactId,
       zoho_synced_at: new Date(),
       processed_at: new Date(),
+      updated_at: new Date(),
     },
     { merge: true },
   );
@@ -387,6 +420,7 @@ export async function updateZohoDealId(paymentIntentId: string, dealId: string):
       zoho_deal_id: dealId,
       zoho_synced_at: new Date(),
       processed_at: new Date(),
+      updated_at: new Date(),
     },
     { merge: true },
   );
@@ -400,12 +434,13 @@ export async function updateProcessingStatus(
   const updates: Partial<PaymentRecord> = {
     processing_status: processingStatus,
     processed_at: new Date(),
+    updated_at: new Date(),
     locked_by: null,
     lock_expires_at: null,
   };
   if (error) updates.error = error;
 
-  await db.collection("payments").doc(paymentIntentId).set(updates as any, { merge: true });
+  await db.collection("payments").doc(paymentIntentId).set(updates, { merge: true });
 }
 
 /**
@@ -417,7 +452,7 @@ export async function acquirePaymentLease(
   pi: Stripe.PaymentIntent,
   eventId: string,
   leaseId: string,
-  leaseMs = 2 * 60 * 1000, // 2 minutes
+  leaseMs = 2 * 60 * 1000,
 ): Promise<
   | { state: "already_completed"; record: PaymentRecord }
   | { state: "locked_by_other"; record: PaymentRecord }
@@ -425,7 +460,9 @@ export async function acquirePaymentLease(
 > {
   const paymentRef = db.collection("payments").doc(pi.id);
 
-  const email = String(pi.metadata?.email || pi.receipt_email || "").trim().toLowerCase();
+  const email = String(pi.metadata?.email || pi.receipt_email || "")
+    .trim()
+    .toLowerCase();
   if (!email) throw new Error("Email is required but missing in PaymentIntent");
 
   const metadata = (pi.metadata || {}) as Record<string, string>;
@@ -447,14 +484,22 @@ export async function acquirePaymentLease(
     page_path: cleanStr(metadata.page_path) ?? null,
     checkout_variant: cleanStr(metadata.checkout_variant) ?? null,
 
-    utm_source: cleanStr(metadata.utm_source) ?? null,
-    utm_medium: cleanStr(metadata.utm_medium) ?? null,
-    utm_campaign: cleanStr(metadata.utm_campaign) ?? null,
-    utm_content: cleanStr(metadata.utm_content) ?? null,
-    utm_term: cleanStr(metadata.utm_term) ?? null,
+    utm_first_source: cleanStr(metadata.utm_first_source) ?? null,
+    utm_first_medium: cleanStr(metadata.utm_first_medium) ?? null,
+    utm_first_campaign: cleanStr(metadata.utm_first_campaign) ?? null,
+    utm_first_content: cleanStr(metadata.utm_first_content) ?? null,
+    utm_first_term: cleanStr(metadata.utm_first_term) ?? null,
+
+    utm_last_source: cleanStr(metadata.utm_last_source) ?? cleanStr(metadata.utm_source) ?? null,
+    utm_last_medium: cleanStr(metadata.utm_last_medium) ?? cleanStr(metadata.utm_medium) ?? null,
+    utm_last_campaign:
+      cleanStr(metadata.utm_last_campaign) ?? cleanStr(metadata.utm_campaign) ?? null,
+    utm_last_content: cleanStr(metadata.utm_last_content) ?? cleanStr(metadata.utm_content) ?? null,
+    utm_last_term: cleanStr(metadata.utm_last_term) ?? cleanStr(metadata.utm_term) ?? null,
 
     metadata,
     processed_at: new Date(),
+    updated_at: new Date(),
   };
 
   const out = await db.runTransaction(async (tx) => {
@@ -479,6 +524,8 @@ export async function acquirePaymentLease(
 
         attempts: 1,
         created_at: new Date(),
+        processed_at: new Date(),
+        updated_at: new Date(),
         error: null,
       };
 
@@ -489,7 +536,11 @@ export async function acquirePaymentLease(
     const existing = snap.data() as PaymentRecord;
 
     if (existing.processing_status === "completed") {
-      tx.update(paymentRef, { stripe_event_id: eventId, processed_at: new Date() });
+      tx.update(paymentRef, {
+        stripe_event_id: eventId,
+        processed_at: new Date(),
+        updated_at: new Date(),
+      });
       return { state: "already_completed" as const, record: existing };
     }
 
@@ -501,12 +552,17 @@ export async function acquirePaymentLease(
       existing.locked_by !== leaseId;
 
     if (lockActive) {
-      tx.update(paymentRef, { stripe_event_id: eventId, processed_at: new Date() });
+      tx.update(paymentRef, {
+        stripe_event_id: eventId,
+        processed_at: new Date(),
+        updated_at: new Date(),
+      });
       return { state: "locked_by_other" as const, record: existing };
     }
 
-    // advance-only funnel to paid
-    const nextFunnel = shouldAdvanceFunnel(existing.funnel_step ?? "unknown", "paid") ? "paid" : existing.funnel_step;
+    const nextFunnel = shouldAdvanceFunnel(existing.funnel_step ?? "unknown", "paid")
+      ? "paid"
+      : existing.funnel_step;
 
     tx.update(paymentRef, {
       ...recordBase,

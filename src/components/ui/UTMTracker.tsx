@@ -14,9 +14,9 @@ export default function UTMTracker() {
     
     // Debug: log captured UTM
     if (utm) {
-      console.log("✅ UTM captured:", utm);
+      console.log("UTM captured:", utm);
     } else {
-      console.log("ℹ️ No UTM params in URL");
+      console.log("No UTM params in URL");
     }
   }, []);
 
