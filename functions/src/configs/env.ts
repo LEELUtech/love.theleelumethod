@@ -15,4 +15,15 @@ export const configs = {
   circleApiKey: process.env.CIRCLE_API_KEY || "",
   circleCommunityId: process.env.CIRCLE_COMMUNITY_ID || "",
   circleCommunityUrl: process.env.CIRCLE_COMMUNITY_URL || "",
+
+  // ====== ZOHO (SANDBOX) ======
+  zohoClientId: process.env.ZOHO_CLIENT_ID_LILYCHYSTOFAT || "",
+  zohoClientSecret: process.env.ZOHO_CLIENT_SECRET_LILYCHYSTOFAT || "",
+  zohoRefreshToken: process.env.ZOHO_REFRESH_TOKEN_LILYCHYSTOFAT || "",
+
+  zohoAccountsDomain: process.env.ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT || "accounts.zoho.com",
+
+  zohoApiDomain: process.env.ZOHO_API_DOMAIN_LILYCHYSTOFAT || "sandbox.zohoapis.com",
+
+  zohoDealLayoutId: process.env.ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT,
 };

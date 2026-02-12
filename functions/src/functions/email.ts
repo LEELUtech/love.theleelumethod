@@ -47,9 +47,9 @@ export const stripeWebhook = onRequest({
     }
 
     event = getStripeClient().webhooks.constructEvent(rawBody, sig!, configs.stripeWebhookSecret!);
-    console.log("✅ Webhook signature verified successfully:", event.id);
+    console.log("Webhook signature verified successfully:", event.id);
   } catch (err) {
-    console.error("❌ Webhook signature verification failed:", err);
+    console.error("Webhook signature verification failed:", err);
     res.status(400).send(`Webhook Error: ${err}`);
     return;
   }

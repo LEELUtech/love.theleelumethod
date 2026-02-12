@@ -2,10 +2,13 @@ import Button from "@/components/ui/Button";
 import Image from "next/image";
 import React from "react";
 
-const HeroSection = () => {
+interface HeroSectionProps {
+	title: string;
+}
+
+const HeroSection = ({ title }: HeroSectionProps) => {
 	return (
 		<section className="relative overflow-hidden min-h-[686px]">
-			{/* BG через Image */}
 			<div className="absolute inset-0 z-0">
 				{/* Mobile */}
 				<Image
@@ -53,12 +56,12 @@ const HeroSection = () => {
 					</p>
 
 					<h1 className="font-canela font-thin text-[48px] md:text-[54px] lg:text-[60px] leading-[100%] text-brand-deep mt-[14px]">
-						THE OVER-FUNCTIONER
-					</h1>
+					{title}
+				</h1>
 
-					<p className="font-canela font-light text-[20px] md:text-[22px] lg:text-[24px] text-brand-deep uppercase mt-[24px]">
-						High Friction / Misaligned Script
-					</p>
+				<p className="font-canela font-light text-[20px] md:text-[22px] lg:text-[24px] text-brand-deep uppercase mt-[24px]">
+					High Friction / Misaligned Script
+				</p>
 
 					<Button className="mt-[24px] md:mt-[28px] xs:px-8 xs:text-[11px] md:px-12 md:text-[13px]">
 						SECURE YOUR SEAT TO RESET THE DYNAMIC

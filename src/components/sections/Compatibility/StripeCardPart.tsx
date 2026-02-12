@@ -109,7 +109,7 @@ export function StripeCardPart({
         return;
       }
 
-      // ✅ 1) update metadata BEFORE confirming (server-side)
+      // 1) update metadata BEFORE confirming (server-side)
       await updateIntent({
         productType,
         email,
@@ -117,7 +117,7 @@ export function StripeCardPart({
         birthDate2,
       });
 
-      // ✅ 2) confirm payment
+      // 2) confirm payment
       const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(
         clientSecret,
         {

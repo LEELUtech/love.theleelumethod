@@ -1,6 +1,7 @@
 import localFont from "next/font/local";
 import { Figtree, Inter, Lato, Marcellus, Playfair_Display } from "next/font/google";
 import "./globals.css";
+import UTMTracker from "@/components/ui/UTMTracker"
 
 const inter = Inter({
 	subsets: ["latin"],
@@ -71,6 +72,7 @@ export default function RootLayout({
 			className={`${inter.variable} ${playfair.variable} ${figtree.variable} ${lato.variable} ${marcellus.variable} ${canela.variable}`}
 		>
 			<body className="antialiased">
+				<UTMTracker />
 				{children}
 			</body>
 		</html>

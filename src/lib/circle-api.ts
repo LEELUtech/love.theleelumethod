@@ -51,7 +51,7 @@ async function makeCircleRequest<T>(
   const url = `${config.baseUrl}${endpoint}`;
 
   if (config.apiKey === "PLACEHOLDER_API_KEY") {
-    console.warn("⚠️ Circle API key not configured. Using placeholder.");
+    console.warn("Circle API key not configured. Using placeholder.");
     // Return mock data for development
     return {} as T;
   }

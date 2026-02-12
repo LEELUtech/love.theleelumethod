@@ -16,7 +16,6 @@ import useProductStore from "@/store/useProductStore";
 import { useCheckoutStore } from "@/store/useCheckoutStore";
 
 import { formatPriceFromCents } from "@/helpers";
-
 import {
 	type BillingForm,
 	validateBilling,
@@ -33,6 +32,7 @@ import {
 	GUIDED_BREAKTHROUGH,
 	VIP_IMMERSION,
 } from "@/utils/constants";
+import { getStoredFirstUTM } from "@/utils/utm-tracker";
 
 const pk = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!;
 const stripePromise = loadStripe(pk);
@@ -67,6 +67,23 @@ interface CheckoutFormSectionProps {
 	productId: string;
 }
 
+// helper: collect context (site/pagePath/utm) on client side
+function getClientContext() {
+  if (typeof window === "undefined") return {};
+  const utm = getStoredFirstUTM();
+
+  return {
+    site: window.location.host,
+    pagePath: window.location.pathname,
+
+    utmSource: utm?.utm_source,
+    utmMedium: utm?.utm_medium,
+    utmCampaign: utm?.utm_campaign,
+    utmContent: utm?.utm_content,
+    utmTerm: utm?.utm_term,
+  };
+}
+
 export default function CheckoutFormSection({
 	productId,
 }: CheckoutFormSectionProps) {
@@ -86,6 +103,8 @@ export default function CheckoutFormSection({
 		reset,
 		markSuccess,
 		intentKey,
+		intentId,
+		intentToken,
 	} = useCheckoutStore();
 
 	// local state
@@ -95,6 +114,14 @@ export default function CheckoutFormSection({
 	const [errors, setErrors] = React.useState(() =>
 		validateBilling(initialBilling),
 	);
+
+	// ctx as state (not ref) - fixed once after mount
+	type ClientCtx = ReturnType<typeof getClientContext>;
+	const [ctx, setCtx] = React.useState<ClientCtx>({});
+
+	React.useEffect(() => {
+		setCtx(getClientContext());
+	}, []);
 
 	// derived
 	const priceLabel =
@@ -144,10 +171,10 @@ export default function CheckoutFormSection({
 		}
 
 		if (clientSecret && intentKey === expectedKey) return;
-
 		if (status !== "idle") return;
 
-		createIntent({ productType: productId }).catch(() => {});
+		// create-intent receives first-touch ctx
+		createIntent({ productType: productId, ...(ctx || {}) }).catch(() => {});
 	}, [
 		product,
 		productLoading,
@@ -157,6 +184,7 @@ export default function CheckoutFormSection({
 		status,
 		createIntent,
 		reset,
+		ctx, // important
 	]);
 
 	React.useEffect(() => {
@@ -180,12 +208,74 @@ export default function CheckoutFormSection({
 
 	const handleSubmitAttempt = React.useCallback(() => {
 		setSubmitAttempted(true);
-
 		const nextErrors = validateBilling(billing);
 		setErrors(nextErrors);
-
 		return isEmptyErrors(nextErrors);
 	}, [billing]);
+
+	// --- lead-captured ---
+	const lastLeadEmailRef = React.useRef<string>("");
+	const lastLeadEmailWithPIRef = React.useRef<string>(""); 
+	const leadAbortRef = React.useRef<AbortController | null>(null);
+
+	const captureLeadInternal = React.useCallback(
+		async (opts?: { force?: boolean }) => {
+			const email = (billing.email || "").trim().toLowerCase();
+			if (!email) return;
+
+			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+			if (!emailRegex.test(email)) return;
+
+			const hasPI = !!intentId && !!intentToken;
+
+			// regular deduplication (blur)
+			if (!opts?.force && lastLeadEmailRef.current === email) return;
+
+			// separate deduplication for "catch-up with PI"
+			if (hasPI && lastLeadEmailWithPIRef.current === email) return;
+
+			lastLeadEmailRef.current = email;
+			if (hasPI) lastLeadEmailWithPIRef.current = email;
+
+			leadAbortRef.current?.abort();
+			const controller = new AbortController();
+			leadAbortRef.current = controller;
+
+			const payload = {
+				paymentIntentId: intentId || undefined,
+				intentToken: intentToken || undefined,
+				email,
+				...(ctx || {}), // ctx state
+			};
+
+			try {
+				await fetch("/api/lead-captured", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(payload),
+					signal: controller.signal,
+					keepalive: true,
+				});
+			} catch {
+				// silent
+			}
+		},
+		[billing.email, intentId, intentToken, ctx], // added ctx
+	);
+
+	const onEmailBlur: React.FocusEventHandler<HTMLInputElement> =
+		React.useCallback(() => {
+			captureLeadInternal().catch(() => {});
+		}, [captureLeadInternal]);
+
+	// catch-up: if PI/token appeared later - send again (once) with PI/token
+	React.useEffect(() => {
+		const email = (billing.email || "").trim().toLowerCase();
+		if (!email) return;
+		if (!intentId || !intentToken) return;
+
+		captureLeadInternal({ force: true }).catch(() => {});
+	}, [intentId, intentToken, billing.email, captureLeadInternal]);
 
 	return (
 		<section className="relative bg-white py-[37px] md:py-[56px] lg:py-[37px] lg:h-[1497px] overflow-visible">
@@ -274,6 +364,7 @@ export default function CheckoutFormSection({
 										placeholder="Email address"
 										value={billing.email}
 										onChange={(e) => setField("email", e.target.value)}
+										onBlur={onEmailBlur}
 									/>
 									{showFieldError("email") ? (
 										<p className="mt-1 text-xs font-lato text-brand-primary">
@@ -396,6 +487,7 @@ export default function CheckoutFormSection({
 										clientSecret={clientSecret}
 										productType={productId}
 										billing={billing}
+										ctx={ctx}
 										onSubmitAttempt={handleSubmitAttempt}
 										loading={productLoading}
 										productName={product?.name}

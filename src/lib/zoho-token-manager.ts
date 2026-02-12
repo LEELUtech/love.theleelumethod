@@ -1,45 +1,60 @@
-import { doc, getDoc, setDoc } from "firebase/firestore";
 import axios from "axios";
-import { db } from '@/lib/firebase'
 
-const ZOHO_CLIENT_ID = process.env.ZOHO_CLIENT_ID!;
-const ZOHO_CLIENT_SECRET = process.env.ZOHO_CLIENT_SECRET!;
+let cachedAccessToken: string | null = null;
+let cachedAccessTokenExpiresAt = 0;
 
-export async function getValidAccessToken(): Promise<string> {
-  const tokenRef = doc(db, "tokens", "zoho");
-  const snapshot = await getDoc(tokenRef);
+function assertSandboxZohoEnv() {
+  if (!process.env.ZOHO_CLIENT_ID_LILYCHYSTOFAT)
+    throw new Error("ZOHO_CLIENT_ID_LILYCHYSTOFAT missing");
 
-  if (!snapshot.exists()) throw new Error("Zoho token not found");
+  if (!process.env.ZOHO_CLIENT_SECRET_LILYCHYSTOFAT)
+    throw new Error("ZOHO_CLIENT_SECRET_LILYCHYSTOFAT missing");
 
-  const { access_token, refresh_token, expires_at } = snapshot.data();
+  if (!process.env.ZOHO_REFRESH_TOKEN_LILYCHYSTOFAT)
+    throw new Error("ZOHO_REFRESH_TOKEN_LILYCHYSTOFAT missing");
 
-  const now = Date.now();
+  if (!process.env.ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT)
+    throw new Error("ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT missing");
 
-  if (now < expires_at - 60_000) {
-    return access_token;
-  }
+  if (!process.env.ZOHO_API_DOMAIN_LILYCHYSTOFAT)
+    throw new Error("ZOHO_API_DOMAIN_LILYCHYSTOFAT missing");
+}
 
-  const response = await axios.post(
-    "https://accounts.zoho.com/oauth/v2/token",
-    null,
-    {
-      params: {
-        refresh_token,
-        client_id: ZOHO_CLIENT_ID,
-        client_secret: ZOHO_CLIENT_SECRET,
-        grant_type: "refresh_token",
-      },
+async function refreshSandboxAccessToken(): Promise<string> {
+  assertSandboxZohoEnv();
+
+  const url = `https://${process.env.ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT}/oauth/v2/token`;
+
+  const res = await axios.post(url, null, {
+    params: {
+      refresh_token: process.env.ZOHO_REFRESH_TOKEN_LILYCHYSTOFAT,
+      client_id: process.env.ZOHO_CLIENT_ID_LILYCHYSTOFAT,
+      client_secret: process.env.ZOHO_CLIENT_SECRET_LILYCHYSTOFAT,
+      grant_type: "refresh_token",
     },
-  );
-
-  const newToken = response.data.access_token;
-  const expiresIn = response.data.expires_in;
-
-  await setDoc(tokenRef, {
-    access_token: newToken,
-    refresh_token,
-    expires_at: Date.now() + expiresIn * 1000,
+    timeout: 15_000,
   });
 
-  return newToken;
+  const accessToken = res.data?.access_token as string | undefined;
+  const expiresInSec = Number(res.data?.expires_in ?? 0);
+
+  if (!accessToken || !expiresInSec) {
+    throw new Error(
+      `Failed to refresh Zoho access token: ${JSON.stringify(res.data)}`,
+    );
+  }
+
+  // Refresh token early (60 seconds before expiry)
+  cachedAccessToken = accessToken;
+  cachedAccessTokenExpiresAt = Date.now() + expiresInSec * 1000 - 60_000;
+
+  return accessToken;
+}
+
+export async function getValidSandboxAccessToken(): Promise<string> {
+  if (cachedAccessToken && Date.now() < cachedAccessTokenExpiresAt) {
+    return cachedAccessToken;
+  }
+
+  return refreshSandboxAccessToken();
 }
