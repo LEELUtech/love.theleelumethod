@@ -1,3 +1,4 @@
+// app/.../CheckoutFormSection.tsx
 "use client";
 
 import React from "react";
@@ -16,64 +17,57 @@ import useProductStore from "@/store/useProductStore";
 import { useCheckoutStore } from "@/store/useCheckoutStore";
 
 import { formatPriceFromCents } from "@/helpers";
-import {
-	type BillingForm,
-	validateBilling,
-	isEmptyErrors,
-} from "@/helpers/checkout";
+import { type BillingForm, validateBilling, isEmptyErrors } from "@/helpers/checkout";
 
 import Select from "react-select";
 import { countries } from "@/helpers/countries";
 import { CountryOption, selectStyles } from "@/components/ui/Select";
 import CheckoutSectionLoader from "@/components/sections/Checkout/CheckoutSectionLoader";
 import ProgramFooter from "@/app/programs/ProgramFooter";
-import {
-	PROTOCOL_ESSENTIALS,
-	GUIDED_BREAKTHROUGH,
-	VIP_IMMERSION,
-} from "@/utils/constants";
+import { PROTOCOL_ESSENTIALS, GUIDED_BREAKTHROUGH, VIP_IMMERSION } from "@/utils/constants";
 import { getStoredFirstUTM } from "@/utils/utm-tracker";
 
 const pk = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!;
 const stripePromise = loadStripe(pk);
 
 function getButtonText(productId: string): string {
-	switch (productId) {
-		case PROTOCOL_ESSENTIALS:
-			return "SIGN UP & BEGIN THE PROTOCOL";
-		case GUIDED_BREAKTHROUGH:
-			return "SIGN UP & GET PERSONALIZED SUPPORT";
-		case VIP_IMMERSION:
-			return "SIGN UP & APPLY FOR VIP ACCESS";
-		default:
-			return "SIGN UP NOW";
-	}
+  switch (productId) {
+    case PROTOCOL_ESSENTIALS:
+      return "SIGN UP & BEGIN THE PROTOCOL";
+    case GUIDED_BREAKTHROUGH:
+      return "SIGN UP & GET PERSONALIZED SUPPORT";
+    case VIP_IMMERSION:
+      return "SIGN UP & APPLY FOR VIP ACCESS";
+    default:
+      return "SIGN UP NOW";
+  }
 }
 
 const initialBilling: BillingForm = {
-	firstName: "",
-	lastName: "",
-	email: "",
-	address1: "",
-	address2: "",
-	city: "",
-	state: "",
-	postalCode: "",
-	country: "",
-	phone: "",
+  firstName: "",
+  lastName: "",
+  email: "",
+  address1: "",
+  address2: "",
+  city: "",
+  state: "",
+  postalCode: "",
+  country: "",
+  phone: "",
 };
 
 interface CheckoutFormSectionProps {
-	productId: string;
+  productId: string;
 }
 
 // helper: collect context (site/pagePath/utm) on client side
 function getClientContext() {
   if (typeof window === "undefined") return {};
+
   const utm = getStoredFirstUTM();
 
   return {
-    site: window.location.host,
+    site: window.location.hostname,
     pagePath: window.location.pathname,
 
     utmSource: utm?.utm_source,
@@ -84,430 +78,389 @@ function getClientContext() {
   };
 }
 
-export default function CheckoutFormSection({
-	productId,
-}: CheckoutFormSectionProps) {
-	const selectId = React.useId();
-	const router = useRouter();
+type ClientCtx = ReturnType<typeof getClientContext>;
 
-	// stores
-	const product = useProductStore((s) => s.getProduct(productId));
-	const productLoading = useProductStore((s) => s.isLoading(productId));
-	const fetchProduct = useProductStore((s) => s.fetchProduct);
+export default function CheckoutFormSection({ productId }: CheckoutFormSectionProps) {
+  const selectId = React.useId();
+  const router = useRouter();
 
-	const {
-		clientSecret,
-		status,
-		error: checkoutError,
-		createIntent,
-		reset,
-		markSuccess,
-		intentKey,
-		intentId,
-		intentToken,
-	} = useCheckoutStore();
+  // stores
+  const product = useProductStore((s) => s.getProduct(productId));
+  const productLoading = useProductStore((s) => s.isLoading(productId));
+  const fetchProduct = useProductStore((s) => s.fetchProduct);
 
-	// local state
-	const [billing, setBilling] = React.useState<BillingForm>(initialBilling);
-	const [submitAttempted, setSubmitAttempted] = React.useState(false);
-	const [hadSecretOnce, setHadSecretOnce] = React.useState(false);
-	const [errors, setErrors] = React.useState(() =>
-		validateBilling(initialBilling),
-	);
+  const {
+    clientSecret,
+    status,
+    error: checkoutError,
+    createIntent,
+    reset,
+    markSuccess,
+    intentKey,
+    intentId,
+    intentToken,
+  } = useCheckoutStore();
 
-	// ctx as state (not ref) - fixed once after mount
-	type ClientCtx = ReturnType<typeof getClientContext>;
-	const [ctx, setCtx] = React.useState<ClientCtx>({});
+  // local state
+  const [billing, setBilling] = React.useState<BillingForm>(initialBilling);
+  const [submitAttempted, setSubmitAttempted] = React.useState(false);
+  const [hadSecretOnce, setHadSecretOnce] = React.useState(false);
+  const [errors, setErrors] = React.useState(() => validateBilling(initialBilling));
 
-	React.useEffect(() => {
-		setCtx(getClientContext());
-	}, []);
+  // ctx as state (not ref) - fixed once after mount
+  const [ctx, setCtx] = React.useState<ClientCtx>({});
 
-	// derived
-	const priceLabel =
-		!productLoading && product
-			? formatPriceFromCents(product.price, {
-					currency: product.currency ?? "USD",
-					showCents: false,
-				})
-			: "...";
+  React.useEffect(() => {
+    setCtx(getClientContext());
+  }, []);
 
-	const showStripe = !!clientSecret;
+  // derived
+  const priceLabel =
+    !productLoading && product
+      ? formatPriceFromCents(product.price, {
+          currency: product.currency ?? "USD",
+          showCents: false,
+        })
+      : "...";
 
-	const isStripeInitializing =
-		!hadSecretOnce &&
-		!clientSecret &&
-		(status === "idle" || status === "creating");
+  const showStripe = !!clientSecret;
 
-	const elementsOptions = React.useMemo<
-		StripeElementsOptions | undefined
-	>(() => {
-		if (!clientSecret) return undefined;
-		return { clientSecret, appearance: { theme: "stripe" } };
-	}, [clientSecret]);
+  const isStripeInitializing =
+    !hadSecretOnce && !clientSecret && (status === "idle" || status === "creating");
 
-	// effects
-	React.useEffect(() => {
-		const expectedKey = `create:${productId}`;
-		if (intentKey && intentKey !== expectedKey) reset();
-	}, [intentKey, productId, reset]);
+  const elementsOptions = React.useMemo<StripeElementsOptions | undefined>(() => {
+    if (!clientSecret) return undefined;
+    return { clientSecret, appearance: { theme: "stripe" } };
+  }, [clientSecret]);
 
-	React.useEffect(() => {
-		if (clientSecret) setHadSecretOnce(true);
-	}, [clientSecret]);
+  // effects
+  React.useEffect(() => {
+    const expectedKey = `create:${productId}`;
+    if (intentKey && intentKey !== expectedKey) reset();
+  }, [intentKey, productId, reset]);
 
-	React.useEffect(() => {
-		if (!product && !productLoading) fetchProduct(productId);
-	}, [product, productLoading, fetchProduct, productId]);
+  React.useEffect(() => {
+    if (clientSecret) setHadSecretOnce(true);
+  }, [clientSecret]);
 
-	React.useEffect(() => {
-		if (!product || productLoading) return;
+  React.useEffect(() => {
+    if (!product && !productLoading) fetchProduct(productId);
+  }, [product, productLoading, fetchProduct, productId]);
 
-		const expectedKey = `create:${productId}`;
+  React.useEffect(() => {
+    if (!product || productLoading) return;
 
-		if (intentKey && intentKey !== expectedKey) {
-			reset();
-			return;
-		}
+    const expectedKey = `create:${productId}`;
 
-		if (clientSecret && intentKey === expectedKey) return;
-		if (status !== "idle") return;
+    if (intentKey && intentKey !== expectedKey) {
+      reset();
+      return;
+    }
 
-		// create-intent receives first-touch ctx
-		createIntent({ productType: productId, ...(ctx || {}) }).catch(() => {});
-	}, [
-		product,
-		productLoading,
-		productId,
-		intentKey,
-		clientSecret,
-		status,
-		createIntent,
-		reset,
-		ctx, // important
-	]);
+    if (clientSecret && intentKey === expectedKey) return;
+    if (status !== "idle") return;
 
-	React.useEffect(() => {
-		return () => {
-			reset();
-		};
-	}, [reset]);
+    // ✅ guard: ctx должен быть готов, чтобы не потерять UTM/site/pagePath
+    if (!ctx?.site) return;
 
-	// handlers
-	const setField = React.useCallback(
-		<K extends keyof BillingForm>(key: K, value: string) => {
-			setBilling((prev) => ({ ...prev, [key]: value }));
-		},
-		[],
-	);
+    // create-intent receives first-touch ctx
+    createIntent({ productType: productId, ...(ctx || {}) }).catch(() => {});
+  }, [
+    product,
+    productLoading,
+    productId,
+    intentKey,
+    clientSecret,
+    status,
+    createIntent,
+    reset,
+    ctx,
+  ]);
 
-	const showFieldError = React.useCallback(
-		<K extends keyof BillingForm>(key: K) => submitAttempted && !!errors[key],
-		[submitAttempted, errors],
-	);
+  React.useEffect(() => {
+    return () => {
+      reset();
+    };
+  }, [reset]);
 
-	const handleSubmitAttempt = React.useCallback(() => {
-		setSubmitAttempted(true);
-		const nextErrors = validateBilling(billing);
-		setErrors(nextErrors);
-		return isEmptyErrors(nextErrors);
-	}, [billing]);
+  // handlers
+  const setField = React.useCallback(<K extends keyof BillingForm>(key: K, value: string) => {
+    setBilling((prev) => ({ ...prev, [key]: value }));
+  }, []);
 
-	// --- lead-captured ---
-	const lastLeadEmailRef = React.useRef<string>("");
-	const lastLeadEmailWithPIRef = React.useRef<string>(""); 
-	const leadAbortRef = React.useRef<AbortController | null>(null);
+  const showFieldError = React.useCallback(
+    <K extends keyof BillingForm>(key: K) => submitAttempted && !!errors[key],
+    [submitAttempted, errors],
+  );
 
-	const captureLeadInternal = React.useCallback(
-		async (opts?: { force?: boolean }) => {
-			const email = (billing.email || "").trim().toLowerCase();
-			if (!email) return;
+  const handleSubmitAttempt = React.useCallback(() => {
+    setSubmitAttempted(true);
+    const nextErrors = validateBilling(billing);
+    setErrors(nextErrors);
+    return isEmptyErrors(nextErrors);
+  }, [billing]);
 
-			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-			if (!emailRegex.test(email)) return;
+  // --- lead-captured ---
+  const lastLeadEmailRef = React.useRef<string>("");
+  const lastLeadEmailWithPIRef = React.useRef<string>("");
+  const leadAbortRef = React.useRef<AbortController | null>(null);
 
-			const hasPI = !!intentId && !!intentToken;
+  const captureLeadInternal = React.useCallback(
+    async (opts?: { force?: boolean }) => {
+      const email = (billing.email || "").trim().toLowerCase();
+      if (!email) return;
 
-			// regular deduplication (blur)
-			if (!opts?.force && lastLeadEmailRef.current === email) return;
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) return;
 
-			// separate deduplication for "catch-up with PI"
-			if (hasPI && lastLeadEmailWithPIRef.current === email) return;
+      const hasPI = !!intentId && !!intentToken;
 
-			lastLeadEmailRef.current = email;
-			if (hasPI) lastLeadEmailWithPIRef.current = email;
+      // regular deduplication (blur)
+      if (!opts?.force && lastLeadEmailRef.current === email) return;
 
-			leadAbortRef.current?.abort();
-			const controller = new AbortController();
-			leadAbortRef.current = controller;
+      // separate deduplication for "catch-up with PI"
+      if (hasPI && lastLeadEmailWithPIRef.current === email) return;
 
-			const payload = {
-				paymentIntentId: intentId || undefined,
-				intentToken: intentToken || undefined,
-				email,
-				...(ctx || {}), // ctx state
-			};
+      lastLeadEmailRef.current = email;
+      if (hasPI) lastLeadEmailWithPIRef.current = email;
 
-			try {
-				await fetch("/api/lead-captured", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify(payload),
-					signal: controller.signal,
-					keepalive: true,
-				});
-			} catch {
-				// silent
-			}
-		},
-		[billing.email, intentId, intentToken, ctx], // added ctx
-	);
+      leadAbortRef.current?.abort();
+      const controller = new AbortController();
+      leadAbortRef.current = controller;
 
-	const onEmailBlur: React.FocusEventHandler<HTMLInputElement> =
-		React.useCallback(() => {
-			captureLeadInternal().catch(() => {});
-		}, [captureLeadInternal]);
+      const payload = {
+        paymentIntentId: intentId || undefined,
+        intentToken: intentToken || undefined,
+        email,
+        ...(ctx || {}),
+      };
 
-	// catch-up: if PI/token appeared later - send again (once) with PI/token
-	React.useEffect(() => {
-		const email = (billing.email || "").trim().toLowerCase();
-		if (!email) return;
-		if (!intentId || !intentToken) return;
+      try {
+        await fetch("/api/lead-captured", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+          signal: controller.signal,
+          keepalive: true,
+        });
+      } catch {
+        // silent
+      }
+    },
+    [billing.email, intentId, intentToken, ctx],
+  );
 
-		captureLeadInternal({ force: true }).catch(() => {});
-	}, [intentId, intentToken, billing.email, captureLeadInternal]);
+  const onEmailBlur: React.FocusEventHandler<HTMLInputElement> = React.useCallback(() => {
+    captureLeadInternal().catch(() => {});
+  }, [captureLeadInternal]);
 
-	return (
-		<section className="relative bg-white py-[37px] md:py-[56px] lg:py-[37px] lg:h-[1497px] overflow-visible">
-			<div className="absolute inset-0 z-0">
-				<Image
-					src="/images/bg/checkout_bg.png"
-					alt="Checkout bg"
-					fill
-					quality={100}
-				/>
-			</div>
+  // catch-up: if PI/token appeared later - send again (once) with PI/token
+  React.useEffect(() => {
+    const email = (billing.email || "").trim().toLowerCase();
+    if (!email) return;
+    if (!intentId || !intentToken) return;
 
-			<div className="container px-4 relative z-10 lg:top-[-100px]">
-				<div className="relative mx-auto rounded-[32px] bg-white px-6 py-8 md:px-10 md:py-10 lg:px-[104px] lg:py-[51px] shadow-[0px_4px_20px_0px_rgba(0,0,0,0.1)]">
-					{isStripeInitializing ? (
-						<CheckoutSectionLoader text="Initializing payment..." />
-					) : null}
+    captureLeadInternal({ force: true }).catch(() => {});
+  }, [intentId, intentToken, billing.email, captureLeadInternal]);
 
-					{status === "error" && checkoutError ? (
-						<p className="mb-4 text-sm font-lato text-red-600">
-							{checkoutError}
-						</p>
-					) : null}
+  return (
+    <section className="relative bg-white py-[37px] md:py-[56px] lg:py-[37px] lg:h-[1497px] overflow-visible">
+      <div className="absolute inset-0 z-0">
+        <Image src="/images/bg/checkout_bg.png" alt="Checkout bg" fill quality={100} />
+      </div>
 
-					{/* Header */}
-					<div className="flex flex-col items-center gap-6 md:flex-row md:items-start md:justify-between md:gap-8">
-						<div className="max-w-[520px]">
-							<p className="font-lato font-normal text-body leading-[1.2] text-[#C6ABB3] text-center md:text-left">
-								Order now
-							</p>
+      <div className="container px-4 relative z-10 lg:top-[-100px]">
+        <div className="relative mx-auto rounded-[32px] bg-white px-6 py-8 md:px-10 md:py-10 lg:px-[104px] lg:py-[51px] shadow-[0px_4px_20px_0px_rgba(0,0,0,0.1)]">
+          {isStripeInitializing ? <CheckoutSectionLoader text="Initializing payment..." /> : null}
 
-							<h2 className="mt-[23px] font-canela font-thin text-brand-black text-[32px] md:text-[52px] lg:text-[54px] leading-[105%] text-center md:text-left">
-								{productLoading ? "Loading..." : product?.title}
-							</h2>
+          {status === "error" && checkoutError ? (
+            <p className="mb-4 text-sm font-lato text-red-600">{checkoutError}</p>
+          ) : null}
 
-							<p className="mt-4 font-lato text-body leading-[1.55] text-[#41444E] text-center md:text-left">
-								{productLoading ? "Loading..." : product?.description}
-							</p>
-						</div>
+          {/* Header */}
+          <div className="flex flex-col items-center gap-6 md:flex-row md:items-start md:justify-between md:gap-8">
+            <div className="max-w-[520px]">
+              <p className="font-lato font-normal text-body leading-[1.2] text-[#C6ABB3] text-center md:text-left">
+                Order now
+              </p>
 
-						<div className="relative hidden md:block h-[160px] w-[154px] lg:h-[200px] lg:w-[192px]">
-							<Image src="/icons/checkout_ornament_pink.svg" alt="" fill />
-						</div>
-					</div>
+              <h2 className="mt-[23px] font-canela font-thin text-brand-black text-[32px] md:text-[52px] lg:text-[54px] leading-[105%] text-center md:text-left">
+                {productLoading ? "Loading..." : product?.title}
+              </h2>
 
-					<hr className="my-8 w-full border-t border-[#DADDE4]" />
+              <p className="mt-4 font-lato text-body leading-[1.55] text-[#41444E] text-center md:text-left">
+                {productLoading ? "Loading..." : product?.description}
+              </p>
+            </div>
 
-					<div className="mt-10 grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-[164px]">
-						{/* LEFT */}
-						<div>
-							<h3 className="font-canela font-light text-brand-black text-[32px] md:text-[28px] lg:text-[32px]">
-								Billing Information
-							</h3>
+            <div className="relative hidden md:block h-[160px] w-[154px] lg:h-[200px] lg:w-[192px]">
+              <Image src="/icons/checkout_ornament_pink.svg" alt="" fill />
+            </div>
+          </div>
 
-							<div className="mt-[40px] space-y-6 md:mt-8">
-								<div>
-									<Input
-										placeholder="First name"
-										value={billing.firstName}
-										onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-											setField("firstName", e.target.value)
-										}
-									/>
-									{showFieldError("firstName") ? (
-										<p className="mt-1 text-xs font-lato text-brand-primary">
-											{errors.firstName}
-										</p>
-									) : null}
-								</div>
+          <hr className="my-8 w-full border-t border-[#DADDE4]" />
 
-								<div>
-									<Input
-										placeholder="Last name"
-										value={billing.lastName}
-										onChange={(e) => setField("lastName", e.target.value)}
-									/>
-									{showFieldError("lastName") ? (
-										<p className="mt-1 text-xs font-lato text-brand-primary">
-											{errors.lastName}
-										</p>
-									) : null}
-								</div>
+          <div className="mt-10 grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-[164px]">
+            {/* LEFT */}
+            <div>
+              <h3 className="font-canela font-light text-brand-black text-[32px] md:text-[28px] lg:text-[32px]">
+                Billing Information
+              </h3>
 
-								<div>
-									<Input
-										placeholder="Email address"
-										value={billing.email}
-										onChange={(e) => setField("email", e.target.value)}
-										onBlur={onEmailBlur}
-									/>
-									{showFieldError("email") ? (
-										<p className="mt-1 text-xs font-lato text-brand-primary">
-											{errors.email}
-										</p>
-									) : null}
-								</div>
+              <div className="mt-[40px] space-y-6 md:mt-8">
+                <div>
+                  <Input
+                    placeholder="First name"
+                    value={billing.firstName}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setField("firstName", e.target.value)}
+                  />
+                  {showFieldError("firstName") ? (
+                    <p className="mt-1 text-xs font-lato text-brand-primary">{errors.firstName}</p>
+                  ) : null}
+                </div>
 
-								<div className="h-3 md:h-2" />
+                <div>
+                  <Input
+                    placeholder="Last name"
+                    value={billing.lastName}
+                    onChange={(e) => setField("lastName", e.target.value)}
+                  />
+                  {showFieldError("lastName") ? (
+                    <p className="mt-1 text-xs font-lato text-brand-primary">{errors.lastName}</p>
+                  ) : null}
+                </div>
 
-								<div>
-									<Input
-										placeholder="Street address"
-										value={billing.address1}
-										onChange={(e) => setField("address1", e.target.value)}
-									/>
-									{showFieldError("address1") ? (
-										<p className="mt-1 text-xs font-lato text-brand-primary">
-											{errors.address1}
-										</p>
-									) : null}
-								</div>
+                <div>
+                  <Input
+                    placeholder="Email address"
+                    value={billing.email}
+                    onChange={(e) => setField("email", e.target.value)}
+                    onBlur={onEmailBlur}
+                  />
+                  {showFieldError("email") ? (
+                    <p className="mt-1 text-xs font-lato text-brand-primary">{errors.email}</p>
+                  ) : null}
+                </div>
 
-								<Input
-									placeholder="Street address 2 (optional)"
-									value={billing.address2}
-									onChange={(e) => setField("address2", e.target.value)}
-								/>
+                <div className="h-3 md:h-2" />
 
-								<div>
-									<Input
-										placeholder="City"
-										value={billing.city}
-										onChange={(e) => setField("city", e.target.value)}
-									/>
-									{showFieldError("city") ? (
-										<p className="mt-1 text-xs font-lato text-brand-primary">
-											{errors.city}
-										</p>
-									) : null}
-								</div>
+                <div>
+                  <Input
+                    placeholder="Street address"
+                    value={billing.address1}
+                    onChange={(e) => setField("address1", e.target.value)}
+                  />
+                  {showFieldError("address1") ? (
+                    <p className="mt-1 text-xs font-lato text-brand-primary">{errors.address1}</p>
+                  ) : null}
+                </div>
 
-								<Input
-									placeholder="State (optional)"
-									value={billing.state}
-									onChange={(e) => setField("state", e.target.value)}
-								/>
+                <Input
+                  placeholder="Street address 2 (optional)"
+                  value={billing.address2}
+                  onChange={(e) => setField("address2", e.target.value)}
+                />
 
-								<div>
-									<Input
-										placeholder="ZIP/Postal code"
-										value={billing.postalCode}
-										onChange={(e) => setField("postalCode", e.target.value)}
-									/>
-									{showFieldError("postalCode") ? (
-										<p className="mt-1 text-xs font-lato text-brand-primary">
-											{errors.postalCode}
-										</p>
-									) : null}
-								</div>
+                <div>
+                  <Input placeholder="City" value={billing.city} onChange={(e) => setField("city", e.target.value)} />
+                  {showFieldError("city") ? (
+                    <p className="mt-1 text-xs font-lato text-brand-primary">{errors.city}</p>
+                  ) : null}
+                </div>
 
-								<div>
-									<Select<CountryOption, false>
-										instanceId={selectId}
-										inputId={selectId}
-										options={countries}
-										placeholder="Select country"
-										value={
-											countries.find((c) => c.value === billing.country) ?? null
-										}
-										onChange={(opt) => setField("country", opt?.value ?? "")}
-										styles={selectStyles}
-										classNamePrefix="rs"
-										isSearchable
-									/>
-									{showFieldError("country") ? (
-										<p className="mt-1 text-xs font-lato text-brand-primary">
-											{errors.country}
-										</p>
-									) : null}
-								</div>
+                <Input
+                  placeholder="State (optional)"
+                  value={billing.state}
+                  onChange={(e) => setField("state", e.target.value)}
+                />
 
-								<div>
-									<PhoneNumberInput
-										value={billing.phone}
-										onChange={(val) => setField("phone", val)}
-										defaultCountry="us"
-										placeholder="Phone number"
-									/>
-									{showFieldError("phone") ? (
-										<p className="mt-1 text-xs font-lato text-brand-primary">
-											{errors.phone}
-										</p>
-									) : null}
-								</div>
-							</div>
-						</div>
+                <div>
+                  <Input
+                    placeholder="ZIP/Postal code"
+                    value={billing.postalCode}
+                    onChange={(e) => setField("postalCode", e.target.value)}
+                  />
+                  {showFieldError("postalCode") ? (
+                    <p className="mt-1 text-xs font-lato text-brand-primary">{errors.postalCode}</p>
+                  ) : null}
+                </div>
 
-						{/* RIGHT */}
-						<div>
-							<h3 className="font-canela font-light text-brand-black text-[32px] md:text-[28px] lg:text-[32px]">
-								Payment Info
-							</h3>
+                <div>
+                  <Select<CountryOption, false>
+                    instanceId={selectId}
+                    inputId={selectId}
+                    options={countries}
+                    placeholder="Select country"
+                    value={countries.find((c) => c.value === billing.country) ?? null}
+                    onChange={(opt) => setField("country", opt?.value ?? "")}
+                    styles={selectStyles}
+                    classNamePrefix="rs"
+                    isSearchable
+                  />
+                  {showFieldError("country") ? (
+                    <p className="mt-1 text-xs font-lato text-brand-primary">{errors.country}</p>
+                  ) : null}
+                </div>
 
-							<p className="mt-10 font-lato font-normal text-[15px] text-[#41444E] md:mt-8">
-								We accept
-							</p>
+                <div>
+                  <PhoneNumberInput
+                    value={billing.phone}
+                    onChange={(val) => setField("phone", val)}
+                    defaultCountry="us"
+                    placeholder="Phone number"
+                  />
+                  {showFieldError("phone") ? (
+                    <p className="mt-1 text-xs font-lato text-brand-primary">{errors.phone}</p>
+                  ) : null}
+                </div>
+              </div>
+            </div>
 
-							<div className="mt-2 flex flex-wrap items-center gap-3">
-								<CardBrand label="visa" />
-								<CardBrand label="mastercard" />
-								<CardBrand label="amex" />
-								<CardBrand label="paypal" />
-								<CardBrand label="discover" />
-							</div>
+            {/* RIGHT */}
+            <div>
+              <h3 className="font-canela font-light text-brand-black text-[32px] md:text-[28px] lg:text-[32px]">
+                Payment Info
+              </h3>
 
-							{showStripe && clientSecret && elementsOptions ? (
-								<Elements stripe={stripePromise} options={elementsOptions}>
-									<StripeCardPart
-										clientSecret={clientSecret}
-										productType={productId}
-										billing={billing}
-										ctx={ctx}
-										onSubmitAttempt={handleSubmitAttempt}
-										loading={productLoading}
-										productName={product?.name}
-										priceLabel={priceLabel}
-										buttonText={getButtonText(productId)}
-										onSuccess={() => {
-											markSuccess();
-											router.push("/success");
-										}}
-									/>
-								</Elements>
-							) : null}
-						</div>
-					</div>
-				</div>
-			</div>
+              <p className="mt-10 font-lato font-normal text-[15px] text-[#41444E] md:mt-8">
+                We accept
+              </p>
 
-			<div className="container px-4">
-				<ProgramFooter />
-			</div>
-		</section>
-	);
+              <div className="mt-2 flex flex-wrap items-center gap-3">
+                <CardBrand label="visa" />
+                <CardBrand label="mastercard" />
+                <CardBrand label="amex" />
+                <CardBrand label="paypal" />
+                <CardBrand label="discover" />
+              </div>
+
+              {showStripe && clientSecret && elementsOptions ? (
+                <Elements stripe={stripePromise} options={elementsOptions}>
+                  <StripeCardPart
+                    clientSecret={clientSecret}
+                    productType={productId}
+                    billing={billing}
+                    ctx={ctx}
+                    onSubmitAttempt={handleSubmitAttempt}
+                    loading={productLoading}
+                    productName={product?.name}
+                    priceLabel={priceLabel}
+                    buttonText={getButtonText(productId)}
+                    onSuccess={() => {
+                      markSuccess();
+                      router.push("/success");
+                    }}
+                  />
+                </Elements>
+              ) : null}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="container px-4">
+        <ProgramFooter />
+      </div>
+    </section>
+  );
 }

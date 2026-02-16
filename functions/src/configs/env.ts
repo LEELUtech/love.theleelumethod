@@ -19,7 +19,8 @@ export const configs = {
   // ====== ZOHO (SANDBOX) ======
   zohoClientId: process.env.ZOHO_CLIENT_ID_LILYCHYSTOFAT || "",
   zohoClientSecret: process.env.ZOHO_CLIENT_SECRET_LILYCHYSTOFAT || "",
-  zohoRefreshToken: process.env.ZOHO_REFRESH_TOKEN_LILYCHYSTOFAT || "",
+  zohoRefreshCRMToken: process.env.ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT || "",
+  zohoRefreshAnalyticsToken: process.env.ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT || "",
 
   zohoAccountsDomain: process.env.ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT || "accounts.zoho.com",
 
