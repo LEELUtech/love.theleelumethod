@@ -1,3 +1,5 @@
+// src/utils/utm-tracker.ts
+
 export interface UTMParams {
   utm_source?: string;
   utm_medium?: string;
@@ -6,8 +8,18 @@ export interface UTMParams {
   utm_term?: string;
 }
 
-const FIRST_KEY = "utm_first";
-const LAST_KEY = "utm_last";
+const FIRST_KEY = "ff_utm_first";
+const LAST_KEY = "ff_utm_last";
+const LANDING_KEY = "ff_landing_page";
+
+// legacy keys
+const LEGACY_FIRST_KEY = "utm_first";
+const LEGACY_LAST_KEY = "utm_last";
+
+function clean(v: string | null | undefined): string | null {
+  const s = (v ?? "").trim();
+  return s ? s : null;
+}
 
 function readUTMFromUrl(): UTMParams | null {
   if (typeof window === "undefined") return null;
@@ -15,11 +27,11 @@ function readUTMFromUrl(): UTMParams | null {
   const params = new URLSearchParams(window.location.search);
 
   const utm: UTMParams = {};
-  const source = params.get("utm_source");
-  const medium = params.get("utm_medium");
-  const campaign = params.get("utm_campaign");
-  const content = params.get("utm_content");
-  const term = params.get("utm_term");
+  const source = clean(params.get("utm_source"));
+  const medium = clean(params.get("utm_medium"));
+  const campaign = clean(params.get("utm_campaign"));
+  const content = clean(params.get("utm_content"));
+  const term = clean(params.get("utm_term"));
 
   if (source) utm.utm_source = source;
   if (medium) utm.utm_medium = medium;
@@ -30,55 +42,121 @@ function readUTMFromUrl(): UTMParams | null {
   return Object.keys(utm).length ? utm : null;
 }
 
+function safeParse<T>(raw: string | null): T | null {
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * One-time migration from legacy keys:
+ * utm_first/utm_last -> ff_utm_first/ff_utm_last
+ */
+function migrateLegacyUTMIfNeeded(): void {
+  if (typeof window === "undefined") return;
+
+  try {
+    const hasNewFirst = !!localStorage.getItem(FIRST_KEY);
+    const hasNewLast = !!localStorage.getItem(LAST_KEY);
+
+    if (!hasNewFirst) {
+      const legacyFirst = safeParse<UTMParams>(localStorage.getItem(LEGACY_FIRST_KEY));
+      if (legacyFirst) localStorage.setItem(FIRST_KEY, JSON.stringify(legacyFirst));
+    }
+
+    if (!hasNewLast) {
+      const legacyLast = safeParse<UTMParams>(localStorage.getItem(LEGACY_LAST_KEY));
+      if (legacyLast) localStorage.setItem(LAST_KEY, JSON.stringify(legacyLast));
+    }
+  } catch {
+    // ignore
+  }
+}
+
+/**
+ * Ensure landing page is stored once (first landing).
+ */
+function ensureLandingStored(): void {
+  if (typeof window === "undefined") return;
+
+  try {
+    const existing = localStorage.getItem(LANDING_KEY);
+    if (existing && existing.trim()) return;
+
+    const landing = `${window.location.origin}${window.location.pathname}${window.location.search}`;
+    localStorage.setItem(LANDING_KEY, landing);
+  } catch {
+    // ignore
+  }
+}
+
 /**
  * Capture UTM:
- * - first-touch: store once
- * - last-touch: always overwrite when UTM exists in URL
+ * - first-touch: store once (never overwrite)
+ * - last-touch: overwrite when UTM exists in URL
+ * Also stores landing page once.
  */
 export function captureUTM(): { first?: UTMParams; last?: UTMParams } {
+  if (typeof window === "undefined") return {};
+
+  migrateLegacyUTMIfNeeded();
+
+  ensureLandingStored();
+
   const utm = readUTMFromUrl();
   if (!utm) return {};
 
-  // last-touch always updated
-  localStorage.setItem(LAST_KEY, JSON.stringify(utm));
+  try {
+    localStorage.setItem(LAST_KEY, JSON.stringify(utm));
 
-  // first-touch only if missing
-  const existingFirst = localStorage.getItem(FIRST_KEY);
-  if (!existingFirst) {
-    localStorage.setItem(FIRST_KEY, JSON.stringify(utm));
+    const existingFirst = localStorage.getItem(FIRST_KEY);
+    if (!existingFirst) {
+      localStorage.setItem(FIRST_KEY, JSON.stringify(utm));
+      return { first: utm, last: utm };
+    }
+
+    return { last: utm };
+  } catch {
+    return {};
   }
-
-  return {
-    first: existingFirst ? undefined : utm,
-    last: utm,
-  };
 }
 
 export function getStoredFirstUTM(): UTMParams | null {
   if (typeof window === "undefined") return null;
-  const stored = localStorage.getItem(FIRST_KEY);
-  if (!stored) return null;
-  try {
-    return JSON.parse(stored) as UTMParams;
-  } catch {
-    return null;
-  }
+  migrateLegacyUTMIfNeeded();
+  return safeParse<UTMParams>(localStorage.getItem(FIRST_KEY));
 }
 
 export function getStoredLastUTM(): UTMParams | null {
   if (typeof window === "undefined") return null;
-  const stored = localStorage.getItem(LAST_KEY);
-  if (!stored) return null;
-  try {
-    return JSON.parse(stored) as UTMParams;
-  } catch {
-    return null;
-  }
+  migrateLegacyUTMIfNeeded();
+  return safeParse<UTMParams>(localStorage.getItem(LAST_KEY));
 }
 
-/** Clear both */
-export function clearStoredUTM(): void {
+export function getStoredLandingPage(): string | null {
+  if (typeof window === "undefined") return null;
+  ensureLandingStored();
+  const v = localStorage.getItem(LANDING_KEY);
+  return clean(v);
+}
+
+/** Clear ff keys (+ legacy optionally) */
+export function clearStoredUTM(opts?: { clearLegacy?: boolean }): void {
   if (typeof window === "undefined") return;
-  localStorage.removeItem(FIRST_KEY);
-  localStorage.removeItem(LAST_KEY);
+
+  try {
+    localStorage.removeItem(FIRST_KEY);
+    localStorage.removeItem(LAST_KEY);
+    localStorage.removeItem(LANDING_KEY);
+
+    if (opts?.clearLegacy) {
+      localStorage.removeItem(LEGACY_FIRST_KEY);
+      localStorage.removeItem(LEGACY_LAST_KEY);
+    }
+  } catch {
+    // ignore
+  }
 }

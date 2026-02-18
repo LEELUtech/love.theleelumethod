@@ -6,13 +6,7 @@ import { getStripe } from "@/lib/stripe";
 import { upsertContactCheckoutStarted } from "@/lib/zoho-functions";
 import { emitFunnelEvent } from "@/lib/emitFunnelEvent";
 import { db } from "@/lib/firebase";
-import {
-  doc,
-  runTransaction,
-  serverTimestamp,
-  getDoc,
-  type DocumentData,
-} from "firebase/firestore";
+import { doc, runTransaction, serverTimestamp, getDoc, type DocumentData } from "firebase/firestore";
 import type Stripe from "stripe";
 
 const stripe = getStripe();
@@ -54,8 +48,10 @@ type Body = {
   deviceType?: string;
   browser?: string;
 
-  // allow explicit leadSource from FE if you have it
   leadSource?: string;
+
+  // ✅ optional: link FE session to SalesIQ id if you have it
+  salesiqVisitorId?: string;
 };
 
 function clean(v?: string | null): string | undefined {
@@ -116,8 +112,9 @@ function setMetaIfPresent(meta: Stripe.MetadataParam, key: string, v?: string) {
   if (s) meta[key] = s;
 }
 
-function makeEventId(paymentIntentId: string, step: string) {
-  return `${paymentIntentId}:${step}:${Date.now()}_${Math.random().toString(16).slice(2)}`;
+// stable event id (server-side dedup)
+function stableCheckoutStartedEventId(paymentIntentId: string) {
+  return `${paymentIntentId}:checkout_started`;
 }
 
 type PaymentDoc = {
@@ -146,6 +143,7 @@ type PaymentDoc = {
   utm_last_term: string | null;
 
   lead_source?: string | null;
+  salesiq_visitor_id?: string | null;
 };
 
 function asPaymentDoc(data?: DocumentData): PaymentDoc {
@@ -176,10 +174,11 @@ function asPaymentDoc(data?: DocumentData): PaymentDoc {
     utm_last_term: nonEmptyString(d.utm_last_term),
 
     lead_source: nonEmptyString(d.lead_source),
+    salesiq_visitor_id: nonEmptyString(d.salesiq_visitor_id),
   };
 }
 
-// ✅ advance-only ranks (FIXED)
+// advance-only ranks
 const STEP_RANK: Record<string, number> = {
   checkout_viewed: 10,
   lead_captured: 20,
@@ -214,6 +213,7 @@ export async function POST(req: NextRequest) {
     const siteFromReq = getIncomingSite(req, body.site);
     const pagePathIn = clean(body.pagePath);
     const checkoutVariantIn = clean(body.checkoutVariant);
+    const salesiqVisitorIdIn = clean(body.salesiqVisitorId);
 
     // 1) Load PI and verify intent_token
     const pi = await stripe.paymentIntents.retrieve(intentId);
@@ -246,11 +246,14 @@ export async function POST(req: NextRequest) {
       ...existingMeta,
       email,
       site: siteFromReq,
-      product_type: productTypeIn, // keep in sync
+      product_type: productTypeIn,
+      intent_token: token, // keep
     };
 
     if (pagePathIn) nextMeta.page_path = pagePathIn;
     if (checkoutVariantIn) nextMeta.checkout_variant = checkoutVariantIn;
+
+    if (salesiqVisitorIdIn) nextMeta.salesiq_visitor_id = salesiqVisitorIdIn;
 
     // compatibility_report birth dates
     if (productTypeIn === "compatibility_report") {
@@ -300,8 +303,8 @@ export async function POST(req: NextRequest) {
     const piUtmLastTerm = stripeMetaStr(piUpdated, "utm_last_term");
 
     const piLeadSource = stripeMetaStr(piUpdated, "lead_source");
+    const piSalesIqVisitorId = stripeMetaStr(piUpdated, "salesiq_visitor_id");
 
-    // lead source rule
     const leadSource =
       clean(body.leadSource) ||
       piLeadSource ||
@@ -321,9 +324,7 @@ export async function POST(req: NextRequest) {
 
       const patch: Record<string, unknown> = {
         updated_at: serverTimestamp(),
-        processed_at: serverTimestamp(),
-
-        // do not degrade
+        // processed_at НЕ трогаем тут
         email: cur.email ?? email,
         site: cur.site ?? siteFromReq,
       };
@@ -332,21 +333,23 @@ export async function POST(req: NextRequest) {
       if (!cur.checkout_variant) patch.checkout_variant = checkoutVariantIn ?? piCheckoutVariant ?? null;
       if (!cur.product_type) patch.product_type = productTypeIn ?? piProductType ?? null;
 
-      // stripe snapshot if missing
       if (cur.amount === null) patch.amount = piAmount ?? null;
       if (!cur.currency) patch.currency = piCurrency ?? null;
       if (!cur.stripe_status) patch.stripe_status = piStatus ?? null;
       if (!cur.stripe_customer_id) patch.stripe_customer_id = piCustomer ?? null;
 
-      // last-touch update (ok to update here, but don’t overwrite with empty)
+      // last-touch update (only if present)
       if (piUtmLastSource) patch.utm_last_source = piUtmLastSource;
       if (piUtmLastMedium) patch.utm_last_medium = piUtmLastMedium;
       if (piUtmLastCampaign) patch.utm_last_campaign = piUtmLastCampaign;
       if (piUtmLastContent) patch.utm_last_content = piUtmLastContent;
       if (piUtmLastTerm) patch.utm_last_term = piUtmLastTerm;
 
-      // persist lead_source for later CRM usage
       if (!cur.lead_source && leadSource) patch.lead_source = leadSource;
+
+      if (!cur.salesiq_visitor_id && (piSalesIqVisitorId || salesiqVisitorIdIn)) {
+        patch.salesiq_visitor_id = piSalesIqVisitorId ?? salesiqVisitorIdIn ?? null;
+      }
 
       if (nextRank > curRank) patch.funnel_step = "checkout_started";
 
@@ -377,13 +380,13 @@ export async function POST(req: NextRequest) {
       console.error("Zoho checkout_started failed (non-critical)", { requestId, e });
     }
 
-    // 6) Analytics event (best-effort)
+    // 6) Analytics event (best-effort) — stable event_id (dedup)
     try {
       const docSite = final.site ?? piSite ?? siteFromReq;
       const docPagePath = final.page_path ?? piPagePath ?? pagePathIn ?? null;
 
       await emitFunnelEvent({
-        event_id: makeEventId(intentId, "checkout_started"), // ✅ unique
+        event_id: stableCheckoutStartedEventId(intentId),
         event_time: new Date().toISOString(),
         funnel_step: "checkout_started",
         source: "api:update-intent",
@@ -404,7 +407,6 @@ export async function POST(req: NextRequest) {
         stripe_status: piStatus,
         stripe_customer_id: piCustomer,
 
-        // ✅ lead source
         lead_source: final.lead_source ?? leadSource,
 
         utm_first_source: final.utm_first_source ?? piUtmFirstSource ?? null,
@@ -419,11 +421,12 @@ export async function POST(req: NextRequest) {
         utm_last_content: final.utm_last_content ?? piUtmLastContent ?? clean(body.utmContent) ?? null,
         utm_last_term: final.utm_last_term ?? piUtmLastTerm ?? clean(body.utmTerm) ?? null,
 
-        // optional extra dims
         session_id: clean(body.sessionId) ?? null,
         device_type: clean(body.deviceType) ?? null,
         browser: clean(body.browser) ?? null,
         country: clean(body.country) ?? null,
+
+        salesiq_visitor_id: final.salesiq_visitor_id ?? piSalesIqVisitorId ?? salesiqVisitorIdIn ?? null,
       });
     } catch (e) {
       console.error("emitFunnelEvent checkout_started failed (non-critical)", { requestId, e });

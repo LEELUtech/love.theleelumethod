@@ -12,13 +12,7 @@ export default function UTMTracker() {
     // Capture UTM params from URL on first page load
     const utm = captureUTM();
     
-    // Debug: log captured UTM
-    if (utm) {
-      console.log("UTM captured:", utm);
-    } else {
-      console.log("No UTM params in URL");
-    }
   }, []);
 
-  return null; // This component doesn't render anything
+  return null; 
 }

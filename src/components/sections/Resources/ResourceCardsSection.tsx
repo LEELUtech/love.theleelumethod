@@ -91,6 +91,12 @@ export function ResourceCardsSection() {
 										size="md"
 										className="w-full py-[12px]"
 										href="/resources/secrets"
+										trackingData={{
+											cta_name: "download_guide",
+											cta_text: "Download free guide",
+											cta_target_url: "/resources/secrets",
+											cta_location: "resources_section",
+										}}
 									>
 										{item.cta}
 									</Button>
@@ -100,6 +106,12 @@ export function ResourceCardsSection() {
 										size="md"
 										className="w-full py-[12px]"
 										href="/resources/compatibility-report"
+										trackingData={{
+											cta_name: "get_report",
+											cta_text: "GET THE REPORT",
+											cta_target_url: "/resources/compatibility-report",
+											cta_location: "resources_section",
+										}}
 									>
 										{item.cta}
 									</Button>
@@ -109,6 +121,12 @@ export function ResourceCardsSection() {
 										size="md"
 										className="w-full py-[12px]"
 										href={QUIZ_URL}
+										trackingData={{
+											cta_name: "start_quiz",
+											cta_text: "Start quiz",
+											cta_target_url: QUIZ_URL,
+											cta_location: "resources_section",
+										}}
 									>
 										{item.cta}
 									</Button>

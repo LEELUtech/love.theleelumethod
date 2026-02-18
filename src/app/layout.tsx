@@ -2,6 +2,9 @@ import localFont from "next/font/local";
 import { Figtree, Inter, Lato, Marcellus, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import UTMTracker from "@/components/ui/UTMTracker"
+import SalesIQScript from "@/components/ui/SalesIQScript"
+import PageTracker from "@/components/ui/PageTracker"
+import EngagementTracker from "@/components/ui/EngagementTracker"
 
 const inter = Inter({
 	subsets: ["latin"],
@@ -73,6 +76,9 @@ export default function RootLayout({
 		>
 			<body className="antialiased">
 				<UTMTracker />
+				<SalesIQScript />
+				<PageTracker />
+				<EngagementTracker />
 				{children}
 			</body>
 		</html>

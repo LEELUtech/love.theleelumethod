@@ -2,7 +2,6 @@
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import { configs } from "../configs/env";
 
-
 // -------------------------
 // Zoho field API names (single source of truth)
 // -------------------------
@@ -30,6 +29,11 @@ const CONTACT_FIELDS = {
   Funnel_Updated_At: "Funnel_Updated_At",
   Checkout_Status: "Checkout_Status",
   Last_Checkout_Error: "Last_Checkout_Error",
+
+  // ✅ NEW: abandoned markers for email campaigns / segmentation
+  // IMPORTANT: create these fields in Zoho Contacts with these API names
+  Abandoned_Checkout_At: "Abandoned_Checkout_At", // DateTime
+  Abandoned_Reason: "Abandoned_Reason", // Single line text / multi-line text
 } as const;
 
 const DEAL_FIELDS = {
@@ -139,12 +143,7 @@ function setIfEmptyOrPlaceholder(
 }
 
 // phone: write only if "better" (more digits or longer)
-function setIfBetterPhone(
-  patch: Record<string, unknown>,
-  key: string,
-  current: unknown,
-  next?: unknown,
-) {
+function setIfBetterPhone(patch: Record<string, unknown>, key: string, current: unknown, next?: unknown) {
   const nxt = cleanStr(next);
   if (!nxt) return;
 
@@ -190,6 +189,7 @@ export type AppFunnelStep =
   | "delivered"
   | "failed"
   | "canceled"
+  | "abandoned"
   | "delivery_failed";
 
 function toZohoFunnelStep(step: AppFunnelStep): ZohoFunnelStep {
@@ -198,15 +198,14 @@ function toZohoFunnelStep(step: AppFunnelStep): ZohoFunnelStep {
   if (step === "paid") return "paid";
   if (step === "delivered") return "delivered";
   if (step === "checkout_started") return "checkout_started";
+  // checkout_viewed / abandoned are not true CRM steps — keep as lead_captured
   return "lead_captured";
 }
 
 const ZOHO_FUNNEL_RANK: Record<ZohoFunnelStep, number> = {
   lead_captured: 20,
   checkout_started: 30,
-
   payment_failed: 35,
-
   paid: 40,
   delivered: 50,
   delivery_failed: 55,
@@ -226,7 +225,7 @@ function shouldAdvanceZoho(existing: unknown, next: ZohoFunnelStep) {
 }
 
 function toZohoCheckoutStatus(step: ZohoFunnelStep, original?: AppFunnelStep) {
-  // you said "cancel" is not a real UX action, but webhook can still send it
+  // keep existing behavior
   if (original === "canceled") return "Payment Failed";
 
   if (step === "checkout_started") return "Checkout Started";
@@ -303,8 +302,7 @@ async function zohoRequest<T = unknown>(
 
     const respData = e.response?.data as any;
     const zohoCode =
-      respData?.code ||
-      (Array.isArray(respData?.data) ? respData?.data?.[0]?.code : undefined);
+      respData?.code || (Array.isArray(respData?.data) ? respData?.data?.[0]?.code : undefined);
 
     const isAuthIssue =
       status === 401 || zohoCode === "INVALID_TOKEN" || zohoCode === "AUTHENTICATION_FAILURE";
@@ -377,6 +375,8 @@ async function findDealByPaymentIntentId(paymentIntentId: string): Promise<Recor
 // ======================================================
 // CONTACT UPSERT (purchase snapshot)
 // ======================================================
+// (оставил как у тебя — не трогаю, чтобы не ломать)
+// ... createOrUpdateContact (без изменений) ...
 export async function createOrUpdateContact(data: {
   email: string;
   firstName?: string;
@@ -492,6 +492,7 @@ export async function createOrUpdateContact(data: {
 // ======================================================
 // DEAL CREATE (purchase snapshot)
 // ======================================================
+// (оставил как у тебя — не трогаю, чтобы не ломать)
 export async function createDeal(data: {
   contactId: string;
   dealName: string;
@@ -571,13 +572,17 @@ export async function createDeal(data: {
 }
 
 // ======================================================
-// Funnel update by email (advance-only, NO Has_* flags)
+// Funnel update by email (advance-only) + ✅ Abandoned markers
 // ======================================================
 export async function updateContactFunnelStepByEmail(params: {
   email: string;
   funnelStep: AppFunnelStep;
   checkoutStatus?: string;
   lastError?: string;
+
+  // ✅ extra abandoned info (optional)
+  abandonedAt?: Date;
+  abandonedReason?: string;
 }): Promise<{ contactId: string } | null> {
   const email = cleanStr(params.email)?.toLowerCase();
   if (!email) throw new Error("Email is required");
@@ -600,6 +605,20 @@ export async function updateContactFunnelStepByEmail(params: {
   const statusToWrite = cleanStr(params.checkoutStatus) || cleanStr(autoStatus);
   if (statusToWrite) patch[CONTACT_FIELDS.Checkout_Status] = truncate(statusToWrite, 60);
 
+  // ✅ IMPORTANT:
+  // Abandoned is not a "CRM funnel step" (we keep lead_captured there),
+  // but we DO need a marketing marker for campaigns.
+  if (params.funnelStep === "abandoned") {
+    patch[CONTACT_FIELDS.Abandoned_Checkout_At] = toZohoDateTime(params.abandonedAt ?? new Date());
+
+    const r = cleanStr(params.abandonedReason);
+    if (r) patch[CONTACT_FIELDS.Abandoned_Reason] = truncate(r, 120);
+
+    // If caller didn't pass status, ensure meaningful status for segmenting
+    if (!statusToWrite) patch[CONTACT_FIELDS.Checkout_Status] = "Abandoned Checkout";
+  }
+
+  // advance-only funnel step (unchanged behavior)
   if (canAdvance) {
     patch[CONTACT_FIELDS.Funnel_Step] = next;
     patch[CONTACT_FIELDS.Funnel_Updated_At] = toZohoDateTime(new Date());

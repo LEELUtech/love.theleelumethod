@@ -5,7 +5,11 @@ import { defineSecret } from "firebase-functions/params";
 
 import { configs } from "../configs/env";
 
-import { createOrUpdateContact, createDeal, updateContactFunnelStepByEmail } from "../lib/zoho-crm";
+import {
+  createOrUpdateContact,
+  createDeal,
+  updateContactFunnelStepByEmail,
+} from "../lib/zoho-crm";
 import { emitFunnelEvent } from "../lib/emitFunnelEvent";
 
 import {
@@ -26,6 +30,7 @@ import {
   processPayment,
   ProductType,
   errToMessage,
+  type PaymentRecord,
 } from "../utils/stripeCircleWebhook.helpers";
 
 // Secrets must be attached to this function (Firebase v2)
@@ -35,9 +40,7 @@ const ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_CR
 const ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT");
 const ZOHO_API_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_API_DOMAIN_LILYCHYSTOFAT");
 const ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT");
-const ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT = defineSecret(
-  "ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT",
-);
+const ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT");
 
 // Zoho Analytics secrets
 const ZOHO_ANALYTICS_API_DOMAIN = defineSecret("ZOHO_ANALYTICS_API_DOMAIN_LILYCHYSTOFAT");
@@ -68,6 +71,16 @@ function isHandledEventType(v: unknown): v is HandledEventType {
 }
 
 type StripeRawBodyRequest = { rawBody?: Buffer };
+
+function isoFromStripeEvent(event: Stripe.Event): string {
+  const createdSec = typeof event.created === "number" ? event.created : Math.floor(Date.now() / 1000);
+  return new Date(createdSec * 1000).toISOString();
+}
+
+function makeAnalyticsEventId(piId: string, step: string, stripeEventId: string) {
+  // ✅ unique per step, stable per webhook event
+  return `${piId}:${step}:${stripeEventId}`;
+}
 
 export const stripeCircleWebhook = onRequest(
   {
@@ -109,7 +122,11 @@ export const stripeCircleWebhook = onRequest(
 
       let event: Stripe.Event;
       try {
-        event = stripe.webhooks.constructEvent(rawBody, sig as string, configs.stripeCircleWebhookSecret);
+        event = stripe.webhooks.constructEvent(
+          rawBody,
+          sig as string,
+          configs.stripeCircleWebhookSecret,
+        );
       } catch (e) {
         console.error("Stripe signature verification failed", errToMessage(e));
         res.status(400).send("Webhook signature verification failed");
@@ -127,7 +144,6 @@ export const stripeCircleWebhook = onRequest(
       const pi = await stripe.paymentIntents.retrieve(piFromEvent.id);
       const metadata = (pi.metadata || {}) as Record<string, string>;
 
-      // -------- shared fields ----------
       const intentToken = cleanStr(metadata.intent_token) ?? null;
 
       const site = normalizeHost(cleanStr(metadata.site)) || "unknown";
@@ -160,10 +176,10 @@ export const stripeCircleWebhook = onRequest(
       const leadSource = cleanStr(metadata.lead_source) || utmFirstSource || null;
 
       // ---------------------------------------------------
-      // helper: 1 payload для Analytics
+      // helper: unified Analytics emit
       // ---------------------------------------------------
       const emit = async (args: {
-        funnel_step: "payment_failed" | "paid" | "delivered" | "delivery_failed" | "deal_created";
+        funnel_step: "payment_failed" | "paid" | "delivered" | "delivery_failed" | "deal_created" | "canceled";
         email: string | null;
         product_type: string | null;
 
@@ -178,15 +194,20 @@ export const stripeCircleWebhook = onRequest(
 
         abandon_reason?: string | null;
 
-        // allow force ids (when we just created them)
         zoho_contact_id?: string | null;
         zoho_deal_id?: string | null;
+
+        // if you want a custom timestamp
+        event_time_override?: string;
       }) => {
-        const existing = await getPaymentRecord(pi.id);
+        const existing: PaymentRecord | null = await getPaymentRecord(pi.id);
+
+        const processingFromDb =
+          existing && typeof existing.processing_status === "string" ? existing.processing_status : null;
 
         await emitFunnelEvent({
-          event_id: event.id,
-          event_time: new Date().toISOString(),
+          event_id: makeAnalyticsEventId(pi.id, args.funnel_step, event.id),
+          event_time: args.event_time_override ?? isoFromStripeEvent(event),
           source: "stripe:webhook",
           funnel_step: args.funnel_step,
 
@@ -194,12 +215,10 @@ export const stripeCircleWebhook = onRequest(
           intent_token: intentToken,
           email: args.email,
 
-          // ✅ prefer forced, else from existing
           zoho_contact_id: args.zoho_contact_id ?? (existing?.zoho_contact_id ?? null),
           zoho_deal_id: args.zoho_deal_id ?? (existing?.zoho_deal_id ?? null),
 
-          // ✅ important columns
-          processing_status: args.processing_status ?? ((existing as any)?.processing_status ?? null),
+          processing_status: args.processing_status ?? processingFromDb,
           product_name: args.product_name ?? null,
 
           site,
@@ -220,6 +239,8 @@ export const stripeCircleWebhook = onRequest(
           delivery_error: args.delivery_error ?? null,
           abandon_reason: args.abandon_reason ?? null,
 
+          lead_source: leadSource,
+
           utm_first_source: utmFirstSource,
           utm_first_medium: utmFirstMedium,
           utm_first_campaign: utmFirstCampaign,
@@ -233,6 +254,63 @@ export const stripeCircleWebhook = onRequest(
           utm_last_term: utmLastTerm,
         });
       };
+
+      // ---------------------------------------------------
+      // CANCELED
+      // ---------------------------------------------------
+      if (event.type === "payment_intent.canceled") {
+        const msg = "Payment canceled";
+
+        console.log("Payment canceled", {
+          payment_intent_id: pi.id,
+          event: safeId(event.id),
+          type: event.type,
+          stripe_status: pi.status,
+          email: emailMaybe || undefined,
+        });
+
+        try {
+          await upsertPaymentBaseFromIntent(pi, event.id);
+        } catch (e) {
+          console.error("Upsert payment base failed (canceled)", {
+            payment_intent_id: pi.id,
+            error: errToMessage(e),
+          });
+        }
+
+        try {
+          await markFunnelStepAdvanceOnly(pi.id, "canceled");
+          await updateProcessingStatus(pi.id, "failed", msg);
+        } catch (e) {
+          console.error("Firestore update failed for canceled", {
+            payment_intent_id: pi.id,
+            error: errToMessage(e),
+          });
+        }
+
+        try {
+          await emit({
+            funnel_step: "canceled",
+            email: emailMaybe || null,
+            product_type: productTypeFromMeta,
+            product_name: productTypeFromMeta ? getProductName(productTypeFromMeta as ProductType) : null,
+            processing_status: "failed",
+            stripe_error_code: null,
+            stripe_error_message: msg,
+            delivery_status: null,
+            delivery_error: null,
+            abandon_reason: "canceled",
+          });
+        } catch (e) {
+          console.error("emitFunnelEvent canceled failed (non-critical)", {
+            payment_intent_id: pi.id,
+            error: errToMessage(e),
+          });
+        }
+
+        res.status(200).send("Accepted");
+        return;
+      }
 
       // ---------------------------------------------------
       // FAILED
@@ -249,7 +327,6 @@ export const stripeCircleWebhook = onRequest(
           reason: msg,
         });
 
-        // 0) Upsert Firestore base doc (best-effort)
         try {
           await upsertPaymentBaseFromIntent(pi, event.id);
         } catch (e) {
@@ -259,7 +336,6 @@ export const stripeCircleWebhook = onRequest(
           });
         }
 
-        // 1) Firestore step/status (failed only)
         try {
           await markFunnelStepAdvanceOnly(pi.id, "failed");
           await updateProcessingStatus(pi.id, "failed", msg);
@@ -270,7 +346,6 @@ export const stripeCircleWebhook = onRequest(
           });
         }
 
-        // 2) Analytics (best-effort)
         try {
           await emit({
             funnel_step: "payment_failed",
@@ -279,7 +354,7 @@ export const stripeCircleWebhook = onRequest(
             product_name: productTypeFromMeta ? getProductName(productTypeFromMeta as ProductType) : null,
             processing_status: "failed",
             stripe_error_code: pi.last_payment_error?.code ?? null,
-            stripe_error_message: msg ?? null,
+            stripe_error_message: msg,
             delivery_status: null,
             delivery_error: null,
             abandon_reason: null,
@@ -291,7 +366,7 @@ export const stripeCircleWebhook = onRequest(
           });
         }
 
-        // 3) Zoho best-effort (NO UTM)
+        // Zoho best-effort (NO UTM)
         try {
           const email = cleanStr(metadata.email) || cleanStr(pi.receipt_email);
           const pt = cleanStr(metadata.product_type);
@@ -340,7 +415,7 @@ export const stripeCircleWebhook = onRequest(
       }
 
       // ---------------------------------------------------
-      // SUCCEEDED
+      // SUCCEEDED gate
       // ---------------------------------------------------
       if (pi.status !== "succeeded") {
         res.status(200).send("Payment not succeeded");
@@ -401,14 +476,13 @@ export const stripeCircleWebhook = onRequest(
       // Firestore: paid (advance-only)
       await markFunnelStepAdvanceOnly(pi.id, "paid");
 
-      // ✅ optional but recommended: mark processing
       try {
         await updateProcessingStatus(pi.id, "processing");
       } catch {
         // ignore
       }
 
-      // Analytics: paid (best-effort)
+      // Analytics: paid
       try {
         await emit({
           funnel_step: "paid",
@@ -419,6 +493,8 @@ export const stripeCircleWebhook = onRequest(
           delivery_status: null,
           delivery_error: null,
           abandon_reason: null,
+          // для paid логично оставить event.created (Stripe)
+          event_time_override: isoFromStripeEvent(event),
         });
       } catch (e) {
         console.error("emitFunnelEvent paid failed (non-critical)", {
@@ -427,7 +503,7 @@ export const stripeCircleWebhook = onRequest(
         });
       }
 
-      // Zoho contact (even if delivery fails)
+      // Zoho contact
       let contactId: string | undefined;
       try {
         const { firstName, lastName } = splitName(metadata.name);
@@ -478,7 +554,7 @@ export const stripeCircleWebhook = onRequest(
           checkoutStatus: "Delivered",
         });
 
-        // Analytics: delivered (best-effort)
+        // Analytics: delivered (время — “когда доставили” = now)
         try {
           await emit({
             funnel_step: "delivered",
@@ -490,6 +566,7 @@ export const stripeCircleWebhook = onRequest(
             delivery_error: null,
             abandon_reason: null,
             zoho_contact_id: contactId ?? null,
+            event_time_override: new Date().toISOString(),
           });
         } catch (e) {
           console.error("emitFunnelEvent delivered failed (non-critical)", {
@@ -506,7 +583,6 @@ export const stripeCircleWebhook = onRequest(
         await markFunnelStepAdvanceOnly(pi.id, "delivery_failed");
         await updateProcessingStatus(pi.id, "failed", msg);
 
-        // Analytics: delivery_failed (best-effort)
         try {
           await emit({
             funnel_step: "delivery_failed",
@@ -518,6 +594,7 @@ export const stripeCircleWebhook = onRequest(
             delivery_error: msg ?? null,
             abandon_reason: null,
             zoho_contact_id: contactId ?? null,
+            event_time_override: new Date().toISOString(),
           });
         } catch (e2) {
           console.error("emitFunnelEvent delivery_failed failed (non-critical)", {
@@ -526,7 +603,6 @@ export const stripeCircleWebhook = onRequest(
           });
         }
 
-        // Zoho: delivery_failed
         try {
           await updateContactFunnelStepByEmail({
             email: validation.email,
@@ -555,7 +631,7 @@ export const stripeCircleWebhook = onRequest(
             zoho_deal_id: existing.zoho_deal_id,
           });
         } else {
-          if (!contactId && existing?.zoho_contact_id) contactId = existing.zoho_contact_id;
+          if (!contactId && existing?.zoho_contact_id) contactId = existing.zoho_contact_id ?? undefined;
 
           if (!contactId) {
             console.warn("No Zoho contactId, skipping deal creation", { payment_intent_id: pi.id });
@@ -592,6 +668,7 @@ export const stripeCircleWebhook = onRequest(
                   delivery_error: null,
                   zoho_contact_id: contactId ?? null,
                   zoho_deal_id: dealId,
+                  event_time_override: new Date().toISOString(),
                 });
               } catch (e2) {
                 console.error("emitFunnelEvent deal_created failed (non-critical)", {

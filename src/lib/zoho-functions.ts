@@ -261,6 +261,7 @@ export async function upsertZohoContactFunnel(input: {
   });
 
   const newId = created?.data?.[0]?.details?.id;
+  console.log(created)
   if (!newId) throw new Error("Zoho create failed: missing id");
 
   return { contactId: newId, isNew: true };
@@ -269,11 +270,13 @@ export async function upsertZohoContactFunnel(input: {
 // -------------------------
 // Backwards-compatible wrappers
 // -------------------------
-export async function upsertContactLeadCaptured(input: { email: string; site?: string }) {
+export async function upsertContactLeadCaptured(input: { email: string; site?: string, firstName?: string; lastName?: string }) {
   return upsertZohoContactFunnel({
     email: input.email,
     step: "lead_captured",
     site: input.site,
+    firstName: input.firstName,
+    lastName: input.lastName,
   });
 }
 

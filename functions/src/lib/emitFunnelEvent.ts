@@ -47,7 +47,6 @@ export type FunnelEventRow = {
   utm_last_content?: string | null;
   utm_last_term?: string | null;
 
-  // allow extra columns (SalesIQ etc.) — primitives only
   [key: string]: FunnelValue | undefined;
 };
 
@@ -156,10 +155,8 @@ function isZohoInvalidToken(err: unknown): boolean {
   const status = err.response?.status;
   const data = err.response?.data as unknown;
 
-  const obj = (data && typeof data === "object" ? (data as Record<string, unknown>) : {}) as Record<
-    string,
-    unknown
-  >;
+  const obj =
+    data && typeof data === "object" ? (data as Record<string, unknown>) : ({} as Record<string, unknown>);
 
   const code =
     (typeof obj.code === "string" ? obj.code : undefined) ||
@@ -170,7 +167,7 @@ function isZohoInvalidToken(err: unknown): boolean {
 }
 
 // -------------------------
-// Zoho Analytics OAuth token (refresh_token flow)
+// Zoho Analytics OAuth token
 // -------------------------
 let cachedToken: string | null = null;
 let cachedTokenExp = 0;
@@ -229,6 +226,32 @@ async function getZohoAccessToken(requestId: string): Promise<string> {
 // -------------------------
 // Zoho Analytics append 1 row
 // -------------------------
+function assertZohoImportOk(resData: unknown, requestId: string) {
+  // Zoho часто возвращает 200 даже при "fail" внутри JSON.
+  // Мы делаем очень "мягкий", но полезный детектор ошибок.
+  const s = safePreview(resData, 4000);
+
+  const asObj = (resData && typeof resData === "object") ? (resData as Record<string, unknown>) : null;
+
+  // Частые поля: "response", "result", "status", "error", "message"
+  const status =
+    (asObj && typeof asObj.status === "string" ? asObj.status : undefined) ||
+    (asObj && typeof asObj.STATUS === "string" ? asObj.STATUS : undefined);
+
+  const hasFailureWord =
+    typeof status === "string"
+      ? /fail|error|invalid/i.test(status)
+      : /"status"\s*:\s*"(fail|error|invalid)"/i.test(s);
+
+  // Иногда Zoho пишет counts в тексте/структуре.
+  const importedZero = /"imported"\s*:\s*0/i.test(s) || /"success"\s*:\s*0/i.test(s);
+
+  if (hasFailureWord || importedZero) {
+    console.error("[emitFunnelEvent] Zoho import reported failure-like body", { requestId, body: s });
+    throw new Error(`Zoho import body indicates failure: ${s}`);
+  }
+}
+
 async function appendRowToZohoAnalytics(row: FunnelEventRow, requestId: string): Promise<void> {
   const apiDomain = env("ZOHO_ANALYTICS_API_DOMAIN_LILYCHYSTOFAT");
   const orgId = env("ZOHO_ANALYTICS_ORG_ID_LILYCHYSTOFAT");
@@ -255,10 +278,6 @@ async function appendRowToZohoAnalytics(row: FunnelEventRow, requestId: string):
       url,
       orgId,
       config,
-      headersPreview: {
-        Authorization: `Zoho-oauthtoken ${token.slice(0, 12)}…`,
-        "ZANALYTICS-ORGID": orgId,
-      },
       row_keys: Object.keys(row),
       row_preview: safePreview(row, 800),
     });
@@ -285,6 +304,9 @@ async function appendRowToZohoAnalytics(row: FunnelEventRow, requestId: string):
       (err as any).response = res;
       throw err;
     }
+
+    // ✅ ВАЖНО: даже при 200 может быть "fail" в body
+    assertZohoImportOk(res.data, requestId);
   };
 
   // 1) first try

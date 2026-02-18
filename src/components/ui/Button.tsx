@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { trackCTA } from "@/lib/tracking/trackCTA";
 
 type ButtonVariant = "primary" | "dark";
 type ButtonSize = "md" | "lg";
@@ -19,6 +20,14 @@ type CommonProps = {
 	disabled?: boolean;
 	loading?: boolean;
 	className?: string;
+	
+	// Optional tracking data for analytics
+	trackingData?: {
+  cta_name: string;
+  cta_text?: string | null;
+  cta_target_url?: string | null;
+  cta_location?: string | null;
+};
 };
 
 type ButtonAsButton = CommonProps &
@@ -76,8 +85,24 @@ export default function Button(props: ButtonProps) {
 		disabled,
 		loading,
 		className,
+		trackingData,
+		onClick,
 		...rest
 	} = props as ButtonProps;
+
+	const handleClick = (
+		e: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLAnchorElement>,
+	) => {
+		if (trackingData) {
+			void trackCTA(trackingData);
+		}
+
+		// Call original onClick if provided
+		if (onClick && typeof onClick === "function") {
+			// @ts-expect-error - onClick accepts either button or anchor events
+			onClick(e);
+		}
+	};
 
 	const content = (
 		<>
@@ -123,6 +148,7 @@ export default function Button(props: ButtonProps) {
 				href={href}
 				aria-disabled={disabled || loading}
 				className={cx(cls, (disabled || loading) && "pointer-events-none")}
+				onClick={handleClick}
 				{...aProps}
 			>
 				{content}
@@ -137,6 +163,7 @@ export default function Button(props: ButtonProps) {
 			type="button"
 			disabled={disabled || loading}
 			className={cls}
+			onClick={handleClick}
 			{...btnProps}
 		>
 			{content}

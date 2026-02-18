@@ -13,7 +13,7 @@ export type FunnelEventRow = {
   event_id: string;
   event_time?: string; // ISO
   source: string;
-  funnel_step: string;
+  funnel_step: string | null; // deprecated, but keep for compatibility with old events
 
   payment_intent_id?: string | null;
   intent_token?: string | null;
