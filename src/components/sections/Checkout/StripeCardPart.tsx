@@ -155,7 +155,7 @@ export function StripeCardPart({
 					postalCode: billing.postalCode,
 					country: billing.country,
 
-					// last-touch UTM поверх (если есть)
+					// last-touch UTM
 					utmSource: utm?.utm_source,
 					utmMedium: utm?.utm_medium,
 					utmCampaign: utm?.utm_campaign,

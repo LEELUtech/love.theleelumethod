@@ -33,6 +33,8 @@ export type CreateIntentPayload = {
 
 	site?: string;
 	pagePath?: string;
+	sessionId?: string;
+	salesiqVisitorId?: string;
 
 	utmSource?: string;
 	utmMedium?: string;

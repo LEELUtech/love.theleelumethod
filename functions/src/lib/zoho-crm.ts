@@ -17,7 +17,7 @@ const CONTACT_FIELDS = {
 
   First_Product_Purchased: "First_Product_Purchased",
   Last_Product_Purchased: "Last_Product_Purchased",
-  Purchased_Products: "Purchased_Products",
+  Purchased_Products: "Purchased_Products_List",
 
   First_Purchase_Date: "First_Purchase_Date",
   Last_Purchase_Date: "Last_Purchase_Date",
@@ -82,7 +82,10 @@ function truncate(s: string, max: number) {
 
 function toZohoDateTime(d: Date = new Date()): string {
   // 2026-02-09T16:41:31.123Z -> 2026-02-09T16:41:31+00:00
-  return d.toISOString().replace(/\.\d{3}Z$/, "Z").replace(/Z$/, "+00:00");
+  return d
+    .toISOString()
+    .replace(/\.\d{3}Z$/, "Z")
+    .replace(/Z$/, "+00:00");
 }
 
 function toZohoDateOnly(d: Date = new Date()): string {
@@ -90,11 +93,18 @@ function toZohoDateOnly(d: Date = new Date()): string {
 }
 
 function asStringArray(v: unknown): string[] {
-  if (Array.isArray(v)) return v.map(String).map((x) => x.trim()).filter(Boolean);
+  if (Array.isArray(v))
+    return v
+      .map(String)
+      .map((x) => x.trim())
+      .filter(Boolean);
   if (typeof v === "string") {
     const s = v.trim();
     if (!s) return [];
-    return s.split(/[;,]/g).map((x) => x.trim()).filter(Boolean);
+    return s
+      .split(/[;,]/g)
+      .map((x) => x.trim())
+      .filter(Boolean);
   }
   return [];
 }
@@ -114,7 +124,9 @@ function mergeMultiSelect(existing: unknown, add?: string): string[] | undefined
 }
 
 function isPlaceholderName(v: unknown) {
-  const s = String(v ?? "").trim().toLowerCase();
+  const s = String(v ?? "")
+    .trim()
+    .toLowerCase();
   return !s || s === "unknown" || s === "lead" || s === "customer";
 }
 
@@ -143,7 +155,12 @@ function setIfEmptyOrPlaceholder(
 }
 
 // phone: write only if "better" (more digits or longer)
-function setIfBetterPhone(patch: Record<string, unknown>, key: string, current: unknown, next?: unknown) {
+function setIfBetterPhone(
+  patch: Record<string, unknown>,
+  key: string,
+  current: unknown,
+  next?: unknown,
+) {
   const nxt = cleanStr(next);
   if (!nxt) return;
 
@@ -353,7 +370,9 @@ async function findContactByEmail(email: string): Promise<Record<string, unknown
   }
 }
 
-async function findDealByPaymentIntentId(paymentIntentId: string): Promise<Record<string, unknown> | null> {
+async function findDealByPaymentIntentId(
+  paymentIntentId: string,
+): Promise<Record<string, unknown> | null> {
   const pi = cleanStr(paymentIntentId);
   if (!pi) return null;
 
@@ -375,8 +394,6 @@ async function findDealByPaymentIntentId(paymentIntentId: string): Promise<Recor
 // ======================================================
 // CONTACT UPSERT (purchase snapshot)
 // ======================================================
-// (оставил как у тебя — не трогаю, чтобы не ломать)
-// ... createOrUpdateContact (без изменений) ...
 export async function createOrUpdateContact(data: {
   email: string;
   firstName?: string;
@@ -392,7 +409,7 @@ export async function createOrUpdateContact(data: {
   stripeCustomerId?: string;
   leadSource?: string;
 
-  productNameForZoho?: string; // optional (must match picklist if used)
+  productNameForZoho?: string;
 }): Promise<{ contactId: string; isNew: boolean }> {
   const email = cleanStr(data.email)?.toLowerCase();
   if (!email) throw new Error("Email is required");
@@ -400,14 +417,19 @@ export async function createOrUpdateContact(data: {
   const existing = await findContactByEmail(email);
 
   const nowDT = toZohoDateTime(new Date());
-  const amountMajor = typeof data.amount === "number" ? Math.round((data.amount / 100) * 100) / 100 : 0;
+  const amountMajor =
+    typeof data.amount === "number" ? Math.round((data.amount / 100) * 100) / 100 : 0;
   const currencyUpper = (data.currency || "usd").toUpperCase();
 
-  const safeFirstName = cleanStr(data.firstName) ? truncate(cleanStr(data.firstName)!, 80) : undefined;
+  const safeFirstName = cleanStr(data.firstName)
+    ? truncate(cleanStr(data.firstName)!, 80)
+    : undefined;
   const safeLastName = cleanStr(data.lastName) ? truncate(cleanStr(data.lastName)!, 80) : undefined;
   const safePhone = cleanStr(data.phone) ? truncate(cleanStr(data.phone)!, 50) : undefined;
 
   const purchasedValue = pickPurchasedProduct(data.productType, data.productNameForZoho);
+
+  console.log("HUGELOG", data);
 
   // ---------- UPDATE ----------
   if (existing?.id) {
@@ -421,17 +443,47 @@ export async function createOrUpdateContact(data: {
     };
 
     // keep first purchase fields if empty
-    setIfEmpty(patch, CONTACT_FIELDS.First_Product_Purchased, existing[CONTACT_FIELDS.First_Product_Purchased], data.productType);
-    setIfEmpty(patch, CONTACT_FIELDS.First_Purchase_Date, existing[CONTACT_FIELDS.First_Purchase_Date], nowDT);
-    setIfEmpty(patch, CONTACT_FIELDS.Lead_Source, existing[CONTACT_FIELDS.Lead_Source], data.leadSource);
+    setIfEmpty(
+      patch,
+      CONTACT_FIELDS.First_Product_Purchased,
+      existing[CONTACT_FIELDS.First_Product_Purchased],
+      data.productType,
+    );
+    setIfEmpty(
+      patch,
+      CONTACT_FIELDS.First_Purchase_Date,
+      existing[CONTACT_FIELDS.First_Purchase_Date],
+      nowDT,
+    );
+    setIfEmpty(
+      patch,
+      CONTACT_FIELDS.Lead_Source,
+      existing[CONTACT_FIELDS.Lead_Source],
+      data.leadSource,
+    );
     // name/phone non-degrading
-    setIfEmptyOrPlaceholder(patch, CONTACT_FIELDS.First_Name, existing[CONTACT_FIELDS.First_Name], safeFirstName);
-    setIfEmptyOrPlaceholder(patch, CONTACT_FIELDS.Last_Name, existing[CONTACT_FIELDS.Last_Name], safeLastName);
+    setIfEmptyOrPlaceholder(
+      patch,
+      CONTACT_FIELDS.First_Name,
+      existing[CONTACT_FIELDS.First_Name],
+      safeFirstName,
+    );
+    setIfEmptyOrPlaceholder(
+      patch,
+      CONTACT_FIELDS.Last_Name,
+      existing[CONTACT_FIELDS.Last_Name],
+      safeLastName,
+    );
     setIfBetterPhone(patch, CONTACT_FIELDS.Phone, existing[CONTACT_FIELDS.Phone], safePhone);
 
     // safe identifiers: fill if empty
     setIfEmpty(patch, CONTACT_FIELDS.Site, existing[CONTACT_FIELDS.Site], cleanStr(data.site));
-    setIfEmpty(patch, CONTACT_FIELDS.Stripe_Customer_ID, existing[CONTACT_FIELDS.Stripe_Customer_ID], cleanStr(data.stripeCustomerId));
+    setIfEmpty(
+      patch,
+      CONTACT_FIELDS.Stripe_Customer_ID,
+      existing[CONTACT_FIELDS.Stripe_Customer_ID],
+      cleanStr(data.stripeCustomerId),
+    );
 
     // always update last PI (useful operationally)
     if (cleanStr(data.stripePaymentIntentId)) {
@@ -444,11 +496,16 @@ export async function createOrUpdateContact(data: {
       if (merged) patch[CONTACT_FIELDS.Purchased_Products] = merged;
     }
 
-    await zohoRequest({
+    console.log("Updating existing Zoho contact", { email, id: existing.id, patch });
+
+    const res = await zohoRequest({
       method: "PUT",
       url: `https://${configs.zohoApiDomain}/crm/v2/Contacts`,
       data: { data: [patch] },
     });
+
+    console.log("ZOHO RAW RESPONSE:");
+    console.log(JSON.stringify(res, null, 2));
 
     return { contactId: existing.id as string, isNew: false };
   }
@@ -474,7 +531,8 @@ export async function createOrUpdateContact(data: {
 
   if (safePhone) createData[CONTACT_FIELDS.Phone] = safePhone;
   if (cleanStr(data.site)) createData[CONTACT_FIELDS.Site] = cleanStr(data.site);
-  if (cleanStr(data.stripeCustomerId)) createData[CONTACT_FIELDS.Stripe_Customer_ID] = cleanStr(data.stripeCustomerId);
+  if (cleanStr(data.stripeCustomerId))
+    createData[CONTACT_FIELDS.Stripe_Customer_ID] = cleanStr(data.stripeCustomerId);
   if (purchasedValue) createData[CONTACT_FIELDS.Purchased_Products] = [purchasedValue];
 
   const createRes = await zohoRequest<any>({
@@ -484,7 +542,8 @@ export async function createOrUpdateContact(data: {
   });
 
   const newId = createRes?.data?.[0]?.details?.id as string | undefined;
-  if (!newId) throw new Error(`Failed to create Zoho contact. Response: ${JSON.stringify(createRes)}`);
+  if (!newId)
+    throw new Error(`Failed to create Zoho contact. Response: ${JSON.stringify(createRes)}`);
 
   return { contactId: newId, isNew: true };
 }
@@ -492,7 +551,6 @@ export async function createOrUpdateContact(data: {
 // ======================================================
 // DEAL CREATE (purchase snapshot)
 // ======================================================
-// (оставил как у тебя — не трогаю, чтобы не ломать)
 export async function createDeal(data: {
   contactId: string;
   dealName: string;
@@ -517,11 +575,15 @@ export async function createDeal(data: {
   const existing = await findDealByPaymentIntentId(paymentIntentId);
   if (existing?.id) return existing.id as string;
 
-  const amountMajor = typeof data.amount === "number" ? Math.round((data.amount / 100) * 100) / 100 : 0;
+  const amountMajor =
+    typeof data.amount === "number" ? Math.round((data.amount / 100) * 100) / 100 : 0;
   const currencyUpper = (data.currency || "usd").toUpperCase();
 
   const dealData: Record<string, unknown> = {
-    [DEAL_FIELDS.Deal_Name]: truncate(cleanStr(data.dealName) || `Purchase - ${paymentIntentId}`, 120),
+    [DEAL_FIELDS.Deal_Name]: truncate(
+      cleanStr(data.dealName) || `Purchase - ${paymentIntentId}`,
+      120,
+    ),
     [DEAL_FIELDS.Amount]: amountMajor,
     [DEAL_FIELDS.Stage]: "Closed Won",
     [DEAL_FIELDS.Contact_Name]: { id: data.contactId },
@@ -536,15 +598,19 @@ export async function createDeal(data: {
       `Product: ${cleanStr(data.productType) || "-"}`,
       `Payment Intent: ${paymentIntentId}`,
       cleanStr(data.site) ? `Website: ${cleanStr(data.site)}` : null,
-    ].filter(Boolean).join("\n"),
+    ]
+      .filter(Boolean)
+      .join("\n"),
   };
 
   const layoutId = cleanStr(data.layoutId);
   if (layoutId) dealData[DEAL_FIELDS.Layout] = { id: layoutId };
 
   if (cleanStr(data.site)) dealData[DEAL_FIELDS.Site] = cleanStr(data.site);
-  if (cleanStr(data.customerId)) dealData[DEAL_FIELDS.Stripe_Customer_ID] = cleanStr(data.customerId);
-  if (cleanStr(data.checkoutVariant)) dealData[DEAL_FIELDS.Checkout_Variant] = cleanStr(data.checkoutVariant);
+  if (cleanStr(data.customerId))
+    dealData[DEAL_FIELDS.Stripe_Customer_ID] = cleanStr(data.customerId);
+  if (cleanStr(data.checkoutVariant))
+    dealData[DEAL_FIELDS.Checkout_Variant] = cleanStr(data.checkoutVariant);
 
   try {
     const createRes = await zohoRequest<any>({

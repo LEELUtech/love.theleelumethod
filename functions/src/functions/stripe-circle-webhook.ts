@@ -5,11 +5,7 @@ import { defineSecret } from "firebase-functions/params";
 
 import { configs } from "../configs/env";
 
-import {
-  createOrUpdateContact,
-  createDeal,
-  updateContactFunnelStepByEmail,
-} from "../lib/zoho-crm";
+import { createOrUpdateContact, createDeal, updateContactFunnelStepByEmail } from "../lib/zoho-crm";
 import { emitFunnelEvent } from "../lib/emitFunnelEvent";
 
 import {
@@ -39,8 +35,11 @@ const ZOHO_CLIENT_SECRET_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_SECRET_LILYCH
 const ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT");
 const ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT");
 const ZOHO_API_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_API_DOMAIN_LILYCHYSTOFAT");
-const ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT");
-const ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT");
+// const ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT");
+const ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT = "6782764000008928434";
+const ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT = defineSecret(
+  "ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT",
+);
 
 // Zoho Analytics secrets
 const ZOHO_ANALYTICS_API_DOMAIN = defineSecret("ZOHO_ANALYTICS_API_DOMAIN_LILYCHYSTOFAT");
@@ -73,7 +72,8 @@ function isHandledEventType(v: unknown): v is HandledEventType {
 type StripeRawBodyRequest = { rawBody?: Buffer };
 
 function isoFromStripeEvent(event: Stripe.Event): string {
-  const createdSec = typeof event.created === "number" ? event.created : Math.floor(Date.now() / 1000);
+  const createdSec =
+    typeof event.created === "number" ? event.created : Math.floor(Date.now() / 1000);
   return new Date(createdSec * 1000).toISOString();
 }
 
@@ -92,7 +92,7 @@ export const stripeCircleWebhook = onRequest(
       ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT,
       ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT,
       ZOHO_API_DOMAIN_LILYCHYSTOFAT,
-      ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT,
+      // ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT,
       ZOHO_ANALYTICS_API_DOMAIN,
       ZOHO_ANALYTICS_ORG_ID,
       ZOHO_ANALYTICS_WORKSPACE_ID,
@@ -149,6 +149,8 @@ export const stripeCircleWebhook = onRequest(
       const site = normalizeHost(cleanStr(metadata.site)) || "unknown";
       const pagePath = cleanStr(metadata.page_path) ?? null;
       const checkoutVariant = cleanStr(metadata.checkout_variant) ?? null;
+      const sessionId = cleanStr(metadata.session_id) ?? null;
+      const salesiqVisitorId = cleanStr(metadata.salesiq_visitor_id) ?? null;
 
       const productTypeFromMeta = cleanStr(metadata.product_type) ?? null;
       const customerId = pi.customer ? String(pi.customer) : null;
@@ -167,10 +169,14 @@ export const stripeCircleWebhook = onRequest(
       const utmFirstContent = cleanStr(metadata.utm_first_content) ?? null;
       const utmFirstTerm = cleanStr(metadata.utm_first_term) ?? null;
 
-      const utmLastSource = cleanStr(metadata.utm_last_source) || cleanStr(metadata.utm_source) || null;
-      const utmLastMedium = cleanStr(metadata.utm_last_medium) || cleanStr(metadata.utm_medium) || null;
-      const utmLastCampaign = cleanStr(metadata.utm_last_campaign) || cleanStr(metadata.utm_campaign) || null;
-      const utmLastContent = cleanStr(metadata.utm_last_content) || cleanStr(metadata.utm_content) || null;
+      const utmLastSource =
+        cleanStr(metadata.utm_last_source) || cleanStr(metadata.utm_source) || null;
+      const utmLastMedium =
+        cleanStr(metadata.utm_last_medium) || cleanStr(metadata.utm_medium) || null;
+      const utmLastCampaign =
+        cleanStr(metadata.utm_last_campaign) || cleanStr(metadata.utm_campaign) || null;
+      const utmLastContent =
+        cleanStr(metadata.utm_last_content) || cleanStr(metadata.utm_content) || null;
       const utmLastTerm = cleanStr(metadata.utm_last_term) || cleanStr(metadata.utm_term) || null;
 
       const leadSource = cleanStr(metadata.lead_source) || utmFirstSource || null;
@@ -179,7 +185,13 @@ export const stripeCircleWebhook = onRequest(
       // helper: unified Analytics emit
       // ---------------------------------------------------
       const emit = async (args: {
-        funnel_step: "payment_failed" | "paid" | "delivered" | "delivery_failed" | "deal_created" | "canceled";
+        funnel_step:
+          | "payment_failed"
+          | "paid"
+          | "delivered"
+          | "delivery_failed"
+          | "deal_created"
+          | "canceled";
         email: string | null;
         product_type: string | null;
 
@@ -203,7 +215,9 @@ export const stripeCircleWebhook = onRequest(
         const existing: PaymentRecord | null = await getPaymentRecord(pi.id);
 
         const processingFromDb =
-          existing && typeof existing.processing_status === "string" ? existing.processing_status : null;
+          existing && typeof existing.processing_status === "string"
+            ? existing.processing_status
+            : null;
 
         await emitFunnelEvent({
           event_id: makeAnalyticsEventId(pi.id, args.funnel_step, event.id),
@@ -215,8 +229,8 @@ export const stripeCircleWebhook = onRequest(
           intent_token: intentToken,
           email: args.email,
 
-          zoho_contact_id: args.zoho_contact_id ?? (existing?.zoho_contact_id ?? null),
-          zoho_deal_id: args.zoho_deal_id ?? (existing?.zoho_deal_id ?? null),
+          zoho_contact_id: args.zoho_contact_id ?? existing?.zoho_contact_id ?? null,
+          zoho_deal_id: args.zoho_deal_id ?? existing?.zoho_deal_id ?? null,
 
           processing_status: args.processing_status ?? processingFromDb,
           product_name: args.product_name ?? null,
@@ -240,6 +254,8 @@ export const stripeCircleWebhook = onRequest(
           abandon_reason: args.abandon_reason ?? null,
 
           lead_source: leadSource,
+          session_id: sessionId,
+          salesiq_visitor_id: salesiqVisitorId,
 
           utm_first_source: utmFirstSource,
           utm_first_medium: utmFirstMedium,
@@ -293,7 +309,9 @@ export const stripeCircleWebhook = onRequest(
             funnel_step: "canceled",
             email: emailMaybe || null,
             product_type: productTypeFromMeta,
-            product_name: productTypeFromMeta ? getProductName(productTypeFromMeta as ProductType) : null,
+            product_name: productTypeFromMeta
+              ? getProductName(productTypeFromMeta as ProductType)
+              : null,
             processing_status: "failed",
             stripe_error_code: null,
             stripe_error_message: msg,
@@ -351,7 +369,9 @@ export const stripeCircleWebhook = onRequest(
             funnel_step: "payment_failed",
             email: emailMaybe || null,
             product_type: productTypeFromMeta,
-            product_name: productTypeFromMeta ? getProductName(productTypeFromMeta as ProductType) : null,
+            product_name: productTypeFromMeta
+              ? getProductName(productTypeFromMeta as ProductType)
+              : null,
             processing_status: "failed",
             stripe_error_code: pi.last_payment_error?.code ?? null,
             stripe_error_message: msg,
@@ -439,7 +459,9 @@ export const stripeCircleWebhook = onRequest(
 
       const productNameHuman = validation.productType
         ? getProductName(validation.productType as ProductType)
-        : (productTypeFromMeta ? getProductName(productTypeFromMeta as ProductType) : null);
+        : productTypeFromMeta
+          ? getProductName(productTypeFromMeta as ProductType)
+          : null;
 
       // Always upsert base doc early
       try {
@@ -508,6 +530,8 @@ export const stripeCircleWebhook = onRequest(
       try {
         const { firstName, lastName } = splitName(metadata.name);
 
+        console.log("Creating NEW Zoho contact", { email: validation.email, productType: String(validation.productType) });
+        
         const c = await createOrUpdateContact({
           email: validation.email,
           firstName,
@@ -533,7 +557,7 @@ export const stripeCircleWebhook = onRequest(
           checkoutStatus: "Paid",
         });
 
-        console.log("Zoho contact synced", { payment_intent_id: pi.id, contactId });
+        console.log("Zoho contact synced", { payment_intent_id: pi.id, contactId, c: c });
       } catch (e) {
         console.error("Zoho contact sync failed", {
           payment_intent_id: pi.id,
@@ -631,12 +655,16 @@ export const stripeCircleWebhook = onRequest(
             zoho_deal_id: existing.zoho_deal_id,
           });
         } else {
-          if (!contactId && existing?.zoho_contact_id) contactId = existing.zoho_contact_id ?? undefined;
+          if (!contactId && existing?.zoho_contact_id)
+            contactId = existing.zoho_contact_id ?? undefined;
 
           if (!contactId) {
             console.warn("No Zoho contactId, skipping deal creation", { payment_intent_id: pi.id });
           } else {
-            const dealLayoutId = cleanStr(ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT.value());
+            //FIX!!!!
+            // const dealLayoutId = cleanStr(ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT.value());
+
+            const dealLayoutId = cleanStr(ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT);
             const dealName = `${productNameHuman ?? "Purchase"} - ${validation.email}`;
 
             const dealId = await createDeal({

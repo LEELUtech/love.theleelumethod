@@ -35,6 +35,7 @@ import {
 } from "@/utils/constants";
 import { getStoredFirstUTM } from "@/utils/utm-tracker";
 import { salesiqIdentify } from "@/lib/tracking/salesiqIdentify";
+import { saveEmailToLS } from "@/lib/tracking/localEmail";
 
 const pk = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!;
 const stripePromise = loadStripe(pk);
@@ -177,11 +178,16 @@ export default function CheckoutFormSection({
 		if (clientSecret && intentKey === expectedKey) return;
 		if (status !== "idle") return;
 
-		// ✅ guard: ctx должен быть готов, чтобы не потерять UTM/site/pagePath
 		if (!ctx?.site) return;
 
 		// create-intent receives first-touch ctx
-		createIntent({ productType: productId, ...(ctx || {}) }).catch(() => {});
+		createIntent({
+			productType: productId,
+			sessionId: localStorage.getItem("ff_session_id") || undefined,
+			salesiqVisitorId:
+				localStorage.getItem("ff_salesiq_visitor_id") || undefined,
+			...(ctx || {}),
+		}).catch(() => {});
 	}, [
 		product,
 		productLoading,
@@ -230,21 +236,21 @@ export default function CheckoutFormSection({
 			const email = (billing.email || "").trim().toLowerCase();
 			if (!email) return;
 
-			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+			const emailRegex = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/;
 			if (!emailRegex.test(email)) return;
 
 			const hasPI = !!intentId && !!intentToken;
 
 			const force = !!opts?.force;
 
-			// обычный blur-дедуп
+			// if same email already sent (any mode) - don't resend
 			if (!force && lastLeadEmailRef.current === email) return;
 
-			// catch-up с PI — только один раз на email
+			// if PI exists and we already sent this email WITH PI - don't resend
 			if (hasPI && lastLeadEmailWithPIRef.current === email) return;
 
-			// обновляем ref’ы аккуратно
-			if (!force) lastLeadEmailRef.current = email;
+			// ✅ always remember the email we attempted to send (even force)
+			lastLeadEmailRef.current = email;
 			if (hasPI) lastLeadEmailWithPIRef.current = email;
 
 			leadAbortRef.current?.abort();
@@ -291,8 +297,9 @@ export default function CheckoutFormSection({
 
 	const onEmailBlur: React.FocusEventHandler<HTMLInputElement> =
 		React.useCallback(() => {
+			saveEmailToLS(billing.email);
 			captureLeadInternal().catch(() => {});
-		}, [captureLeadInternal]);
+		}, [billing.email, captureLeadInternal]);
 
 	// catch-up: if PI/token appeared later - send again (once) with PI/token
 	React.useEffect(() => {

@@ -24,7 +24,7 @@ export const configs = {
 
   zohoAccountsDomain: process.env.ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT || "accounts.zoho.com",
 
-  zohoApiDomain: process.env.ZOHO_API_DOMAIN_LILYCHYSTOFAT || "sandbox.zohoapis.com",
+  zohoApiDomain: process.env.ZOHO_API_DOMAIN_LILYCHYSTOFAT || "www.zohoapis.com",
 
   zohoDealLayoutId: process.env.ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT,
 };

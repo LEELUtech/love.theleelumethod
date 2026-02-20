@@ -14,7 +14,7 @@ const ZOHO_REFRESH_TOKEN_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_LILYCH
 const ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT");
 const ZOHO_API_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_API_DOMAIN_LILYCHYSTOFAT");
 
-// ✅ Analytics secrets (нужны emitFunnelEvent)
+
 const ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT = defineSecret(
   "ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT",
 );
@@ -24,7 +24,7 @@ const ZOHO_ANALYTICS_WORKSPACE_ID = defineSecret("ZOHO_ANALYTICS_WORKSPACE_ID_LI
 const ZOHO_ANALYTICS_VIEW_ID = defineSecret("ZOHO_ANALYTICS_VIEW_ID_LILYCHYSTOFAT");
 
 // ---- config ----
-const ABANDONED_TIMEOUT_MIN = 10; // поменяешь на 30/60 когда надо
+const ABANDONED_TIMEOUT_MIN = 10;
 const SCAN_LIMIT = 500;
 
 type FunnelStep =
@@ -85,7 +85,7 @@ function normalizeHost(raw?: string | null) {
     .trim()
     .toLowerCase();
   if (!s) return "unknown";
-  // если вдруг прилетит URL
+
   try {
     if (s.startsWith("http://") || s.startsWith("https://")) {
       return new URL(s).host.split(":")[0];
@@ -109,8 +109,6 @@ function nowIso() {
 export const markAbandonedCheckouts = onSchedule(
   {
     region: "us-central1",
-    // ✅ было: "0 */5 * * *" (каждые 5 ЧАСОВ)
-    // ✅ надо: каждые 5 минут
     schedule: "*/5 * * * *",
     timeZone: "UTC",
     secrets: [
@@ -120,7 +118,7 @@ export const markAbandonedCheckouts = onSchedule(
       ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT,
       ZOHO_API_DOMAIN_LILYCHYSTOFAT,
 
-      // ✅ analytics
+      // analytics
       ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT,
       ZOHO_ANALYTICS_API_DOMAIN,
       ZOHO_ANALYTICS_ORG_ID,
@@ -142,7 +140,6 @@ export const markAbandonedCheckouts = onSchedule(
 
     let snap: admin.firestore.QuerySnapshot;
     try {
-      // База: кто давно не обновлялся
       snap = await db
         .collection("payments")
         .where("processed_at", "<", cutoffTs)
@@ -172,7 +169,6 @@ export const markAbandonedCheckouts = onSchedule(
         if (!isTimestamp(pa)) return false;
         if (pa.toMillis() >= cutoffMs) return false;
 
-        // ✅ stripe status может быть в разных полях
         const stripeStatus = String((data.stripe_status ?? data.status ?? "") as any).toLowerCase();
         if (stripeStatus === "succeeded") return false;
 
@@ -238,7 +234,6 @@ export const markAbandonedCheckouts = onSchedule(
 
           const step = normalizeStep(d.funnel_step);
 
-          // только если не “откатимся”
           if (!shouldAdvance(step, "abandoned")) return { updated: false as const };
 
           if (step !== "checkout_viewed" && step !== "lead_captured")
@@ -373,10 +368,9 @@ export const markAbandonedCheckouts = onSchedule(
       logger.warn("Zoho abandoned update failures (sample)", { failed: zohoFailed });
     }
 
-    // 2) Zoho Analytics event (best-effort) — ✅ добавили
+    // 2) Zoho Analytics event
     const analyticsResults = await Promise.allSettled(
       updated.map(async (p) => {
-        // уникальный id — чтобы append был 1 раз
         const event_id = `abandon:${p.id}:timeout_${ABANDONED_TIMEOUT_MIN}m`;
 
         await emitFunnelEvent({
