@@ -5,6 +5,7 @@ import Image from 'next/image';
 
 const content = {
   title: 'PRIVATE 1:1 DIAGNOSTIC SESSION',
+
   subtitle: `One Problem. One Hour With Lily. Get The Decode You're Missing.`,
   methodTitle: `THE METHOD: Precision Pattern Analysis`,
 
@@ -18,10 +19,10 @@ const content = {
 
 export const Diagnostic = () => {
   return (
-    <div className='flex flex-col-reverse lg:flex-row gap-x-2.5 max-w-[1600px] mx-auto px-2 md:px-8 2xl:px-[180px] 2xl:mb-[26px] 2xl:mt-[52px]'>
+    <section className='flex flex-col-reverse lg:flex-row gap-x-2.5 max-w-[1600px] mx-auto px-4 md:px-8 2xl:px-[180px] 2xl:mb-[26px] 2xl:mt-[52px]'>
       <div>
         <div className='text-brand-deep flex-1 lg:max-w-[610px] flex flex-col items-center text-center lg:items-start lg:text-left'>
-          <h2 className='text-section-mobile order-1 -mt-[150px] mb-6 font-canela font-thin md:text-[60px]/[126%] md:-mt-0'>
+          <h2 className='text-[48px]/[120%] order-1 w-[300px] -mt-[140px] mb-6 font-canela font-thin md:w-full md:text-[60px]/[120%] md:-mt-0'>
             {content.title}
           </h2>
 
@@ -29,7 +30,9 @@ export const Diagnostic = () => {
             {content.subtitle}
           </h3>
 
-          <p className='text-body font-lato order-4 md:order-3 mb-6'>{content.methodTitle}</p>
+          <p className='text-[32px]/[100%] font-canela font-thin order-4 md:text-body md:font-lato md:font-normal  md:order-3 mb-6'>
+            {content.methodTitle}
+          </p>
 
           <p className='text-body tracking-0 text-left font-lato font-normal order-5 md:order-4 mb-[46px]'>
             {content.desc.map((line, i) => (
@@ -40,13 +43,18 @@ export const Diagnostic = () => {
             ))}
           </p>
 
-          <Button variant='primary' size='md' className='w-full md:w-[52%] py-[16px] order-3 md:order-5' href='#'>
+          <Button
+            variant='primary'
+            size='md'
+            className='mb-8 w-full bs:w-[52%] py-[16px] order-3 md:order-5 md:mb-0'
+            href='#'
+          >
             BOOK YOUR SESSION
           </Button>
         </div>
       </div>{' '}
       <div className='flex-1 relative flex justify-center order-1 lg:order-2 lg:mt-[40px]'>
-        <div className='relative lg:w-[500px] lg:h-[549px] w-[330px] h-[350px] lg:pt-0'>
+        <div className='relative lg:w-[500px] lg:h-[549px] w-[360px] h-[380px] lg:pt-0'>
           <Image
             src='/images/lily/lily_3.png'
             alt='I am Lily Chystofat'
@@ -89,6 +97,6 @@ export const Diagnostic = () => {
           />
         </div>
       </div>
-    </div>
+    </section>
   );
 };

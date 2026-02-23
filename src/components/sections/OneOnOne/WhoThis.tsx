@@ -49,7 +49,7 @@ const content = [
 
 export const WhoThis = () => {
   return (
-    <section className='max-w-[1600px] mx-auto pt-[80px] pb-[90px] px-2 sm:px-6 md:px-8 2xl:px-[180px] 2xl:pt-[105px] 2xl:pb-[185px]'>
+    <section className='max-w-[1600px] mx-auto pt-[80px] pb-[90px] px-4 sm:px-6 md:px-8 2xl:px-[180px] 2xl:pt-[105px] 2xl:pb-[185px]'>
       <h2 className='text-h1 text-center mb-8 text-brand-deep md:text-left md:text-brand-black md:mb-[88px] font-canela font-thin'>
         WHO THIS IS FOR
       </h2>

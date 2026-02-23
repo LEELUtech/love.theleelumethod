@@ -31,20 +31,6 @@ interface PricingOption {
   }[];
 }
 
-const SaveButton = ({ content }: { content: number }) => {
-  return (
-    <button
-      className='text-[14px]/[26px] text-center mb-5 tracking-[10%] font-medium font-lato text-brand-black-100 mt-2 rounded-[300px] py-1.5 px-9 relative overflow-hidden'
-      style={{
-        background: 'linear-gradient(180deg, #FEF4F0 0%, #FFE6DE 100%)',
-        boxShadow: '0 10px 20px 0 rgba(0, 0, 0, 0.1)',
-      }}
-    >
-      <span className="absolute inset-0 bg-[url('/icons/noise.png')] opacity-10 pointer-events-none"></span>
-      Save ${content}
-    </button>
-  );
-};
 export const content: PricingOption[] = [
   {
     id: 1,
@@ -152,13 +138,27 @@ export const content: PricingOption[] = [
   },
 ];
 
+const SaveButton = ({ content }: { content: number }) => {
+  return (
+    <button
+      className='text-[14px]/[26px] text-center mb-5 tracking-[10%] font-medium font-lato text-brand-black-100 mt-2 rounded-[300px] py-1.5 px-9 relative overflow-hidden'
+      style={{
+        background: 'linear-gradient(180deg, #FEF4F0 0%, #FFE6DE 100%)',
+        boxShadow: '0 10px 20px 0 rgba(0, 0, 0, 0.1)',
+      }}
+    >
+      <span className="absolute inset-0 bg-[url('/icons/noise.png')] opacity-10 pointer-events-none"></span>
+      Save ${content}
+    </button>
+  );
+};
 export const Pricing = () => {
   const { width } = useMediaQuery();
 
   const isDesktop = (width || 0) >= 1024;
 
   return (
-    <section className='px-2 bg-gradient-to-b from-[#F2E1E2] to-transparent md:px-6 2xl:px-[180px] relative '>
+    <section className='px-4 bg-gradient-to-b from-[#F2E1E2] to-transparent md:px-6 2xl:px-[180px] relative '>
       <div className='absolute h-[50%] w-full bottom-0 left-0 z-[-1]'>
         <Image src='/images/bg/new_bg_4.png' alt='' fill priority quality={100} />
       </div>
@@ -205,7 +205,9 @@ export const Pricing = () => {
                 </h3>
 
                 <div className='flex flex-col items-center pt-[86px] mb-[56px] md:mb-[38px]'>
-                  <h4 className='text-h2 font-canela text-brand-black-100 mb-2.5 md:mb-3 uppercase'>{title}</h4>
+                  <h4 className='text-h2 font-normal font-canela text-brand-black-100 mb-2.5 md:mb-3 uppercase'>
+                    {title}
+                  </h4>
                   <h5 className='text-body font-lato text-brand-gray text-center'>{subtitle}</h5>
                 </div>
 
@@ -249,7 +251,7 @@ export const Pricing = () => {
                 )}
 
                 {note && (
-                  <p className='text-[14px]/[20px] italic font-lato mt-4 text-center lg:text-left text-brand-gray-100'>
+                  <p className='text-[14px]/[20px] mb-[56px] italic font-lato mt-4 text-center lg:text-left text-brand-gray-100'>
                     {note}
                   </p>
                 )}
