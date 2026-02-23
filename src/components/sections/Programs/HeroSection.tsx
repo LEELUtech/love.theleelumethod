@@ -1,6 +1,5 @@
 import Button from '@/components/ui/Button';
 import RotateOnView from '@/components/ui/RotateOnView';
-import { SectionBadge } from '@/components/ui/SectionBadge';
 import Image from 'next/image';
 import React from 'react';
 
@@ -66,8 +65,30 @@ const HeroSection = () => {
             </div>
 
             {/* Badge */}
-
-            <SectionBadge />
+            <div
+              className="
+								absolute left-1/2 bottom-[-40px] -translate-x-1/2
+								flex items-center justify-center overflow-hidden
+								bg-[#EB4F68]
+								before:absolute before:inset-0 before:bg-[url('/icons/noise.png')]
+								before:opacity-15 before:mix-blend-overlay
+								rounded-[300px]
+								w-[80px] h-[100px]
+								md:w-[100px] md:h-[126px]
+								lg:w-[101px] lg:h-[140px]
+								z-10
+							"
+            >
+              <RotateOnView duration={5} amount={0.4} ease='easeOut'>
+                <Image
+                  src='/leelu_logo.svg'
+                  alt=''
+                  width={63}
+                  height={61}
+                  className='w-[51px] h-[53px] md:w-[65px] md:h-[63px] lg:w-[61px] lg:h-[63px] filter invert'
+                />
+              </RotateOnView>
+            </div>
           </div>
 
           {/* TITLE */}
