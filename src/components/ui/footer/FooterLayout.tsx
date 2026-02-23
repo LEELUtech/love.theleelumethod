@@ -10,9 +10,9 @@ const FooterLayout = (props: Props) => {
   const { className, withNavigation = true } = props;
 
   return (
-    <footer className={`bg-white py-8 md:py-12 lg:py-16 px-4 md:px-6 lg:px-8 ${className}`}>
-      <div className='container mx-auto px-4'>
-        <FooterLabel mb={17} />
+    <footer className={`bg-white py-[22px] px-4 md:px-6 lg:px-8 ${className}`}>
+      <div className='max-w-[1600px] mx-auto px-[180px]'>
+        <FooterLabel mb={10} />
         {withNavigation && <FooterNavigation />}
       </div>
     </footer>

@@ -56,7 +56,7 @@ const CARD_CONTENT = [
 
 export const HowItWorks = () => {
   return (
-    <section className='relative pb-[80px] max-w-[1600px] mx-auto px-2 md:px-8 2xl:px-[180px] lg:pt-[80px] lg-pb-[180px]'>
+    <section className='relative pb-[80px] px-2 md:px-8 2xl:px-[180px] lg:pt-[80px] lg:pb-[103px]'>
       <div className='absolute inset-0 z-[-1]'>
         <Image src='/images/bg/new_bg.png' alt='' fill priority quality={100} />
       </div>
@@ -124,10 +124,10 @@ export const HowItWorks = () => {
               </RotateOnView>
             </div>
           </div>
-          <h2 className='relative mt-[300px] font-thin text-[48px] lg:text-[60px]/[100%] font-canela text-brand-deep mb-2 text-center z-10'>
+          <h2 className='relative mt-[290px] font-thin text-[48px] lg:text-[60px]/[100%] font-canela text-brand-deep mb-[20px] text-center z-10'>
             HOW IT WORKS:
           </h2>
-          <p className=' font-canela font-light  text-[24px] lg:text-[32px]/[150%] text-center text-[#0A0B0D] max-w-[638px] mx-auto'>
+          <p className=' font-canela font-light  text-[24px] lg:text-[32px]/[150%] text-center mb-[64px] text-[#0A0B0D] max-w-[638px] mx-auto'>
             The value of our session begins before we speak.
           </p>
         </div>
@@ -150,15 +150,15 @@ export const HowItWorks = () => {
             }}
             className='
               bg-white rounded-[32px] text-center flex flex-col justify-center py-[42px] px-2
-              w-full min-h-[497px] p-1
+              w-full p-1
               sm:px-6
               md:p-8 md:flex-row md:gap-x-4
-              lg:max-w-none lg:w-[1016px] lg:h-[468px] lg:px-[80px] lg:py-[64px] lg:gap-x-[80px] lg:mt-[64px]
+              lg:max-w-none lg:w-[1016px] lg:h-[468px] lg:px-[80px] lg:py-[64px] lg:gap-x-[105px]
             '
           >
             <div className='max-w-[350px] mx-auto md:mx-0'>
               {img && (
-                <div className='relative w-[139px] h-[139px] mb-4 mx-auto md:mx-0 '>
+                <div className='relative w-[139px] h-[139px] mb-[10px] mx-auto md:mx-0 md:mt-[52px]'>
                   <Image src={img} alt='' fill className='object-contain opacity-35' />
                   <Image
                     src={icon}
@@ -179,7 +179,7 @@ export const HowItWorks = () => {
             <div className='flex flex-1 flex-col gap-8 justify-start font-lato text-start text-brand-gray  text-cta'>
               <p>{text_top}</p>
 
-              <ul className='flex flex-col gap-2 pl-4'>
+              <ul className='flex flex-col pl-6'>
                 {list.map(({ title, content }) => (
                   <li key={title} className='list-disc'>
                     <span className='font-bold'>{title}</span> <span>{content}</span>

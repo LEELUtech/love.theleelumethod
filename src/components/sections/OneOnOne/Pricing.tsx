@@ -3,6 +3,7 @@
 import Button from '@/components/ui/Button';
 import { SectionBadge } from '@/components/ui/SectionBadge';
 import useMediaQuery from '@/hooks/use-media-query';
+import Image from 'next/image';
 
 interface PricingOption {
   id: number;
@@ -157,17 +158,21 @@ export const Pricing = () => {
   const isDesktop = (width || 0) >= 1024;
 
   return (
-    <section className=''>
+    <section className='px-2 bg-gradient-to-b from-[#F2E1E2] to-transparent md:px-6 2xl:px-[180px] relative '>
+      <div className='absolute h-[50%] w-full bottom-0 left-0 z-[-1]'>
+        <Image src='/images/bg/new_bg_4.png' alt='' fill priority quality={100} />
+      </div>
+
       <div className='relative'>
         <SectionBadge bottom={-97} />
       </div>
 
-      <div className='bg-[#F2E1E2] max-w-[1600px] mx-auto px-2 md:px-6 2xl:px-[180px]'>
-        <h2 className='pt-[146px] text-[60px]/[100%] text-center mb-[48px] font-thin font-canela text-brand-deep'>
+      <div className='max-w-[1600px] mx-auto'>
+        <h2 className='pt-[146px] text-[60px]/[100%] text-center mb-[90px] font-thin font-canela text-brand-deep'>
           PRICING STRUCTURE
         </h2>
 
-        <ul className='flex flex-col gap-[100px] justify-center lg:flex-row lg:gap-[48px] pb-[110px]'>
+        <ul className='flex flex-col gap-[100px] justify-center lg:flex-row lg:gap-[24px] pb-[110px]'>
           {content.map((item, i) => {
             const {
               id,
@@ -199,17 +204,17 @@ export const Pricing = () => {
                   {id}.
                 </h3>
 
-                <div className='flex flex-col items-center pt-[86px] mb-[56px] md:mb-[40px]'>
+                <div className='flex flex-col items-center pt-[86px] mb-[56px] md:mb-[38px]'>
                   <h4 className='text-h2 font-canela text-brand-black-100 mb-2.5 md:mb-3 uppercase'>{title}</h4>
-                  <h5 className='text-body font-lato text-brand-gray'>{subtitle}</h5>
+                  <h5 className='text-body font-lato text-brand-gray text-center'>{subtitle}</h5>
                 </div>
 
-                {description && <p className='text-cta font-lato mb-8 text-brand-gray'>{description}</p>}
+                {description && <p className='text-cta font-lato mb-6 text-brand-gray'>{description}</p>}
 
                 {!!features?.length && (
-                  <ul className='flex flex-col'>
+                  <ul className='flex flex-col pl-[20px]'>
                     {features.map((feature, index) => (
-                      <li key={index} className='list-disc text-[15px]/[24px] font-lato mb-2 text-[#41444E]'>
+                      <li key={index} className='list-disc text-[15px]/[24px] font-lato text-[#41444E]'>
                         {feature}
                       </li>
                     ))}
@@ -217,22 +222,19 @@ export const Pricing = () => {
                 )}
 
                 {!!whyList?.length && (
-                  <ul className='flex flex-col'>
+                  <ul className='flex flex-col pl-[20px] mb-[100px]'>
                     {whyList.map((item, index) => {
                       const { title, description, points } = item;
 
                       return (
-                        <li key={index} className=' text-[15px]/[24px] font-lato mb-2 text-[#41444E]'>
-                          <h4 className='text-[15px]/[24px] font-lato  mb-4'>{title}</h4>
+                        <li key={index} className=' text-[15px]/[24px] font-lato  text-[#41444E]'>
+                          <h4 className='text-[15px]/[24px] font-lato mb-4'>{title}</h4>
                           {description && <span>{description}</span>}
 
                           {!!points?.length && (
-                            <ul className='flex flex-col'>
+                            <ul className='flex flex-col pl-[20px]'>
                               {points.map((point, pointIndex) => (
-                                <li
-                                  key={pointIndex}
-                                  className='list-disc text-[15px]/[24px] font-lato mb-2 text-[#41444E]'
-                                >
+                                <li key={pointIndex} className='list-disc text-[15px]/[24px] font-lato text-[#41444E]'>
                                   {point.title && <span className='font-bold'>{point.title} </span>}
 
                                   {point.text}
@@ -258,12 +260,12 @@ export const Pricing = () => {
                     Investment: ${investment}
                   </h6>
                   <div
-                    className='text-[17px]/[26px] text-center font-canela text-brand-gray-100 '
+                    className='text-[17px]/[26px] text-center font-canela text-brand-gray-100 mb-8'
                     style={{ opacity: perSession ? 100 : 0 }}
                   >
                     (${perSession}/session)
                   </div>{' '}
-                  <Button href='#' className='mt-4 block w-full'>
+                  <Button href='#' className='py-[16px] block w-full'>
                     {buttonText}
                   </Button>
                 </div>

@@ -8,8 +8,15 @@ interface Props {
 export const FooterLabel = ({ mb = 12 }: Props) => {
   return (
     <Flex vertical>
-      <span className='inline-block w-[57px] h-[57px] md:w-12 md:h-12 relative' style={{ marginBottom: mb }}>
-        <Image src='/leelu_logo.svg' alt='Lily Chystofat Logo' fill className='object-contain' priority />
+      <span className='inline-block w-[57px] h-[57px] relative' style={{ marginBottom: mb }}>
+        <Image
+          src='/leelu_logo.svg'
+          width={57}
+          height={57}
+          alt='Lily Chystofat Logo'
+          className='object-contain'
+          priority
+        />
       </span>
 
       <div className=' text-[32px] md:text-[32px] leading-[130%]'>
@@ -17,7 +24,7 @@ export const FooterLabel = ({ mb = 12 }: Props) => {
         <span className='font-canela font-light'>CHYSTOFAT</span>
       </div>
 
-      <p className='mt-2 text-gray-600 font-medium font-lato leading-6 text-[11px] uppercase max-w-xs'>
+      <p className='mt-2 text-black font-medium font-lato leading-6  text-[11px] uppercase max-w-xs'>
         Stop Guessing. Start Calculating.
       </p>
     </Flex>
