@@ -160,7 +160,7 @@ export const Pricing = () => {
   return (
     <section className='px-4 bg-gradient-to-b from-[#F2E1E2] to-transparent md:px-6 2xl:px-[180px] relative '>
       <div className='absolute h-[50%] w-full bottom-0 left-0 z-[-1]'>
-        <Image src='/images/bg/new_bg_4.png' alt='' fill priority quality={100} />
+        <Image src='/images/bg/new_bg.png' alt='' fill priority quality={100} />
       </div>
 
       <div className='relative'>
