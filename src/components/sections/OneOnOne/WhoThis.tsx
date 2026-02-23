@@ -1,5 +1,4 @@
 import { ArrowIC } from '@/components/icons';
-import { list } from 'firebase/storage';
 
 const content = [
   {
@@ -50,14 +49,16 @@ const content = [
 
 export const WhoThis = () => {
   return (
-    <section className='lg:px-[180px] lg:py-[112px]'>
-      <h2 className='text-[60px]/[100%] text-[#000000] mb-[64px] font-canela font-thin'>WHO THIS IS FOR</h2>
+    <section className='max-w-[1600px] mx-auto pt-[80px] pb-[90px] px-2 sm:px-6 md:px-8 2xl:px-[180px] 2xl:py-[112px] 2xl:mt-[36px]'>
+      <h2 className='text-h1 text-center mb-8 text-brand-deep md:text-left md:text-brand-black md:mb-[64px] font-canela font-thin'>
+        WHO THIS IS FOR
+      </h2>
 
-      <div className='flex gap-x-[48px]'>
+      <div className='flex flex-col gap-[24px] bs:flex-row bs:gap-[48px]'>
         {content.map(({ title_end, title_mid, title_start, list, id }) => (
           <ul key={id} className='flex flex-col gap-y-[32px]'>
-            <h4 className='font-canela font-light text-[32px]/[100%] text-[#0A0B0D]'>
-              {title_start} <span className='text-[#B02F44]'>{title_mid}</span> {title_end}
+            <h4 className='font-canela font-light text-h2 text-brand-black-100'>
+              {title_start} <span className='text-brand-primary'>{title_mid}</span> {title_end}
             </h4>
 
             {list.map((subItem) => (

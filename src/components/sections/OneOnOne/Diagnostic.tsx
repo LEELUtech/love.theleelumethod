@@ -3,30 +3,40 @@ import Button from '@/components/ui/Button';
 import RotateOnView from '@/components/ui/RotateOnView';
 import Image from 'next/image';
 
-export const Diagnostic = () => {
-  return (
-    <div className='flex gap-x-[42px] lg:px-[180px] lg:mt-[36px]'>
-      <div>
-        <div className='max-w-[610px] flex flex-col gap-y-8'>
-          <h2 className='text-[60px]/[126%] text-[#3C0606] font-canela font-thin'>PRIVATE 1:1 DIAGNOSTIC SESSION</h2>
-          <h3 className='text-[32px]/[126%] text-[#3C0606] font-canela font-thin'>
-            One Problem. One Hour With Lily. Get The Decode You're Missing.
-          </h3>
-
-          <p className='text-[17px]/[126%] font-lato font-normal text-[#3C0606]'>
-            THE METHOD: Precision Pattern Analysis
-          </p>
-
-          <p className='text-[17px]/[126%]  tracking-[0.05em] font-lato font-normal text-[#3C0606]'>
-            This is The Leelu Method applied to your specific situation. When you're stuck in a repeating loop—a
+const context = {
+  title: 'PRIVATE 1:1 DIAGNOSTIC SESSION',
+  subtitle: `One Problem. One Hour With Lily. Get The Decode You're Missing.`,
+  methodTitle: `THE METHOD: Precision Pattern Analysis`,
+  desc_top: `This is The Leelu Method applied to your specific situation. When you're stuck in a repeating loop—a
             relationship pattern that never resolves, a career trajectory that hits the same ceiling, a behavioral cycle
             you can't parse from inside—you don't need more processing. You need diagnostic accuracy. You need to see
-            the invisible architecture forcing you into the same outcome regardless of your effort.
-            <br />
-            The Diagnostic Session is a calculated analysis of your behavioral blueprint.
+            the invisible architecture forcing you into the same outcome regardless of your effort.`,
+  desc_bottom: `The Diagnostic Session is a calculated analysis of your behavioral blueprint.`,
+};
+
+export const Diagnostic = () => {
+  return (
+    <div className='flex flex-col-reverse lg:flex-row gap-x-[42px] max-w-[1600px] mx-auto px-2 md:px-8 2xl:px-[180px] 2xl:mt-[36px]'>
+      <div>
+        <div className='text-brand-deep lg:max-w-[610px] flex flex-col gap-y-8 items-center text-center lg:items-start lg:text-left'>
+          <h2 className=' text-section-mobile order-1  -mt-[150px] font-canela font-thin md:text-[60px]/[126%] md:-mt-0'>
+            {context.title}
+          </h2>
+          <h3 className='text-body font-lato order-2 md:font-canela md:font-thin md:text-[32px]/[100%]'>
+            {context.subtitle}
+          </h3>
+
+          <p className='text-[17px]/[126%] font-canela font-thin md:text-[32px]/[100px] md:font-lato md:font-normal order-4 md:order-3'>
+            {context.methodTitle}
           </p>
 
-          <Button variant='primary' size='md' className='w-full md:w-[65%] py-[12px]' href='#'>
+          <p className='text-body tracking-0 text-left font-lato font-normal order-5 md:tracking-[3%]  md:order-4'>
+            {context.desc_top}
+            <br />
+            {context.desc_bottom}
+          </p>
+
+          <Button variant='primary' size='md' className='w-full md:w-[65%] py-[12px] order-3 md:order-5' href='#'>
             BOOK YOUR SESSION
           </Button>
         </div>
