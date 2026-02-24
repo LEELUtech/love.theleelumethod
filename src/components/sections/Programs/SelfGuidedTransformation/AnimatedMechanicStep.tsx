@@ -38,9 +38,7 @@ export default function AnimatedMechanicStep({ id, icon, module_start, module_en
           }}
         >
           <div className='w-[64px] h-[64px]'>
-            <div className='w-[64px] h-[64px]'>
-              <Image src={icon} alt={title} width={64} height={64} className='object-cover w-full h-full' />
-            </div>
+            <Image src={icon} alt={title} width={64} height={64} className='object-cover w-full h-full' />
           </div>
         </div>
 

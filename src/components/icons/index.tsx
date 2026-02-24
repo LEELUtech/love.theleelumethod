@@ -19,11 +19,11 @@ export const StarIC = (props: SVGProps<SVGSVGElement>) => (
 
 export const OpacityLineIC = (props: SVGProps<SVGSVGElement>) => (
   <svg width='8' height='51' viewBox='0 0 8 51' fill='none' xmlns='http://www.w3.org/2000/svg' {...props}>
-    <rect width='8' height='51' rx='4' fill='url(#paint0_linear_2941_3646)' fill-opacity='0.2' />
+    <rect width='8' height='51' rx='4' fill='url(#paint0_linear_2941_3646)' fillOpacity='0.2' />
     <defs>
       <linearGradient id='paint0_linear_2941_3646' x1='4' y1='0' x2='4' y2='51' gradientUnits='userSpaceOnUse'>
-        <stop stop-color='#C89F26' />
-        <stop offset='1' stop-color='#624E13' stop-opacity='0' />
+        <stop stopColor='#C89F26' />
+        <stop offset='1' stopColor='#624E13' stopOpacity='0' />
       </linearGradient>
     </defs>
   </svg>

@@ -15,7 +15,7 @@ export const Primary = () => {
   const isTablet = (width || 0) < 768;
 
   return (
-    <section className='max-w-[1600px] px-4 sm:px-6 mx-auto py-[80px] lg:px-[112px] md:px-6 2xl:px-[180px]'>
+    <section className='max-w-[1600px] px-4 sm:px-6 mx-auto py-[80px] lg:px-[112px] 2xl:px-[180px]'>
       <div className='flex flex-col gap-[40px] justify-center md:flex-row lg:gap-[90px] 2xl:gap-[130px]'>
         <div className='flex-1 md:max-w-[494px] text-brand-deep order-2 md:order-1 mt-[68px]'>
           <h3 className='text-[48px]/[100%] lg:text-[60px]/[120%] font-thin leading-[100%] mb-6 font-canela'>
