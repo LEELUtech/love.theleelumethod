@@ -16,7 +16,7 @@ export default function GuidedBreakthroughPage() {
       <MechanicsDeliverablesSection />
       <TheResultSection />
       <ItWorkedForMeSection />
-      <CostOfWaitingSection />
+      {/* <CostOfWaitingSection /> */}
       {/* <CheckoutFormSection productId={GUIDED_BREAKTHROUGH} /> */}
       {/* <Footer className="lg:pt-[200px]" /> */}
     </main>
