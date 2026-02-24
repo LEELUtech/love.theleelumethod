@@ -1,6 +1,7 @@
 import CheckoutFormSection from '@/components/sections/Checkout/CheckoutFormSection';
 import CostOfWaitingSection from '@/components/sections/Programs/SelfGuidedTransformation/CostOfWaitingSection';
 import HeroSection from '@/components/sections/Programs/SelfGuidedTransformation/HeroSection';
+import { InsideProtocol } from '@/components/sections/Programs/SelfGuidedTransformation/InsideProtocol';
 import ItWorkedForMeSection from '@/components/sections/Programs/SelfGuidedTransformation/ItWorkedForMeSection';
 import MechanicsDeliverablesSection from '@/components/sections/Programs/SelfGuidedTransformation/MechanicsDeliverablesSection';
 import TheDiagnosisSection from '@/components/sections/Programs/SelfGuidedTransformation/TheDiagnosisSection';
@@ -13,6 +14,8 @@ export default function SelfGuidedTransformationPage() {
       <HeroSection />
       <TheDiagnosisSection />
       <MechanicsDeliverablesSection />
+      <InsideProtocol />
+
       <TheResultSection />
       <ItWorkedForMeSection />
       <CostOfWaitingSection />

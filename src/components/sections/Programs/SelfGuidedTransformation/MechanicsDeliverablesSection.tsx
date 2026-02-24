@@ -303,7 +303,7 @@ export default function MechanicsDeliverablesSection() {
             })}
           </ul>
 
-          <div className='flex lg:gap-[60px] xl:gap-[90px] 2xl:gap-[130px]'>
+          <div className='flex justify-between lg:gap-[60px] xl:gap-[90px] 2xl:gap-[130px]'>
             <div className='flex-1 max-w-[496px] aspect-[496/761] rounded-[100px] overflow-hidden'>
               <Image src='/images/lily/lily_12.png' width={496} height={761} alt='' className='w-full h-auto' />
             </div>{' '}

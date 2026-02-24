@@ -5,7 +5,6 @@ import ItWorkedForMeSection from '@/components/sections/Programs/GuidedBreakthro
 import MechanicsDeliverablesSection from '@/components/sections/Programs/GuidedBreakthrough/MechanicsDeliverablesSection';
 import TheDiagnosisSection from '@/components/sections/Programs/GuidedBreakthrough/TheDiagnosisSection';
 import TheResultSection from '@/components/sections/Programs/GuidedBreakthrough/TheResultSection';
-import Footer from '@/components/ui/Footer';
 import { GUIDED_BREAKTHROUGH } from '@/utils/constants';
 
 export default function GuidedBreakthroughPage() {
@@ -16,8 +15,8 @@ export default function GuidedBreakthroughPage() {
       <MechanicsDeliverablesSection />
       <TheResultSection />
       <ItWorkedForMeSection />
-      {/* <CostOfWaitingSection /> */}
-      {/* <CheckoutFormSection productId={GUIDED_BREAKTHROUGH} /> */}
+      <CostOfWaitingSection />
+      <CheckoutFormSection productId={GUIDED_BREAKTHROUGH} />
       {/* <Footer className="lg:pt-[200px]" /> */}
     </main>
   );
