@@ -20,7 +20,6 @@ export default function SelfGuidedTransformationPage() {
       <ItWorkedForMeSection />
       <CostOfWaitingSection />
       <CheckoutFormSection productId={PROTOCOL_ESSENTIALS} />
-      {/* <Footer className="lg:pt-[200px]" /> */}
     </main>
   );
 }

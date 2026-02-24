@@ -34,22 +34,14 @@ export default function CostOfWaitingSection() {
       <div className='max-w-[1600px] mx-auto sm:px-6 lg:px-[112px] 2xl:px-[180px] relative py-[80px] lg:py-[110px] px-4'>
         <div className='text-center'>
           {/* Top Image */}
-          <div className='flex justify-center mb-12 relative pt-[230px] md:pt-[300px] lg:pt-[300px]'>
-            <div
-              className='
-                absolute
-                w-[268px] h-[290px]
-                sm:w-[358px] sm:h-[376px]
-                top-[-100px]
-                overflow-visible
-              '
-            >
+          <div className='flex justify-center relative pt-[180px] sm:pt-[270px] md:pt-[300px] lg:pt-[300px]'>
+            <div className='absolute w-[268px] h-[290px] sm:w-[358px] sm:h-[376px] -top-[200px] lg:-top-[180px] overflow-visible'>
               <Image
                 src='/images/programs/self-guided-transformation/sad-anxiety-depressed.jpg'
                 alt='Stop Guessing'
                 fill
                 quality={100}
-                className='object-cover rounded-t-[200px] object-[90%_50%]'
+                className='object-cover !top-[20px] rounded-t-[200px] object-[90%_50%]'
               />
               {/* Logo badge */}
               <div
@@ -86,18 +78,16 @@ export default function CostOfWaitingSection() {
             </div>
           </div>
 
-          {/* Heading */}
-          <h2 className='font-thin text-[48px] lg:text-[60px] leading-[100%] font-canela text-brand-deep mb-8'>
+          <h2 className='font-thin text-[48px] lg:text-[60px]/[100%] font-canela text-brand-deep mb-8'>
             THE COST OF WAITING
           </h2>
 
-          {/* Subheading */}
-          <p className='font-normal font-lato text-[17px] lg:text-[17px] leading-[130%] text-[#5A5757] mb-6 lg:mb-8 text-center'>
+          <p className='font-lato text-[17px]/[26px] text-[#5A5757] tracking-[3%] mb-6 lg:mb-8 text-center'>
             Every month you delay is another month running corrupted code. Another argument that never needed to happen.
             Another year invested in the wrong man.
           </p>
 
-          <p className='font-canela text-[32px] font-thin lg:text-[32px] leading-[130%] text-brand-deep mb-6 lg:mb-12 mx-auto text-center'>
+          <p className='font-canela text-[32px]/[44px] font-thin text-brand-deep mb-6 lg:mb-12 mx-auto text-center'>
             The average divorce costs $15,000–$30,000. And that’s the small part. The real cost is weighed in years of
             recovery, fractured family dynamics, and the emotional tax of rebuilding from wreckage.
           </p>
@@ -111,7 +101,7 @@ export default function CostOfWaitingSection() {
             will.
           </p>
 
-          <p className='font-canela font-normal text-brand-deep text-[32px] leading-[1.6]'>
+          <p className='font-canela font-normal text-brand-deep text-[32px]/[44px]'>
             You&apos;re not paying for information. You&apos;re paying for the precise correction
             <br className='hidden md:block' />
             that prevents catastrophic decisions.

@@ -18,10 +18,10 @@ export default function TheResultSection() {
         }}
       />
 
-      <div className='text-center	max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-[112px] 2xl:px-[180px] relative py-[80px] lg:pb-[143px] lg:pt-[70px]'>
+      <div className='text-center	max-w-[1600px] mx-auto px-0 sm:px-6 lg:px-[112px] 2xl:px-[180px] relative py-[80px] lg:pb-[143px] lg:pt-[70px]'>
         <div className='relative'>
           <RotateOnView duration={10} repeat={false} amount={0.1} ease='easeOut' className='w-full h-full'>
-            <LogoIC className='text-white mx-auto' />
+            <LogoIC className='text-white mx-auto opacity-60' />
           </RotateOnView>
         </div>
 
@@ -39,7 +39,7 @@ export default function TheResultSection() {
 
         <h2
           className='
-						relative z-10 mt-4 font-canela font-thin text-brand-deep tracking-normal
+						relative z-10 mt-8 md:mt-4 font-canela font-thin text-brand-deep tracking-normal
 						text-[60px] leading-[100%]
 						md:text-[84px] md:leading-[0.95]
 						lg:text-[112px] lg:leading-[100%]
@@ -48,14 +48,14 @@ export default function TheResultSection() {
           Clarity.
         </h2>
 
-        <p className='mt-12 font-lato font-normal text-[#5A5757] text-[24px]/[150%] mb-[60px] md:mt-10 md:text-[22px] lg:mt-12 lg:text-[24px] max-w-[808px] mx-auto'>
+        <p className='mt-12 px-4 sm:px-0 font-lato font-normal text-[#5A5757] text-[24px]/[150%] mb-4 md:mb-[60px] md:mt-10 md:text-[22px] lg:mt-12 lg:text-[24px] max-w-[808px] mx-auto'>
           You stop operating on instinct (which is traumatized) and start operating on intelligence. You will know
           exactly why your past relationships failed and have the specific behavioral blueprint to build the next one on
           solid ground.
         </p>
 
         <p className='text-[32px]/[100%] font-canela font-light mb-5'>Investment: $697</p>
-        <Button href='#' className='px-[80px] py-4'>
+        <Button href='#' className='px-[80px] py-4' size='xl'>
           BEGIN THE PROTOCOL
         </Button>
       </div>

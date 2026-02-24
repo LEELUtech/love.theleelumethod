@@ -219,9 +219,9 @@ export default function MechanicsDeliverablesSection() {
           </Flex>
 
           {/* MODULE */}
-          <Flex component='article' justify='space-between '>
-            <Flex vertical className='mt-[115px]'>
-              <h3 className='text-[48px]/[100%] text-left font-light font-canela text-brand-deep mb-4'>
+          <Flex component='article' justify='space-between'>
+            <Flex vertical className='flex-1 mt-[115px]'>
+              <h3 className='text-[48px]/[100%] max-w-[485px] text-left font-light font-canela text-brand-deep mb-4'>
                 {module.title}
               </h3>
               <h6 className='text-[17px]/[26px] text-left font-lato text-brand-gray mb-9'>{module.subtitle}</h6>
@@ -229,10 +229,8 @@ export default function MechanicsDeliverablesSection() {
               <ArrowList list={module.list} />
             </Flex>
 
-            <div>
-              <div className='relative w-[361px] h-[377px] sm:w-[320px] sm:h-[340px] md:w-[380px] md:h-[400px] lg:w-[496px] lg:h-[535px]'>
-                <Image src='/images/lily/lily_11.png' alt={module.title} fill quality={100} />
-              </div>
+            <div className='flex-1 relative max-w-[496px] aspect-[496/535]'>
+              <Image src='/images/lily/lily_11.png' alt={module.title} fill quality={100} />
             </div>
           </Flex>
 
@@ -253,12 +251,12 @@ export default function MechanicsDeliverablesSection() {
         </div>
 
         {/* WORKBOOK */}
-        <article className='flex justify-center lg:gap-[60px] xl:gap-[90px] 2xl:gap-[130px] mb-[260px]'>
+        <article className='flex flex-col-reverse lg:flex-row justify-center lg:gap-[60px] xl:gap-[90px] 2xl:gap-[130px] mb-[260px]'>
           <div className='flex-1'>
             <VideoContent />
           </div>
 
-          <Flex vertical className='flex-1'>
+          <Flex vertical className='flex-1  mb-[78px] lg:mb-0'>
             <h2 className='text-[48px]/[100%] font-canela font-light text-brand-deep mb-4'>{workbook.title}</h2>
             <h5 className='text-[17px]/[26px] font-lato text-brand-gray mb-8'>{workbook.subtitle}</h5>
             <p className='text-[32px]/[100%] font-canela font-light text-brand-gray'>{workbook.description}</p>
@@ -267,15 +265,17 @@ export default function MechanicsDeliverablesSection() {
 
         {/* Personalized Report */}
         <article>
-          <Flex vertical align='center' gap={20} className='mb-[60px]'>
-            <h2 className='text-[122px]/[100%] font-canela font-thin text-brand-deep'>
+          <Flex vertical align='center' gap={20} className='mb-[48px] lg:mb-[60px]'>
+            <h2 className='text-[48px]/[100%] lg:text-[122px] text-center font-canela font-thin text-brand-deep'>
               <span className='text-brand-primary'>{personalized.title_left}</span> {personalized.title_right}
             </h2>
-            <h4 className='text-[32px]/[100%] font-canela font-light'>{personalized.subtitle}</h4>
-            <p className='text-[17px]/[26px] font-lato  text-brand-gray'>{personalized.description}</p>
+            <h4 className='text-[24px]/[100%] lg:text-[32px] font-canela font-light'>{personalized.subtitle}</h4>
+            <p className='text-center lg:text-left text-[17px]/[26px] font-lato  text-brand-gray'>
+              {personalized.description}
+            </p>
           </Flex>
 
-          <ul className='flex gap-6 justify-center mb-[112px]'>
+          <ul className='flex flex-col lg:flex-row gap-6 justify-center mb-[112px]'>
             {personalized.items.map((i) => {
               const isEven = i.id % 2 === 0;
               const bgColor = isEven ? 'bg-[#FFF3F0]' : 'bg-[#FFFFFF]';
@@ -283,7 +283,7 @@ export default function MechanicsDeliverablesSection() {
               return (
                 <li
                   key={i.id}
-                  className={`w-full rounded-[20px] px-[30px] pt-[38px] pb-[48px] ${bgColor} box-shadow-[0px 10px 20px rgba(0, 0, 0, 0.05)]`}
+                  className={`w-full rounded-[20px] pl-[30px] pr-4 bs:px-[30px] pt-[38px] pb-[48px] ${bgColor} box-shadow-[0px 10px 20px rgba(0, 0, 0, 0.05)]`}
                 >
                   <StarIC className='text-brand-gold mb-[26px]' width={27} height={33} />
 
@@ -303,11 +303,11 @@ export default function MechanicsDeliverablesSection() {
             })}
           </ul>
 
-          <div className='flex justify-between lg:gap-[60px] xl:gap-[90px] 2xl:gap-[130px]'>
+          <div className='flex flex-col items-center justify-center lg:items-start lg:flex-row lg:justify-between lg:gap-[60px] xl:gap-[90px] 2xl:gap-[130px]'>
             <div className='flex-1 max-w-[496px] aspect-[496/761] rounded-[100px] overflow-hidden'>
               <Image src='/images/lily/lily_12.png' width={496} height={761} alt='' className='w-full h-auto' />
             </div>{' '}
-            <div className='flex-1 pt-[112px]'>
+            <div className='flex-1 pt-[72px] lg:pt-[112px]'>
               <ul className='flex flex-col gap-[48px]'>
                 {personalized.program.map((item) => (
                   <li key={item.id}>

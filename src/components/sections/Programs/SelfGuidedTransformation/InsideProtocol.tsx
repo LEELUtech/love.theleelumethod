@@ -39,21 +39,23 @@ export const InsideProtocol = () => {
     <section>
       <div className='max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-[112px] 2xl:px-[180px] relative py-[80px] lg:py-[112px]'>
         <ImageContainer src='/images/lily/lily_2.png' alt='Lily' height={832}>
-          <div>
-            <h2 className='text-[48px]/[100%] font-light font-canela mt-11 mb-6 text-brand-deep'>
+          <div className='flex flex-col'>
+            <h2 className='text-[32px]/[100%] md:text-[48px] font-light font-canela mt-11 mb-6 text-brand-deep'>
               {title_top}
               <br />
               {title_bottom}
             </h2>
             <ArrowList list={list} mb={40} />
-            <ul className='text-[32px]/[100%] font-light font-canela mb-5 text-brand-deep'>
+            <ul className='text-center md:text-left text-[24px]/[100%] md:text-[32px] font-light font-canela mb-5 text-brand-deep'>
               {descriptions.map((description, index) => (
                 <li key={index}>{description}</li>
               ))}
             </ul>
 
-            <p className='text-[32px]/[100%] font-light font-canela text-brand-primary mb-[60px]'>{highlight}</p>
-            <Button href={link.href} className='px-[114px] py-[16px]'>
+            <p className='text-center md:text-left text-[24px]/[100%] md:text-[32px] font-light font-canela text-brand-primary mb-[60px]'>
+              {highlight}
+            </p>
+            <Button href={link.href} className='self-center md:self-start md:px-[80px] xl:px-[98px] px-[98px]'>
               {link.label}
             </Button>
           </div>
