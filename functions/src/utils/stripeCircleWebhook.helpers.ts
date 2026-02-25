@@ -2,6 +2,7 @@
 import Stripe from "stripe";
 import { db } from "../configs/firebase";
 import { configs } from "../configs/env";
+import { handleCompatibilityReport } from "./compatibility-report/compatibility-report";
 
 export type ProductType =
   | "compatibility_report"
@@ -161,7 +162,9 @@ export function validatePaymentIntent(pi: Stripe.PaymentIntent): {
 
   const productType = (pi.metadata?.product_type || "") as ProductType | "";
   const emailRaw = pi.metadata?.email || pi.receipt_email || "";
-  const email = String(emailRaw || "").trim().toLowerCase();
+  const email = String(emailRaw || "")
+    .trim()
+    .toLowerCase();
 
   if (!productType) errors.push("Missing product_type in metadata");
   if (!email) errors.push("Missing email in metadata or receipt_email");
@@ -188,7 +191,8 @@ export async function processPayment(pi: Stripe.PaymentIntent): Promise<void> {
 
   switch (productType) {
   case "compatibility_report":
-    console.log("Compatibility Report handler is currently disabled.");
+    // console.log("Compatibility Report handler is currently disabled.");
+    handleCompatibilityReport(pi);
     break;
   case "protocol_essentials":
     console.log("Protocol Essentials handler is currently disabled.");
@@ -265,7 +269,9 @@ export async function upsertPaymentBaseFromIntent(
   const metadata = (pi.metadata || {}) as Record<string, string>;
 
   const site = normalizeHost(cleanStr(metadata.site)) || "unknown";
-  const email = String(metadata.email || pi.receipt_email || "").trim().toLowerCase();
+  const email = String(metadata.email || pi.receipt_email || "")
+    .trim()
+    .toLowerCase();
 
   const ref = db.collection("payments").doc(pi.id);
 
@@ -299,8 +305,10 @@ export async function upsertPaymentBaseFromIntent(
         utm_first_content: cleanStr(metadata.utm_first_content) ?? null,
         utm_first_term: cleanStr(metadata.utm_first_term) ?? null,
 
-        utm_last_source: cleanStr(metadata.utm_last_source) ?? cleanStr(metadata.utm_source) ?? null,
-        utm_last_medium: cleanStr(metadata.utm_last_medium) ?? cleanStr(metadata.utm_medium) ?? null,
+        utm_last_source:
+          cleanStr(metadata.utm_last_source) ?? cleanStr(metadata.utm_source) ?? null,
+        utm_last_medium:
+          cleanStr(metadata.utm_last_medium) ?? cleanStr(metadata.utm_medium) ?? null,
         utm_last_campaign:
           cleanStr(metadata.utm_last_campaign) ?? cleanStr(metadata.utm_campaign) ?? null,
         utm_last_content:
@@ -408,7 +416,10 @@ export async function updateDeliveryStatusAdvanceOnly(
   });
 }
 
-export async function updateZohoContactId(paymentIntentId: string, contactId: string): Promise<void> {
+export async function updateZohoContactId(
+  paymentIntentId: string,
+  contactId: string,
+): Promise<void> {
   await db.collection("payments").doc(paymentIntentId).set(
     {
       zoho_contact_id: contactId,
@@ -466,7 +477,9 @@ export async function acquirePaymentLease(
 > {
   const paymentRef = db.collection("payments").doc(pi.id);
 
-  const email = String(pi.metadata?.email || pi.receipt_email || "").trim().toLowerCase();
+  const email = String(pi.metadata?.email || pi.receipt_email || "")
+    .trim()
+    .toLowerCase();
   if (!email) throw new Error("Email is required but missing in PaymentIntent");
 
   const metadata = (pi.metadata || {}) as Record<string, string>;
@@ -500,8 +513,7 @@ export async function acquirePaymentLease(
     utm_last_medium: cleanStr(metadata.utm_last_medium) ?? cleanStr(metadata.utm_medium) ?? null,
     utm_last_campaign:
       cleanStr(metadata.utm_last_campaign) ?? cleanStr(metadata.utm_campaign) ?? null,
-    utm_last_content:
-      cleanStr(metadata.utm_last_content) ?? cleanStr(metadata.utm_content) ?? null,
+    utm_last_content: cleanStr(metadata.utm_last_content) ?? cleanStr(metadata.utm_content) ?? null,
     utm_last_term: cleanStr(metadata.utm_last_term) ?? cleanStr(metadata.utm_term) ?? null,
 
     metadata,

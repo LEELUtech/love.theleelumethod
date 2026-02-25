@@ -30,8 +30,6 @@ const CONTACT_FIELDS = {
   Checkout_Status: "Checkout_Status",
   Last_Checkout_Error: "Last_Checkout_Error",
 
-  // ✅ NEW: abandoned markers for email campaigns / segmentation
-  // IMPORTANT: create these fields in Zoho Contacts with these API names
   Abandoned_Checkout_At: "Abandoned_Checkout_At", // DateTime
   Abandoned_Reason: "Abandoned_Reason", // Single line text / multi-line text
 } as const;
@@ -196,6 +194,7 @@ export type ZohoFunnelStep =
   | "payment_failed"
   | "paid"
   | "delivered"
+  | "abandoned"
   | "delivery_failed";
 
 export type AppFunnelStep =
@@ -215,6 +214,7 @@ function toZohoFunnelStep(step: AppFunnelStep): ZohoFunnelStep {
   if (step === "paid") return "paid";
   if (step === "delivered") return "delivered";
   if (step === "checkout_started") return "checkout_started";
+  if (step === "abandoned") return "abandoned";
   // checkout_viewed / abandoned are not true CRM steps — keep as lead_captured
   return "lead_captured";
 }
@@ -226,6 +226,7 @@ const ZOHO_FUNNEL_RANK: Record<ZohoFunnelStep, number> = {
   paid: 40,
   delivered: 50,
   delivery_failed: 55,
+  abandoned: 25,
 };
 
 function normalizeZohoStep(v: unknown): ZohoFunnelStep | undefined {
@@ -356,7 +357,7 @@ async function zohoRequest<T = unknown>(
 // -------------------------
 async function findContactByEmail(email: string): Promise<Record<string, unknown> | null> {
   const criteria = encodeURIComponent(`(Email:equals:${email})`);
-  const url = `https://${configs.zohoApiDomain}/crm/v2/Contacts/search?criteria=${criteria}`;
+  const url = `https://${configs.zohoApiCRMDomain}/crm/v2/Contacts/search?criteria=${criteria}`;
 
   try {
     const data = await zohoRequest<any>({ method: "GET", url });
@@ -377,7 +378,7 @@ async function findDealByPaymentIntentId(
   if (!pi) return null;
 
   const criteria = encodeURIComponent(`(${DEAL_FIELDS.Stripe_Payment_Intent_ID}:equals:${pi})`);
-  const url = `https://${configs.zohoApiDomain}/crm/v2/Deals/search?criteria=${criteria}`;
+  const url = `https://${configs.zohoApiCRMDomain}/crm/v2/Deals/search?criteria=${criteria}`;
 
   try {
     const data = await zohoRequest<any>({ method: "GET", url });
@@ -500,7 +501,7 @@ export async function createOrUpdateContact(data: {
 
     const res = await zohoRequest({
       method: "PUT",
-      url: `https://${configs.zohoApiDomain}/crm/v2/Contacts`,
+      url: `https://${configs.zohoApiCRMDomain}/crm/v2/Contacts`,
       data: { data: [patch] },
     });
 
@@ -537,7 +538,7 @@ export async function createOrUpdateContact(data: {
 
   const createRes = await zohoRequest<any>({
     method: "POST",
-    url: `https://${configs.zohoApiDomain}/crm/v2/Contacts`,
+    url: `https://${configs.zohoApiCRMDomain}/crm/v2/Contacts`,
     data: { data: [createData] },
   });
 
@@ -615,7 +616,7 @@ export async function createDeal(data: {
   try {
     const createRes = await zohoRequest<any>({
       method: "POST",
-      url: `https://${configs.zohoApiDomain}/crm/v2/Deals`,
+      url: `https://${configs.zohoApiCRMDomain}/crm/v2/Deals`,
       data: { data: [dealData] },
     });
 
@@ -695,7 +696,7 @@ export async function updateContactFunnelStepByEmail(params: {
 
   await zohoRequest({
     method: "PUT",
-    url: `https://${configs.zohoApiDomain}/crm/v2/Contacts`,
+    url: `https://${configs.zohoApiCRMDomain}/crm/v2/Contacts`,
     data: { data: [patch] },
   });
 

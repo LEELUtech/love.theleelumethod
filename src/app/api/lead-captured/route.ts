@@ -1,5 +1,5 @@
 // app/api/lead-captured/route.ts
-// lead-captured — server-side dedup + advance-only Firestore + analytics event
+// lead-captured — server-side
 
 export const runtime = "nodejs";
 
@@ -35,7 +35,6 @@ type Body = {
 	firstName?: string;
 	lastName?: string;
 
-	// FIRST-touch UTM (fallback only)
 	utmSource?: string;
 	utmMedium?: string;
 	utmCampaign?: string;

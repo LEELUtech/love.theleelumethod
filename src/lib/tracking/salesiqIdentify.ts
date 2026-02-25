@@ -47,6 +47,12 @@ export function salesiqIdentify(p: IdentifyPayload) {
         ...(lastName ? { Last_Name: lastName } : {}),
       });
     }
+
+    // сохраняем visitor ID в localStorage при каждой идентификации
+    if (siq.visitor?.uniqueid) {
+      const visitorId = siq.visitor.uniqueid();
+      if (visitorId) localStorage.setItem("ff_salesiq_visitor_id", String(visitorId));
+    }
   } catch {
     // best-effort
   }

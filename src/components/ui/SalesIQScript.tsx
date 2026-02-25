@@ -2,6 +2,7 @@
 "use client";
 
 import Script from "next/script";
+import { PAGE_LABELS } from "@/utils/pageLabels";
 
 export default function SalesIQScript() {
   const widgetCode = process.env.NEXT_PUBLIC_SALESIQ_WIDGET_CODE || "";
@@ -202,10 +203,25 @@ export default function SalesIQScript() {
     }, 300);
   }
 
+  var PAGE_LABELS = ${JSON.stringify(PAGE_LABELS)};
+
+  function trackCurrentPage() {
+    try {
+      var pathname = location.pathname;
+      var label = PAGE_LABELS[pathname] || pathname;
+      var v = window.$zoho && window.$zoho.salesiq && window.$zoho.salesiq.visitor;
+      if (v && typeof v.info === "function") {
+        v.info({ Current_Page: label, Page_Path: pathname });
+        log("[SalesIQ] page tracked:", label);
+      }
+    } catch (e) {}
+  }
+
   window.$zoho.salesiq.ready = function () {
     log("[SalesIQ] READY fired");
 
     getOrCreateSessionId();
+    trackCurrentPage();
 
     bindDomOpenTracker();
     bindVisitorChat();

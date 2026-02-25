@@ -1,5 +1,6 @@
 // functions/src/lib/analytics/emitFunnelEvent.ts
 import axios, { AxiosError } from "axios";
+import { configs } from "../configs/env"
 
 export type FunnelValue = string | number | boolean | null;
 
@@ -58,12 +59,6 @@ type EmitResult =
 // -------------------------
 // tiny helpers
 // -------------------------
-function env(name: string): string {
-  const v = process.env[name];
-  if (!v || !v.trim()) throw new Error(`Missing env: ${name}`);
-  return v.trim();
-}
-
 function trimOrNull(v: unknown): string | null {
   if (v === null || v === undefined) return null;
   if (typeof v === "string") {
@@ -178,10 +173,12 @@ function clearTokenCache() {
 }
 
 async function refreshZohoAccessToken(requestId: string): Promise<string> {
-  const accountsDomain = env("ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT");
-  const clientId = env("ZOHO_CLIENT_ID_LILYCHYSTOFAT");
-  const clientSecret = env("ZOHO_CLIENT_SECRET_LILYCHYSTOFAT");
-  const refreshToken = env("ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT");
+  const accountsDomain = configs.zohoAccountsDomain;
+  const clientId = configs.zohoClientId;
+  const clientSecret = configs.zohoClientSecret;
+  const refreshToken = configs.zohoRefreshAnalyticsToken;
+
+
 
   const url = `https://${accountsDomain}/oauth/v2/token`;
 
@@ -227,13 +224,10 @@ async function getZohoAccessToken(requestId: string): Promise<string> {
 // Zoho Analytics append 1 row
 // -------------------------
 function assertZohoImportOk(resData: unknown, requestId: string) {
-  // Zoho часто возвращает 200 даже при "fail" внутри JSON.
-  // Мы делаем очень "мягкий", но полезный детектор ошибок.
   const s = safePreview(resData, 4000);
 
   const asObj = (resData && typeof resData === "object") ? (resData as Record<string, unknown>) : null;
 
-  // Частые поля: "response", "result", "status", "error", "message"
   const status =
     (asObj && typeof asObj.status === "string" ? asObj.status : undefined) ||
     (asObj && typeof asObj.STATUS === "string" ? asObj.STATUS : undefined);
@@ -243,7 +237,6 @@ function assertZohoImportOk(resData: unknown, requestId: string) {
       ? /fail|error|invalid/i.test(status)
       : /"status"\s*:\s*"(fail|error|invalid)"/i.test(s);
 
-  // Иногда Zoho пишет counts в тексте/структуре.
   const importedZero = /"imported"\s*:\s*0/i.test(s) || /"success"\s*:\s*0/i.test(s);
 
   if (hasFailureWord || importedZero) {
@@ -253,10 +246,10 @@ function assertZohoImportOk(resData: unknown, requestId: string) {
 }
 
 async function appendRowToZohoAnalytics(row: FunnelEventRow, requestId: string): Promise<void> {
-  const apiDomain = env("ZOHO_ANALYTICS_API_DOMAIN_LILYCHYSTOFAT");
-  const orgId = env("ZOHO_ANALYTICS_ORG_ID_LILYCHYSTOFAT");
-  const workspaceId = env("ZOHO_ANALYTICS_WORKSPACE_ID_LILYCHYSTOFAT");
-  const viewId = env("ZOHO_ANALYTICS_VIEW_ID_LILYCHYSTOFAT");
+  const apiDomain = configs.zohoApiAnalyticsDomain;
+  const orgId = configs.zohoAnalyticsOrgId;
+  const workspaceId = configs.zohoAnalyticsWorkspaceId;
+  const viewId = configs.zohoAnalyticsViewId;
 
   const config = {
     importType: "append",

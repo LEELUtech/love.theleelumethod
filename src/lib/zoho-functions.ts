@@ -230,7 +230,7 @@ export async function upsertZohoContactFunnel(input: {
   const createData: Record<string, unknown> = {
     Email: email,
     First_Name: cleanStr(input.firstName) || "Unknown",
-    Last_Name: cleanStr(input.lastName) || (input.step === "lead_captured" ? "Lead" : "Customer"),
+    Last_Name: cleanStr(input.lastName) || "",
 
     Funnel_Step: input.step,
     Funnel_Updated_At: nowDT,

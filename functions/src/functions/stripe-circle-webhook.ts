@@ -28,6 +28,7 @@ import {
   errToMessage,
   type PaymentRecord,
 } from "../utils/stripeCircleWebhook.helpers";
+import { applyPurchaseCampaignTags } from "../lib/zoho-campaigns-purchase"
 
 // Secrets must be attached to this function (Firebase v2)
 const ZOHO_CLIENT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_ID_LILYCHYSTOFAT");
@@ -530,8 +531,11 @@ export const stripeCircleWebhook = onRequest(
       try {
         const { firstName, lastName } = splitName(metadata.name);
 
-        console.log("Creating NEW Zoho contact", { email: validation.email, productType: String(validation.productType) });
-        
+        console.log("Creating NEW Zoho contact", {
+          email: validation.email,
+          productType: String(validation.productType),
+        });
+
         const c = await createOrUpdateContact({
           email: validation.email,
           firstName,
@@ -578,7 +582,17 @@ export const stripeCircleWebhook = onRequest(
           checkoutStatus: "Delivered",
         });
 
-        // Analytics: delivered (время — “когда доставили” = now)
+        // ✅ Campaigns tags: purchase_completed logic
+        try {
+          await applyPurchaseCampaignTags(pi);
+        } catch (e) {
+          console.error("applyPurchaseCampaignTags failed (non-critical)", {
+            payment_intent_id: pi.id,
+            error: errToMessage(e),
+          });
+        }
+
+        // Analytics: delivered
         try {
           await emit({
             funnel_step: "delivered",

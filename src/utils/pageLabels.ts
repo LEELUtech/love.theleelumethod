@@ -1,0 +1,15 @@
+export const PAGE_LABELS: Record<string, string> = {
+  "/": "Home",
+  "/about": "About",
+  "/decode": "Webinar",
+  "/programs": "Programs",
+  "/programs/self-guided-transformation": "Self-Guided Transformation",
+  "/programs/guided-breakthrough": "Guided Breakthrough",
+  "/programs/vip-immersion": "VIP Immersion",
+  "/resources": "Resources",
+  "/resources/compatibility-report": "Compatibility Report",
+  "/resources/secrets": "Secrets",
+  "/success": "Success",
+  "/confirmation": "Confirmation",
+  "/quiz-redirect": "Quiz",
+};
