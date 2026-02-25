@@ -4,6 +4,7 @@ import { IProgramsReceive } from '../components/receive';
 import { IProgramOverview } from '../components/overview';
 import { IProgramResult } from '../components/result';
 import { IProgramItWorks } from '../components/it-works';
+import { OrnamentTitle } from '@/components/ui/titles/OrnamentTitle';
 
 export const guidedBreakthroughWhoThisData: IProgramsWhoThis = {
   title: 'WHO THIS IS FOR:',
@@ -83,9 +84,12 @@ export const guidedBreakthroughModuleData: IProgramsReceive = {
 
 export const guidedBreakthroughOverviewData: IProgramOverview = {
   title: (
-    <h2 className='text-[48px]/[100%] lg:text-[122px] text-center font-canela font-thin text-brand-deep'>
-      <span className='text-brand-primary'>Personalized</span> Reports
-    </h2>
+    <OrnamentTitle
+      mt={300}
+      title='The Extended Leelu Method'
+      titleHightlight='Compatibility Blueprint'
+      color='#ffffff'
+    />
   ),
   subtitle: 'An exhaustive, manually calculated relationship instruction manual based on both birth dates.',
   cards: [
