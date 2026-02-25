@@ -1,90 +1,59 @@
-import React from "react";
-import Image from "next/image";
-import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
-import Button from "@/components/ui/Button";
-import { WEBINAR_URL } from "@/utils/constants";
-import RotateOnView from "@/components/ui/RotateOnView"
+import React from 'react';
+import Image from 'next/image';
+import ArcAutoOnce from '@/components/ui/ArcFlyOnce';
+import Button from '@/components/ui/Button';
+import { WEBINAR_URL } from '@/utils/constants';
+import RotateOnView from '@/components/ui/RotateOnView';
 
 export function MasterclassSection() {
-	return (
-		<section className="bg-brand-white text-brand-deep pt-16 pb-20 md:pt-24 md:pb-28 lg:pt-[112px] lg:pb-[160px]">
-			<div className="container px-4 flex flex-col-reverse md:flex-row items-center justify-between gap-10 md:gap-12 lg:gap-16 overflow-hidden">
-				<div className="order-1 md:order-1 w-full md:max-w-[520px]">
-					<p className="font-canela hidden md:block lg:block font-light text-[32px] leading-[100%] tracking-normal text-black mb-6">
-						Free live masterclass
-					</p>
-					<h2 className="text-[48px] text-center md:text-left lg:text-left lg:text-h1 font-thin md:font-light lg:font-light font-canela text-brand-deep mb-6">
-						Decoded Love
-					</h2>
-					<p className="text-body font-canela font-light text-[#5A5757] mb-6 text-center md:text-left lg:text-left">
-						Discover the 3 secrets
-						to choosing the right partner, creating healthy connection, and
-						ending the cycle of disappointment forever.
-					</p>
-					<div className="text-body text-brand-deep/80 space-y-2 mb-10">
-						<p className="font-canela text-body font-light leading-[26px] text-[#5A5757] mb-6 text-center md:text-left lg:text-left">
-							What you&apos;ll learn:
-						</p>
-						<ul className="list-none pl-2 md:pl-8 font-lato text-body font-medium leading-[26px] space-y-4 text-[#5A5757]">
-							<li className="flex gap-2 items-start">
-								<div className="w-4 h-4 pt-2 flex-shrink-0">
-									<Image
-										src="/icons/arrow_right.svg"
-										alt="Arrow"
-										width={10}
-										height={10}
-										className="object-contain"
-									/>
-								</div>
-								<span>
-									Your identity-level programming that determines partner
-									selection and how to rewire it.
-								</span>
-							</li>
+  return (
+    <section className='bg-brand-white text-brand-deep pt-16 pb-20 md:pt-24 md:pb-28 lg:pt-[112px] lg:pb-[160px]'>
+      <div className='container px-4 flex flex-col-reverse md:flex-row items-center justify-between gap-10 md:gap-12 lg:gap-16 overflow-hidden'>
+        <div className='order-1 md:order-1 w-full md:max-w-[520px]'>
+          <p className='font-canela hidden md:block lg:block font-light text-[32px] leading-[100%] tracking-normal text-black mb-6'>
+            Free live masterclass
+          </p>
+          <h2 className='text-[48px] text-center md:text-left lg:text-left lg:text-h1 font-thin md:font-light lg:font-light font-canela text-brand-deep mb-6'>
+            Decoded Love
+          </h2>
+          <p className='text-body font-canela font-light text-[#5A5757] mb-6 text-center md:text-left lg:text-left'>
+            Discover the 3 secrets to choosing the right partner, creating healthy connection, and ending the cycle of
+            disappointment forever.
+          </p>
+          <div className='text-body text-brand-deep/80 space-y-2 mb-10'>
+            <p className='font-canela text-body font-light leading-[26px] text-[#5A5757] mb-6 text-center md:text-left lg:text-left'>
+              What you&apos;ll learn:
+            </p>
+            <ul className='list-none pl-2 md:pl-8 font-lato text-body font-medium leading-[26px] space-y-4 text-[#5A5757]'>
+              <li className='flex gap-2 items-start'>
+                <div className='w-4 h-4 pt-2 flex-shrink-0'>
+                  <Image src='/icons/arrow_right.svg' alt='Arrow' width={10} height={10} className='object-contain' />
+                </div>
+                <span>Your identity-level programming that determines partner selection and how to rewire it.</span>
+              </li>
 
-							<li className="flex gap-2 items-start">
-								<div className="w-4 h-4 pt-2 flex-shrink-0">
-									<Image
-										src="/icons/arrow_right.svg"
-										alt="Arrow"
-										width={10}
-										height={10}
-										className="object-contain"
-									/>
-								</div>
-								<span>
-									How early attachment imprints create repetitive relationship
-									dynamics across different partners.
-								</span>
-							</li>
+              <li className='flex gap-2 items-start'>
+                <div className='w-4 h-4 pt-2 flex-shrink-0'>
+                  <Image src='/icons/arrow_right.svg' alt='Arrow' width={10} height={10} className='object-contain' />
+                </div>
+                <span>
+                  How early attachment imprints create repetitive relationship dynamics across different partners.
+                </span>
+              </li>
 
-							<li className="flex gap-2 items-start">
-								<div className="w-4 h-4 pt-2 flex-shrink-0">
-									<Image
-										src="/icons/arrow_right.svg"
-										alt="Arrow"
-										width={10}
-										height={10}
-										className="object-contain"
-									/>
-								</div>
-								<span>
-									Why attraction follows algorithmic patterns—and how to stop
-									investing in incompatible men.
-								</span>
-							</li>
-						</ul>
-					</div>
-					<Button
-						variant="dark"
-						size="md"
-						className="w-full lg:w-[60%] xs:text-[12px]"
-						href={WEBINAR_URL}
-					>
-						Save My Seat
-					</Button>
-				</div>
-				<div className="order-2 md:order-2 flex pt-4 md:pt-0 lg:pt-0 justify-center w-full">
+              <li className='flex gap-2 items-start'>
+                <div className='w-4 h-4 pt-2 flex-shrink-0'>
+                  <Image src='/icons/arrow_right.svg' alt='Arrow' width={10} height={10} className='object-contain' />
+                </div>
+                <span>Why attraction follows algorithmic patterns—and how to stop investing in incompatible men.</span>
+              </li>
+            </ul>
+          </div>
+          <Button variant='dark' size='md' className='w-full lg:w-[60%] xs:text-[12px]' href={WEBINAR_URL}>
+            Save My Seat
+          </Button>
+        </div>
+        {/* <div className="order-2 md:order-2 flex pt-4 md:pt-0 lg:pt-0 justify-center w-full">
 					<div className="relative w-full max-w-[642px]  aspect-[642/466]">
 						<Image
 							src="/images/resources/resources-webinar-section.png"
@@ -133,8 +102,8 @@ export function MasterclassSection() {
 							arcStart={{ x: 200, y: 100 }}
 						/>
 					</div>
-				</div>
-			</div>
-		</section>
-	);
+				</div> */}
+      </div>
+    </section>
+  );
 }

@@ -1,7 +1,7 @@
-import { create } from "zustand";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
-import type { Product, FirestoreOfferingDoc } from "@/types";
+import { create } from 'zustand';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import type { Product, FirestoreOfferingDoc } from '@/types';
 
 interface ProductState {
   productsById: Record<string, Product | undefined>;
@@ -15,7 +15,7 @@ interface ProductState {
 }
 
 function normalizePriceToCents(raw?: number) {
-  if (typeof raw !== "number") return 0;
+  if (typeof raw !== 'number') return 0;
   return Math.round(raw);
 }
 
@@ -42,13 +42,13 @@ const useProductStore = create<ProductState>((set, get) => ({
     }));
 
     try {
-      const ref = doc(db, "offerings", id);
+      const ref = doc(db, 'offerings', id);
       const snap = await getDoc(ref);
 
       if (!snap.exists()) {
         set((state) => ({
           loadingById: { ...state.loadingById, [id]: false },
-          errorById: { ...state.errorById, [id]: "Product not found" },
+          errorById: { ...state.errorById, [id]: 'Product not found' },
         }));
         return null;
       }
@@ -57,11 +57,11 @@ const useProductStore = create<ProductState>((set, get) => ({
 
       const product: Product = {
         id: snap.id,
-        title: data.title ?? "",
-        name: data.name ?? "",
-        description: data.description ?? "",
+        title: data.title ?? '',
+        name: data.name ?? '',
+        description: data.description ?? '',
         price: normalizePriceToCents(data.price),
-        currency: data.currency ?? "USD",
+        currency: data.currency ?? 'USD',
         space_id: data.space_id,
       };
 
@@ -72,7 +72,7 @@ const useProductStore = create<ProductState>((set, get) => ({
 
       return product;
     } catch (e) {
-      const msg = e instanceof Error ? e.message : "Failed to fetch product";
+      const msg = e instanceof Error ? e.message : 'Failed to fetch product';
       set((state) => ({
         loadingById: { ...state.loadingById, [id]: false },
         errorById: { ...state.errorById, [id]: msg },
