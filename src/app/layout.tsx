@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import localFont from "next/font/local";
 import { Figtree, Inter, Lato, Marcellus, Playfair_Display } from "next/font/google";
 import "./globals.css";
@@ -77,8 +78,12 @@ export default function RootLayout({
 			<body className="antialiased">
 				<UTMTracker />
 				<SalesIQScript />
-				<PageTracker />
-				<EngagementTracker />
+				<Suspense fallback={null}>
+					<PageTracker />
+				</Suspense>
+				<Suspense fallback={null}>
+					<EngagementTracker />
+				</Suspense>
 				{children}
 			</body>
 		</html>
