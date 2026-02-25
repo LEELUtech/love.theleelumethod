@@ -1,4 +1,4 @@
-// components/checkout/StripeCardPart.tsx
+// components/sections/Checkout/StripeCardPart.tsx
 "use client";
 
 import * as React from "react";
@@ -14,6 +14,7 @@ import type { BillingForm } from "@/helpers/checkout";
 import { useCheckoutStore } from "@/store/useCheckoutStore";
 import Button from "@/components/ui/Button";
 import { getStoredLastUTM } from "@/utils/utm-tracker";
+import { salesiqIdentify } from "@/lib/tracking/salesiqIdentify"
 
 const stripeElementOptions = {
 	style: {
@@ -35,13 +36,23 @@ function hasPaymentIntent(err: StripeError): err is StripeErrorWithPI {
 	return typeof (err as StripeErrorWithPI).payment_intent === "object";
 }
 
+type CheckoutCtx = {
+	site?: string;
+	pagePath?: string;
+
+	utmSource?: string;
+	utmMedium?: string;
+	utmCampaign?: string;
+	utmContent?: string;
+	utmTerm?: string;
+};
+
 type Props = {
 	clientSecret: string;
 	productType: string;
 	billing: BillingForm;
 
-	// add back ALL props that are used below
-	ctx?: { site?: string; pagePath?: string };
+	ctx?: CheckoutCtx;
 
 	onSubmitAttempt: () => boolean;
 	onSuccess: () => void;
@@ -118,9 +129,15 @@ export function StripeCardPart({
 			try {
 				const utm = getStoredLastUTM();
 
-				const ctxSafe = ctx || {};
-
+				const ctxSafe: CheckoutCtx = ctx || {};
 				const emailNorm = (billing.email || "").trim().toLowerCase();
+
+				salesiqIdentify({
+					email: (billing.email || "").trim().toLowerCase() || undefined,
+					firstName: (billing.firstName || "").trim() || undefined,
+					lastName: (billing.lastName || "").trim() || undefined,
+					phone: (billing.phone || "").trim() || undefined,
+				});
 
 				await updateIntent({
 					...ctxSafe,
@@ -138,6 +155,7 @@ export function StripeCardPart({
 					postalCode: billing.postalCode,
 					country: billing.country,
 
+					// last-touch UTM
 					utmSource: utm?.utm_source,
 					utmMedium: utm?.utm_medium,
 					utmCampaign: utm?.utm_campaign,
@@ -200,10 +218,6 @@ export function StripeCardPart({
 			setPaying(false);
 		}
 	};
-
-	// ------------------------------------------------------------
-	// JSX content
-	// ------------------------------------------------------------
 
 	return (
 		<>

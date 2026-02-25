@@ -2,6 +2,7 @@
 import Stripe from "stripe";
 import { db } from "../configs/firebase";
 import { configs } from "../configs/env";
+import { handleCompatibilityReport } from "./compatibility-report/compatibility-report";
 
 export type ProductType =
   | "compatibility_report"
@@ -19,10 +20,10 @@ export type FunnelStep =
   | "checkout_started"
   | "paid"
   | "delivered"
+  | "delivery_failed"
   | "failed"
   | "canceled"
-  | "abandoned"
-  | "delivery_failed";
+  | "abandoned";
 
 export interface PaymentRecord {
   stripe_payment_intent_id: string;
@@ -41,6 +42,7 @@ export interface PaymentRecord {
   page_path?: string | null;
   checkout_variant?: string | null;
 
+  // keep for now (stored in Firestore; CRM does NOT store UTM anymore)
   utm_first_source?: string | null;
   utm_first_medium?: string | null;
   utm_first_campaign?: string | null;
@@ -93,7 +95,9 @@ export function getStripeClient(): Stripe {
   return stripe;
 }
 
-// -------- tiny helpers --------
+// --------------------
+// tiny helpers
+// --------------------
 export function cleanStr(v: unknown): string | undefined {
   const s = String(v ?? "").trim();
   return s ? s : undefined;
@@ -145,7 +149,9 @@ export function errToMessage(e: unknown): string {
   }
 }
 
-// -------- validation --------
+// --------------------
+// validation
+// --------------------
 export function validatePaymentIntent(pi: Stripe.PaymentIntent): {
   isValid: boolean;
   email: string;
@@ -177,13 +183,16 @@ export function validatePaymentIntent(pi: Stripe.PaymentIntent): {
   return { isValid: errors.length === 0, email, productType, errors };
 }
 
-// -------- delivery handlers --------
+// --------------------
+// delivery handlers (stubs for now)
+// --------------------
 export async function processPayment(pi: Stripe.PaymentIntent): Promise<void> {
   const productType = pi.metadata?.product_type as ProductType;
 
   switch (productType) {
   case "compatibility_report":
-    console.log("Compatibility Report handler is currently disabled.");
+    // console.log("Compatibility Report handler is currently disabled.");
+    handleCompatibilityReport(pi);
     break;
   case "protocol_essentials":
     console.log("Protocol Essentials handler is currently disabled.");
@@ -199,7 +208,9 @@ export async function processPayment(pi: Stripe.PaymentIntent): Promise<void> {
   }
 }
 
-// -------- funnel / delivery advance-only --------
+// --------------------
+// funnel / delivery advance-only
+// --------------------
 const FUNNEL_RANK: Record<FunnelStep, number> = {
   unknown: 0,
   checkout_viewed: 10,
@@ -248,14 +259,17 @@ function toDateMaybe(v: unknown): Date | null {
   return isNaN(d.getTime()) ? null : d;
 }
 
-// -------- Firestore helpers --------
+// --------------------
+// Firestore helpers
+// --------------------
 export async function upsertPaymentBaseFromIntent(
   pi: Stripe.PaymentIntent,
   eventId?: string | null,
 ): Promise<void> {
   const metadata = (pi.metadata || {}) as Record<string, string>;
+
   const site = normalizeHost(cleanStr(metadata.site)) || "unknown";
-  const email = String(pi.metadata?.email || pi.receipt_email || "")
+  const email = String(metadata.email || pi.receipt_email || "")
     .trim()
     .toLowerCase();
 
@@ -284,6 +298,7 @@ export async function upsertPaymentBaseFromIntent(
         page_path: cleanStr(metadata.page_path) ?? null,
         checkout_variant: cleanStr(metadata.checkout_variant) ?? null,
 
+        // Keep UTM in Firestore for now (CRM is clean)
         utm_first_source: cleanStr(metadata.utm_first_source) ?? null,
         utm_first_medium: cleanStr(metadata.utm_first_medium) ?? null,
         utm_first_campaign: cleanStr(metadata.utm_first_campaign) ?? null,
@@ -384,9 +399,11 @@ export async function updateDeliveryStatusAdvanceOnly(
     }
 
     if (!shouldAdvanceDelivery(current, next)) {
-      if (error)
+      if (error) {
         tx.update(ref, { delivery_error: error, processed_at: new Date(), updated_at: new Date() });
-      else tx.update(ref, { processed_at: new Date(), updated_at: new Date() });
+      } else {
+        tx.update(ref, { processed_at: new Date(), updated_at: new Date() });
+      }
       return;
     }
 
@@ -471,6 +488,7 @@ export async function acquirePaymentLease(
   const recordBase = {
     stripe_payment_intent_id: pi.id,
     stripe_event_id: eventId,
+
     email,
     product_type: (cleanStr(metadata.product_type) as ProductType) || null,
 
@@ -484,6 +502,7 @@ export async function acquirePaymentLease(
     page_path: cleanStr(metadata.page_path) ?? null,
     checkout_variant: cleanStr(metadata.checkout_variant) ?? null,
 
+    // Keep UTM in Firestore for now (CRM is clean)
     utm_first_source: cleanStr(metadata.utm_first_source) ?? null,
     utm_first_medium: cleanStr(metadata.utm_first_medium) ?? null,
     utm_first_campaign: cleanStr(metadata.utm_first_campaign) ?? null,
@@ -507,7 +526,7 @@ export async function acquirePaymentLease(
 
     if (!snap.exists) {
       const fresh: PaymentRecord = {
-        ...recordBase,
+        ...(recordBase as any),
 
         processing_status: "processing",
         funnel_step: "paid",
@@ -565,7 +584,7 @@ export async function acquirePaymentLease(
       : existing.funnel_step;
 
     tx.update(paymentRef, {
-      ...recordBase,
+      ...(recordBase as any),
       processing_status: "processing",
       funnel_step: nextFunnel,
       locked_by: leaseId,
@@ -578,7 +597,7 @@ export async function acquirePaymentLease(
       state: "acquired" as const,
       record: {
         ...existing,
-        ...recordBase,
+        ...(recordBase as any),
         processing_status: "processing",
         funnel_step: nextFunnel as FunnelStep,
         locked_by: leaseId,

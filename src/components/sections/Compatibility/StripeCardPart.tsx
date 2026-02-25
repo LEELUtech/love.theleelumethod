@@ -10,6 +10,8 @@ import {
 } from "@stripe/react-stripe-js";
 import type { StripeError } from "@stripe/stripe-js";
 import { useCheckoutStore } from "@/store/useCheckoutStore";
+import { getStoredLastUTM } from "@/utils/utm-tracker";
+import { salesiqIdentify } from "@/lib/tracking/salesiqIdentify";
 
 const stripeElementOptions = {
   style: {
@@ -110,11 +112,22 @@ export function StripeCardPart({
       }
 
       // 1) update metadata BEFORE confirming (server-side)
+      const utm = getStoredLastUTM();
+
+      salesiqIdentify({ email });
+
       await updateIntent({
         productType,
         email,
         birthDate1,
         birthDate2,
+
+        // last-touch UTM
+        utmSource: utm?.utm_source,
+        utmMedium: utm?.utm_medium,
+        utmCampaign: utm?.utm_campaign,
+        utmContent: utm?.utm_content,
+        utmTerm: utm?.utm_term,
       });
 
       // 2) confirm payment

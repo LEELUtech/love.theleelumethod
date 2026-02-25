@@ -6,6 +6,7 @@ import { defineSecret } from "firebase-functions/params";
 import { configs } from "../configs/env";
 
 import { createOrUpdateContact, createDeal, updateContactFunnelStepByEmail } from "../lib/zoho-crm";
+import { emitFunnelEvent } from "../lib/emitFunnelEvent";
 
 import {
   cleanStr,
@@ -25,18 +26,36 @@ import {
   processPayment,
   ProductType,
   errToMessage,
+  type PaymentRecord,
 } from "../utils/stripeCircleWebhook.helpers";
+import { applyPurchaseCampaignTags } from "../lib/zoho-campaigns-purchase"
 
 // Secrets must be attached to this function (Firebase v2)
 const ZOHO_CLIENT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_ID_LILYCHYSTOFAT");
 const ZOHO_CLIENT_SECRET_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_SECRET_LILYCHYSTOFAT");
-const ZOHO_REFRESH_TOKEN_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_LILYCHYSTOFAT");
+const ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT");
 const ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT");
 const ZOHO_API_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_API_DOMAIN_LILYCHYSTOFAT");
-const ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT");
+// const ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT");
+const ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT = "6782764000008928434";
+const ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT = defineSecret(
+  "ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT",
+);
+
+// Zoho Analytics secrets
+const ZOHO_ANALYTICS_API_DOMAIN = defineSecret("ZOHO_ANALYTICS_API_DOMAIN_LILYCHYSTOFAT");
+const ZOHO_ANALYTICS_ORG_ID = defineSecret("ZOHO_ANALYTICS_ORG_ID_LILYCHYSTOFAT");
+const ZOHO_ANALYTICS_WORKSPACE_ID = defineSecret("ZOHO_ANALYTICS_WORKSPACE_ID_LILYCHYSTOFAT");
+const ZOHO_ANALYTICS_VIEW_ID = defineSecret("ZOHO_ANALYTICS_VIEW_ID_LILYCHYSTOFAT");
 
 function safeId(id: string) {
   return id.length > 10 ? `${id.slice(0, 6)}…${id.slice(-4)}` : id;
+}
+
+function buildLandingPage(site: string, pagePath?: string | null) {
+  const pp = (pagePath || "").trim();
+  if (!pp) return null;
+  return `https://${site}${pp.startsWith("/") ? "" : "/"}${pp}`;
 }
 
 const HANDLED_EVENT_TYPES = [
@@ -51,9 +70,18 @@ function isHandledEventType(v: unknown): v is HandledEventType {
   return typeof v === "string" && (HANDLED_EVENT_TYPES as readonly string[]).includes(v);
 }
 
-type StripeRawBodyRequest = {
-  rawBody?: Buffer;
-};
+type StripeRawBodyRequest = { rawBody?: Buffer };
+
+function isoFromStripeEvent(event: Stripe.Event): string {
+  const createdSec =
+    typeof event.created === "number" ? event.created : Math.floor(Date.now() / 1000);
+  return new Date(createdSec * 1000).toISOString();
+}
+
+function makeAnalyticsEventId(piId: string, step: string, stripeEventId: string) {
+  // ✅ unique per step, stable per webhook event
+  return `${piId}:${step}:${stripeEventId}`;
+}
 
 export const stripeCircleWebhook = onRequest(
   {
@@ -62,10 +90,15 @@ export const stripeCircleWebhook = onRequest(
     secrets: [
       ZOHO_CLIENT_ID_LILYCHYSTOFAT,
       ZOHO_CLIENT_SECRET_LILYCHYSTOFAT,
-      ZOHO_REFRESH_TOKEN_LILYCHYSTOFAT,
+      ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT,
       ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT,
       ZOHO_API_DOMAIN_LILYCHYSTOFAT,
-      ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT,
+      // ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT,
+      ZOHO_ANALYTICS_API_DOMAIN,
+      ZOHO_ANALYTICS_ORG_ID,
+      ZOHO_ANALYTICS_WORKSPACE_ID,
+      ZOHO_ANALYTICS_VIEW_ID,
+      ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT,
     ],
   },
   async (req, res) => {
@@ -85,9 +118,6 @@ export const stripeCircleWebhook = onRequest(
         res.status(400).send("Missing required webhook data");
         return;
       }
-
-      // Deal layoutId from Firebase Secret (passed to createDeal)
-      const dealLayoutId = cleanStr(ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT.value());
 
       const stripe = getStripeClient();
 
@@ -113,112 +143,185 @@ export const stripeCircleWebhook = onRequest(
 
       // Always re-fetch PI from Stripe (fresh status + metadata)
       const pi = await stripe.paymentIntents.retrieve(piFromEvent.id);
-
       const metadata = (pi.metadata || {}) as Record<string, string>;
 
-      const utmLastSource = cleanStr(metadata.utm_last_source) || cleanStr(metadata.utm_source);
-      const utmLastMedium = cleanStr(metadata.utm_last_medium) || cleanStr(metadata.utm_medium);
-      const utmLastCampaign =
-        cleanStr(metadata.utm_last_campaign) || cleanStr(metadata.utm_campaign);
-      const utmLastContent = cleanStr(metadata.utm_last_content) || cleanStr(metadata.utm_content);
-      const utmLastTerm = cleanStr(metadata.utm_last_term) || cleanStr(metadata.utm_term);
-
-      const lastPagePath = cleanStr(metadata.page_path);
+      const intentToken = cleanStr(metadata.intent_token) ?? null;
 
       const site = normalizeHost(cleanStr(metadata.site)) || "unknown";
-      const customerId = pi.customer ? String(pi.customer) : undefined;
+      const pagePath = cleanStr(metadata.page_path) ?? null;
+      const checkoutVariant = cleanStr(metadata.checkout_variant) ?? null;
+      const sessionId = cleanStr(metadata.session_id) ?? null;
+      const salesiqVisitorId = cleanStr(metadata.salesiq_visitor_id) ?? null;
+
+      const productTypeFromMeta = cleanStr(metadata.product_type) ?? null;
+      const customerId = pi.customer ? String(pi.customer) : null;
 
       const emailMaybe = (cleanStr(metadata.email) || cleanStr(pi.receipt_email) || "")
         .trim()
         .toLowerCase();
 
-      // ---------------------------------------------------
-      // FAILED / CANCELED
-      // ---------------------------------------------------
-      if (
-        event.type === "payment_intent.payment_failed" ||
-        event.type === "payment_intent.canceled"
-      ) {
-        const isCanceled = event.type === "payment_intent.canceled";
-        const msg = isCanceled
-          ? "Payment canceled"
-          : pi.last_payment_error?.message || "Payment failed";
+      const piAmount = typeof pi.amount === "number" ? pi.amount : null;
+      const piCurrency = pi.currency ?? null;
+      const piStatus = (pi.status as string) ?? null;
 
-        console.log("Payment failed/canceled", {
+      const utmFirstSource = cleanStr(metadata.utm_first_source) ?? null;
+      const utmFirstMedium = cleanStr(metadata.utm_first_medium) ?? null;
+      const utmFirstCampaign = cleanStr(metadata.utm_first_campaign) ?? null;
+      const utmFirstContent = cleanStr(metadata.utm_first_content) ?? null;
+      const utmFirstTerm = cleanStr(metadata.utm_first_term) ?? null;
+
+      const utmLastSource =
+        cleanStr(metadata.utm_last_source) || cleanStr(metadata.utm_source) || null;
+      const utmLastMedium =
+        cleanStr(metadata.utm_last_medium) || cleanStr(metadata.utm_medium) || null;
+      const utmLastCampaign =
+        cleanStr(metadata.utm_last_campaign) || cleanStr(metadata.utm_campaign) || null;
+      const utmLastContent =
+        cleanStr(metadata.utm_last_content) || cleanStr(metadata.utm_content) || null;
+      const utmLastTerm = cleanStr(metadata.utm_last_term) || cleanStr(metadata.utm_term) || null;
+
+      const leadSource = cleanStr(metadata.lead_source) || utmFirstSource || null;
+
+      // ---------------------------------------------------
+      // helper: unified Analytics emit
+      // ---------------------------------------------------
+      const emit = async (args: {
+        funnel_step:
+          | "payment_failed"
+          | "paid"
+          | "delivered"
+          | "delivery_failed"
+          | "deal_created"
+          | "canceled";
+        email: string | null;
+        product_type: string | null;
+
+        product_name?: string | null;
+        processing_status?: string | null;
+
+        stripe_error_code?: string | null;
+        stripe_error_message?: string | null;
+
+        delivery_status?: "delivered" | "failed" | null;
+        delivery_error?: string | null;
+
+        abandon_reason?: string | null;
+
+        zoho_contact_id?: string | null;
+        zoho_deal_id?: string | null;
+
+        // if you want a custom timestamp
+        event_time_override?: string;
+      }) => {
+        const existing: PaymentRecord | null = await getPaymentRecord(pi.id);
+
+        const processingFromDb =
+          existing && typeof existing.processing_status === "string"
+            ? existing.processing_status
+            : null;
+
+        await emitFunnelEvent({
+          event_id: makeAnalyticsEventId(pi.id, args.funnel_step, event.id),
+          event_time: args.event_time_override ?? isoFromStripeEvent(event),
+          source: "stripe:webhook",
+          funnel_step: args.funnel_step,
+
+          payment_intent_id: pi.id,
+          intent_token: intentToken,
+          email: args.email,
+
+          zoho_contact_id: args.zoho_contact_id ?? existing?.zoho_contact_id ?? null,
+          zoho_deal_id: args.zoho_deal_id ?? existing?.zoho_deal_id ?? null,
+
+          processing_status: args.processing_status ?? processingFromDb,
+          product_name: args.product_name ?? null,
+
+          site,
+          landing_page: buildLandingPage(site, pagePath),
+          page_path: pagePath,
+          checkout_variant: checkoutVariant,
+
+          product_type: args.product_type,
+          amount: piAmount,
+          currency: piCurrency,
+
+          stripe_status: piStatus,
+          stripe_error_code: args.stripe_error_code ?? null,
+          stripe_error_message: args.stripe_error_message ?? null,
+          stripe_customer_id: customerId,
+
+          delivery_status: args.delivery_status ?? null,
+          delivery_error: args.delivery_error ?? null,
+          abandon_reason: args.abandon_reason ?? null,
+
+          lead_source: leadSource,
+          session_id: sessionId,
+          salesiq_visitor_id: salesiqVisitorId,
+
+          utm_first_source: utmFirstSource,
+          utm_first_medium: utmFirstMedium,
+          utm_first_campaign: utmFirstCampaign,
+          utm_first_content: utmFirstContent,
+          utm_first_term: utmFirstTerm,
+
+          utm_last_source: utmLastSource,
+          utm_last_medium: utmLastMedium,
+          utm_last_campaign: utmLastCampaign,
+          utm_last_content: utmLastContent,
+          utm_last_term: utmLastTerm,
+        });
+      };
+
+      // ---------------------------------------------------
+      // CANCELED
+      // ---------------------------------------------------
+      if (event.type === "payment_intent.canceled") {
+        const msg = "Payment canceled";
+
+        console.log("Payment canceled", {
           payment_intent_id: pi.id,
           event: safeId(event.id),
           type: event.type,
           stripe_status: pi.status,
           email: emailMaybe || undefined,
-          reason: msg,
         });
 
-        // 0) Upsert Firestore base doc (best-effort)
         try {
           await upsertPaymentBaseFromIntent(pi, event.id);
         } catch (e) {
-          console.error("Upsert payment base failed (failed/canceled)", {
+          console.error("Upsert payment base failed (canceled)", {
             payment_intent_id: pi.id,
             error: errToMessage(e),
           });
         }
 
-        // 1) Firestore status updates (advance-only funnel + delivery)
         try {
-          await markFunnelStepAdvanceOnly(pi.id, isCanceled ? "canceled" : "failed");
+          await markFunnelStepAdvanceOnly(pi.id, "canceled");
           await updateProcessingStatus(pi.id, "failed", msg);
         } catch (e) {
-          console.error("Firestore update failed for failed/canceled", {
+          console.error("Firestore update failed for canceled", {
             payment_intent_id: pi.id,
             error: errToMessage(e),
           });
         }
 
-        // 2) Zoho best-effort
         try {
-          const email = cleanStr(metadata.email) || cleanStr(pi.receipt_email);
-          const productType = cleanStr(metadata.product_type);
-
-          if (email && productType) {
-            const { firstName, lastName } = splitName(metadata.name);
-
-            const c = await createOrUpdateContact({
-              email: email.toLowerCase(),
-              firstName,
-              lastName,
-              phone: cleanStr(metadata.phone),
-
-              productType,
-              amount: typeof pi.amount === "number" ? pi.amount : 0,
-              currency: pi.currency || "usd",
-              site,
-
-              stripePaymentIntentId: pi.id,
-              stripeCustomerId: customerId,
-
-              utmSource: utmLastSource,
-              utmMedium: utmLastMedium,
-              utmCampaign: utmLastCampaign,
-              utmContent: utmLastContent,
-              utmTerm: utmLastTerm,
-
-              pagePath: lastPagePath,
-            });
-
-            try {
-              await updateZohoContactId(pi.id, c.contactId);
-            } catch {
-              // ignore
-            }
-
-            await updateContactFunnelStepByEmail({
-              email: email.toLowerCase(),
-              funnelStep: isCanceled ? "canceled" : "failed",
-              lastError: msg,
-            });
-          }
+          await emit({
+            funnel_step: "canceled",
+            email: emailMaybe || null,
+            product_type: productTypeFromMeta,
+            product_name: productTypeFromMeta
+              ? getProductName(productTypeFromMeta as ProductType)
+              : null,
+            processing_status: "failed",
+            stripe_error_code: null,
+            stripe_error_message: msg,
+            delivery_status: null,
+            delivery_error: null,
+            abandon_reason: "canceled",
+          });
         } catch (e) {
-          console.error("Zoho sync failed for failed/canceled (non-critical)", {
+          console.error("emitFunnelEvent canceled failed (non-critical)", {
             payment_intent_id: pi.id,
             error: errToMessage(e),
           });
@@ -229,7 +332,111 @@ export const stripeCircleWebhook = onRequest(
       }
 
       // ---------------------------------------------------
-      // SUCCEEDED
+      // FAILED
+      // ---------------------------------------------------
+      if (event.type === "payment_intent.payment_failed") {
+        const msg = "Payment failed";
+
+        console.log("Payment failed", {
+          payment_intent_id: pi.id,
+          event: safeId(event.id),
+          type: event.type,
+          stripe_status: pi.status,
+          email: emailMaybe || undefined,
+          reason: msg,
+        });
+
+        try {
+          await upsertPaymentBaseFromIntent(pi, event.id);
+        } catch (e) {
+          console.error("Upsert payment base failed (failed)", {
+            payment_intent_id: pi.id,
+            error: errToMessage(e),
+          });
+        }
+
+        try {
+          await markFunnelStepAdvanceOnly(pi.id, "failed");
+          await updateProcessingStatus(pi.id, "failed", msg);
+        } catch (e) {
+          console.error("Firestore update failed for failed", {
+            payment_intent_id: pi.id,
+            error: errToMessage(e),
+          });
+        }
+
+        try {
+          await emit({
+            funnel_step: "payment_failed",
+            email: emailMaybe || null,
+            product_type: productTypeFromMeta,
+            product_name: productTypeFromMeta
+              ? getProductName(productTypeFromMeta as ProductType)
+              : null,
+            processing_status: "failed",
+            stripe_error_code: pi.last_payment_error?.code ?? null,
+            stripe_error_message: msg,
+            delivery_status: null,
+            delivery_error: null,
+            abandon_reason: null,
+          });
+        } catch (e) {
+          console.error("emitFunnelEvent payment_failed failed (non-critical)", {
+            payment_intent_id: pi.id,
+            error: errToMessage(e),
+          });
+        }
+
+        // Zoho best-effort (NO UTM)
+        try {
+          const email = cleanStr(metadata.email) || cleanStr(pi.receipt_email);
+          const pt = cleanStr(metadata.product_type);
+
+          if (email && pt) {
+            const { firstName, lastName } = splitName(metadata.name);
+
+            const c = await createOrUpdateContact({
+              email: email.toLowerCase(),
+              firstName,
+              lastName,
+              phone: cleanStr(metadata.phone),
+
+              productType: pt,
+              amount: typeof pi.amount === "number" ? pi.amount : 0,
+              currency: pi.currency || "usd",
+              site,
+
+              stripePaymentIntentId: pi.id,
+              stripeCustomerId: customerId ?? undefined,
+              leadSource: leadSource ?? undefined,
+            });
+
+            try {
+              await updateZohoContactId(pi.id, c.contactId);
+            } catch {
+              // ignore
+            }
+
+            await updateContactFunnelStepByEmail({
+              email: email.toLowerCase(),
+              funnelStep: "failed",
+              lastError: msg,
+              checkoutStatus: "Payment Failed",
+            });
+          }
+        } catch (e) {
+          console.error("Zoho sync failed for payment_failed (non-critical)", {
+            payment_intent_id: pi.id,
+            error: errToMessage(e),
+          });
+        }
+
+        res.status(200).send("Accepted");
+        return;
+      }
+
+      // ---------------------------------------------------
+      // SUCCEEDED gate
       // ---------------------------------------------------
       if (pi.status !== "succeeded") {
         res.status(200).send("Payment not succeeded");
@@ -247,6 +454,15 @@ export const stripeCircleWebhook = onRequest(
         res.status(200).send(`Invalid payment data: ${validation.errors.join(", ")}`);
         return;
       }
+
+      const normalizedProductType =
+        productTypeFromMeta || (validation.productType ? String(validation.productType) : null);
+
+      const productNameHuman = validation.productType
+        ? getProductName(validation.productType as ProductType)
+        : productTypeFromMeta
+          ? getProductName(productTypeFromMeta as ProductType)
+          : null;
 
       // Always upsert base doc early
       try {
@@ -283,10 +499,42 @@ export const stripeCircleWebhook = onRequest(
       // Firestore: paid (advance-only)
       await markFunnelStepAdvanceOnly(pi.id, "paid");
 
-      // Zoho contact (even if delivery fails)
+      try {
+        await updateProcessingStatus(pi.id, "processing");
+      } catch {
+        // ignore
+      }
+
+      // Analytics: paid
+      try {
+        await emit({
+          funnel_step: "paid",
+          email: validation.email || null,
+          product_type: normalizedProductType,
+          product_name: productNameHuman,
+          processing_status: "processing",
+          delivery_status: null,
+          delivery_error: null,
+          abandon_reason: null,
+          // для paid логично оставить event.created (Stripe)
+          event_time_override: isoFromStripeEvent(event),
+        });
+      } catch (e) {
+        console.error("emitFunnelEvent paid failed (non-critical)", {
+          payment_intent_id: pi.id,
+          error: errToMessage(e),
+        });
+      }
+
+      // Zoho contact
       let contactId: string | undefined;
       try {
         const { firstName, lastName } = splitName(metadata.name);
+
+        console.log("Creating NEW Zoho contact", {
+          email: validation.email,
+          productType: String(validation.productType),
+        });
 
         const c = await createOrUpdateContact({
           email: validation.email,
@@ -300,15 +548,8 @@ export const stripeCircleWebhook = onRequest(
           site,
 
           stripePaymentIntentId: pi.id,
-          stripeCustomerId: customerId,
-
-          utmSource: utmLastSource,
-          utmMedium: utmLastMedium,
-          utmCampaign: utmLastCampaign,
-          utmContent: utmLastContent,
-          utmTerm: utmLastTerm,
-
-          pagePath: lastPagePath,
+          stripeCustomerId: customerId ?? undefined,
+          leadSource: leadSource ?? undefined,
         });
 
         contactId = c.contactId;
@@ -317,9 +558,10 @@ export const stripeCircleWebhook = onRequest(
         await updateContactFunnelStepByEmail({
           email: validation.email,
           funnelStep: "paid",
+          checkoutStatus: "Paid",
         });
 
-        console.log("Zoho contact synced", { payment_intent_id: pi.id, contactId });
+        console.log("Zoho contact synced", { payment_intent_id: pi.id, contactId, c: c });
       } catch (e) {
         console.error("Zoho contact sync failed", {
           payment_intent_id: pi.id,
@@ -327,7 +569,7 @@ export const stripeCircleWebhook = onRequest(
         });
       }
 
-      // Delivery (Circle etc.)
+      // Delivery
       try {
         await processPayment(pi);
 
@@ -337,7 +579,39 @@ export const stripeCircleWebhook = onRequest(
         await updateContactFunnelStepByEmail({
           email: validation.email,
           funnelStep: "delivered",
+          checkoutStatus: "Delivered",
         });
+
+        // ✅ Campaigns tags: purchase_completed logic
+        try {
+          await applyPurchaseCampaignTags(pi);
+        } catch (e) {
+          console.error("applyPurchaseCampaignTags failed (non-critical)", {
+            payment_intent_id: pi.id,
+            error: errToMessage(e),
+          });
+        }
+
+        // Analytics: delivered
+        try {
+          await emit({
+            funnel_step: "delivered",
+            email: validation.email || null,
+            product_type: normalizedProductType,
+            product_name: productNameHuman,
+            processing_status: "completed",
+            delivery_status: "delivered",
+            delivery_error: null,
+            abandon_reason: null,
+            zoho_contact_id: contactId ?? null,
+            event_time_override: new Date().toISOString(),
+          });
+        } catch (e) {
+          console.error("emitFunnelEvent delivered failed (non-critical)", {
+            payment_intent_id: pi.id,
+            error: errToMessage(e),
+          });
+        }
       } catch (e) {
         const msg = errToMessage(e);
 
@@ -348,10 +622,31 @@ export const stripeCircleWebhook = onRequest(
         await updateProcessingStatus(pi.id, "failed", msg);
 
         try {
+          await emit({
+            funnel_step: "delivery_failed",
+            email: validation.email || null,
+            product_type: normalizedProductType,
+            product_name: productNameHuman,
+            processing_status: "failed",
+            delivery_status: "failed",
+            delivery_error: msg ?? null,
+            abandon_reason: null,
+            zoho_contact_id: contactId ?? null,
+            event_time_override: new Date().toISOString(),
+          });
+        } catch (e2) {
+          console.error("emitFunnelEvent delivery_failed failed (non-critical)", {
+            payment_intent_id: pi.id,
+            error: errToMessage(e2),
+          });
+        }
+
+        try {
           await updateContactFunnelStepByEmail({
             email: validation.email,
             funnelStep: "delivery_failed",
             lastError: msg,
+            checkoutStatus: "Delivery Failed",
           });
         } catch (e2) {
           console.error("Zoho funnel update failed (delivery_failed)", {
@@ -374,13 +669,17 @@ export const stripeCircleWebhook = onRequest(
             zoho_deal_id: existing.zoho_deal_id,
           });
         } else {
-          if (!contactId && existing?.zoho_contact_id) contactId = existing.zoho_contact_id;
+          if (!contactId && existing?.zoho_contact_id)
+            contactId = existing.zoho_contact_id ?? undefined;
 
           if (!contactId) {
             console.warn("No Zoho contactId, skipping deal creation", { payment_intent_id: pi.id });
           } else {
-            const productName = getProductName(validation.productType as ProductType);
-            const dealName = `${productName} - ${validation.email}`;
+            //FIX!!!!
+            // const dealLayoutId = cleanStr(ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT.value());
+
+            const dealLayoutId = cleanStr(ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT);
+            const dealName = `${productNameHuman ?? "Purchase"} - ${validation.email}`;
 
             const dealId = await createDeal({
               contactId,
@@ -390,24 +689,35 @@ export const stripeCircleWebhook = onRequest(
               productType: String(validation.productType),
               paymentIntentId: pi.id,
               site,
-              customerId,
-
-              utmSource: utmLastSource,
-              utmMedium: utmLastMedium,
-              utmCampaign: utmLastCampaign,
-              utmContent: utmLastContent,
-              utmTerm: utmLastTerm,
-
-              pagePath: lastPagePath,
-
+              customerId: customerId ?? undefined,
               checkoutVariant: cleanStr(metadata.checkout_variant),
-
               layoutId: dealLayoutId,
+              leadSource: leadSource ?? undefined,
             });
 
             if (dealId) {
               await updateZohoDealId(pi.id, dealId);
               console.log("Zoho deal created", { payment_intent_id: pi.id, dealId });
+
+              try {
+                await emit({
+                  funnel_step: "deal_created",
+                  email: validation.email || null,
+                  product_type: normalizedProductType,
+                  product_name: productNameHuman,
+                  processing_status: "completed",
+                  delivery_status: "delivered",
+                  delivery_error: null,
+                  zoho_contact_id: contactId ?? null,
+                  zoho_deal_id: dealId,
+                  event_time_override: new Date().toISOString(),
+                });
+              } catch (e2) {
+                console.error("emitFunnelEvent deal_created failed (non-critical)", {
+                  payment_intent_id: pi.id,
+                  error: errToMessage(e2),
+                });
+              }
             } else {
               console.warn("Zoho deal create returned null", { payment_intent_id: pi.id });
             }
@@ -422,7 +732,13 @@ export const stripeCircleWebhook = onRequest(
 
       await updateProcessingStatus(pi.id, "completed");
 
-      console.log("Webhook finished", { payment_intent_id: pi.id, ms: Date.now() - startedAt });
+      console.log("Webhook finished", {
+        payment_intent_id: pi.id,
+        event: safeId(event.id),
+        ms: Date.now() - startedAt,
+        pagePath,
+      });
+
       res.status(200).send("Success");
     } catch (e) {
       console.error("Webhook fatal error", errToMessage(e));

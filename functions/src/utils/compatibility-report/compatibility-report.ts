@@ -3,6 +3,25 @@ import { storage } from "../../configs/firebase";
 import { calculateCompatibility } from "./compatibility-report.service";
 import Stripe from "stripe";
 import { configs } from "../../configs/env";
+import { upsertContactAndUpdateTags } from "../../lib/zoho-campaigns"
+
+const ALL_COMPAT_STATE_TAGS = [
+  "cc_battle",
+  "cc_truce",
+  "cc_victory",
+  "cc_revolution",
+  "cc_absorption",
+] as const;
+
+function mapCompatTag(typeRaw: string): string | null {
+  const t = (typeRaw || "").trim().toLowerCase();
+  if (t.includes("battle")) return "cc_battle";
+  if (t.includes("truce")) return "cc_truce";
+  if (t.includes("victory")) return "cc_victory";
+  if (t.includes("revolution")) return "cc_revolution";
+  if (t.includes("absorption")) return "cc_absorption";
+  return null;
+}
 
 export async function handleCompatibilityReport(pi: Stripe.PaymentIntent) {
   const email = pi.metadata?.email || pi.receipt_email || "";
@@ -89,6 +108,17 @@ export async function handleCompatibilityReport(pi: Stripe.PaymentIntent) {
   });
 
   console.log("Compatibility report sent to:", email);
+
+  const stateTag = mapCompatTag(compatibility.type);
+
+  const remove = stateTag
+    ? ALL_COMPAT_STATE_TAGS.filter((t) => t !== stateTag)
+    : [...ALL_COMPAT_STATE_TAGS];
+
+  await upsertContactAndUpdateTags(email, {
+    add: ["cc_done", ...(stateTag ? [stateTag] : [])],
+    remove,
+  });
 
   return {
     compatibility_type: compatibility.type,

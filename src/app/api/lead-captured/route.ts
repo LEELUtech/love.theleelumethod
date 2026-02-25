@@ -1,345 +1,457 @@
 // app/api/lead-captured/route.ts
+// lead-captured — server-side
+
+export const runtime = "nodejs";
+
 import { NextRequest, NextResponse } from "next/server";
 import { upsertContactLeadCaptured } from "@/lib/zoho-functions";
+import { emitFunnelEvent } from "@/lib/emitFunnelEvent";
 import { db } from "@/lib/firebase";
 import {
-  collection,
-  doc,
-  getDoc,
-  query,
-  where,
-  limit,
-  getDocs,
-  setDoc,
-  serverTimestamp,
+	collection,
+	doc,
+	query,
+	where,
+	limit,
+	getDocs,
+	getDoc,
+	runTransaction,
+	serverTimestamp,
+	type DocumentData,
 } from "firebase/firestore";
 import { getStripe } from "@/lib/stripe";
-
-type Body = {
-  email: string;
-  paymentIntentId?: string;
-  intentToken?: string;
-
-  pagePath?: string;
-  site?: string;
-
-  // first-touch from client (stored first utm)
-  utmSource?: string;
-  utmMedium?: string;
-  utmCampaign?: string;
-  utmContent?: string;
-  utmTerm?: string;
-};
+import type Stripe from "stripe";
 
 const stripe = getStripe();
+
+type Body = {
+	email: string;
+	paymentIntentId?: string;
+	intentToken?: string;
+
+	site?: string;
+	pagePath?: string;
+
+	firstName?: string;
+	lastName?: string;
+
+	utmSource?: string;
+	utmMedium?: string;
+	utmCampaign?: string;
+	utmContent?: string;
+	utmTerm?: string;
+
+	checkoutVariant?: string;
+	sessionId?: string;
+
+	leadSource?: string;
+
+	// optional (if you decide to send later)
+	salesiqVisitorId?: string;
+};
+
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-function clean(v?: string | null) {
-  const s = (v ?? "").trim();
-  return s ? s : undefined;
+function clean(v?: string | null): string | undefined {
+	const s = (v ?? "").trim();
+	return s ? s : undefined;
 }
 
 function normalizeSite(raw?: string | null): string | undefined {
-  const s = (raw || "").trim();
-  if (!s) return undefined;
+	const s = (raw || "").trim();
+	if (!s) return undefined;
 
-  try {
-    if (s.startsWith("http://") || s.startsWith("https://")) {
-      const host = new URL(s).host.toLowerCase();
-      return host.split(":")[0];
-    }
-  } catch {}
+	try {
+		if (s.startsWith("http://") || s.startsWith("https://")) {
+			return new URL(s).host.split(":")[0].toLowerCase();
+		}
+	} catch {
+		// ignore
+	}
 
-  const host = s.replace(/\/+$/, "").toLowerCase();
-  return host.split(":")[0];
+	return s.split(":")[0].toLowerCase();
 }
 
-function getIncomingSite(req: Request): string | undefined {
-  const raw = req.headers.get("x-forwarded-host") || req.headers.get("host");
-  return normalizeSite(raw);
+function getIncomingSite(req: Request, bodySite?: string): string {
+	const raw =
+		req.headers.get("x-forwarded-host") ||
+		req.headers.get("host") ||
+		bodySite ||
+		process.env.DOMAIN_URL ||
+		"unknown";
+	return normalizeSite(raw) || "unknown";
 }
 
-async function findPaymentDocIdByIntentToken(intentToken: string): Promise<string | null> {
-  const q = query(
-    collection(db, "payments"),
-    where("metadata.intent_token", "==", intentToken),
-    limit(1),
-  );
-  const snap = await getDocs(q);
-  if (snap.empty) return null;
-  return snap.docs[0].id;
+function buildLandingPage(site: string, pagePath?: string) {
+	const pp = clean(pagePath);
+	if (!pp) return null;
+	return `https://${site}${pp.startsWith("/") ? "" : "/"}${pp}`;
 }
 
-function funnelRank(step?: string | null) {
-  switch (step) {
-    case "checkout_viewed":
-      return 10;
-    case "lead_captured":
-      return 20;
-    case "abandoned":
-      return 25;
-    case "checkout_started":
-      return 30;
-    case "paid":
-      return 40;
-    case "delivered":
-      return 50;
-    case "failed":
-    case "canceled":
-      return 60;
-    default:
-      return 0;
-  }
+function nonEmptyString(v: unknown): string | null {
+	if (typeof v !== "string") return null;
+	const s = v.trim();
+	return s ? s : null;
 }
 
-// patch-only helper (no undefined overwrites)
-function patchSet(target: Record<string, unknown>, key: string, value?: unknown) {
-  if (value === undefined) return;
-  target[key] = value;
+function numOrNull(v: unknown): number | null {
+	return typeof v === "number" && Number.isFinite(v) ? v : null;
 }
 
-function isEmptyVal(v: unknown) {
-  if (v === null || v === undefined) return true;
-  if (typeof v === "string" && !v.trim()) return true;
-  return false;
+function stripeMetaStr(pi: Stripe.PaymentIntent, key: string): string | null {
+	return nonEmptyString(
+		(pi.metadata as Record<string, string> | undefined)?.[key],
+	);
+}
+
+async function findPaymentDocIdByIntentToken(token: string) {
+	const q = query(
+		collection(db, "payments"),
+		where("metadata.intent_token", "==", token),
+		limit(1),
+	);
+	const snap = await getDocs(q);
+	if (snap.empty) return null;
+	return snap.docs[0].id;
+}
+
+// ranks to prevent rollback
+const STEP_RANK: Record<string, number> = {
+	checkout_viewed: 10,
+	lead_captured: 20,
+	checkout_started: 30,
+	paid: 40,
+	delivered: 50,
+	delivery_failed: 55,
+	payment_failed: 60,
+	canceled: 60,
+};
+
+function rankOf(step: unknown): number {
+	if (typeof step !== "string") return 0;
+	return STEP_RANK[step] ?? 0;
+}
+
+type PaymentDoc = {
+	funnel_step: string | null;
+
+	email: string | null;
+	first_name: string | null;
+	last_name: string | null;
+	site: string | null;
+	page_path: string | null;
+	checkout_variant: string | null;
+	product_type: string | null;
+
+	amount: number | null;
+	currency: string | null;
+	stripe_status: string | null;
+	stripe_customer_id: string | null;
+
+	utm_first_source: string | null;
+	utm_first_medium: string | null;
+	utm_first_campaign: string | null;
+	utm_first_content: string | null;
+	utm_first_term: string | null;
+
+	utm_last_source: string | null;
+	utm_last_medium: string | null;
+	utm_last_campaign: string | null;
+	utm_last_content: string | null;
+	utm_last_term: string | null;
+
+	lead_source: string | null;
+
+	// optional if you later store it
+	salesiq_visitor_id: string | null;
+};
+
+function asPaymentDoc(data?: DocumentData): PaymentDoc {
+	const d = (data ?? {}) as Record<string, unknown>;
+	return {
+		funnel_step: nonEmptyString(d.funnel_step),
+
+		email: nonEmptyString(d.email),
+		first_name: nonEmptyString(d.first_name),
+		last_name: nonEmptyString(d.last_name),
+		site: nonEmptyString(d.site),
+		page_path: nonEmptyString(d.page_path),
+		checkout_variant: nonEmptyString(d.checkout_variant),
+		product_type: nonEmptyString(d.product_type),
+
+		amount: numOrNull(d.amount),
+		currency: nonEmptyString(d.currency),
+		stripe_status: nonEmptyString(d.stripe_status),
+		stripe_customer_id: nonEmptyString(d.stripe_customer_id),
+
+		utm_first_source: nonEmptyString(d.utm_first_source),
+		utm_first_medium: nonEmptyString(d.utm_first_medium),
+		utm_first_campaign: nonEmptyString(d.utm_first_campaign),
+		utm_first_content: nonEmptyString(d.utm_first_content),
+		utm_first_term: nonEmptyString(d.utm_first_term),
+
+		utm_last_source: nonEmptyString(d.utm_last_source),
+		utm_last_medium: nonEmptyString(d.utm_last_medium),
+		utm_last_campaign: nonEmptyString(d.utm_last_campaign),
+		utm_last_content: nonEmptyString(d.utm_last_content),
+		utm_last_term: nonEmptyString(d.utm_last_term),
+
+		lead_source: nonEmptyString((d.lead_source as unknown) ?? null),
+
+		salesiq_visitor_id: nonEmptyString(
+			(d.salesiq_visitor_id as unknown) ?? null,
+		),
+	};
+}
+
+function stableLeadCapturedEventId(paymentIntentId: string, email: string) {
+	// deterministic: same PI + same email => same event_id (Zoho append still ok, but duplicates collapse logically)
+	return `${paymentIntentId}:lead_captured:${email}`;
 }
 
 export async function POST(req: NextRequest) {
-  const requestId = `lc_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+	const requestId = `lc_${Date.now()}_${Math.random().toString(16).slice(2)}`;
 
-  try {
-    const body = (await req.json()) as Body;
+	try {
+		const body = (await req.json()) as Body;
 
-    const email = clean(body.email)?.toLowerCase();
-    if (!email || !emailRegex.test(email)) {
-      return NextResponse.json({ ok: false, ignored: true, requestId }, { status: 200 });
-    }
+		const email = clean(body.email)?.toLowerCase();
+		const firstName = clean(body.firstName);
+		const lastName = clean(body.lastName);
+		if (!email || !emailRegex.test(email)) {
+			return NextResponse.json({ ok: true, ignored: true });
+		}
 
-    const site = normalizeSite(body.site) || getIncomingSite(req);
-    const pagePath = clean(body.pagePath);
+		const siteFromReq = getIncomingSite(req, body.site);
+		const pagePathIn = clean(body.pagePath);
 
-    // FIRST-touch inputs
-    const utmFirstSource = clean(body.utmSource);
-    const utmFirstMedium = clean(body.utmMedium);
-    const utmFirstCampaign = clean(body.utmCampaign);
-    const utmFirstContent = clean(body.utmContent);
-    const utmFirstTerm = clean(body.utmTerm);
+		let paymentIntentId = clean(body.paymentIntentId);
+		const intentToken = clean(body.intentToken);
 
-    // Resolve PI id: id first, else token -> doc id
-    let paymentIntentId = clean(body.paymentIntentId);
-    const intentToken = clean(body.intentToken);
+		// If no PI id, try find by intent_token in Firestore
+		if (!paymentIntentId && intentToken) {
+			paymentIntentId =
+				(await findPaymentDocIdByIntentToken(intentToken)) ?? undefined;
+		}
 
-    if (!paymentIntentId && intentToken) {
-      paymentIntentId = (await findPaymentDocIdByIntentToken(intentToken)) ?? undefined;
-    }
+		// Zoho snapshot (non-critical)
+		try {
+			await upsertContactLeadCaptured({
+				email,
+				site: siteFromReq,
+				firstName,
+				lastName,
+			});
+		} catch (e) {
+			console.error("Zoho lead_captured failed (non-critical)", {
+				requestId,
+				e,
+			});
+		}
 
-    // Security: if PI id exists, token must exist and match Stripe metadata
-    if (paymentIntentId) {
-      if (!intentToken) {
-        return NextResponse.json(
-          { ok: true, ignored: true, reason: "missing_intentToken", requestId },
-          { status: 200 },
-        );
-      }
+		// If still no PI — we can’t tie to payment record yet
+		if (!paymentIntentId) {
+			return NextResponse.json({ ok: true, deferred: true });
+		}
 
-      try {
-        const pi = await stripe.paymentIntents.retrieve(paymentIntentId);
-        const expected = (pi.metadata?.intent_token || "").trim();
-        if (!expected || expected !== intentToken) {
-          return NextResponse.json(
-            { ok: true, ignored: true, reason: "token_mismatch", requestId },
-            { status: 200 },
-          );
-        }
-      } catch (e) {
-        console.error("Stripe retrieve failed (token check)", { requestId, paymentIntentId, e });
-        return NextResponse.json(
-          { ok: true, ignored: true, reason: "stripe_unavailable", requestId },
-          { status: 200 },
-        );
-      }
-    }
+		// Security: require intent token
+		if (!intentToken) return NextResponse.json({ ok: true, ignored: true });
 
-    // 1) Zoho (non-critical) — writes First_UTM_* and lead_captured
-    try {
-      await upsertContactLeadCaptured({
-        email,
-        site,
-        pagePath,
-        utmSource: utmFirstSource,
-        utmMedium: utmFirstMedium,
-        utmCampaign: utmFirstCampaign,
-        utmContent: utmFirstContent,
-        utmTerm: utmFirstTerm,
-      });
-    } catch (e) {
-      console.error("Zoho lead-captured failed (non-critical)", { requestId, e });
-    }
+		// Stripe verify PI belongs to that intentToken
+		const pi = await stripe.paymentIntents.retrieve(paymentIntentId);
+		if ((pi.metadata?.intent_token || "") !== intentToken) {
+			return NextResponse.json({ ok: true, ignored: true });
+		}
 
-    // 2) Firestore (non-critical) — schema: utm_first_* + (optional mirror) utm_last_*
-    try {
-      if (paymentIntentId) {
-        const paymentRef = doc(collection(db, "payments"), paymentIntentId);
-        const snap = await getDoc(paymentRef);
+		// Stripe snapshot
+		const piAmount = typeof pi.amount === "number" ? pi.amount : null;
+		const piCurrency = pi.currency ?? null;
+		const piStatus = (pi.status as string) ?? null;
+		const piCustomer = pi.customer ? String(pi.customer) : null;
 
-        if (!snap.exists()) {
-          await setDoc(
-            paymentRef,
-            {
-              stripe_payment_intent_id: paymentIntentId,
-              stripe_event_id: null,
+		const piProductType = stripeMetaStr(pi, "product_type");
+		const piSite = stripeMetaStr(pi, "site");
+		const piPagePath = stripeMetaStr(pi, "page_path");
+		const piCheckoutVariant = stripeMetaStr(pi, "checkout_variant");
 
-              email,
-              product_type: null,
+		const piUtmFirstSource = stripeMetaStr(pi, "utm_first_source");
+		const piUtmFirstMedium = stripeMetaStr(pi, "utm_first_medium");
+		const piUtmFirstCampaign = stripeMetaStr(pi, "utm_first_campaign");
+		const piUtmFirstContent = stripeMetaStr(pi, "utm_first_content");
+		const piUtmFirstTerm = stripeMetaStr(pi, "utm_first_term");
 
-              amount: null,
-              currency: null,
-              status: null,
+		const piLeadSource = stripeMetaStr(pi, "lead_source");
 
-              customer_id: null,
+		// incoming fallbacks
+		const utmFirstSourceIn = clean(body.utmSource);
+		const utmFirstMediumIn = clean(body.utmMedium);
+		const utmFirstCampaignIn = clean(body.utmCampaign);
+		const utmFirstContentIn = clean(body.utmContent);
+		const utmFirstTermIn = clean(body.utmTerm);
 
-              site: site ?? null,
-              page_path: pagePath ?? null,
-              checkout_variant: null,
+		const checkoutVariantIn = clean(body.checkoutVariant);
+		const leadSourceIn = clean(body.leadSource);
 
-              // first-touch
-              utm_first_source: utmFirstSource ?? null,
-              utm_first_medium: utmFirstMedium ?? null,
-              utm_first_campaign: utmFirstCampaign ?? null,
-              utm_first_content: utmFirstContent ?? null,
-              utm_first_term: utmFirstTerm ?? null,
+		const leadSource =
+			leadSourceIn ||
+			piLeadSource ||
+			piUtmFirstSource ||
+			utmFirstSourceIn ||
+			null;
 
-              // on lead-captured we MAY mirror first-touch into last-touch
-              // update-intent will overwrite last-touch later with true last-touch
-              utm_last_source: utmFirstSource ?? null,
-              utm_last_medium: utmFirstMedium ?? null,
-              utm_last_campaign: utmFirstCampaign ?? null,
-              utm_last_content: utmFirstContent ?? null,
-              utm_last_term: utmFirstTerm ?? null,
+		const salesiqVisitorIdIn = clean(body.salesiqVisitorId);
 
-              first_touch_at: serverTimestamp(),
-              last_touch_at: serverTimestamp(),
+		// Firestore: advance-only
+		const ref = doc(db, "payments", paymentIntentId);
 
-              metadata: {
-                ...(intentToken ? { intent_token: intentToken } : {}),
-              },
+		let becameLeadCapturedNow = false;
 
-              processing_status: "processing",
-              funnel_step: "lead_captured",
+		await runTransaction(db, async (tx) => {
+			const snap = await tx.get(ref);
+			const cur = asPaymentDoc(snap.exists() ? snap.data() : undefined);
 
-              delivery_status: "not_started",
-              delivery_error: null,
+			const curRank = rankOf(cur.funnel_step);
+			const nextRank = rankOf("lead_captured");
 
-              zoho_contact_id: null,
-              zoho_deal_id: null,
-              zoho_synced_at: null,
+			const patch: Record<string, unknown> = {
+				updated_at: serverTimestamp(),
 
-              locked_by: null,
-              lock_expires_at: null,
+				// do not overwrite if already set
+				email: cur.email ?? email,
+				site: cur.site ?? siteFromReq,
+			};
 
-              attempts: 0,
-              created_at: serverTimestamp(),
-              processed_at: serverTimestamp(),
-              error: null,
+			if (!cur.first_name && firstName) patch.first_name = firstName;
+			if (!cur.last_name && lastName) patch.last_name = lastName;
 
-              intent_token: intentToken ?? null,
-            },
-            { merge: true },
-          );
-        } else {
-          const prev = (snap.data() as Record<string, unknown>) ?? {};
-          const prevStep = (prev?.["funnel_step"] ?? null) as string | null;
+			if (!cur.page_path) patch.page_path = pagePathIn ?? piPagePath ?? null;
 
-          // keep more advanced step if already progressed
-          const nextStep =
-            funnelRank(prevStep) >= funnelRank("checkout_started") ? prevStep : "lead_captured";
+			if (!cur.checkout_variant) {
+				patch.checkout_variant = checkoutVariantIn ?? piCheckoutVariant ?? null;
+			}
 
-          const patch: Record<string, unknown> = {
-            email,
-            funnel_step: nextStep,
-            processed_at: serverTimestamp(),
-          };
+			if (!cur.product_type) patch.product_type = piProductType ?? null;
 
-          if (site) patchSet(patch, "site", site);
-          if (pagePath) patchSet(patch, "page_path", pagePath);
+			// first-touch never overwrite: prefer cur -> stripe -> incoming
+			if (!cur.utm_first_source)
+				patch.utm_first_source = piUtmFirstSource ?? utmFirstSourceIn ?? null;
+			if (!cur.utm_first_medium)
+				patch.utm_first_medium = piUtmFirstMedium ?? utmFirstMediumIn ?? null;
+			if (!cur.utm_first_campaign)
+				patch.utm_first_campaign =
+					piUtmFirstCampaign ?? utmFirstCampaignIn ?? null;
+			if (!cur.utm_first_content)
+				patch.utm_first_content =
+					piUtmFirstContent ?? utmFirstContentIn ?? null;
+			if (!cur.utm_first_term)
+				patch.utm_first_term = piUtmFirstTerm ?? utmFirstTermIn ?? null;
 
-          // first-touch: set ONLY if missing
-          if (isEmptyVal(prev["utm_first_source"]) && utmFirstSource)
-            patchSet(patch, "utm_first_source", utmFirstSource);
-          if (isEmptyVal(prev["utm_first_medium"]) && utmFirstMedium)
-            patchSet(patch, "utm_first_medium", utmFirstMedium);
-          if (isEmptyVal(prev["utm_first_campaign"]) && utmFirstCampaign)
-            patchSet(patch, "utm_first_campaign", utmFirstCampaign);
-          if (isEmptyVal(prev["utm_first_content"]) && utmFirstContent)
-            patchSet(patch, "utm_first_content", utmFirstContent);
-          if (isEmptyVal(prev["utm_first_term"]) && utmFirstTerm)
-            patchSet(patch, "utm_first_term", utmFirstTerm);
+			// stripe snapshot if missing
+			if (cur.amount === null) patch.amount = piAmount ?? null;
+			if (!cur.currency) patch.currency = piCurrency ?? null;
+			if (!cur.stripe_status) patch.stripe_status = piStatus ?? null;
+			if (!cur.stripe_customer_id)
+				patch.stripe_customer_id = piCustomer ?? null;
 
-          // OPTIONAL: mirror first-touch to last-touch on lead-captured (can be removed if you want)
-          if (utmFirstSource) patchSet(patch, "utm_last_source", utmFirstSource);
-          if (utmFirstMedium) patchSet(patch, "utm_last_medium", utmFirstMedium);
-          if (utmFirstCampaign) patchSet(patch, "utm_last_campaign", utmFirstCampaign);
-          if (utmFirstContent) patchSet(patch, "utm_last_content", utmFirstContent);
-          if (utmFirstTerm) patchSet(patch, "utm_last_term", utmFirstTerm);
+			// lead_source (store once)
+			if (!cur.lead_source && leadSource) patch.lead_source = leadSource;
 
-          // timestamps
-          patch["last_touch_at"] = serverTimestamp();
-          if (isEmptyVal(prev["first_touch_at"])) patch["first_touch_at"] = serverTimestamp();
+			// optional: store salesiq visitor id (store once)
+			if (!cur.salesiq_visitor_id && salesiqVisitorIdIn) {
+				patch.salesiq_visitor_id = salesiqVisitorIdIn;
+			}
 
-          await setDoc(paymentRef, patch, { merge: true });
-        }
-      }
-    } catch (e) {
-      console.error("Firestore lead-captured update failed (non-critical)", { requestId, e });
-    }
+			// advance-only
+			if (nextRank > curRank) {
+				patch.funnel_step = "lead_captured";
+				becameLeadCapturedNow = true;
+			}
 
-    // 3) Stripe metadata update (non-critical) - MERGE (do not lose intent_token)
-    // lead-captured writes FIRST-touch keys: utm_first_*
-    try {
-      if (paymentIntentId) {
-        const pi = await stripe.paymentIntents.retrieve(paymentIntentId);
-        const existing = (pi.metadata ?? {}) as Record<string, string>;
+			tx.set(ref, patch, { merge: true });
+		});
 
-        const md: Record<string, string> = {
-          ...existing,
+		const afterSnap = await getDoc(ref);
+		const final = asPaymentDoc(
+			afterSnap.exists() ? afterSnap.data() : undefined,
+		);
 
-          intent_token: existing.intent_token || intentToken || "",
-          email,
+		const docSite = final.site ?? piSite ?? siteFromReq;
+		const docPagePath = final.page_path ?? piPagePath ?? pagePathIn ?? null;
 
-          ...(site ? { site } : {}),
-          ...(pagePath ? { page_path: pagePath } : {}),
+		// Analytics (best-effort) — dedup: stable event_id
+		// Also: if you want STRICT "only once", you can gate by becameLeadCapturedNow.
+		try {
+			await emitFunnelEvent({
+				event_id: stableLeadCapturedEventId(paymentIntentId, email),
+				event_time: new Date().toISOString(),
+				source: "api:lead-captured",
+				funnel_step: "lead_captured",
 
-          // FIRST TOUCH ONLY — do NOT overwrite if already present
-          ...(utmFirstSource && !clean(existing.utm_first_source)
-            ? { utm_first_source: utmFirstSource }
-            : {}),
-          ...(utmFirstMedium && !clean(existing.utm_first_medium)
-            ? { utm_first_medium: utmFirstMedium }
-            : {}),
-          ...(utmFirstCampaign && !clean(existing.utm_first_campaign)
-            ? { utm_first_campaign: utmFirstCampaign }
-            : {}),
-          ...(utmFirstContent && !clean(existing.utm_first_content)
-            ? { utm_first_content: utmFirstContent }
-            : {}),
-          ...(utmFirstTerm && !clean(existing.utm_first_term)
-            ? { utm_first_term: utmFirstTerm }
-            : {}),
+				payment_intent_id: paymentIntentId,
+				intent_token: intentToken,
+				email,
 
-          updated_at: new Date().toISOString(),
-        };
+				site: docSite,
+				landing_page: buildLandingPage(docSite, docPagePath ?? undefined),
+				page_path: docPagePath,
+				checkout_variant:
+					final.checkout_variant ??
+					checkoutVariantIn ??
+					piCheckoutVariant ??
+					null,
 
-        if (!md.intent_token) delete md.intent_token;
+				product_type: final.product_type ?? piProductType ?? null,
+				amount: final.amount ?? piAmount ?? null,
+				currency: final.currency ?? piCurrency ?? null,
 
-        await stripe.paymentIntents.update(paymentIntentId, { metadata: md });
-      }
-    } catch (e) {
-      console.error("Stripe metadata update failed (non-critical)", { requestId, e });
-    }
+				stripe_status: piStatus,
+				stripe_customer_id: piCustomer,
 
-    return NextResponse.json({ ok: true, requestId }, { status: 200 });
-  } catch (err: unknown) {
-    console.error("lead-captured fatal:", { requestId, err });
-    return NextResponse.json({ ok: false, requestId }, { status: 200 });
-  }
+				lead_source: final.lead_source ?? leadSource,
+
+				utm_first_source:
+					final.utm_first_source ??
+					piUtmFirstSource ??
+					utmFirstSourceIn ??
+					null,
+				utm_first_medium:
+					final.utm_first_medium ??
+					piUtmFirstMedium ??
+					utmFirstMediumIn ??
+					null,
+				utm_first_campaign:
+					final.utm_first_campaign ??
+					piUtmFirstCampaign ??
+					utmFirstCampaignIn ??
+					null,
+				utm_first_content:
+					final.utm_first_content ??
+					piUtmFirstContent ??
+					utmFirstContentIn ??
+					null,
+				utm_first_term:
+					final.utm_first_term ?? piUtmFirstTerm ?? utmFirstTermIn ?? null,
+
+				session_id: clean(body.sessionId) ?? null,
+
+				// nice to have in analytics
+				salesiq_visitor_id:
+					final.salesiq_visitor_id ?? salesiqVisitorIdIn ?? null,
+
+				// if you later use it
+				processing_status: becameLeadCapturedNow ? "updated" : null,
+			});
+		} catch (e) {
+			console.error("emitFunnelEvent lead_captured failed (non-critical)", {
+				requestId,
+				paymentIntentId,
+				e,
+			});
+		}
+
+		return NextResponse.json({ ok: true });
+	} catch (err) {
+		console.error("lead-captured fatal", err);
+		return NextResponse.json({ ok: false });
+	}
 }

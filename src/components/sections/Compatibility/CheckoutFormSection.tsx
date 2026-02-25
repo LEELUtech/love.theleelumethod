@@ -16,6 +16,9 @@ import { useCheckoutStore } from "@/store/useCheckoutStore";
 
 import { formatPriceFromCents } from "@/helpers";
 import { COMPATIBILITY_REPORT, DATE_FORMAT } from "@/utils/constants";
+import { getStoredFirstUTM } from "@/utils/utm-tracker";
+import { salesiqIdentify } from "@/lib/tracking/salesiqIdentify";
+import { saveEmailToLS } from "@/lib/tracking/localEmail";
 
 import {
 	StripeCardPart,
@@ -42,6 +45,25 @@ const initialForm: CompatibilityCheckoutForm = {
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+function getClientContext() {
+	if (typeof window === "undefined") return {};
+
+	const utm = getStoredFirstUTM();
+
+	return {
+		site: window.location.hostname,
+		pagePath: window.location.pathname,
+
+		utmSource: utm?.utm_source,
+		utmMedium: utm?.utm_medium,
+		utmCampaign: utm?.utm_campaign,
+		utmContent: utm?.utm_content,
+		utmTerm: utm?.utm_term,
+	};
+}
+
+type ClientCtx = ReturnType<typeof getClientContext>;
+
 // Main checkout form component for Compatibility Report
 export default function CheckoutFormSection() {
 	const productId = COMPATIBILITY_REPORT;
@@ -60,6 +82,8 @@ export default function CheckoutFormSection() {
 		markSuccess,
 		reset,
 		intentKey,
+		intentId,
+		intentToken,
 	} = useCheckoutStore();
 
 	// local state
@@ -69,6 +93,14 @@ export default function CheckoutFormSection() {
 	const [submitAttempted, setSubmitAttempted] = React.useState(false);
 	const [errors, setErrors] = React.useState<FormErrors>({});
 	const [hadSecretOnce, setHadSecretOnce] = React.useState(false);
+
+	// ctx as state (not ref) - fixed once after mount
+	const [ctx, setCtx] = React.useState<ClientCtx>({});
+
+	// lead capture refs
+	const lastLeadEmailRef = React.useRef<string>("");
+	const lastLeadEmailWithPIRef = React.useRef<string>("");
+	const leadAbortRef = React.useRef<AbortController | null>(null);
 
 	const payFnRef = React.useRef<null | (() => Promise<void>)>(null);
 	const [payState, setPayState] = React.useState<StripePayState>({
@@ -112,6 +144,11 @@ export default function CheckoutFormSection() {
 		!payState.canPay ||
 		payState.paying;
 	
+  // Initialize client context once after mount
+	React.useEffect(() => {
+		setCtx(getClientContext());
+	}, []);
+
   // Track if we've had a clientSecret (for UI state)
 	React.useEffect(() => {
 		if (clientSecret) setHadSecretOnce(true);
@@ -143,7 +180,15 @@ export default function CheckoutFormSection() {
 
 		if (status !== "idle") return;
 
-		createIntent({ productType: productId }).catch(() => {});
+		if (!ctx?.site) return;
+
+		createIntent({
+			productType: productId,
+			sessionId: localStorage.getItem("ff_session_id") || undefined,
+			salesiqVisitorId:
+				localStorage.getItem("ff_salesiq_visitor_id") || undefined,
+			...(ctx || {}),
+		}).catch(() => {});
 	}, [
 		product,
 		productLoading,
@@ -153,6 +198,7 @@ export default function CheckoutFormSection() {
 		status,
 		createIntent,
 		reset,
+		ctx,
 	]);
 
   // Sync checkout errors to payment state
@@ -168,6 +214,62 @@ export default function CheckoutFormSection() {
 		};
 	}, [reset]);
 
+  // Lead capture
+	const captureLeadInternal = React.useCallback(
+		async (opts?: { force?: boolean }) => {
+			const email = (form.email || "").trim().toLowerCase();
+			if (!email) return;
+
+			if (!emailRegex.test(email)) return;
+
+			const hasPI = !!intentId && !!intentToken;
+			const force = !!opts?.force;
+
+			if (!force && lastLeadEmailRef.current === email) return;
+			if (hasPI && lastLeadEmailWithPIRef.current === email) return;
+
+			lastLeadEmailRef.current = email;
+			if (hasPI) lastLeadEmailWithPIRef.current = email;
+
+			leadAbortRef.current?.abort();
+			const controller = new AbortController();
+			leadAbortRef.current = controller;
+
+			salesiqIdentify({ email });
+
+			const payload = {
+				paymentIntentId: intentId || undefined,
+				intentToken: intentToken || undefined,
+				email,
+				sessionId: localStorage.getItem("ff_session_id") || undefined,
+				salesiqVisitorId: localStorage.getItem("ff_salesiq_visitor_id") || undefined,
+				...(ctx || {}),
+			};
+
+			try {
+				await fetch("/api/lead-captured", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(payload),
+					signal: controller.signal,
+					keepalive: true,
+				});
+			} catch {
+				// silent
+			}
+		},
+		[form.email, intentId, intentToken, ctx],
+	);
+
+  // Catch-up: if PI/token appeared later - send again (once) with PI/token
+	React.useEffect(() => {
+		const email = (form.email || "").trim().toLowerCase();
+		if (!email) return;
+		if (!intentId || !intentToken) return;
+
+		captureLeadInternal({ force: true }).catch(() => {});
+	}, [intentId, intentToken, form.email, captureLeadInternal]);
+
   // Form field updater
 	const setField = React.useCallback(
 		<K extends keyof CompatibilityCheckoutForm>(key: K, value: string) => {
@@ -175,6 +277,12 @@ export default function CheckoutFormSection() {
 		},
 		[],
 	);
+
+	const onEmailBlur: React.FocusEventHandler<HTMLInputElement> =
+		React.useCallback(() => {
+			saveEmailToLS(form.email);
+			captureLeadInternal().catch(() => {});
+		}, [form.email, captureLeadInternal]);
 
 	const handleStripeStateChange = React.useCallback((s: StripePayState) => {
 		setPayState((prev) => {
@@ -323,6 +431,7 @@ export default function CheckoutFormSection() {
 										placeholder="Email address"
 										value={form.email}
 										onChange={(e) => setField("email", e.target.value)}
+										onBlur={onEmailBlur}
 									/>
 									{showEmailError ? (
 										<p className="mt-1 text-xs font-lato text-brand-primary">

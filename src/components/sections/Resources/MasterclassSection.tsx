@@ -5,7 +5,7 @@ import Image from "next/image";
 import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
 import Button from "@/components/ui/Button";
 import { WEBINAR_URL } from "@/utils/constants";
-import RotateOnView from "@/components/ui/RotateOnView"
+import RotateOnView from "@/components/ui/RotateOnView";
 
 export function MasterclassSection() {
 
@@ -83,6 +83,12 @@ export function MasterclassSection() {
 						size="md"
 						className="w-full md:w-[60%]"
 						href={WEBINAR_URL}
+						trackingData={{
+							cta_name: "save_seat",
+							cta_text: "Save My Seat",
+							cta_target_url: WEBINAR_URL,
+							cta_location: "masterclass_section",
+						}}
 					>
 						Save My Seat
 					</Button>

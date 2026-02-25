@@ -10,8 +10,8 @@ function assertSandboxZohoEnv() {
   if (!process.env.ZOHO_CLIENT_SECRET_LILYCHYSTOFAT)
     throw new Error("ZOHO_CLIENT_SECRET_LILYCHYSTOFAT missing");
 
-  if (!process.env.ZOHO_REFRESH_TOKEN_LILYCHYSTOFAT)
-    throw new Error("ZOHO_REFRESH_TOKEN_LILYCHYSTOFAT missing");
+  if (!process.env.ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT)
+    throw new Error("ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT missing");
 
   if (!process.env.ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT)
     throw new Error("ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT missing");
@@ -27,7 +27,7 @@ async function refreshSandboxAccessToken(): Promise<string> {
 
   const res = await axios.post(url, null, {
     params: {
-      refresh_token: process.env.ZOHO_REFRESH_TOKEN_LILYCHYSTOFAT,
+      refresh_token: process.env.ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT,
       client_id: process.env.ZOHO_CLIENT_ID_LILYCHYSTOFAT,
       client_secret: process.env.ZOHO_CLIENT_SECRET_LILYCHYSTOFAT,
       grant_type: "refresh_token",

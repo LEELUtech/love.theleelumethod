@@ -1,3 +1,4 @@
+// app/.../CheckoutFormSection.tsx
 "use client";
 
 import React from "react";
@@ -33,6 +34,8 @@ import {
 	VIP_IMMERSION,
 } from "@/utils/constants";
 import { getStoredFirstUTM } from "@/utils/utm-tracker";
+import { salesiqIdentify } from "@/lib/tracking/salesiqIdentify";
+import { saveEmailToLS } from "@/lib/tracking/localEmail";
 
 const pk = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!;
 const stripePromise = loadStripe(pk);
@@ -69,20 +72,23 @@ interface CheckoutFormSectionProps {
 
 // helper: collect context (site/pagePath/utm) on client side
 function getClientContext() {
-  if (typeof window === "undefined") return {};
-  const utm = getStoredFirstUTM();
+	if (typeof window === "undefined") return {};
 
-  return {
-    site: window.location.host,
-    pagePath: window.location.pathname,
+	const utm = getStoredFirstUTM();
 
-    utmSource: utm?.utm_source,
-    utmMedium: utm?.utm_medium,
-    utmCampaign: utm?.utm_campaign,
-    utmContent: utm?.utm_content,
-    utmTerm: utm?.utm_term,
-  };
+	return {
+		site: window.location.hostname,
+		pagePath: window.location.pathname,
+
+		utmSource: utm?.utm_source,
+		utmMedium: utm?.utm_medium,
+		utmCampaign: utm?.utm_campaign,
+		utmContent: utm?.utm_content,
+		utmTerm: utm?.utm_term,
+	};
 }
+
+type ClientCtx = ReturnType<typeof getClientContext>;
 
 export default function CheckoutFormSection({
 	productId,
@@ -116,7 +122,6 @@ export default function CheckoutFormSection({
 	);
 
 	// ctx as state (not ref) - fixed once after mount
-	type ClientCtx = ReturnType<typeof getClientContext>;
 	const [ctx, setCtx] = React.useState<ClientCtx>({});
 
 	React.useEffect(() => {
@@ -173,8 +178,16 @@ export default function CheckoutFormSection({
 		if (clientSecret && intentKey === expectedKey) return;
 		if (status !== "idle") return;
 
+		if (!ctx?.site) return;
+
 		// create-intent receives first-touch ctx
-		createIntent({ productType: productId, ...(ctx || {}) }).catch(() => {});
+		createIntent({
+			productType: productId,
+			sessionId: localStorage.getItem("ff_session_id") || undefined,
+			salesiqVisitorId:
+				localStorage.getItem("ff_salesiq_visitor_id") || undefined,
+			...(ctx || {}),
+		}).catch(() => {});
 	}, [
 		product,
 		productLoading,
@@ -184,7 +197,7 @@ export default function CheckoutFormSection({
 		status,
 		createIntent,
 		reset,
-		ctx, // important
+		ctx,
 	]);
 
 	React.useEffect(() => {
@@ -215,7 +228,7 @@ export default function CheckoutFormSection({
 
 	// --- lead-captured ---
 	const lastLeadEmailRef = React.useRef<string>("");
-	const lastLeadEmailWithPIRef = React.useRef<string>(""); 
+	const lastLeadEmailWithPIRef = React.useRef<string>("");
 	const leadAbortRef = React.useRef<AbortController | null>(null);
 
 	const captureLeadInternal = React.useCallback(
@@ -223,17 +236,20 @@ export default function CheckoutFormSection({
 			const email = (billing.email || "").trim().toLowerCase();
 			if (!email) return;
 
-			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+			const emailRegex = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/;
 			if (!emailRegex.test(email)) return;
 
 			const hasPI = !!intentId && !!intentToken;
 
-			// regular deduplication (blur)
-			if (!opts?.force && lastLeadEmailRef.current === email) return;
+			const force = !!opts?.force;
 
-			// separate deduplication for "catch-up with PI"
+			// if same email already sent (any mode) - don't resend
+			if (!force && lastLeadEmailRef.current === email) return;
+
+			// if PI exists and we already sent this email WITH PI - don't resend
 			if (hasPI && lastLeadEmailWithPIRef.current === email) return;
 
+			// ✅ always remember the email we attempted to send (even force)
 			lastLeadEmailRef.current = email;
 			if (hasPI) lastLeadEmailWithPIRef.current = email;
 
@@ -245,8 +261,17 @@ export default function CheckoutFormSection({
 				paymentIntentId: intentId || undefined,
 				intentToken: intentToken || undefined,
 				email,
-				...(ctx || {}), // ctx state
+				firstName: (billing.firstName || "").trim() || undefined,
+				lastName: (billing.lastName || "").trim() || undefined,
+				sessionId: localStorage.getItem("ff_session_id") || undefined,
+				...(ctx || {}),
 			};
+
+			salesiqIdentify({
+				email,
+				firstName: (billing.firstName || "").trim() || undefined,
+				lastName: (billing.lastName || "").trim() || undefined,
+			});
 
 			try {
 				await fetch("/api/lead-captured", {
@@ -260,13 +285,21 @@ export default function CheckoutFormSection({
 				// silent
 			}
 		},
-		[billing.email, intentId, intentToken, ctx], // added ctx
+		[
+			billing.email,
+			billing.firstName,
+			billing.lastName,
+			intentId,
+			intentToken,
+			ctx,
+		],
 	);
 
 	const onEmailBlur: React.FocusEventHandler<HTMLInputElement> =
 		React.useCallback(() => {
+			saveEmailToLS(billing.email);
 			captureLeadInternal().catch(() => {});
-		}, [captureLeadInternal]);
+		}, [billing.email, captureLeadInternal]);
 
 	// catch-up: if PI/token appeared later - send again (once) with PI/token
 	React.useEffect(() => {
