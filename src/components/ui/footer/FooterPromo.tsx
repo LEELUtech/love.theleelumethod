@@ -6,8 +6,11 @@ export interface IFooterPromo {
   title: string;
   description: string[];
   subtitle?: string;
-  link: {
+  link?: {
     href: string;
+    label: string;
+  };
+  button?: {
     label: string;
   };
 }
@@ -17,7 +20,7 @@ interface Props extends IFooterPromo {
 }
 
 export const FooterPromo = (props: Props) => {
-  const { title, description, subtitle, link, buttonClassName } = props;
+  const { title, description, subtitle, link, buttonClassName, button } = props;
 
   return (
     <section className='bg-brand-white py-12 md:py-16 lg:py-[80px]'>
@@ -79,10 +82,17 @@ export const FooterPromo = (props: Props) => {
                 </p>
               )}
             </div>
+            {link && (
+              <Button variant='primary' size='md' className={`w-full md:w-[55%] ${buttonClassName}`} href={link.href}>
+                {link.label}
+              </Button>
+            )}
 
-            <Button variant='primary' size='md' className={`w-full md:w-[55%] ${buttonClassName}`} href={link.href}>
-              {link.label}
-            </Button>
+            {button && (
+              <Button variant='dark' size='md' className={`w-full lg:w-[55%] xs:text-[12px] ${buttonClassName}`}>
+                {button.label}
+              </Button>
+            )}
           </div>
         </div>
       </div>

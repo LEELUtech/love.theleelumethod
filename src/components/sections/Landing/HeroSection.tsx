@@ -25,15 +25,13 @@ const HeroSection = () => {
           {/* Overlay Card */}
           <div className='absolute left-1/2 -translate-x-1/2 bottom-[-440px] md:bottom-[-360px] w-[calc(100%-32px)] md:w-[calc(100%-64px)] max-w-[360px] md:max-w-[560px] z-40'>
             <div className='rounded-[20px] bg-brand-white shadow-[0_4px_20px_rgba(0,0,0,0.05)] px-4 md:px-8 pt-4 md:pt-6 pb-6 md:pb-8 text-center'>
-              <p className='font-canela font-thin text-[40px] md:text-[44px] italic text-brand-black'>
+              <p className='font-canela font-thin text-[42px]/[90px] md:text-[44px] italic text-brand-black'>
                 Love isn’t a mystery.
               </p>
 
-              <h1 className='font-canela text-brand-black font-thin leading-[126%] text-[48px] md:text-[56px] mb-[24px]'>
-                IT’S A DANCE.
-              </h1>
+              <h1 className='font-canela text-brand-black font-thin text-[42px]/[90px] mb-[24px]'>IT’S A DANCE.</h1>
 
-              <p className='text-brand-black text-body font-lato leading-[26px] md:text-[16px] md:leading-[28px] mb-[24px]'>
+              <p className='text-brand-black-100 font-lato  md:text-[17px]/[26px] mb-[24px]'>
                 Every relationship has a rhythm. When you know the steps, it flows. When you don’t, it’s chaos. Whether
                 you’re fighting for the lead or standing alone on the floor, the truth is the same: you’ve been dancing
                 without knowing the steps.
@@ -43,7 +41,7 @@ const HeroSection = () => {
                 START THE DECODE
               </Button>
 
-              <p className='text-[#5A5757] text-sm md:text-[14px] leading-[24px] md:leading-[26px] mt-[32px]'>
+              <p className='text-brand-gray text-[15px]/[24px] mt-[32px]'>
                 I am Lily Chystofat and I have used my proprietary numerological system, LeeluTech, to decode the
                 mechanics of human connection across thousands of sessions. I reveal the hidden choreography of your own
                 life. So you can stop guessing and start moving with clarity.

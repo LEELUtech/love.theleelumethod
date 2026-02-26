@@ -24,7 +24,7 @@ export function MasterclassSection() {
             <p className='font-canela text-body font-light leading-[26px] text-[#5A5757] mb-6 text-center md:text-left lg:text-left'>
               What you&apos;ll learn:
             </p>
-            <ul className='list-none pl-2 md:pl-8 font-lato text-body font-medium leading-[26px] space-y-4 text-[#5A5757]'>
+            <ul className='pl-2 md:pl-4 font-lato text-body font-medium leading-[26px] space-y-4 text-[#5A5757]'>
               <li className='flex gap-2 items-start'>
                 <div className='w-4 h-4 pt-2 flex-shrink-0'>
                   <Image src='/icons/arrow_right.svg' alt='Arrow' width={10} height={10} className='object-contain' />
@@ -53,56 +53,51 @@ export function MasterclassSection() {
             Save My Seat
           </Button>
         </div>
-        {/* <div className="order-2 md:order-2 flex pt-4 md:pt-0 lg:pt-0 justify-center w-full">
-					<div className="relative w-full max-w-[642px]  aspect-[642/466]">
-						<Image
-							src="/images/resources/resources-webinar-section.png"
-							alt="Decoded Love Masterclass"
-							fill
-							priority
-							quality={100}
-							sizes="(min-width:1024px) 642px, (min-width:768px) 80vw, 90vw"
-						/>
+        <div className='order-2 md:order-2 flex pt-4 md:pt-0 lg:pt-0 justify-center w-full'>
+          <div className='relative w-full max-w-[642px]  aspect-[642/466]'>
+            <Image
+              src='/images/resources/resources-webinar-section.png'
+              alt='Decoded Love Masterclass'
+              fill
+              priority
+              quality={100}
+              sizes='(min-width:1024px) 642px, (min-width:768px) 80vw, 90vw'
+            />
 
-						<div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
-							<div className="flex items-center justify-center rounded-full bg-white shadow-[0px_6px_20px_rgba(0,0,0,0.12)] size-[86px] md:size-[96px] lg:size-[104px]">
-								<RotateOnView
-									duration={5}
-									amount={0.5}
-									className="relative size-[70px] md:size-[70px] lg:size-[80px]"
-									ease="easeOut"
-								>
-									<Image
-										src="/icons/ornament_2/ornament_2_black.svg"
-										alt=""
-										fill
-										priority
-									/>
-								</RotateOnView>
-							</div>
-						</div>
-						<ArcAutoOnce
-							className="absolute inset-0 -z-0 -translate-y-[35%] pointer-events-none -translate-x-[-26%]"
-							endAt={0.52}
-							// flightStart={0.03}
-							durMs={1500}
-							arrowRotateDeg={254}
-							arrowScale={0.8}
-							arrowCenterX={6.5}
-							arrowCenterY={-8}
-							arrowOffsetY={3}
-							// arcRx={220}
-							// arcRy={208}
-							// endAtByDevice={{ mobile: 0.87, desktop: 0.9 }}
-							arcEnd={{ x: 40, y: 450 }}
-							arcRx={1}
-							arcRy={1}
-							flightStart={0.01}
-							flatStart={150}
-							arcStart={{ x: 200, y: 100 }}
-						/>
-					</div>
-				</div> */}
+            <div className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20'>
+              <div className='flex items-center justify-center rounded-full bg-white shadow-[0px_6px_20px_rgba(0,0,0,0.12)] size-[86px] md:size-[96px] lg:size-[104px]'>
+                <RotateOnView
+                  duration={5}
+                  amount={0.5}
+                  className='relative size-[70px] md:size-[70px] lg:size-[80px]'
+                  ease='easeOut'
+                >
+                  <Image src='/icons/ornament_2/ornament_2_black.svg' alt='' fill priority />
+                </RotateOnView>
+              </div>
+            </div>
+            <ArcAutoOnce
+              className='absolute inset-0 -z-0 -translate-y-[35%] pointer-events-none -translate-x-[-26%]'
+              endAt={0.52}
+              // flightStart={0.03}
+              durMs={1500}
+              arrowRotateDeg={254}
+              arrowScale={0.8}
+              arrowCenterX={6.5}
+              arrowCenterY={-8}
+              arrowOffsetY={3}
+              // arcRx={220}
+              // arcRy={208}
+              // endAtByDevice={{ mobile: 0.87, desktop: 0.9 }}
+              arcEnd={{ x: 40, y: 450 }}
+              arcRx={1}
+              arcRy={1}
+              flightStart={0.01}
+              flatStart={150}
+              arcStart={{ x: 200, y: 100 }}
+            />
+          </div>
+        </div>
       </div>
     </section>
   );

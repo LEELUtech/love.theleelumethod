@@ -78,8 +78,16 @@ function LearnCard({ title, text }: Card) {
   );
 }
 
+const descriptions = [
+  'This is not a standard "webinar." I am not here to just motivate you.',
+  'I am running a live diagnostic session to demonstrate The Leelu Method in real-time.',
+  'I am taking a select group of women and revealing the hidden architecture of their relationships.',
+];
+
 export default function DecodedLoveCohortSection() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const ornamentIcon = <Image src='/icons/ornament_1.svg' alt='' width={24} height={24} />;
+
   return (
     <>
       <section className='relative py-16 pb-[150px] lg:pb-[200px] lg:py-24'>
@@ -94,10 +102,10 @@ export default function DecodedLoveCohortSection() {
               THE “DECODED LOVE” LIVE COHORT
             </p>
 
-            <p className='font-lato font-medium text-[#5A5757] text-body leading-[26px]'>
-              This is not a standard “webinar”. I am not here to just motivate you. I am running a live diagnostic
-              session to demonstrate the LeeluTech System in real-time. I am taking a select group of women and
-              revealing the hidden architecture of their relationships.
+            <p className='flex flex-col font-lato font-medium text-[#5A5757] text-body leading-[26px]'>
+              {descriptions.map((d, idx) => (
+                <span key={idx}>{d}</span>
+              ))}
             </p>
           </div>
 
@@ -128,18 +136,12 @@ export default function DecodedLoveCohortSection() {
           <CohortLearnCards />
           {/* Bottom CTA */}
           <div className='lg:mt-[112px] mt-[50px] text-center'>
-            <p className='font-canela font-light text-brand-deep text-[32px] leading-[36px] max-w-[884px] mx-auto'>
-              Discover the 5 secrets to choosing the right partner, creating healthy connection, and ending the cycle of
-              disappointment.
+            <p className=' mb-[56px] md:mb-[80px] font-canela font-light text-brand-deep text-[32px] leading-[36px] max-w-[884px] mx-auto'>
+              Also: Discover the 3 secrets to choosing the right partner, creating healthy connection, and ending the
+              cycle of disappointment.
             </p>
 
-            <Button
-              variant='dark'
-              leftIcon={ornamentIcon}
-              leftIconBg='transparent'
-              size='md'
-              className='w-full lg:w-[35%] xs:text-[12px] mt-[32px]'
-            >
+            <Button variant='dark' size='md' className=' w-[340px] text-[18px]'>
               Save My Seat
             </Button>
           </div>
