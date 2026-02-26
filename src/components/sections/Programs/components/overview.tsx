@@ -14,7 +14,7 @@ export interface IProgramOverview {
     id: number;
     title: {
       label: string;
-      size: '[32px]/[100%]' | '[48px]/[100%]';
+      size: '[32px]/[126%]' | '[48px]/[126%]';
     };
     subtitle?: string;
     description?: string;
@@ -33,7 +33,7 @@ export const ProgramOverview = ({ title, subtitle, description, overviews, cards
     <article>
       <Flex vertical align='center' gap={20} className='mb-[48px] lg:mb-[60px]'>
         {title}
-        <h4 className='text-[24px]/[100%] lg:text-[32px] font-canela font-light'>{subtitle}</h4>
+        <h4 className='text-[24px]/[126%] lg:text-[32px] font-canela font-light'>{subtitle}</h4>
         {description && (
           <p className='text-center lg:text-left text-[17px]/[26px] font-lato  text-brand-gray'>{description}</p>
         )}
@@ -63,7 +63,7 @@ export const ProgramOverview = ({ title, subtitle, description, overviews, cards
               <h4 className='text-[32px]/[110%] text-left font-canela font-light mb-7 text-brand-deep'>{card.title}</h4>
 
               {card.subtitle && (
-                <h5 className='text-[32px]/[100%] text-left font-canela font-light mb-6 text-brand-deep'>
+                <h5 className='text-[32px]/[126%] text-left font-canela font-light mb-6 text-brand-deep'>
                   {card.subtitle}
                 </h5>
               )}
@@ -91,11 +91,11 @@ export const ProgramOverview = ({ title, subtitle, description, overviews, cards
         <div className='flex-1 pt-[72px] lg:pt-[112px]'>
           <ul className='flex flex-col gap-[48px]'>
             {overviews.map((item) => {
-              const iconMt = item.title.size === '[32px]/[100%]' ? 'mt-0' : 'mt-3';
+              const iconMt = item.title.size === '[32px]/[126%]' ? 'mt-0' : 'mt-3';
 
               return (
                 <li key={item.id}>
-                  <h4 className='flex items-start gap-4 text-[32px]/[100%] font-canela font-light mb-8 text-brand-deep'>
+                  <h4 className='flex items-start gap-4 text-[32px]/[126%] font-canela font-light mb-8 text-brand-deep'>
                     <div className={`w-[27px] h-[33px] ${iconMt}`}>
                       <StarIC width={27} height={33} className='text-brand-primary' />
                     </div>

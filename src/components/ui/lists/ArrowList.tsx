@@ -16,7 +16,7 @@ export const ArrowList = ({ list, mb = 0, type = 'dark' }: Props) => {
           <div className='w-2.5 h-[9px]'>
             <ArrowIC className='mt-2' />
           </div>
-          <p>{listItem}</p>
+          <p className='text-left'>{listItem}</p>
         </Flex>
       ))}
     </ul>

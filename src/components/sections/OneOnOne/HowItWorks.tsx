@@ -121,7 +121,7 @@ export const HowItWorks = () => {
             </RotateOnView>
           </div>
         </div>
-        <h2 className='relative mt-[290px] font-thin text-[48px] lg:text-[60px]/[100%] font-canela text-brand-deep mb-[20px] text-center z-10'>
+        <h2 className='relative mt-[290px] font-thin text-[48px] lg:text-[60px]/[126%] font-canela text-brand-deep mb-[20px] text-center z-10'>
           HOW IT WORKS:
         </h2>
         <p className=' font-canela font-light mb-8 text-[24px] lg:text-[32px]/[150%] text-center md:mb-[64px] text-[#0A0B0D] max-w-[638px] mx-auto'>

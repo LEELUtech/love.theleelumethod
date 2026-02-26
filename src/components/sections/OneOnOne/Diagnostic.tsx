@@ -30,7 +30,7 @@ export const Diagnostic = () => {
             {content.subtitle}
           </h3>
 
-          <p className='text-[32px]/[100%] font-canela font-thin order-4 md:text-body md:font-lato md:font-normal  md:order-3 mb-6'>
+          <p className='text-[32px]/[126%] font-canela font-thin order-4 md:text-body md:font-lato md:font-normal  md:order-3 mb-6'>
             {content.methodTitle}
           </p>
 

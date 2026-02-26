@@ -164,7 +164,7 @@ export const guidedBreakthroughOverviewData: IProgramOverview = {
   overviews: [
     {
       id: 1,
-      title: { label: '90-minute private Session with Lilly', size: '[48px]/[100%]' },
+      title: { label: '90-minute private Session with Lilly', size: '[48px]/[126%]' },
       description: 'A one-on-one strategy session focused entirely on you.Inside this call:',
       list: [
         'We review your personalized reports',
@@ -175,7 +175,7 @@ export const guidedBreakthroughOverviewData: IProgramOverview = {
     },
     {
       id: 2,
-      title: { label: 'Priority Live Case Review With Lily', size: '[48px]/[100%]' },
+      title: { label: 'Priority Live Case Review With Lily', size: '[48px]/[126%]' },
       subtitle: 'During group calls, your case is prioritized. If you choose to participate:',
       list: [
         'Your relationship is analyzed live',

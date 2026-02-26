@@ -45,7 +45,7 @@ export const VIPImmersionReceive = () => {
             </div>
 
             <Flex vertical className='flex-1 mt-[115px] flex-col items-center lg:items-start'>
-              <h3 className='text-[48px]/[100%] max-w-[600px] mb-4 text-left font-light font-canela text-brand-deep'>
+              <h3 className='text-[48px]/[126%] max-w-[600px] mb-4 text-left font-light font-canela text-brand-deep'>
                 {title}
               </h3>
               <h6 className='text-[17px]/[26px] mb-[30px] text-left font-lato text-brand-gray'>{subtitle}</h6>

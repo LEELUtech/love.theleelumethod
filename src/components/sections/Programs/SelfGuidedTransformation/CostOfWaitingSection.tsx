@@ -78,7 +78,7 @@ export default function CostOfWaitingSection() {
             </div>
           </div>
 
-          <h2 className='font-thin text-[48px] lg:text-[60px]/[100%] font-canela text-brand-deep mb-8'>
+          <h2 className='font-thin text-[48px] lg:text-[60px]/[126%] font-canela text-brand-deep mb-8'>
             THE COST OF WAITING
           </h2>
 

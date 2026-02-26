@@ -50,7 +50,7 @@ export const VIPImmersionAudit = () => {
             <ArrowList list={list} />
 
             <p className='font-lato text-[17px]/[26px] text-brand-gray'>{description_bottom}</p>
-            <h4 className='font-canela text-[32px]/[100%] font-light text-brand-deep'>{highlight}</h4>
+            <h4 className='font-canela text-[32px]/[126%] font-light text-brand-deep'>{highlight}</h4>
           </Flex>
 
           <div className=' flex-1 w-full'>

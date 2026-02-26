@@ -9,6 +9,7 @@ import { Flex } from 'antd';
 import { ProgramsReceive } from '../components/receive';
 import { selfGuidedModuleData, selfGuidedOverviewData } from './static';
 import { ProgramOverview } from '../components/overview';
+import { OpacityTitleOrnamentIC } from '@/components/icons';
 
 const content = {
   phase: {
@@ -84,13 +85,7 @@ const VideoContent = () => (
     />
 
     <div className='absolute -bottom-[50%] left-1/2 -translate-x-1/2 w-full flex justify-center'>
-      <Image
-        src='/icons/ornament_3.svg'
-        alt=''
-        width={700}
-        height={700}
-        className='w-full max-w-none opacity-60 filter brightness-0 invert'
-      />
+      <OpacityTitleOrnamentIC stopColor='#ffffff' />
     </div>
 
     <div className='absolute top-[62%] left-1/2 -translate-x-1/2 translate-y-1/2 z-20'>
@@ -122,7 +117,7 @@ export default function MechanicsDeliverablesSection() {
           <ProgramsReceive {...selfGuidedModuleData} />
 
           <article>
-            <h4 className='text-[32px]/[100%] mt-[105px] text-brand-black-100 mb-[90px] text-left font-light'>
+            <h4 className='text-[32px]/[126%] mt-[105px] text-brand-black-100 mb-[90px] text-left font-light'>
               {phase.title}
             </h4>
             <ul className='flex flex-wrap gap-x-6 gap-y-[80px] mb-5 justify-center'>
@@ -143,9 +138,9 @@ export default function MechanicsDeliverablesSection() {
           </div>
 
           <Flex vertical className='flex-1  mb-[78px] lg:mb-0'>
-            <h2 className='text-[48px]/[100%] font-canela font-light text-brand-deep mb-4'>{workbook.title}</h2>
+            <h2 className='text-[48px]/[126%] font-canela font-light text-brand-deep mb-4'>{workbook.title}</h2>
             <h5 className='text-[17px]/[26px] font-lato text-brand-gray mb-8'>{workbook.subtitle}</h5>
-            <p className='text-[32px]/[100%] font-canela font-light text-brand-gray'>{workbook.description}</p>
+            <p className='text-[32px]/[126%] font-canela font-light text-brand-gray'>{workbook.description}</p>
           </Flex>
         </article>
 

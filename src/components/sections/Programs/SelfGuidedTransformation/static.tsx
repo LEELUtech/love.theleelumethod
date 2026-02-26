@@ -62,7 +62,7 @@ export const selfGuidedModuleData: IProgramsReceive = {
 
 export const selfGuidedOverviewData: IProgramOverview = {
   title: (
-    <h2 className='text-[48px]/[100%] lg:text-[122px] text-center font-canela font-thin text-brand-deep'>
+    <h2 className='text-[48px]/[126%] lg:text-[122px] text-center font-canela font-thin text-brand-deep'>
       <span className='text-brand-primary'>Personalized</span> Reports
     </h2>
   ),
@@ -118,7 +118,7 @@ export const selfGuidedOverviewData: IProgramOverview = {
   overviews: [
     {
       id: 1,
-      title: { label: 'Live Support During The Program', size: '[32px]/[100%]' },
+      title: { label: 'Live Support During The Program', size: '[32px]/[126%]' },
       list: [
         '2 Live Group Q&A Calls with Lily ( End of Week 1 and End of Week 2 )',
         '60 days of community support inside Circle',
@@ -129,13 +129,13 @@ export const selfGuidedOverviewData: IProgramOverview = {
     },
     {
       id: 2,
-      title: { label: 'Ongoing Access After Completition', size: '[32px]/[100%]' },
+      title: { label: 'Ongoing Access After Completition', size: '[32px]/[126%]' },
       description: 'All Essentials students receive:',
       list: ['Monthly live Q&A calls with Lily for 3 months', 'Bring any relationship or compatibility questions'],
     },
     {
       id: 3,
-      title: { label: 'Program Duration: Approximately 2-3 weeks with guided pacing', size: '[32px]/[100%]' },
+      title: { label: 'Program Duration: Approximately 2-3 weeks with guided pacing', size: '[32px]/[126%]' },
     },
   ],
 };

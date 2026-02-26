@@ -43,11 +43,11 @@ export default function AnimatedMechanicStep({ id, icon, module_start, module_en
         </div>
 
         <h2 className='mt-[46px] font-canela text-[60px]/[71px] mb-1 font-light text-[#C89F26]'>{id}.</h2>
-        <h3 className='font-canela text-[42px]/[100%] mb-2 font-thin text-brand-deep'>{title}</h3>
-        <h4 className='font-canela text-[20px]/[100%] text-[#010101] mb-[42px]'>
+        <h3 className='font-canela text-[42px]/[126%] mb-2 font-thin text-brand-deep'>{title}</h3>
+        <h4 className='font-canela text-[20px]/[126%] text-[#010101] mb-[42px]'>
           (Modules {module_start} - {module_end})
         </h4>
-        <h5 className='font-canela text-[20px]/[100%] text-[#010101] mb-6'>{subtitle}</h5>
+        <h5 className='text-left font-canela text-[20px]/[126%] text-[#010101] mb-6'>{subtitle}</h5>
 
         <ul className='list-disc list-inside flex flex-col justify-start mb-[46px]'>
           {modules.map((module, index) => (

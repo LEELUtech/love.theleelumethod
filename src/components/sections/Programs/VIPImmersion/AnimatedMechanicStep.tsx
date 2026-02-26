@@ -40,7 +40,7 @@ export default function AnimatedMechanicStep({ id, icon, title, description }: P
         </div>
 
         <h2 className='mt-[46px] font-canela text-[60px]/[71px] mb-7 font-light text-[#C89F26]'>{id}.</h2>
-        <h3 className='font-canela text-[32px]/[100%] mb-4 font-light text-brand-deep'>{title}</h3>
+        <h3 className='font-canela text-[32px]/[126%] mb-4 font-light text-brand-deep'>{title}</h3>
 
         <p className='font-lato font-medium text-[17px]/[26px] tracking-[3%] text-[#5A5757]'>{description}</p>
       </div>

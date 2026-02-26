@@ -51,9 +51,9 @@ export const ProgramResult = ({ title, link, investment, description }: Props) =
         <h2
           className='
               relative z-10 mt-8 md:mt-4 font-canela font-thin text-brand-deep tracking-normal
-              text-[60px] leading-[100%]
-              md:text-[84px] md:leading-[0.95]
-              lg:text-[112px] lg:leading-[100%]
+              text-[60px] leading-[126%]
+              md:text-[84px] md:leading-[126%]
+              lg:text-[112px] lg:leading-[126%]
             '
         >
           {title}
