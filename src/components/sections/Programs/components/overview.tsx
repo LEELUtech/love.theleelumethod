@@ -63,13 +63,11 @@ export const ProgramOverview = ({ title, subtitle, description, overviews, cards
               <h4 className='text-[32px]/[110%] text-left font-canela font-light mb-7 text-brand-deep'>{card.title}</h4>
 
               {card.subtitle && (
-                <h5 className='text-[32px]/[126%] text-left font-canela font-light mb-6 text-brand-deep'>
-                  {card.subtitle}
-                </h5>
+                <h5 className='text-[17px]/[26px] text-left font-lato mb-10 text-brand-gray'>{card.subtitle}</h5>
               )}
 
               {card.description && (
-                <p className='text-[17px]/[26px] text-left font-lato mb-11 text-brand-gray'>{card.description}</p>
+                <p className='text-[17px]/[26px] text-left font-lato mb-6 text-brand-gray'>{card.description}</p>
               )}
 
               <ul className='text-[17px]/[26px] font-lato text-brand-gray pl-4'>
@@ -91,11 +89,11 @@ export const ProgramOverview = ({ title, subtitle, description, overviews, cards
         <div className='flex-1 pt-[72px] lg:pt-[112px]'>
           <ul className='flex flex-col gap-[48px]'>
             {overviews.map((item) => {
-              const iconMt = item.title.size === '[32px]/[126%]' ? 'mt-0' : 'mt-3';
+              const iconMt = item.title.size === '[32px]/[126%]' ? 'mt-1' : 'mt-3';
 
               return (
                 <li key={item.id}>
-                  <h4 className='flex items-start gap-4 text-[32px]/[126%] font-canela font-light mb-8 text-brand-deep'>
+                  <h4 className='flex items-start gap-3 text-[32px]/[126%] font-canela font-light mb-8 text-brand-deep'>
                     <div className={`w-[27px] h-[33px] ${iconMt}`}>
                       <StarIC width={27} height={33} className='text-brand-primary' />
                     </div>

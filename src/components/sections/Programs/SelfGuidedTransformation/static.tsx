@@ -9,8 +9,7 @@ export const selfGuidedHeroData: IProgramsHero = {
   title: 'THE PROTOCOL ESSENTIALS',
   description: 'Code-Level Transformation',
   imgSrc: '/images/lily/lily_4.jpg',
-  subtitle: `YOUR RELATIONSHIP ISN'T BROKEN. YOU'RE RUNNING THE`,
-  subtitleBottom: 'WRONG CODE.',
+  subtitle: `YOUR RELATIONSHIP ISN'T BROKEN. YOU'RE RUNNING THE WRONG CODE.`,
   content: `You don’t need another conversation about "feelings." You need a structural audit of why your relationships keep hitting the same wall.`,
   buttonLabel: 'ENROLL NOW',
 };

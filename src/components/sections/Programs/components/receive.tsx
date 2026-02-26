@@ -79,24 +79,17 @@ export const ProgramsReceive = (props: Props) => {
       {additionalModule && (
         <Flex
           component='article'
-          className='flex-col-reverse lg:flex-row lg:space-between  lg:gap-[90px] xl:gap-[110px] 2xl:gap-[130px] mt-[140px]'
+          className='flex-col-reverse md:flex-row lg:space-between gap-10 lg:gap-[90px] xl:gap-[110px] 2xl:gap-[130px]'
         >
-          <div className='flex-1 flex w-full max-w-[494px] flex-col items-center justify-center'>
-            <div className='relative w-full max-w-[494px] aspect-[494/670] overflow-hidden'>
-              <Image
-                src={additionalModule.imgSrc}
-                alt={additionalModule.title}
-                fill
-                quality={100}
-                priority
-                className='object-cover object-top md:object-top lg:object-top rounded-t-[999px]'
-              />{' '}
+          <div className='flex-1 flex w-full max-w-full lg:max-w-[496px] flex-col items-center justify-center'>
+            <div className='relative w-full max-w-[496px] aspect-[496/535] overflow-hidden rounded-t-[999px]'>
+              <Image src={additionalModule.imgSrc} alt={additionalModule.title} fill quality={100} />
             </div>
           </div>
 
           <Flex vertical className='flex-1 mt-[115px]'>
             <h3
-              className='text-[48px]/[100%] max-w-[485px] text-left font-light font-canela text-brand-deep'
+              className='text-[48px]/[126%] max-w-[485px] text-left font-light font-canela text-brand-deep'
               style={{ marginBottom: description ? 16 : 36 }}
             >
               {additionalModule.title}

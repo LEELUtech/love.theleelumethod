@@ -6,6 +6,15 @@ import { IProgramResult } from '../components/result';
 import { IProgramItWorks } from '../components/it-works';
 import { OrnamentTitle } from '@/components/ui/titles/OrnamentTitle';
 
+export const guidedBreakthroughHeroData: IProgramsHero = {
+  title: 'GUIDED BREAKTHROUGH',
+  imgSrc: '/images/lily/lily_3.png',
+  subtitle: 'Personalized Diagnosis and Priority Access',
+  content: `Stop guessing and get the precise correction.`,
+  contentBottom: `You don't just need the framework. You need someone to diagnose your specific pattern—and hand you the exact fix.`,
+  buttonLabel: 'GET PERSONAL',
+};
+
 export const guidedBreakthroughWhoThisData: IProgramsWhoThis = {
   title: 'WHO THIS IS FOR:',
   items: [
@@ -31,15 +40,6 @@ export const guidedBreakthroughWhoThisData: IProgramsWhoThis = {
     },
   ],
   imgSrc: '/images/programs/guided-breakthrough/GUIDED_IMMERSION _TOP_1.png',
-};
-
-export const guidedBreakthroughHeroData: IProgramsHero = {
-  title: 'GUIDED BREAKTHROUGH',
-  imgSrc: '/images/lily/lily_3.png',
-  subtitle: 'Personalized Diagnosis and Priority Access',
-  content: `Stop guessing and get the precise correction.`,
-  contentBottom: `You don't just need the framework. You need someone to diagnose your specific pattern—and hand you the exact fix.`,
-  buttonLabel: 'GET PERSONAL',
 };
 
 export const guidedBreakthroughModuleData: IProgramsReceive = {

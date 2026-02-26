@@ -7,9 +7,8 @@ import { IVIPImmersionOverview } from './Overwie';
 
 export const vipImmersionHeroData: IProgramsHero = {
   title: 'THE VIP IMMERSION',
-  description: 'Code-Level Transformation',
   imgSrc: '/images/lily/lily_4.png',
-  subtitle: `IMMEDIATE INTERVENTION. PERMANENT RECONSTRUCTION.`,
+  subtitle: `Immediate Intervention. Permanent Reconstruction.`,
   content: `For the woman who needs the problem solved immediately. Real-time access. Deep-tissue deprogramming..`,
   buttonLabel: 'ENROLL NOW',
 };

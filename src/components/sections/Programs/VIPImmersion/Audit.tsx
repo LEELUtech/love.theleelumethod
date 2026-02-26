@@ -36,7 +36,7 @@ export const VIPImmersionAudit = () => {
       }}
     >
       <div className='max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-[112px] 2xl:px-[180px] relative py-[80px] lg:py-[110px]'>
-        <Flex className='flex-col-reverse lg:flex-row lg:space-between mt-[175px]  lg:gap-[90px] xl:gap-[110px] 2xl:gap-[130px]'>
+        <Flex className='flex-col-reverse lg:flex-row lg:space-between lg:mt-[175px] lg:gap-[90px] xl:gap-[110px] 2xl:gap-[130px]'>
           <Flex className='flex-1' vertical gap={24}>
             <h3 className='text-[48px]/[120%] font-canela font-light text-brand-deep'>{title}</h3>
 
@@ -54,7 +54,7 @@ export const VIPImmersionAudit = () => {
           </Flex>
 
           <div className=' flex-1 w-full'>
-            <div className='relative w-full max-w-[518px]  aspect-[518/820]'>
+            <div className='relative mx-auto w-full max-w-[400px] mb-10 lg:mb-0 lg:mx-0 lg:max-w-[518px] aspect-[518/820]'>
               <div>
                 <div className='relative max-w-[518px] aspect-[518/408] '>
                   <Image src='/images/resources/resources-section-3.png' alt='Resources Section 3' fill priority />

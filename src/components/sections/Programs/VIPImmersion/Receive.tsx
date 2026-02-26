@@ -36,22 +36,22 @@ export const VIPImmersionReceive = () => {
 
           <Flex
             component='article'
-            className='flex-col-reverse lg:flex-row lg:space-between mt-[175px]  lg:gap-[90px] xl:gap-[110px] 2xl:gap-[130px]'
+            className='flex flex-col-reverse md:flex-row lg:space-between gap-10 lg:gap-[90px] xl:gap-[110px] 2xl:gap-[130px]'
           >
-            <div className='flex-1 flex w-full max-w-[496px] flex-col items-center justify-center'>
-              <div className='relative w-full max-w-[496px] aspect-[496/535]'>
+            <div className='flex-1 flex w-full max-w-full lg:max-w-[496px] flex-col items-center justify-center'>
+              <div className='relative w-full max-w-[496px] aspect-[496/535] overflow-hidden rounded-t-[999px]'>
                 <Image src='/images/lily/lily_1.png' alt={title} fill quality={100} />
               </div>
             </div>
 
-            <Flex vertical className='flex-1 mt-[115px] flex-col items-center lg:items-start'>
-              <h3 className='text-[48px]/[126%] max-w-[600px] mb-4 text-left font-light font-canela text-brand-deep'>
+            <Flex vertical className='flex-1  mt-[60px] lg:mt-[115px] flex-col items-center lg:items-start'>
+              <h3 className='text-[32px]/[126%] lg:text-[48px]/[126%] max-w-[600px] mb-4 text-left font-light font-canela text-brand-deep'>
                 {title}
               </h3>
               <h6 className='text-[17px]/[26px] mb-[30px] text-left font-lato text-brand-gray'>{subtitle}</h6>
               <ArrowList list={list} />
 
-              <p className='text-[17px]/[26px] mt-10 font-lato text-brand-gray'>
+              <p className='text-[17px]/[26px] text-left mt-10 font-lato text-brand-gray'>
                 {description.content} <span className='font-bold'>{description.highlight}</span>
               </p>
             </Flex>

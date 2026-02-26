@@ -7,7 +7,6 @@ export interface IProgramsHero {
   title: string;
   description?: string;
   subtitle: string;
-  subtitleBottom?: string;
   content: string;
   contentBottom?: string;
   buttonLabel: string;
@@ -17,9 +16,9 @@ export interface IProgramsHero {
 interface Props extends IProgramsHero {} // eslint-disable-line @typescript-eslint/no-empty-object-type
 
 export const ProgramsHero = (props: Props) => {
-  const { title, description, subtitle, subtitleBottom, content, contentBottom, buttonLabel, imgSrc } = props;
+  const { title, description, subtitle, content, contentBottom, buttonLabel, imgSrc } = props;
   return (
-    <section className='relative lg:py-[131px] pt-[54px] bg-brand-white overflow-hidden'>
+    <section className='relative pt-10 lg:pt-[80px]  bg-brand-white overflow-hidden'>
       <div className='container px-4 relative z-10'>
         <div
           className='
@@ -119,17 +118,10 @@ export const ProgramsHero = (props: Props) => {
             {title}{' '}
           </h1>
 
-          {description && <p className='text-[17px]/[100%] mb-4 font-canela font-thin'>{description}</p>}
+          {description && <p className='text-[17px]/[126%] mb-4 font-canela font-thin'>{description}</p>}
 
-          <p className='font-canela font-thin text-brand-deep text-center text-[24px] md:text-[28px]'>
+          <p className='font-canela font-thin max-w-[820px] text-brand-deep text-center text-[24px] md:text-[28px]'>
             {subtitle}
-
-            {subtitleBottom && (
-              <>
-                <br />
-                {subtitleBottom}
-              </>
-            )}
           </p>
 
           <p

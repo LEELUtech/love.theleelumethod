@@ -96,15 +96,14 @@ export default function CostOfWaitingSection() {
             <Image src='/icons/yellow_stick.svg' alt='' fill quality={100} />
           </div>
 
-          <p className='text-[17px]/[44px] font-lato text-brand-deep'>
+          <p className='text-[17px]/[26px] font-lato text-brand-deep'>
             This system costs less than 5 therapy sessions—and gives you the diagnostic framework those sessions never
             will.
           </p>
 
-          <p className='font-canela font-normal text-brand-deep text-[32px]/[44px]'>
-            You&apos;re not paying for information. You&apos;re paying for the precise correction
-            <br className='hidden md:block' />
-            that prevents catastrophic decisions.
+          <p className='font-canela font-normal max-w-[820px] mx-auto text-brand-deep text-[32px]/[44px]'>
+            You&apos;re not paying for information. You&apos;re paying for the precise correction that prevents
+            catastrophic decisions.
           </p>
 
           <p className='mt-[57px] font-canela font-thin text-brand-black text-[48px] lg:text-[60px]'>

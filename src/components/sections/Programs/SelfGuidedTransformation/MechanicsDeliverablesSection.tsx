@@ -113,11 +113,11 @@ export default function MechanicsDeliverablesSection() {
       }}
     >
       <div className='max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-[112px] 2xl:px-[180px] relative py-[80px] lg:py-[110px]'>
-        <div className='text-center mb-[150px]'>
+        <div className='text-center mb-[90px] md:mb-[150px]'>
           <ProgramsReceive {...selfGuidedModuleData} />
 
           <article>
-            <h4 className='text-[32px]/[126%] mt-[105px] text-brand-black-100 mb-[90px] text-left font-light'>
+            <h4 className='text-[24px]/[126%] md:text-[32px] mt-[105px] text-brand-black-100 mb-[95px] text-left font-light'>
               {phase.title}
             </h4>
             <ul className='flex flex-wrap gap-x-6 gap-y-[80px] mb-5 justify-center'>
@@ -137,10 +137,14 @@ export default function MechanicsDeliverablesSection() {
             <VideoContent />
           </div>
 
-          <Flex vertical className='flex-1  mb-[78px] lg:mb-0'>
-            <h2 className='text-[48px]/[126%] font-canela font-light text-brand-deep mb-4'>{workbook.title}</h2>
+          <Flex vertical className='flex-1 mb-[78px] lg:mb-0'>
+            <h2 className='text-[32px]/[126%] md:text-[48px]/[126%] font-canela font-light text-brand-deep mb-4'>
+              {workbook.title}
+            </h2>
             <h5 className='text-[17px]/[26px] font-lato text-brand-gray mb-8'>{workbook.subtitle}</h5>
-            <p className='text-[32px]/[126%] font-canela font-light text-brand-gray'>{workbook.description}</p>
+            <p className='text-[24px]/[126%] md:text-[32px]/[126%] font-canela font-light text-brand-deep'>
+              {workbook.description}
+            </p>
           </Flex>
         </article>
 

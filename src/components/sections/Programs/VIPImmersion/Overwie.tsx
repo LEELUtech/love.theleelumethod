@@ -22,14 +22,14 @@ const Card = (props: CardProps) => {
   return (
     <article
       key={id}
-      className='flex flex-col items-center justify-center lg:items-start lg:flex-row lg:justify-between lg:gap-[60px] xl:gap-[90px] 2xl:gap-[130px]'
-      style={{
-        flexDirection: isReversed ? 'row-reverse' : 'row',
-      }}
+      className={`flex flex-col-reverse md:flex-row lg:space-between gap-10 lg:gap-[90px] xl:gap-[110px] 2xl:gap-[130px] ${isReversed ? 'md:flex-row-reverse' : ''}`}
     >
-      <div className='flex-1 max-w-[496px] aspect-[496/761] rounded-[100px] overflow-hidden'>
-        <Image src={imgSrc} width={496} height={761} alt='' className='w-full h-auto' />
-      </div>{' '}
+      <div className='flex-1 flex w-full max-w-full lg:max-w-[496px] flex-col items-center justify-center'>
+        <div className='relative w-full max-w-[496px] aspect-[496/761] overflow-hidden rounded-[100px]'>
+          <Image src={imgSrc} alt={title} fill quality={100} />
+        </div>
+      </div>
+
       <Flex vertical className='flex-1'>
         <h4 className='text-[32px]/[120%] text-left font-canela font-light mb-7 text-brand-deep'>{title}</h4>
 

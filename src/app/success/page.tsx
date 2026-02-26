@@ -39,7 +39,7 @@ export default function SuccessPage() {
             </div>
 
             {/* logo */}
-            <div className='font-light transition text-[24px] md:text-[22px] lg:text-[24px] leading-[100%] font-canela flex items-center gap-2 md:gap-2.5 lg:gap-3 text-brand-black  justify-center md:justify-start mt-[47px]'>
+            <div className='font-light transition text-[24px] md:text-[22px] lg:text-[24px] leading-[126%] font-canela flex items-center gap-2 md:gap-2.5 lg:gap-3 text-brand-black  justify-center md:justify-start mt-[47px]'>
               <span className=' w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 relative flex-shrink-0'>
                 <Image src='/leelu_logo.svg' alt='Lily Chystofat Logo' fill className='object-contain' priority />
               </span>
