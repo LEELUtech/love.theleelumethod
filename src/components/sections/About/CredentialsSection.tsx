@@ -86,7 +86,9 @@ const CredentialsSection = () => {
                   <Image src='/icons/star.svg' alt='' width={20} height={20} className='flex-shrink-0 mt-1' />
                   <div>
                     <h3 className='font-medium text-body font-lato text-[#8F6E0E] mb-3 italic'>{item.title}</h3>
-                    <p className='font-normal text-body text-[#5A5757] font-canela leading-[130%]'>{item.text}</p>
+                    <p className=' lg:max-w-[455px] font-normal text-body text-[#5A5757] font-canela leading-[130%]'>
+                      {item.text}
+                    </p>
                   </div>
                 </div>
               ))}

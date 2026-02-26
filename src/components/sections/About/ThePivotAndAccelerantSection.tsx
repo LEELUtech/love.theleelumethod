@@ -82,7 +82,7 @@ const ThePivotAndAccelerantSection = () => {
               worked 10-hour days calculating complex personality algorithms by hand.
             </p>
 
-            <p className='font-thin font-canela text-[26px] lg:text-[28px] leading-[130%] text-brand-deep'>
+            <p className='font-thin font-canela text-[32px]/[130%] text-brand-deep'>
               If my early discovery was the software, this training was the GPU—the high-speed processor that turned
               basic data into high-frequency intelligence. It stripped away the &quot;woo&quot; and left only the
               mechanics of human engineering.

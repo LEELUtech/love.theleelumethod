@@ -15,7 +15,7 @@ const TheFractureAndLaboratorySection = () => {
           <div className='flex justify-center'>
             <div className='relative mb-[60px] md:mb-0 lg:mb-0 w-[360px] h-[459px] lg:w-[551px] lg:h-[748px] rounded-lg'>
               <Image
-                src='/images/about/fracture_section.png'
+                src='/images/about/about_fracture.png'
                 alt='Person sitting with a laptop'
                 fill
                 priority
@@ -45,12 +45,12 @@ const TheFractureAndLaboratorySection = () => {
               before I spoke a word.
             </p>
 
-            <p className='font-thin font-canela text-[28px] leading-[130%] text-brand-deep lg:mb-[30px] md:mb-[30px] mb-[30px]'>
+            <p className='font-thin font-canela text-[32px]/[130%] text-brand-deep lg:mb-[30px] md:mb-[30px] mb-[30px]'>
               I realized my pain wasn&apos;t random. The pattern was already there, written into my design from day one.
             </p>
 
-            <p className='font-thin font-canela text-[28px] leading-[130%] text-brand-deep lg:mb-[30px] md:mb-[30px] mb-[30px]'>
-              That session was the spark that lit my path into the world of numerology.
+            <p className='font-thin font-canela text-[32px]/[130%] text-brand-deep lg:mb-[30px] md:mb-[30px] mb-[30px]'>
+              That session was the spark that lit my path into the world of numerology and eventually, heelutech.
             </p>
             <Button variant='dark' size='md' className='w-full lg:w-[60%]' href='#checkout'>
               START THE DECODE
@@ -95,7 +95,7 @@ const TheFractureAndLaboratorySection = () => {
               }}
             >
               <RotateOnView
-                duration={10}
+                duration={5}
                 amount={0.2}
                 ease='easeOut'
                 className='absolute inset-0'
