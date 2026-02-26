@@ -54,6 +54,9 @@ module.exports = {
         lg: '1024px',
         xl: '1124px',
         '2xl': '1224px',
+        '3xl': '1400px',
+
+        '4xl': '1500px',
       },
       fontSize: {
         h1: ['60px', { lineHeight: '1.1', fontWeight: '600' }],

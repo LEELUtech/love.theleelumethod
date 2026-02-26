@@ -322,8 +322,9 @@ export default function ChooseYourPathSection() {
           </div>
 
           <Flex>
-            <ul className='min-w-[280px]'>
+            <ul className='min-w-[280px] hidden 4xl:block'>
               <h4 className='font-canela mt-[50px] mb-[80px] text-[36px]/[126%] font-light text-black'> Feature</h4>
+
               {tiers_titles.map((title) => (
                 <li className='h-[70px] text-[24px]/[150%] font-lato text-brand-gray' key={title}>
                   {title}
@@ -331,9 +332,12 @@ export default function ChooseYourPathSection() {
               ))}
             </ul>
 
-            <div className='grid gap-6 md:grid-cols-3'>
+            <div className='w-full grid grid-cols-1 gap-10 3xl:gap-6 justify-center justify-items-stretch 3xl:grid-cols-3 3xl:justify-items-center'>
               {tiers.map((tier) => (
-                <div key={tier.title} className={`relative flex flex-col rounded-3xl bg-white p-8 shadow-lg`}>
+                <div
+                  key={tier.title}
+                  className={`relative flex w-full flex-col rounded-4xl bg-white p-8 shadow-lg 3xl:w-auto`}
+                >
                   {tier.popular && (
                     <span className='absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-[#EB4F68] w-[154px] text-center py-1.5 text-[14px]/[26px] tracking-[10%] font-medium text-white'>
                       <span className="absolute inset-0 bg-[url('/icons/noise.png')] opacity-10"></span>
@@ -341,19 +345,29 @@ export default function ChooseYourPathSection() {
                     </span>
                   )}
 
-                  <h3 className='mx-auto max-w-[200px] text-center font-canela font-thin text-[36px]/[126%] text-brand-black'>
+                  <h3 className='mx-auto  3xl:max-w-[200px] text-center font-canela font-thin text-[36px]/[126%] text-brand-black'>
                     {tier.title}
                   </h3>
 
-                  <ul className='mt-8 flex-1 font-lato text-[18px]/[120%] text-brand-gray'>
+                  <ul className='mt-8 flex flex-col gap-4 3xl:gap-0 flex-1 font-lato text-[18px]/[120%] text-brand-gray'>
                     {tier.features.map((feature, i) => {
                       const isExist = feature !== '-';
 
                       const justifyClass = isExist ? 'justify-start' : 'justify-center';
 
+                      const title = tiers_titles[i];
+
                       return (
-                        <li key={i} className={`flex items-center h-[72px] border-b last:border-none ${justifyClass}`}>
-                          {feature}
+                        <li
+                          key={i}
+                          className={`flex flex-col justify-center 4xl:flex-row 4xl:items-center h-auto 3xl:h-[100px] 4xl:h-[72px] 3xl:border-b last:border-none ${justifyClass}`}
+                        >
+                          <h5 className={`text-brand-gray text-[17px]/[26px] 4xl:hidden`}>{title}</h5>
+                          <span
+                            className={`font-lato font-semibold text-[22px]/[150%] 4xl:font-normal 2xl:text-[18px]`}
+                          >
+                            {feature}
+                          </span>
                         </li>
                       );
                     })}
