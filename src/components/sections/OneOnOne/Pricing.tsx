@@ -147,7 +147,7 @@ const SaveButton = ({ content }: { content: number }) => {
         boxShadow: '0 10px 20px 0 rgba(0, 0, 0, 0.1)',
       }}
     >
-      <span className="absolute inset-0 bg-[url('/icons/noise.png')] opacity-10 pointer-events-none"></span>
+      <span className="absolute inset-0 bg-[url('/icons/noise.png')] opacity-10"></span>
       Save ${content}
     </button>
   );
@@ -168,7 +168,7 @@ export const Pricing = () => {
       </div>
 
       <div className='max-w-[1600px] mx-auto'>
-        <h2 className='pt-[146px] text-[60px]/[100%] text-center mb-[90px] font-thin font-canela text-brand-deep'>
+        <h2 className='pt-[146px] text-[60px]/[126%] text-center mb-[90px] font-thin font-canela text-brand-deep'>
           PRICING STRUCTURE
         </h2>
 
@@ -258,7 +258,7 @@ export const Pricing = () => {
 
                 <div className='mt-auto mb-9 flex flex-col items-center'>
                   {save && <SaveButton content={save} />}
-                  <h6 className='text-[32px]/[100%] text-center font-light font-canela text-[#3C1212] mb-2'>
+                  <h6 className='text-[32px]/[126%] text-center font-light font-canela text-[#3C1212] mb-2'>
                     Investment: ${investment}
                   </h6>
                   <div

@@ -43,6 +43,7 @@ module.exports = {
           'black-100': '#0A0B0D',
           gray: '#41444E',
           'gray-100': '#757986',
+          gold: '#C89F26',
         },
       },
       screens: {

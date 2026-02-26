@@ -1,24 +1,36 @@
-import CheckoutFormSection from "@/components/sections/Checkout/CheckoutFormSection";
-import CostOfWaitingSection from "@/components/sections/Programs/VIPImmersion/CostOfWaitingSection";
-import HeroSection from "@/components/sections/Programs/VIPImmersion/HeroSection";
-import ItWorkedForMeSection from "@/components/sections/Programs/VIPImmersion/ItWorkedForMeSection";
-import MechanicsDeliverablesSection from "@/components/sections/Programs/VIPImmersion/MechanicsDeliverablesSection";
-import TheDiagnosisSection from "@/components/sections/Programs/VIPImmersion/TheDiagnosisSection";
-import TheResultSection from "@/components/sections/Programs/VIPImmersion/TheResultSection";
-import Footer from "@/components/ui/Footer";
-import { VIP_IMMERSION } from "@/utils/constants";
+import CheckoutFormSection from '@/components/sections/Checkout/CheckoutFormSection';
+import { ProgramsHero } from '@/components/sections/Programs/components/hero';
+import { ProgramItWorks } from '@/components/sections/Programs/components/it-works';
+import { ProgramResult } from '@/components/sections/Programs/components/result';
+import { ProgramsWhoThis } from '@/components/sections/Programs/components/who-this';
+import { VIPImmersionAudit } from '@/components/sections/Programs/VIPImmersion/Audit';
+import CostOfWaitingSection from '@/components/sections/Programs/VIPImmersion/CostOfWaitingSection';
+import MechanicsDeliverablesSection from '@/components/sections/Programs/VIPImmersion/MechanicsDeliverablesSection';
+import { VIPImmersionOverview } from '@/components/sections/Programs/VIPImmersion/Overwie';
+import { VIPImmersionReceive } from '@/components/sections/Programs/VIPImmersion/Receive';
+import {
+  vipImmersionHeroData,
+  vipImmersionItWorksData,
+  vipImmersionOverviewData,
+  vipImmersionResultData,
+  vipImmersionWhoThisData,
+} from '@/components/sections/Programs/VIPImmersion/static';
+import { VIP_IMMERSION } from '@/utils/constants';
 
 export default function VIPImmersionPage() {
-	return (
-		<main>
-			<HeroSection />
-			<TheDiagnosisSection />
-			<MechanicsDeliverablesSection />
-			<TheResultSection />
-			<ItWorkedForMeSection />
-			<CostOfWaitingSection />
-			<CheckoutFormSection productId={VIP_IMMERSION} />
-			{/* <Footer className="lg:pt-[150px]" /> */}
-		</main>
-	);
+  return (
+    <main>
+      <ProgramsHero {...vipImmersionHeroData} />
+      <ProgramsWhoThis {...vipImmersionWhoThisData} />
+      <MechanicsDeliverablesSection />
+      <VIPImmersionReceive />
+      <VIPImmersionAudit />
+      <VIPImmersionOverview overviews={vipImmersionOverviewData} />
+      <ProgramResult {...vipImmersionResultData} />
+      <ProgramItWorks {...vipImmersionItWorksData} />
+
+      <CostOfWaitingSection />
+      <CheckoutFormSection productId={VIP_IMMERSION} />
+    </main>
+  );
 }

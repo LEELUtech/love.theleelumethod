@@ -26,7 +26,7 @@ const HeroSection = () => {
             className='
 							order-1 lg:order-2
 							font-light transition text-[24px] md:text-[22px] lg:text-[24px]
-							leading-[100%] font-canela
+							leading-[126%] font-canela
 							flex items-center gap-2 md:gap-2.5 lg:gap-3
 							text-brand-black justify-center md:justify-start
 							mt-0 lg:mt-[63px]
