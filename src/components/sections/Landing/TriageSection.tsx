@@ -77,6 +77,12 @@ const TriageSection = () => {
 							variant="dark"
 							size="md"
 							className="w-full lg:w-[85%] xs:text-[12px]"
+						trackingData={{
+							cta_name: "read_stories",
+							cta_text: "READ MORE STORIES",
+							cta_target_url: null,
+							cta_location: "landing_triage_stories",
+						}}
 						>
 							READ MORE STORIES
 						</Button>
@@ -257,6 +263,12 @@ const TriageSection = () => {
 								size="md"
 								className="w-full xs:text-[12px] mt-auto"
 								href={QUIZ_URL}
+								trackingData={{
+									cta_name: "take_quiz",
+									cta_text: "TAKE THE QUIZ",
+									cta_target_url: null,
+									cta_location: "landing_triage_confused",
+								}}
 							>
 								TAKE THE QUIZ
 							</Button>
@@ -303,6 +315,12 @@ const TriageSection = () => {
 								size="md"
 								className="w-full xs:text-[12px] mt-auto"
 								href={WEBINAR_URL}
+								trackingData={{
+									cta_name: "register_webinar",
+									cta_text: "REGISTER FOR WEBINAR",
+									cta_target_url: null,
+									cta_location: "landing_triage_fix",
+								}}
 							>
 								REGISTER FOR WEBINAR
 							</Button>
@@ -335,6 +353,12 @@ const TriageSection = () => {
 								size="md"
 								className="w-full xs:text-[12px] mt-auto"
 								href="/resources/compatibility-report"
+								trackingData={{
+									cta_name: "get_analysis",
+									cta_text: "GET MY ANALYSIS",
+									cta_target_url: "/resources/compatibility-report",
+									cta_location: "landing_triage_done",
+								}}
 							>
 								GET MY ANALYSIS
 							</Button>

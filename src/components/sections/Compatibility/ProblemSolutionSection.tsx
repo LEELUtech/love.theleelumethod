@@ -153,6 +153,12 @@ const ProblemSolutionSection = () => {
 							size="md"
 							className="w-full"
 							href="#checkout"
+							trackingData={{
+								cta_name: "get_report",
+								cta_text: "GIVE ME MY COMPATIBILITY CODE REPORT",
+								cta_target_url: "#checkout",
+								cta_location: "compatibility_problem",
+							}}
 						>
 							GIVE ME MY COMPATIBILITY CODE REPORT
 						</Button>

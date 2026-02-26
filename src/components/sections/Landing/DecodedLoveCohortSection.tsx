@@ -149,6 +149,12 @@ export default function DecodedLoveCohortSection() {
 							leftIconBg="transparent"
 							size="md"
 							className="w-full lg:w-[35%] xs:text-[12px] mt-[32px]"
+						trackingData={{
+							cta_name: "save_seat",
+							cta_text: "Save My Seat",
+							cta_target_url: null,
+							cta_location: "landing_cohort",
+						}}
 						>
 							Save My Seat
 						</Button>

@@ -156,6 +156,12 @@ const HeroSection = () => {
 						variant="primary"
 						size="md"
 						className="w-full lg:w-[30%] xs:text-[12px] mt-[32px] lg:order-3"
+					trackingData={{
+						cta_name: "enroll_now",
+						cta_text: "ENROLL NOW",
+						cta_target_url: null,
+						cta_location: "self_guided_hero",
+					}}
 					>
 						ENROLL NOW
 					</Button>

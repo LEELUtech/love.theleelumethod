@@ -119,6 +119,12 @@ export default function ChooseYourPathSection() {
 								size="md"
 								className="w-full xs:text-[12px]"
 								href="/programs/self-guided-transformation"
+							trackingData={{
+								cta_name: "begin_protocol",
+								cta_text: "BEGIN THE PROTOCOL",
+								cta_target_url: "/programs/self-guided-transformation",
+								cta_location: "programs_choose_essentials",
+							}}
 							>
 								BEGIN THE PROTOCOL
 							</Button>
@@ -183,6 +189,12 @@ export default function ChooseYourPathSection() {
 								size="md"
 								className="w-full xs:text-[12px]"
 								href="/programs/guided-breakthrough"
+							trackingData={{
+								cta_name: "get_personalized_support",
+								cta_text: "GET PERSONALIZED SUPPORT",
+								cta_target_url: "/programs/guided-breakthrough",
+								cta_location: "programs_choose_guided",
+							}}
 							>
 								GET PERSONALIZED SUPPORT
 							</Button>
@@ -248,6 +260,12 @@ export default function ChooseYourPathSection() {
 								size="md"
 								className="w-full xs:text-[12px]"
 								href="/programs/vip-immersion"
+							trackingData={{
+								cta_name: "apply_vip",
+								cta_text: "APPLY FOR VIP ACCESS",
+								cta_target_url: "/programs/vip-immersion",
+								cta_location: "programs_choose_vip",
+							}}
 							>
 								APPLY FOR VIP ACCESS
 							</Button>

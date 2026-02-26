@@ -1,26 +1,13 @@
-// app/api/campaigns/add-tags/route.ts
-
 export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
 
-type RequestBody = {
-  email: string;
-  tags: string[];
-};
-
 let cachedAccessToken: string | null = null;
 let tokenExpiresAt = 0;
 
-/**
- * 🔥 AUTO ACCESS TOKEN MANAGER
- */
 async function getAccessToken(): Promise<string> {
   const now = Date.now();
-
-  if (cachedAccessToken && now < tokenExpiresAt) {
-    return cachedAccessToken;
-  }
+  if (cachedAccessToken && now < tokenExpiresAt) return cachedAccessToken;
 
   const refreshToken = process.env.ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT;
   const clientId = process.env.ZOHO_CLIENT_ID_LILYCHYSTOFAT;
@@ -39,13 +26,10 @@ async function getAccessToken(): Promise<string> {
   const resp = await fetch(url.toString(), { method: "POST" });
   const data = await resp.json();
 
-  if (!resp.ok || !data.access_token) {
-    throw new Error("Failed to refresh Zoho access token");
-  }
+  if (!resp.ok || !data.access_token) throw new Error("Failed to refresh Zoho access token");
 
   cachedAccessToken = data.access_token;
   tokenExpiresAt = Date.now() + (data.expires_in - 60) * 1000;
-
   return cachedAccessToken!;
 }
 
@@ -53,129 +37,76 @@ function authHeaders(token: string) {
   return { Authorization: `Zoho-oauthtoken ${token}` };
 }
 
-/**
- * Ensure contact exists in Campaigns list
- */
-async function ensureSubscribed(email: string) {
-  const token = await getAccessToken();
+async function ensureSubscribed(email: string, token: string) {
   const listkey = process.env.ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT;
-
-  if (!listkey) {
-    throw new Error("Missing ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT");
-  }
-
-  const contactinfo = `{Contact Email:${email}}`;
+  if (!listkey) throw new Error("Missing ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT");
 
   const body = new URLSearchParams();
   body.set("resfmt", "JSON");
   body.set("listkey", listkey);
-  body.set("contactinfo", contactinfo);
+  body.set("contactinfo", `{Contact Email:${email}}`);
 
-  const resp = await fetch(
-    "https://campaigns.zoho.com/api/v1.1/json/listsubscribe",
-    {
-      method: "POST",
-      headers: {
-        ...authHeaders(token),
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body,
-    }
-  );
-
-  if (!resp.ok) {
-    const txt = await resp.text();
-    throw new Error("listsubscribe failed " + txt);
-  }
-}
-
-async function ensureTag(tag: string) {
-  const token = await getAccessToken();
-
-  const url = new URL("https://campaigns.zoho.com/api/v1.1/tag/add");
-  url.searchParams.set("tagName", tag);
-
-  await fetch(url.toString(), {
-    method: "GET",
-    headers: authHeaders(token),
+  await fetch("https://campaigns.zoho.com/api/v1.1/json/listsubscribe", {
+    method: "POST",
+    headers: { ...authHeaders(token), "Content-Type": "application/x-www-form-urlencoded" },
+    body,
   });
 }
 
-async function addTag(tag: string, email: string) {
-  const token = await getAccessToken();
+async function ensureTag(tag: string, token: string) {
+  const url = new URL("https://campaigns.zoho.com/api/v1.1/tag/add");
+  url.searchParams.set("tagName", tag);
+  await fetch(url.toString(), { method: "GET", headers: authHeaders(token) });
+}
 
+async function addTag(tag: string, email: string, token: string) {
   const url = new URL("https://campaigns.zoho.com/api/v1.1/tag/associate");
   url.searchParams.set("resfmt", "JSON");
   url.searchParams.set("tagName", tag);
   url.searchParams.set("lead_email", email);
-
-  const resp = await fetch(url.toString(), {
-    method: "GET",
-    headers: authHeaders(token),
-  });
-
-  if (!resp.ok) {
-    const txt = await resp.text();
-    throw new Error("associate tag failed " + txt);
-  }
+  await fetch(url.toString(), { method: "GET", headers: authHeaders(token) });
 }
 
-/**
- * 🚀 UNIVERSAL ENTRY POINT
- */
-async function upsertContactAndAddTags(email: string, tags: string[]) {
-  const uniq = Array.from(new Set(tags)).filter(Boolean);
-
-  if (!uniq.length) return;
-
-  await ensureSubscribed(email);
-
-  for (const tag of uniq) {
-    await ensureTag(tag);
-    await addTag(tag, email);
-  }
+async function removeTag(tag: string, email: string, token: string) {
+  const url = new URL("https://campaigns.zoho.com/api/v1.1/tag/disassociate");
+  url.searchParams.set("resfmt", "JSON");
+  url.searchParams.set("tagName", tag);
+  url.searchParams.set("lead_email", email);
+  await fetch(url.toString(), { method: "GET", headers: authHeaders(token) });
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const body = (await req.json()) as RequestBody;
+    const body = await req.json();
 
-    const email = body.email?.trim().toLowerCase();
-    const tags = Array.isArray(body.tags) ? body.tags : [];
+    const email = (body.email || "").trim().toLowerCase();
+    const add: string[] = Array.isArray(body.add) ? body.add : [];
+    const remove: string[] = Array.isArray(body.remove) ? body.remove : [];
 
     if (!email || !email.includes("@")) {
-      return NextResponse.json(
-        { ok: false, error: "Invalid email" },
-        { status: 400 }
-      );
+      return NextResponse.json({ ok: false, error: "Invalid email" }, { status: 400 });
     }
 
-    if (!tags.length) {
-      return NextResponse.json(
-        { ok: false, error: "No tags provided" },
-        { status: 400 }
-      );
+    if (!add.length && !remove.length) {
+      return NextResponse.json({ ok: false, error: "No tags provided" }, { status: 400 });
     }
 
-    await upsertContactAndAddTags(email, tags);
+    const token = await getAccessToken();
+    await ensureSubscribed(email, token);
 
-    return NextResponse.json({
-      ok: true,
-      email,
-      tags,
-    });
+    for (const tag of [...new Set(remove)].filter(Boolean)) {
+      await removeTag(tag, email, token);
+    }
+
+    for (const tag of [...new Set(add)].filter(Boolean)) {
+      await ensureTag(tag, token);
+      await addTag(tag, email, token);
+    }
+
+    return NextResponse.json({ ok: true, email, add, remove });
   } catch (err: unknown) {
-    console.error("campaigns/add-tags error:", err);
-
-    const errorMessage =
-      err instanceof Error ? err.message : "An unknown error occurred";
-
-    return NextResponse.json(
-      {
-        ok: false,
-        error: errorMessage,
-      },
-      { status: 500 }
-    );
+    console.error("campaigns/update-tags error:", err);
+    const message = err instanceof Error ? err.message : "Unknown error";
+    return NextResponse.json({ ok: false, error: message }, { status: 500 });
   }
 }

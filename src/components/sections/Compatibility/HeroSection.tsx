@@ -119,6 +119,12 @@ const HeroSection = () => {
 								size="md"
 								className="w-full lg:w-[75%] xs:text-[12px]"
 								href="#checkout"
+								trackingData={{
+									cta_name: "get_report",
+									cta_text: "GIVE ME MY COMPATIBILITY CODE REPORT",
+									cta_target_url: "#checkout",
+									cta_location: "compatibility_hero",
+								}}
 							>
 								GIVE ME MY COMPATIBILITY CODE REPORT
 							</Button>

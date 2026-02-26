@@ -91,6 +91,12 @@ export default function HeyImLilySection() {
 							variant="dark"
 							size="md"
 							className="w-full lg:w-[55%] xs:text-[12px]"
+							trackingData={{
+								cta_name: "yes_im_in",
+								cta_text: "YES, I'M IN",
+								cta_target_url: null,
+								cta_location: "landing_lily",
+							}}
 						>
 							YES, I&apos;M IN
 						</Button>

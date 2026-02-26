@@ -132,6 +132,12 @@ const TheSynthesisSection = () => {
 						size="md"
 						className="w-full lg:w-[40%]"
 						href="#checkout"
+						trackingData={{
+							cta_name: "start_decode",
+							cta_text: "START THE DECODE",
+							cta_target_url: "#checkout",
+							cta_location: "about_synthesis",
+						}}
 					>
 						START THE DECODE
 					</Button>

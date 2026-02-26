@@ -124,6 +124,12 @@ const WebinarSection = () => {
 								size="md"
 								className="w-full md:w-[65%] py-[12px]"
 								href="/resources/secrets"
+								trackingData={{
+									cta_name: "save_seat",
+									cta_text: "Save My Seat",
+									cta_target_url: "/resources/secrets",
+									cta_location: "decode_hero",
+								}}
 							>
 								Save My Seat
 							</Button>

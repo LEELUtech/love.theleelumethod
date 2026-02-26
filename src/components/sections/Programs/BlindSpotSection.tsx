@@ -174,6 +174,12 @@ export default function BlindSpotSection() {
 							size="md"
 							className="w-full lg:w-[80%] xs:text-[12px]"
 							href="#checkout"
+						trackingData={{
+							cta_name: "read_stories",
+							cta_text: "READ MORE STORIES",
+							cta_target_url: "#checkout",
+							cta_location: "programs_blindspot",
+						}}
 						>
 							READ MORE STORIES
 						</Button>

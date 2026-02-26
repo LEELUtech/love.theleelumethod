@@ -308,6 +308,12 @@ export function StripeCardPart({
 				loading={paying}
 				fullWidth
 				className="mt-[24px] md:mt-10 lg:mt-[80px] px-1"
+			trackingData={{
+				cta_name: "complete_purchase",
+				cta_text: buttonText,
+				cta_target_url: null,
+				cta_location: "checkout_stripe",
+			}}
 			>
 				{buttonText}
 			</Button>

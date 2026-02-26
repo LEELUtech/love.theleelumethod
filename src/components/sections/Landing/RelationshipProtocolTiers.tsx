@@ -55,6 +55,7 @@ export default function RelationshipProtocolTiers() {
 					]}
 					price="$697"
 					buttonText="BEGIN PROTOCOL"
+					trackingCta="begin_protocol"
 				/>
 
 				<MobileTierCard
@@ -78,6 +79,7 @@ export default function RelationshipProtocolTiers() {
 					]}
 					price="$1,700"
 					buttonText="GET DIAGNOSED"
+					trackingCta="get_diagnosed"
 					isPopular
 				/>
 
@@ -104,6 +106,7 @@ export default function RelationshipProtocolTiers() {
 					]}
 					price="$4,997"
 					buttonText="APPLY FOR VIP"
+					trackingCta="apply_vip"
 				/>
 			</div>
 
@@ -155,6 +158,12 @@ export default function RelationshipProtocolTiers() {
 								variant="dark"
 								size="md"
 								className="w-full xs:text-[12px] mt-auto"
+								trackingData={{
+									cta_name: "begin_protocol",
+									cta_text: "BEGIN PROTOCOL",
+									cta_target_url: null,
+									cta_location: "landing_tiers_essentials",
+								}}
 							>
 								BEGIN PROTOCOL
 							</Button>
@@ -214,6 +223,12 @@ export default function RelationshipProtocolTiers() {
 								variant="dark"
 								size="md"
 								className="w-full xs:text-[12px] mt-auto"
+								trackingData={{
+									cta_name: "get_diagnosed",
+									cta_text: "GET DIAGNOSED",
+									cta_target_url: null,
+									cta_location: "landing_tiers_guided",
+								}}
 							>
 								GET DIAGNOSED
 							</Button>
@@ -254,6 +269,12 @@ export default function RelationshipProtocolTiers() {
 								variant="dark"
 								size="md"
 								className="w-full xs:text-[12px] mt-auto"
+								trackingData={{
+									cta_name: "apply_vip",
+									cta_text: "APPLY FOR VIP",
+									cta_target_url: null,
+									cta_location: "landing_tiers_vip",
+								}}
 							>
 								APPLY FOR VIP
 							</Button>
@@ -284,12 +305,14 @@ function MobileTierCard({
 	price,
 	buttonText,
 	isPopular,
+	trackingCta,
 }: {
 	title: React.ReactNode;
 	pairs: Array<{ label: string; value: string }>;
 	price: string;
 	buttonText: string;
 	isPopular?: boolean;
+	trackingCta?: string;
 }) {
 	return (
 		<div className="relative rounded-[28px] bg-brand-white shadow-[0px_4px_20px_0px_rgba(0,0,0,0.1)] px-6 pt-10 pb-6">
@@ -323,7 +346,17 @@ function MobileTierCard({
 				{price}
 			</p>
 
-			<Button variant="dark" size="md" className="w-full xs:text-[12px] mt-[22px]">
+			<Button
+				variant="dark"
+				size="md"
+				className="w-full xs:text-[12px] mt-[22px]"
+				trackingData={{
+					cta_name: trackingCta ?? "cta",
+					cta_text: buttonText,
+					cta_target_url: null,
+					cta_location: "landing_tiers_mobile",
+				}}
+			>
 				{buttonText}
 			</Button>
 		</div>

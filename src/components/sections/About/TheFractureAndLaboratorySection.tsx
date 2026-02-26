@@ -73,6 +73,12 @@ const TheFractureAndLaboratorySection = () => {
 							size="md"
 							className="w-full lg:w-[60%]"
 							href="#checkout"
+							trackingData={{
+								cta_name: "start_decode",
+								cta_text: "START THE DECODE",
+								cta_target_url: "#checkout",
+								cta_location: "about_fracture",
+							}}
 						>
 							START THE DECODE
 						</Button>

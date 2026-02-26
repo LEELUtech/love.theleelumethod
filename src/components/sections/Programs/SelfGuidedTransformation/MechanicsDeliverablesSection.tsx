@@ -222,6 +222,12 @@ export default function MechanicsDeliverablesSection() {
 								variant="primary"
 								size="md"
 								className="w-full xs:text-[12px] mt-[32px]"
+							trackingData={{
+								cta_name: "enroll_now",
+								cta_text: "ENROLL NOW",
+								cta_target_url: null,
+								cta_location: "self_guided_deliverables",
+							}}
 							>
 								ENROLL NOW
 							</Button>

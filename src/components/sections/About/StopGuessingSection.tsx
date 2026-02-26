@@ -100,6 +100,12 @@ const StopGuessingSection = () => {
 						size="md"
 						className="w-full lg:w-[40%] xs:text-[12px]"
 						href="#checkout"
+						trackingData={{
+							cta_name: "access_manual",
+							cta_text: "Access your Operating Manual",
+							cta_target_url: "#checkout",
+							cta_location: "about_stop_guessing",
+						}}
 					>
 						Access your Operating Manual
 					</Button>

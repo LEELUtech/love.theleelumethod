@@ -268,6 +268,12 @@ export default function ModulesSection() {
 						size="md"
 						className="w-full lg:w-[28%] xs:text-[12px]"
 						href="#checkout"
+					trackingData={{
+						cta_name: "initiate_protocol",
+						cta_text: "INITIATE THE PROTOCOL",
+						cta_target_url: "#checkout",
+						cta_location: "programs_modules_top",
+					}}
 					>
 						INITIATE THE PROTOCOL
 					</Button>
@@ -432,6 +438,12 @@ export default function ModulesSection() {
 							size="md"
 							className="w-full lg:w-[38%] xs:text-[12px] mt-[32px]"
 							href="#checkout"
+						trackingData={{
+							cta_name: "initiate_protocol",
+							cta_text: "INITIATE THE PROTOCOL",
+							cta_target_url: "#checkout",
+							cta_location: "programs_modules_bottom",
+						}}
 						>
 							INITIATE THE PROTOCOL
 						</Button>

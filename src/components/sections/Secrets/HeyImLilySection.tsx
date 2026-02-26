@@ -76,6 +76,12 @@ export default function HeyImLilySection() {
 								variant="primary"
 								size="md"
 								className="w-full lg:w-[55%] xs:text-[12px]"
+								trackingData={{
+									cta_name: "claim_guide",
+									cta_text: "CLAIM YOUR FREE GUIDE",
+									cta_target_url: null,
+									cta_location: "secrets_lily",
+								}}
 							>
 								CLAIM YOUR FREE GUIDE
 							</Button>

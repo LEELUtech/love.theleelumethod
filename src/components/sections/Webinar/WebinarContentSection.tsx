@@ -185,6 +185,12 @@ const WebinarContentSection = () => {
 						size="md"
 						className="w-full md:w-[76%] py-[12px]"
 						href={WEBINAR_URL}
+						trackingData={{
+							cta_name: "reserve_spot",
+							cta_text: "Reserve My Spot",
+							cta_target_url: null,
+							cta_location: "decode_content",
+						}}
 					>
 						Reserve My Spot
 					</Button>

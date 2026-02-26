@@ -90,6 +90,12 @@ export default function WebinarHeyImLilySection() {
 							size="md"
 							className="w-full md:w-[55%]"
 							href={WEBINAR_URL}
+							trackingData={{
+								cta_name: "claim_guide",
+								cta_text: "CLAIM YOUR FREE GUIDE",
+								cta_target_url: null,
+								cta_location: "decode_lily",
+							}}
 						>
 							CLAIM YOUR FREE GUIDE
 						</Button>

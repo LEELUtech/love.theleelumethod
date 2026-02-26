@@ -51,6 +51,12 @@ export default function ItWorkedForMeSection() {
 							variant="primary"
 							size="md"
 							className="w-full lg:w-[70%] xs:text-[12px] mt-[32px]"
+						trackingData={{
+							cta_name: "begin_protocol",
+							cta_text: "BEGIN THE PROTOCOL",
+							cta_target_url: null,
+							cta_location: "self_guided_itworked",
+						}}
 						>
 							BEGIN THE PROTOCOL
 						</Button>

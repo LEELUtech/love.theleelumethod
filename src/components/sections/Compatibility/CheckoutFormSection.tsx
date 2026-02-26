@@ -25,6 +25,7 @@ import {
 	type StripePayState,
 } from "@/components/sections/Compatibility/StripeCardPart";
 import CheckoutSectionLoader from "@/components/sections/Checkout/CheckoutSectionLoader";
+import Button from "@/components/ui/Button";
 
 const pk = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!;
 const stripePromise = loadStripe(pk);
@@ -143,29 +144,29 @@ export default function CheckoutFormSection() {
 		isStripeInitializing ||
 		!payState.canPay ||
 		payState.paying;
-	
-  // Initialize client context once after mount
+
+	// Initialize client context once after mount
 	React.useEffect(() => {
 		setCtx(getClientContext());
 	}, []);
 
-  // Track if we've had a clientSecret (for UI state)
+	// Track if we've had a clientSecret (for UI state)
 	React.useEffect(() => {
 		if (clientSecret) setHadSecretOnce(true);
 	}, [clientSecret]);
 
-  // Reset if product type changed
+	// Reset if product type changed
 	React.useEffect(() => {
 		const expectedKey = `create:${productId}`;
 		if (intentKey && intentKey !== expectedKey) reset();
 	}, [intentKey, productId, reset]);
 
-  // Fetch product data on mount
+	// Fetch product data on mount
 	React.useEffect(() => {
 		if (!product && !productLoading) fetchProduct(productId);
 	}, [product, productLoading, fetchProduct, productId]);
 
-  // Auto-create PaymentIntent when ready
+	// Auto-create PaymentIntent when ready
 	React.useEffect(() => {
 		if (!product || productLoading) return;
 
@@ -201,20 +202,20 @@ export default function CheckoutFormSection() {
 		ctx,
 	]);
 
-  // Sync checkout errors to payment state
+	// Sync checkout errors to payment state
 	React.useEffect(() => {
 		if (!checkoutError) return;
 		setPayState((prev) => ({ ...prev, error: checkoutError }));
 	}, [checkoutError]);
 
-  // Cleanup on unmount
+	// Cleanup on unmount
 	React.useEffect(() => {
 		return () => {
 			reset();
 		};
 	}, [reset]);
 
-  // Lead capture
+	// Lead capture
 	const captureLeadInternal = React.useCallback(
 		async (opts?: { force?: boolean }) => {
 			const email = (form.email || "").trim().toLowerCase();
@@ -242,7 +243,8 @@ export default function CheckoutFormSection() {
 				intentToken: intentToken || undefined,
 				email,
 				sessionId: localStorage.getItem("ff_session_id") || undefined,
-				salesiqVisitorId: localStorage.getItem("ff_salesiq_visitor_id") || undefined,
+				salesiqVisitorId:
+					localStorage.getItem("ff_salesiq_visitor_id") || undefined,
 				...(ctx || {}),
 			};
 
@@ -261,7 +263,7 @@ export default function CheckoutFormSection() {
 		[form.email, intentId, intentToken, ctx],
 	);
 
-  // Catch-up: if PI/token appeared later - send again (once) with PI/token
+	// Catch-up: if PI/token appeared later - send again (once) with PI/token
 	React.useEffect(() => {
 		const email = (form.email || "").trim().toLowerCase();
 		if (!email) return;
@@ -270,7 +272,7 @@ export default function CheckoutFormSection() {
 		captureLeadInternal({ force: true }).catch(() => {});
 	}, [intentId, intentToken, form.email, captureLeadInternal]);
 
-  // Form field updater
+	// Form field updater
 	const setField = React.useCallback(
 		<K extends keyof CompatibilityCheckoutForm>(key: K, value: string) => {
 			setForm((prev) => ({ ...prev, [key]: value }));
@@ -303,7 +305,7 @@ export default function CheckoutFormSection() {
 		router.push("/success");
 	}, [router, markSuccess]);
 
-  // Validates form before payment
+	// Validates form before payment
 	const validateOnSubmit = React.useCallback(
 		(data: CompatibilityCheckoutForm) => {
 			const next: FormErrors = {};
@@ -321,7 +323,7 @@ export default function CheckoutFormSection() {
 		[],
 	);
 
-  // Handles payment button click
+	// Handles payment button click
 	const onPayClick = React.useCallback(async () => {
 		setSubmitAttempted(true);
 
@@ -378,7 +380,7 @@ export default function CheckoutFormSection() {
 								Order now
 							</p>
 
-							<h2 className="mt-[23px] font-canela font-thin text-brand-black text-[48px] md:text-[52px] lg:text-[52px] leading-[105%] text-center md:text-left">
+							<h2 className="mt-[23px] font-canela font-thin text-brand-black text-[42px] md:text-[52px] lg:text-[52px] leading-[105%] text-center md:text-left">
 								{productLoading ? "Loading..." : product?.title}
 							</h2>
 						</div>
@@ -515,24 +517,22 @@ export default function CheckoutFormSection() {
 								</div>
 							</div>
 
-							<button
+							<Button
 								type="button"
 								onClick={onPayClick}
 								disabled={buttonDisabled}
-								className="
-                  mt-[24px] md:mt-10 lg:mt-[80px]
-                  inline-flex w-full items-center justify-center
-                  rounded-full bg-brand-primary hover:bg-[#E13954]
-                  px-0 py-4 md:px-6
-                  font-lato text-[13px] lg:text-[15px] leading-[26px] font-medium uppercase tracking-[0.10em]
-                  text-white transition-colors
-                  disabled:cursor-not-allowed disabled:opacity-60
-                "
+								loading={payState.paying}
+								fullWidth
+								className="mt-[24px] md:mt-10 lg:mt-[80px] xs:px-0 xs:text-[12px] md:px-6 md:text-[15px]"
+								trackingData={{
+									cta_name: "complete_purchase",
+									cta_text: "UNLOCK MY COMPATIBILITY CODE",
+									cta_target_url: null,
+									cta_location: "checkout_compatibility",
+								}}
 							>
-								{payState.paying
-									? "PROCESSING..."
-									: "UNLOCK MY COMPATIBILITY CODE"}
-							</button>
+								UNLOCK MY COMPATIBILITY CODE
+							</Button>
 
 							{payState.error ? (
 								<p className="mt-3 text-sm font-lato text-red-600">

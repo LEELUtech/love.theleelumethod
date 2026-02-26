@@ -1,9 +1,6 @@
-import { createTransport } from "nodemailer";
-import { storage } from "../../configs/firebase";
 import { calculateCompatibility } from "./compatibility-report.service";
 import Stripe from "stripe";
-import { configs } from "../../configs/env";
-import { upsertContactAndUpdateTags } from "../../lib/zoho-campaigns"
+import { upsertContactAndUpdateTags } from "../../lib/zoho-campaigns";
 
 const ALL_COMPAT_STATE_TAGS = [
   "cc_battle",
@@ -12,6 +9,8 @@ const ALL_COMPAT_STATE_TAGS = [
   "cc_revolution",
   "cc_absorption",
 ] as const;
+
+const CC_EMAIL4_TRIGGER = "cc_email4_trigger";
 
 function mapCompatTag(typeRaw: string): string | null {
   const t = (typeRaw || "").trim().toLowerCase();
@@ -24,10 +23,9 @@ function mapCompatTag(typeRaw: string): string | null {
 }
 
 export async function handleCompatibilityReport(pi: Stripe.PaymentIntent) {
-  const email = pi.metadata?.email || pi.receipt_email || "";
+  const email = (pi.metadata?.email || pi.receipt_email || "").trim().toLowerCase();
   const birthDate1 = pi.metadata?.birth_date_1 || "";
   const birthDate2 = pi.metadata?.birth_date_2 || "";
-
   console.log("PI METADATA DEBUG:", {
     emailFromMetadata: pi.metadata?.email,
     receiptEmail: pi.receipt_email,
@@ -35,79 +33,20 @@ export async function handleCompatibilityReport(pi: Stripe.PaymentIntent) {
     birth_date_2: pi.metadata?.birth_date_2,
     fullMetadata: pi.metadata,
   });
+
   if (!email || !birthDate1 || !birthDate2) {
     throw new Error("Missing required fields for compatibility report");
   }
 
   console.log("Processing compatibility report for:", email);
 
-  // Calculate compatibility
+  // Вычисляем совместимость
   const compatibility = calculateCompatibility(birthDate1, birthDate2);
-  const compatibilityType = compatibility.type.toLowerCase();
 
-  // Get PDF from Firebase Storage
-  const storagePath = `pdf/${compatibilityType}/${compatibilityType}.pdf`;
-  const bucket = storage.bucket();
-  const file = bucket.file(storagePath);
-
-  const [exists] = await file.exists();
-  if (!exists) {
-    throw new Error(`PDF file not found: ${storagePath}`);
-  }
-
-  const [pdfBuffer] = await file.download();
-
-  // Setup email transporter
-  const transporter = createTransport({
-    service: "gmail",
-    auth: {
-      user: configs.email,
-      pass: configs.password,
-    },
+  console.log("Compatibility calculated:", {
+    type: compatibility.type,
+    score: compatibility.diff,
   });
-
-  const webinarUrl = "https://leelutech.ewebinar.com/webinar/decoded-love-22610";
-  const webinarLink = `${webinarUrl}?email=${encodeURIComponent(email)}`;
-
-  const html = `
-    <div style="font-family: Arial, sans-serif; color: #111; line-height: 1.5;">
-      <p style="margin: 0 0 10px;">Hi!</p>
-      <p style="margin: 0 0 10px;">Thank you for using our compatibility analysis service.</p>
-      <p style="margin: 0 0 10px;">Your personalized compatibility report is ready.</p>
-      <p style="margin: 0 0 10px;"><strong>Compatibility Type:</strong> ${compatibility.type}</p>
-      <p style="margin: 0 0 10px;"><strong>Compatibility Score:</strong> ${compatibility.diff.toFixed(1)}%</p>
-      <p style="margin: 0 0 14px;">Take your time reading the attached PDF. It highlights your unique dynamics and gives ideas on how to grow together.</p>
-      <p style="margin: 18px 0 22px;">
-        <a
-          href="${webinarLink}"
-          style="color: #222; text-decoration: underline; font-weight: 600; font-size: 17px; background: none; border: none; padding: 0;"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Join the live webinar
-        </a>
-      </p>
-      <p style="margin: 0 0 10px;">Remember, every relationship is a mirror showing us what we need to learn and grow.</p>
-      <p style="margin: 0 0 6px;">With love,</p>
-      <p style="margin: 0;">Lily</p>
-    </div>
-  `;
-
-  await transporter.sendMail({
-    from: configs.email,
-    to: email,
-    subject: "Your Compatibility Report",
-    html,
-    attachments: [
-      {
-        filename: `compatibility-report-${compatibilityType}.pdf`,
-        content: pdfBuffer,
-        contentType: "application/pdf",
-      },
-    ],
-  });
-
-  console.log("Compatibility report sent to:", email);
 
   const stateTag = mapCompatTag(compatibility.type);
 
@@ -116,8 +55,14 @@ export async function handleCompatibilityReport(pi: Stripe.PaymentIntent) {
     : [...ALL_COMPAT_STATE_TAGS];
 
   await upsertContactAndUpdateTags(email, {
-    add: ["cc_done", ...(stateTag ? [stateTag] : [])],
-    remove,
+    add: ["cc_done", ...(stateTag ? [stateTag] : []), CC_EMAIL4_TRIGGER],
+    remove: remove,
+  });
+
+  console.log("Zoho tags applied:", {
+    email,
+    stateTag,
+    compatibilityType: compatibility.type,
   });
 
   return {

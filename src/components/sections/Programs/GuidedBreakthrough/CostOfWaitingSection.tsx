@@ -129,6 +129,12 @@ export default function CostOfWaitingSection() {
 						variant="primary"
 						size="md"
 						className="w-full lg:w-[30%] xs:text-[12px] mt-[32px]"
+					trackingData={{
+						cta_name: "get_personalized_support",
+						cta_text: "GET PERSONALIZED SUPPORT",
+						cta_target_url: null,
+						cta_location: "guided_cost",
+					}}
 					>
 						GET PERSONALIZED SUPPORT
 					</Button>

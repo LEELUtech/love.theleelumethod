@@ -32,6 +32,12 @@ const HeroSection = () => {
 						size="md"
 						className="w-full lg:w-[55%] order-2 lg:order-4 lg:mt-[32px]"
 						href="#checkout"
+						trackingData={{
+							cta_name: "start_decode",
+							cta_text: "START THE DECODE",
+							cta_target_url: "#checkout",
+							cta_location: "about_hero",
+						}}
 					>
 						START THE DECODE
 					</Button>

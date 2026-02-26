@@ -1,5 +1,5 @@
 import Button from "@/components/ui/Button";
-import RotateOnView from "@/components/ui/RotateOnView"
+import RotateOnView from "@/components/ui/RotateOnView";
 import Image from "next/image";
 
 export default function DiscoverSection() {
@@ -40,11 +40,7 @@ export default function DiscoverSection() {
 							amount={0.4}
 							ease="easeOut"
 						>
-							<Image
-								src="/icons/ornament_14.svg"
-								alt=""
-								fill
-							/>
+							<Image src="/icons/ornament_14.svg" alt="" fill />
 						</RotateOnView>
 
 						{/* Ornament badge */}
@@ -160,6 +156,12 @@ export default function DiscoverSection() {
 						variant="primary"
 						size="md"
 						className="w-full mt-[16px] md:w-[45%] md:mt-[66px]"
+						trackingData={{
+							cta_name: "access_guide",
+							cta_text: "ACCESS THE FREE GUIDE",
+							cta_target_url: null,
+							cta_location: "secrets_discover",
+						}}
 					>
 						ACCESS THE FREE GUIDE
 					</Button>

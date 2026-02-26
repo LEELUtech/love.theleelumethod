@@ -80,6 +80,12 @@ export function MasterclassSection() {
 						size="md"
 						className="w-full lg:w-[60%] xs:text-[12px]"
 						href={WEBINAR_URL}
+						trackingData={{
+							cta_name: "save_seat",
+							cta_text: "Save My Seat",
+							cta_target_url: null,
+							cta_location: "landing_masterclass",
+						}}
 					>
 						Save My Seat
 					</Button>

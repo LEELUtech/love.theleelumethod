@@ -94,6 +94,12 @@ export default function HeyImLilySection() {
 							size="md"
 							className="w-full lg:w-[60%] xs:text-[12px]"
 							href={WEBINAR_URL}
+						trackingData={{
+							cta_name: "access_protocol",
+							cta_text: "ACCESS THE PROTOCOL",
+							cta_target_url: null,
+							cta_location: "programs_lily",
+						}}
 						>
 							ACCESS THE PROTOCOL
 						</Button>

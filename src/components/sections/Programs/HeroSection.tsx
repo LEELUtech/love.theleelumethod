@@ -146,6 +146,12 @@ const HeroSection = () => {
 							size="md"
 							className="w-full lg:w-[32%] xs:text-[12px] mt-[32px]"
 							href="#checkout"
+						trackingData={{
+							cta_name: "enroll_now",
+							cta_text: "ENROLL NOW",
+							cta_target_url: "#checkout",
+							cta_location: "programs_hero",
+						}}
 						>
 							ENROLL NOW
 						</Button>

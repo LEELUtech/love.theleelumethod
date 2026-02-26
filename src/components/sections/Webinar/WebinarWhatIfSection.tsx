@@ -304,6 +304,12 @@ const WebinarWhatIfSection = () => {
 							size="md"
 							className="w-full md:w-[30%]"
 							href={WEBINAR_URL}
+							trackingData={{
+								cta_name: "register",
+								cta_text: "REGISTER NOW",
+								cta_target_url: null,
+								cta_location: "decode_whatif",
+							}}
 						>
 							REGISTER NOW
 						</Button>

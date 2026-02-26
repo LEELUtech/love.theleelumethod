@@ -1,28 +1,37 @@
 "use client";
-
 import { useEffect } from "react";
-import { addCampaignTags } from "@/lib/campaigns";
 import { getEmailFromLS } from "@/lib/tracking/localEmail";
+import { updateCampaignTags } from "@/lib/campaigns";
 
 const typeToProfileTag: Record<string, string> = {
-	brokenHeartStorm: "q_pf_over",
-	lonelyHopeLoop: "q_pf_drift",
-	silentBreakupRelationship: "q_pf_karmic",
-	endlessWaitingRoom: "q_pf_proj",
+  brokenHeartStorm: "q_pf_over",
+  lonelyHopeLoop: "q_pf_drift",
+  silentBreakupRelationship: "q_pf_karmic",
+  endlessWaitingRoom: "q_pf_proj",
 };
 
+const ALL_PROFILE_TAGS = Object.values(typeToProfileTag);
+const Q_EMAIL3_TRIGGER = "q_email3_trigger";
+
 export default function QuizResultTagger({ type }: { type: string }) {
-	useEffect(() => {
-		const profileTag = typeToProfileTag[type];
-		if (!profileTag) return;
+  useEffect(() => {
+    const profileTag = typeToProfileTag[type];
+    if (!profileTag) return;
 
-		const email = getEmailFromLS();
-		if (!email) return;
+    const email = getEmailFromLS();
+    if (!email) return;
 
-		(async () => {
-			await addCampaignTags(email, ["q_done", profileTag]);
-		})();
-	}, [type]);
+    const otherProfileTags = ALL_PROFILE_TAGS.filter((t) => t !== profileTag);
 
-	return null;
+    (async () => {
+      await updateCampaignTags(email, {
+        remove: otherProfileTags,
+        add: ["q_done", profileTag, Q_EMAIL3_TRIGGER],
+      });
+
+
+    })();
+  }, [type]);
+
+  return null;
 }

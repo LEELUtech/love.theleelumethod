@@ -44,6 +44,12 @@ const HeroSection = () => {
 								variant="dark"
 								size="md"
 								className="w-full xs:text-[12px]"
+							trackingData={{
+								cta_name: "start_decode",
+								cta_text: "START THE DECODE",
+								cta_target_url: null,
+								cta_location: "landing_hero_mobile",
+							}}
 							>
 								START THE DECODE
 							</Button>
@@ -91,6 +97,12 @@ const HeroSection = () => {
 								variant="dark"
 								size="md"
 								className="w-full lg:w-[65%] xs:text-[12px]"
+							trackingData={{
+								cta_name: "start_decode",
+								cta_text: "START THE DECODE",
+								cta_target_url: null,
+								cta_location: "landing_hero_desktop",
+							}}
 							>
 								START THE DECODE
 							</Button>

@@ -63,7 +63,15 @@ const HeroSection = ({ title }: HeroSectionProps) => {
 					High Friction / Misaligned Script
 				</p>
 
-					<Button className="mt-[24px] md:mt-[28px] xs:px-8 xs:text-[11px] md:px-12 md:text-[13px]">
+					<Button
+						className="mt-[24px] md:mt-[28px] xs:px-8 xs:text-[11px] md:px-12 md:text-[13px]"
+						trackingData={{
+							cta_name: "secure_seat",
+							cta_text: "SECURE YOUR SEAT TO RESET THE DYNAMIC",
+							cta_target_url: null,
+							cta_location: "quiz_result_hero",
+						}}
+					>
 						SECURE YOUR SEAT TO RESET THE DYNAMIC
 					</Button>
 				</div>

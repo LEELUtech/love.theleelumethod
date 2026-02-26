@@ -203,6 +203,12 @@ export default function CostOfWaitingSection() {
 						variant="primary"
 						size="md"
 						className="w-full lg:w-[30%] xs:text-[12px] mt-[32px]"
+					trackingData={{
+						cta_name: "apply_vip",
+						cta_text: "APPLY FOR VIP ACCESS",
+						cta_target_url: null,
+						cta_location: "vip_cost",
+					}}
 					>
 						APPLY FOR VIP ACCESS
 					</Button>
