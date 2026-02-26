@@ -135,11 +135,13 @@ export default function BlindSpotSection() {
               />
 
               <div>
-                <div className='font-canela font-light text-[24px] leading-[130%] text-[#41444E]'>Andrea A</div>
+                <div className='font-canela font-light text-[32px]/[130%] text-brand-gray'>Lisa B. Gold, M.A., CH</div>
 
-                <div className=' font-lato italic font-normal lg:text-[22px] leading-[26px] text-[#6F4C40] text-[18px]'>
-                  Teacher
+                <div className='font-lato italic font-normal lg:text-[22px] leading-[26px] text-[#6F4C40] text-[18px]'>
+                  Applied Behavior Analyst
                 </div>
+
+                <div className='font-lato text-[16px] leading-[22px] text-brand-gray-100 mt-1'>Boca Raton, FL</div>
               </div>
             </div>
           </div>
@@ -151,9 +153,12 @@ export default function BlindSpotSection() {
               It was eye-opening
             </h2>
             <p className='font-normal italic text-[#6F4C40] font-lato leading-[26px] tracking-normal mb-6'>
-              “ Firstly, my fear of being alone disappeared. Secondly, I understood how I needed to behave, why I
-              attracted all these men. I would never have thought that such things as personal relationships and family
-              lineage could be connected. “
+              {`"I've been a behavioral analyst for 25 years, and I am literally`}
+              <span className='text-brand-primary'>blown away</span> by the accuracy. She hit it{' '}
+              <span className='text-brand-primary'>spot on</span> what my relationship patterns were… She completed the{' '}
+              <span className='text-brand-primary'>missing piece</span>
+              {`. I have broken through my block, and I am living
+              everything I've ever dreamed of."`}
             </p>
             <Button variant='primary' size='md' className='w-full lg:w-[80%] xs:text-[12px]' href='#checkout'>
               READ MORE STORIES
