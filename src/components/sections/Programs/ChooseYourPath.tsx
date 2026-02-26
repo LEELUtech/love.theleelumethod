@@ -1,7 +1,94 @@
 import Button from '@/components/ui/Button';
 import RotateOnView from '@/components/ui/RotateOnView';
+import { Flex } from 'antd';
 import Image from 'next/image';
 import React from 'react';
+
+const tiers = [
+  {
+    title: 'The Essentials',
+    price: '$697',
+    cta: 'BEGIN PROTOCOL',
+    popular: false,
+    features: [
+      'Code-Level Transformation',
+      '12-Module Video Sequence',
+      'Written Assignments (Curator Reviewed)',
+      '60-Day Circle Access + 2 Group Zooms + 3 Monthly Q&As',
+      '3 Custom Reports: Energy Activation, Hidden Desires, Compatibility',
+      '-',
+      'Basic Couple Dynamics Report',
+      'His Hidden Desires Only',
+      '-',
+      '-',
+      'Group Q&A Format',
+      '-',
+      'Audience Access (Hot Seat Available)',
+      '-',
+    ],
+  },
+  {
+    title: 'Guided Breakthrough',
+    price: '$1,700',
+    cta: 'BREAK THROUGH',
+    popular: true,
+    features: [
+      'Transformation + Deeper Diagnostics',
+      'Same as Essentials',
+      'Same as Essentials (Lily Reviewed)',
+      'Same as Essentials',
+      'Same as Essentials',
+      'Full Numerology Code Analysis (PDF)',
+      'Extended Compatibility Blueprint (Full Relationship Manual)',
+      'Same as Essentials',
+      '1 x 90-Min Private Session',
+      '-',
+      'Same as Essentials',
+      'Optional Partner Inclusion',
+      'Hot Seat Priority',
+      'Relationship Roadmap (Session-Based)',
+    ],
+  },
+  {
+    title: 'VIP Immersion',
+    price: '$4,997',
+    cta: 'APPLY FOR VIP',
+    popular: false,
+    features: [
+      'Deepest Access / 360° Intervention',
+      'Same as Essentials',
+      'Same as Essentials (Lily Reviewed)',
+      'Same as Essentials',
+      'Same as Essentials',
+      'Same as Guided',
+      'Same as Guided',
+      'Full Partner Audit (Complete Personal Code + Behavioral Manual)',
+      '4 x Total: 90min + (3) 60min',
+      'Private Voxer/WhatsApp (30 days)',
+      'Priority (< 24hrs weekdays)',
+      'Yes (Joint Sessions Available)',
+      'Private Analysis Included',
+      'Step-by-Step Strategic Plan (Written + Session-Based)',
+    ],
+  },
+];
+
+const tiers_titles = [
+  'Objective',
+  'The Methodology',
+  'Workbook & Integration',
+  'Community Support',
+  'Personalized Reports',
+  'Advanced Personal Decoding',
+  'Compatibility Analysis',
+  'Partner Decoding',
+  '1:1 Strategy',
+  'Private Messaging',
+  'Response Time',
+  'Partner Inclusion',
+  'Live Case Review',
+  'Custom Action Plan',
+];
 
 export default function ChooseYourPathSection() {
   return (
@@ -11,7 +98,7 @@ export default function ChooseYourPathSection() {
         <Image src='/images/programs/choose_your_path_bg.png' alt='' fill priority quality={100} />
       </div>
 
-      <div className='container'>
+      <div className='max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-[112px] 2xl:px-[180px] relative py-[80px] lg:py-[110px]'>
         {/* top badge */}
         <div className='relative flex justify-center'>
           <div
@@ -222,6 +309,80 @@ export default function ChooseYourPathSection() {
               </Button>
             </div>
           </div>
+        </div>
+
+        <div>
+          <div className='mb-[80px]'>
+            <h2 className='text-[80px]/[126%] text-center font-canela font-thin mb-4'>
+              <span className='text-brand-primary'>Relationship Protocol</span> Tiers{' '}
+            </h2>
+            <p className='font-lato text-[24px]/[150%] text-center'>
+              Next cohort starts <span className='text-brand-primary'>March 18</span>
+            </p>
+          </div>
+
+          <Flex>
+            <ul className='min-w-[280px] hidden 4xl:block'>
+              <h4 className='font-canela mt-[50px] mb-[80px] text-[36px]/[126%] font-light text-black'> Feature</h4>
+
+              {tiers_titles.map((title) => (
+                <li className='3xl:h-[100px] 4xl:h-[90px] text-[24px]/[150%] font-lato text-brand-gray' key={title}>
+                  {title}
+                </li>
+              ))}
+            </ul>
+
+            <div className='w-full grid grid-cols-1 gap-10 3xl:gap-6 justify-center justify-items-stretch 3xl:grid-cols-3 3xl:justify-items-center'>
+              {tiers.map((tier) => (
+                <div
+                  key={tier.title}
+                  className={`relative flex w-full flex-col rounded-[32px] bg-white p-8 shadow-lg 3xl:w-auto`}
+                >
+                  {tier.popular && (
+                    <span className='absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-[#EB4F68] w-[154px] text-center py-1.5 text-[14px]/[26px] tracking-[10%] font-medium text-white'>
+                      <span className="absolute inset-0 bg-[url('/icons/noise.png')] opacity-10"></span>
+                      MOST POPULAR
+                    </span>
+                  )}
+
+                  <h3 className='mx-auto  3xl:max-w-[200px] text-center font-canela font-thin text-[36px]/[126%] text-brand-black'>
+                    {tier.title}
+                  </h3>
+
+                  <ul className='mt-8 flex flex-col gap-4 3xl:gap-0 flex-1 font-lato text-[18px]/[120%] text-brand-gray'>
+                    {tier.features.map((feature, i) => {
+                      const isExist = feature !== '-';
+
+                      const justifyClass = isExist ? 'justify-start' : 'justify-center';
+
+                      const title = tiers_titles[i];
+
+                      return (
+                        <li
+                          key={i}
+                          className={`flex flex-col justify-center 4xl:flex-row 4xl:items-center h-auto 3xl:h-[100px] 4xl:h-[90px] 3xl:border-b border-[#C6ABB3] last:border-none ${justifyClass}`}
+                        >
+                          <h5 className={`text-brand-gray text-[17px]/[26px] 4xl:hidden`}>{title}</h5>
+                          <span
+                            className={`font-lato font-semibold text-[22px]/[150%] 4xl:font-normal 2xl:text-[18px]`}
+                          >
+                            {feature}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+
+                  <div className='mt-10 text-center'>
+                    <p className='font-canela font-light mb-5 text-[32px]/[126%] text-[#3C1212]'>{tier.price}</p>
+                    <button className='w-full rounded-[50px] bg-brand-black-100 py-4 text-[15px]/[26px] font-medium tracking-[10%] text-white transition hover:bg-gray-800'>
+                      {tier.cta}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Flex>
         </div>
       </div>
     </section>

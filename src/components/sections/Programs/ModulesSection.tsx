@@ -21,75 +21,103 @@ const MINI_CARDS: MiniCard[] = [
 
 const PHASE_1: Module[] = [
   {
-    title: 'Module 1: The Diagnostic',
-    text: 'We stop treating the symptoms (the fights, the distance, the feeling of inadequacy) and locate the root cause. What is the specific “Trigger” that collapses your relationships?',
+    title: 'Module 1: The Trigger Map',
+    text: `We stop treating the symptoms—the circular fights and that nagging feeling of inadequacy—and locate the source. We identify the specific triggers that threaten your connection, so you never get blindsided again.`,
     accent: 'red',
   },
   {
-    title: 'Module 2: The Polarity Reset "Wearing The Pants"',
-    text: 'Are you the General of your household? We break the “Over-Functioning” addiction that forces men into the “Child” role. You will learn how to relinquish control to gain power.',
+    title: 'Module 2: The Polarity Reset',
+    text: `Are you exhausted from "wearing the pants" in your household? We break the over-functioning addiction that inadvertently pushes men into a "child" role—and reveal why doing less can give you more.`,
     accent: 'red',
   },
   {
-    title: 'Module 3: The Fantasy Detox',
-    text: 'We identify the romantic script you’re unconsciously following (the “fixer-upper,” the “tragic love story,” the “he’ll change for me” narrative) and replace it with what your code actually requires to feel safe — which is often the opposite of what you’ve been chasing.',
+    title: 'Module 3: The Narrative Detox',
+    text: `We identify the unconscious romantic narrative you’ve been following—whether it’s the “fixer-upper,” the “tragic love story,” or another common script—and replace it with what you actually need to feel safe and loved.`,
     accent: 'red',
   },
   {
     title: 'Module 4: From Dependency to Sovereignty',
-    text: 'How to stop outsourcing your emotional regulation to your partner. We cut the “Parental Cord” so you stop negotiating for love like a child and start receiving it like a woman.',
+    text: `Learn to stop outsourcing your emotional well-being to your partner. We expose and  reverse insecure attachment patterns so you stop negotiating for love from a place of lack and start receiving it from a place of power.`,
     accent: 'red',
   },
 ];
 
 const PHASE_2: Module[] = [
   {
-    title: 'Module 5: The Independent Protocol',
-    text: 'How to receive support without losing autonomy. The delicate balance between being a “Strong Woman” and a “Cherished Partner”.',
+    title: 'Module 5: The Independence Protocol',
+    text: 'How to receive deep support without losing your autonomy. We find the sweet spot between being a capable, high-achieving woman and a partner who allows herself to be truly seen and cared for.',
     accent: 'gold',
   },
   {
     title: 'Module 6: The Art of the Ask',
-    text: 'The difference between a Demand (which repels him) and a Request (which inspires him). How to trigger his biological drive to provide for you.',
+    text: 'Demands trigger his flight response. Requests activate his drive to provide. We give you the communication strategies that turn moments of tension into catalysts for his devotion.',
     accent: 'gold',
   },
   {
-    title: 'Module 7 & 8: The Male Operating System',
-    text: 'We decode the 3 Hidden Needs of every man: Freedom, Significance, and Sex. Learn why he pulls away when he feels “managed” and how to become his sanctuary, not his stressor.',
+    title: 'Module 7: The Core Drivers',
+    text: 'We decode the core drivers of the masculine psyche—Freedom, Significance, and Physical Connection—so you can finally understand how they shape every decision he makes, even the ones he can’t articulate himself.',
+    accent: 'gold',
+  },
+  {
+    title: 'Module 8: The Sanctuary Shift',
+    text: `We dismantle the "Management" loop that triggers his biological withdrawal. You'll learn how to pivot from being his stressor to his sanctuary.`,
     accent: 'gold',
   },
 ];
 
 const PHASE_3: Module[] = [
   {
-    title: 'Module 9: The Control Glitch (Jealousy)',
-    text: 'Jealousy is just data. We decode what your fear of loss is actually telling you and how to shift from “Paranoid” to “Magnetic.”',
+    title: 'Module 9: The Security Anchor',
+    text: `Jealousy is just data. We decode what your fear of loss is actually telling you and how to shift from “Paranoid” to “Magnetic.”`,
     accent: 'none',
   },
   {
     title: 'Module 10: The Energy Audit',
-    text: 'We map your personal energy architecture: what drains you, what restores you, and the specific environmental and relational conditions you need to stay emotionally regulated and magnetically present.',
+    text: `We map your personal energy architecture: what drains you, what restores you, and the specific environmental and relational conditions you need to stay emotionally regulated and magnetically present.`,
     accent: 'none',
   },
   {
     title: 'Module 11: The Compatibility Matrix',
-    text: 'The mathematical reality of your union. Is this a “Growth” partner, a “Karmic” teacher, or a “Life” partner? Know the difference before you invest another year.',
+    text: `The Crown Jewel (deep dive). (maybe don’t touch) The reality check. We analyze whether this is a "Growth" partner (here to teach you), or a "Life" partner (here to build with you). Gain total clarity before you invest another year of your life.`,
     accent: 'none',
   },
   {
     title: 'Module 12: The Hidden Desire',
-    text: 'The Crown Jewel of the System: Every human has a secret emotional driver (one of 87 types). I teach you how to identify *his*, so you become the only woman who truly speaks his language.',
+    text: `Every human has a secret emotional driver (one of 87 types). We teach you how to identify his "Type" with surgical precision, making you the only person on Earth who truly speaks his language.`,
     accent: 'none',
   },
 ];
 
+const GOAL_CONTENT = {
+  phase_1: {
+    phase: 1,
+    title: 'THE AUDIT',
+    highlight: '(You)',
+    highlightColor: 'text-brand-primary',
+    description: `Before we can change the relationship, we examine the invisible architecture of your romantic programming. We move from confusion to clarity by identifying the silent scripts that have been steering your life.`,
+  },
+  phase_2: {
+    phase: 2,
+    title: 'THE MECHANICS',
+    highlight: '(You & Him)',
+    highlightColor: 'text-brand-primary',
+    description: `Now that you've cleared your own internal scripts, we look at the dance between you. We decode the "Male Operating System" so you can find a rhythm where you feel cherished and he feels inspired.`,
+  },
+
+  phase_3: {
+    phase: 3,
+    title: 'THE STRATEGY',
+    highlight: '(The Future)',
+    highlightColor: 'text-brand-gold',
+    description: `This is the Crown Jewel of the system. We move from relational competence into long-term mastery. You’ll leave with a customized roadmap for your specific union—ensuring you remain emotionally grounded and irresistibly present for years to come.`,
+  },
+};
+
 function MiniWhyCard({ title, text }: MiniCard) {
   return (
     <div className='rounded-[16px] bg-[#FFF8F8] px-6 py-10 md:px-[26px] md:py-[57px] text-center'>
-      <div className='font-canela font-thin text-brand-deep text-[42px] md:text-[42px] leading-[150%]'>{title}</div>
-      <p className='mt-3 whitespace-pre-line font-lato text-[#5A5757] text-[16px] md:text-[18px] leading-[26px] md:leading-[28px]'>
-        {text}
-      </p>
+      <div className='font-canela font-thin text-brand-deep text-[32px]/[126%]'>{title}</div>
+      <p className='mt-3 whitespace-pre-line font-lato text-[#757986] text-[22px]/[150%]'>{text}</p>
     </div>
   );
 }
@@ -109,15 +137,41 @@ function ModuleCard({ title, text, accent = 'red' }: Module) {
             />
           </div>
         )}
-        <div className='font-canela font-normal text-brand-black text-[18px] md:text-[20px] leading-[18px]'>
-          {title}
-        </div>
+        <div className='font-canela font-normal text-[#010101] text-[18px]/[126%] md:text-[20px]'>{title}</div>
       </div>
 
-      <p className='font-lato font-normal text-[#5A5757] text-[14px] tracking-normal leading-[24px]'>{text}</p>
+      <p className='font-lato text-brand-gray-100 text-[15px]/[24px]'>{text}</p>
     </div>
   );
 }
+
+interface GoalContentProps {
+  phase: number;
+
+  title: string;
+  highlight: string;
+  highlightColor: string;
+  description: string;
+}
+
+const GoalContent = ({ phase, title, highlight, highlightColor, description }: GoalContentProps) => (
+  <>
+    <p className='font-canela font-thin text-brand-black text-[22px] md:text-[28px] tracking-[0.18em] uppercase'>
+      {' '}
+      PHASE {phase}:
+    </p>
+
+    <h3 className='mt-1 mb-4 font-canela font-thin text-brand-deep text-[34px] md:text-[46px] lg:text-[56px] leading-[105%]'>
+      {title}
+      <br />
+      <span className={`font-canela font-thin leading-[126%] tracking-normal ${highlightColor}`}>{highlight}</span>
+    </h3>
+
+    <p className='lg:max-w-[500px] font-lato text-[22px]/[30px] text-[#6F4C40] mb-[67px]'>
+      <span className='font-bold'>The Goal:</span> <span className='italic'>{description}</span>
+    </p>
+  </>
+);
 
 export default function ModulesSection() {
   return (
@@ -227,12 +281,11 @@ export default function ModulesSection() {
           </div>
 
           <h2 className='mt-16 font-canela font-thin text-brand-deep text-[48px] md:text-[48px] lg:text-[48px] leading-[120%] max-w-[860px] mx-auto'>
-            <span className='text-brand-primary'>The LeeluTech system </span> answers the questions
-            <br />
-            traditional therapy circles for years:
+            <span className='text-brand-primary'>The Leelu Method</span> answers the questions traditional therapy
+            circles for years:
           </h2>
 
-          <div className='mt-10 lg:mt-12 grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 max-w-[980px] mx-auto'>
+          <div className='mt-10 lg:mt-[80px] mb-[42px] lg:mb-0 grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6mx-auto'>
             {MINI_CARDS.map((c, idx) => (
               <div key={c.title} className={idx === 1 ? 'md:-translate-y-6 lg:-translate-y-8' : ''}>
                 <MiniWhyCard {...c} />
@@ -248,9 +301,7 @@ export default function ModulesSection() {
         {/* ====== MODULES BLOCK ====== */}
         <div className='pb-[110px] lg:pb-[96px]'>
           <h2 className='text-center font-canela font-thin text-brand-deep text-[48px] md:text-[48px] lg:text-[80px] tracking-normal leading-[130%] mx-auto'>
-            You are 12 modules away from the
-            <br />
-            relationship
+            You are 12 modules away from the relationship{' '}
             <span className='text-brand-primary'>you were destined for.</span>
           </h2>
 
@@ -258,18 +309,15 @@ export default function ModulesSection() {
             This is not a lecture series. It is a step-by-step reconfiguration of your relationship architecture.
           </p>
 
+          <p className='mt-6 md:mt-8 text-center font-lato text-brand-deep text-[24px] md:text-[24px] lg:leading-[26px] leading-[150%]'>
+            Next cohort starts <span className='text-brand-primary'>March 18</span>
+          </p>
+
           {/* ================= PHASE 1 ================= */}
           <div className='mt-12 lg:mt-16 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-start'>
             {/* left */}
             <div className='text-left'>
-              <p className='font-canela font-thin text-brand-black text-[22px] md:text-[28px] tracking-[0.18em] uppercase'>
-                PHASE 1:
-              </p>
-
-              <h3 className='mt-1 font-canela font-thin text-brand-deep text-[34px] md:text-[46px] lg:text-[56px] leading-[105%]'>
-                THE AUDIT
-                <span className='font-canela font-thin leading-[126%] tracking-normal text-brand-primary'>(You)</span>
-              </h3>
+              <GoalContent {...GOAL_CONTENT.phase_1} />
 
               <div className='mt-4 relative w-full max-w-[420px] mx-auto lg:mx-0'>
                 <div className='relative w-full aspect-[420/338]'>
@@ -320,15 +368,7 @@ export default function ModulesSection() {
 
             {/* right title + image */}
             <div className='lg:order-2 order-1 text-left'>
-              <p className='font-canela font-thin text-brand-black text-[22px] md:text-[28px] tracking-[0.18em] uppercase'>
-                PHASE 2:
-              </p>
-
-              <h3 className='mt-1 font-canela font-thin text-brand-deep text-[34px] md:text-[46px] lg:text-[56px] leading-[105%]'>
-                THE MECHANICS
-                <br />
-                <span className='font-canela font-thin leading-[126%] tracking-normal text-[#C89F26]'>(Him)</span>
-              </h3>
+              <GoalContent {...GOAL_CONTENT.phase_2} />
 
               <div className='mt-4 md:mt-[65px] relative w-full max-w-[460px] mx-auto lg:mx-0'>
                 <div className='relative w-full aspect-[460/378]'>
@@ -362,17 +402,7 @@ export default function ModulesSection() {
           <div className='mt-14 lg:mt-28 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-start'>
             {/* left */}
             <div className='text-left'>
-              <p className='font-canela font-thin text-brand-black text-[22px] md:text-[28px] tracking-[0.18em] uppercase'>
-                PHASE 3:
-              </p>
-
-              <h3 className='mt-1 font-canela font-thin text-brand-deep text-[34px] md:text-[46px] lg:text-[56px] leading-[105%]'>
-                THE STRATEGY
-                <br />
-                <span className='font-canela font-thin leading-[126%] tracking-normal text-brand-primary'>
-                  (The Future)
-                </span>
-              </h3>
+              <GoalContent {...GOAL_CONTENT.phase_3} />
 
               <div className='mt-4 md:mt-[65px] relative mx-auto lg:mx-0'>
                 <Phase3Orb />

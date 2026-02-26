@@ -83,7 +83,7 @@ function BlindSpotCard({ title, text, variant }: BlindCard) {
         {title}
       </h3>
 
-      <p className={['font-lato font-normal text-body leading-[26px] text-center text-[#5A5757]'].join(' ')}>{text}</p>
+      <p className={['font-lato font-normal text-[17px]/[26px] text-center text-brand-gray'].join(' ')}>{text}</p>
     </div>
   );
 }
@@ -173,7 +173,7 @@ const ProblemSolutionSection = () => {
               }}
             >
               <RotateOnView
-                duration={10}
+                duration={5}
                 amount={0.2}
                 ease='easeOut'
                 className='absolute inset-0'
@@ -267,14 +267,14 @@ const ProblemSolutionSection = () => {
           <h2 className='relative font-thin text-[42px] lg:text-[60px] leading-[130%] font-canela text-brand-deep mb-8 text-center z-10'>
             The couples who succeed don&apos;t have fewer challenges.
           </h2>
-          <h2 className='relative font-thin text-[32px] lg:text-[24px] leading-[130%] font-canela text-brand-deep mb-8 text-center z-10'>
+          <h2 className='relative font-thin text-[32px]/[130%] font-canela text-brand-deep mb-8 text-center z-10'>
             They have the blueprint.
           </h2>
-          <p className='text-[22px] font-normal font-lato leading-[150%] mb-6 text-center text-[#5A5757]  mx-auto'>
+          <p className='text-[22px] font-normal font-lato leading-[150%] mb-6 text-center text-brand-gray-100  mx-auto'>
             The LeeluTech Compatibility Code Report analyzes how you each process emotion, handle conflict, and express
             needs—then ma ps whether your energies amplify, neutralize, or destabilize each other.
           </p>
-          <p className='text-[22px] font-normal font-lato leading-[150%] mb-6 text-center text-[#5A5757]  mx-auto'>
+          <p className='text-[22px] font-normal font-lato leading-[150%] mb-6 text-center text-brand-gray-100  mx-auto'>
             Your personalized Compatibility Code Report delivers:
           </p>
 

@@ -18,9 +18,9 @@ const TriageSection = () => {
         <div className='grid grid-cols-1 md:grid-cols-[4fr,3fr] gap-[43px] lg:gap-[102px] '>
           {/* Left Column - Image */}
           <div className='flex flex-col gap-5 lg:gap-8 justify-center'>
-            <div className='relative md:mb-0 lg:mb-0 w-full h-[245px] lg:w-[600px] lg:h-[380px]'>
+            <div className='relative md:mb-0 lg:mb-0 w-full rounded-[32px] h-[245px] overflow-hidden lg:w-[600px] lg:h-[380px]'>
               <Image
-                src='/images/landing/triage_section_women.png'
+                src='/images/landing/triage_section_women_new.png'
                 alt='Person sitting with a laptop'
                 fill
                 priority

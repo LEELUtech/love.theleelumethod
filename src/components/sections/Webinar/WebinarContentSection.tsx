@@ -14,6 +14,8 @@ const CARD_CONTENT = [
   {
     title: 'The Identity Level',
     text: "Deeper. Who you believe you are and what you believe you deserve in love. If your identity is built for survival instead of intimacy, you'll sabotage anything real.",
+    img: '/images/webinar/webinar_decor_up.png',
+    icon: '/icons/ornament_16.svg',
   },
   {
     title: 'The Subconscius Level',
