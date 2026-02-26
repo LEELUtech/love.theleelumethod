@@ -5,7 +5,7 @@ import Image from 'next/image';
 export interface IFooterPromo {
   title: string;
   description: string[];
-  subtitle: string;
+  subtitle?: string;
   link: {
     href: string;
     label: string;
@@ -60,8 +60,9 @@ export const FooterPromo = (props: Props) => {
                 </p>
               ))}
 
-              <p
-                className='
+              {subtitle && (
+                <p
+                  className='
                 font-canela font-thin text-brand-deep tracking-normal
 
                 /* MOBILE */
@@ -73,9 +74,10 @@ export const FooterPromo = (props: Props) => {
                 /* DESKTOP */
                 lg:text-[32px] lg:leading-[130%]
                 '
-              >
-                {subtitle}
-              </p>
+                >
+                  {subtitle}
+                </p>
+              )}
             </div>
 
             <Button variant='primary' size='md' className={`w-full md:w-[55%] ${buttonClassName}`} href={link.href}>

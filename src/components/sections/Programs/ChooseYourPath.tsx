@@ -79,7 +79,7 @@ const tiers_titles = [
   'Workbook & Integration',
   'Community Support',
   'Personalized Reports',
-  'Personalized Reports',
+  'Advanced Personal Decoding',
   'Compatibility Analysis',
   'Partner Decoding',
   '1:1 Strategy',
@@ -326,7 +326,7 @@ export default function ChooseYourPathSection() {
               <h4 className='font-canela mt-[50px] mb-[80px] text-[36px]/[126%] font-light text-black'> Feature</h4>
 
               {tiers_titles.map((title) => (
-                <li className='h-[70px] text-[24px]/[150%] font-lato text-brand-gray' key={title}>
+                <li className='3xl:h-[100px] 4xl:h-[90px] text-[24px]/[150%] font-lato text-brand-gray' key={title}>
                   {title}
                 </li>
               ))}
@@ -336,7 +336,7 @@ export default function ChooseYourPathSection() {
               {tiers.map((tier) => (
                 <div
                   key={tier.title}
-                  className={`relative flex w-full flex-col rounded-4xl bg-white p-8 shadow-lg 3xl:w-auto`}
+                  className={`relative flex w-full flex-col rounded-[32px] bg-white p-8 shadow-lg 3xl:w-auto`}
                 >
                   {tier.popular && (
                     <span className='absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-[#EB4F68] w-[154px] text-center py-1.5 text-[14px]/[26px] tracking-[10%] font-medium text-white'>
@@ -360,7 +360,7 @@ export default function ChooseYourPathSection() {
                       return (
                         <li
                           key={i}
-                          className={`flex flex-col justify-center 4xl:flex-row 4xl:items-center h-auto 3xl:h-[100px] 4xl:h-[72px] 3xl:border-b last:border-none ${justifyClass}`}
+                          className={`flex flex-col justify-center 4xl:flex-row 4xl:items-center h-auto 3xl:h-[100px] 4xl:h-[90px] 3xl:border-b border-[#C6ABB3] last:border-none ${justifyClass}`}
                         >
                           <h5 className={`text-brand-gray text-[17px]/[26px] 4xl:hidden`}>{title}</h5>
                           <span
