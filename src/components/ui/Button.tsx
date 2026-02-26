@@ -51,7 +51,7 @@ const base =
 
 const sizes: Record<ButtonSize, string> = {
   md: 'text-[13px] md:text-[14px] leading-[26px] px-8 py-3',
-  lg: 'text-[13px] md:text-[15px] leading-[26px] px-10 py-3',
+  lg: 'text-[13px] md:text-[15px] leading-[26px] px-10 py-4',
 };
 
 const variants: Record<ButtonVariant, { base: string; hover: string }> = {

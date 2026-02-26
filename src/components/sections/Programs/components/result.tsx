@@ -66,7 +66,7 @@ export const ProgramResult = ({ title, link, investment, description }: Props) =
         {investment && <p className='text-[32px]/[126%] font-canela font-light mb-5'>Investment: ${investment}</p>}
 
         {link && (
-          <Button href={link.href} className='px-[80px] py-4' size='xl'>
+          <Button href={link.href} className='px-[80px] py-4'>
             {link.label}
           </Button>
         )}
