@@ -6,7 +6,6 @@ import WebinarWhatIfSection from '@/components/sections/Webinar/WebinarWhatIfSec
 import WebinarHeyImLilySection from '@/components/sections/Webinar/WebinarHeyImLilySection';
 import TestimonialsSection from '@/components/sections/Webinar/TestimonialsSection';
 import FooterLayout from '@/components/ui/footer/FooterLayout';
-import HeyImLilySection from '@/components/sections/Secrets/HeyImLilySection';
 
 const WebinarPage = () => {
   return (
@@ -17,7 +16,6 @@ const WebinarPage = () => {
       <WebinarWhatIfSection />
       <WebinarDiscoverSection />
 
-      <HeyImLilySection />
       <WebinarHeyImLilySection />
 
       <FooterLayout withNavigation={false} />
