@@ -35,15 +35,7 @@ const CoreValueSection = () => {
         <div className='mx-auto text-center'>
           {/* Top Image */}
           <div className='flex justify-center mb-12 relative'>
-            <div
-              className='
-                absolute
-                w-[268px] h-[290px]
-                lg:w-[358px] sm:h-[366px]
-								top-[-320px]
-                overflow-visible
-              '
-            >
+            <div className='absolute w-[346px] h-[331px] top-[-320px] overflow-visible'>
               <Image src='/images/compatibility/core_value_section.png' alt='' fill quality={100} />
 
               <div
@@ -105,7 +97,7 @@ const CoreValueSection = () => {
           </div>
 
           {/* Heading */}
-          <h2 className='max-w-[1000px] font-thin text-[32px]/[44px] lg:text-[28px]/[40px] font-canela text-brand-deep mb-6 md:mt-[180px] lg:mt-[180px]'>
+          <h2 className='max-w-[1000px] font-thin text-[32px]/[44px] lg:text-[28px]/[40px] font-canela text-brand-deep mb-6 mt-[80px] md:mt-[180px]'>
             This is the foundational intelligence most couples pay thousands in therapy to maybe, eventually uncover.{' '}
             <span className='font-normal'>You&apos;re getting it in 60 seconds for {priceLabel}</span>
             —the price of a small coffee.
