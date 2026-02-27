@@ -17,7 +17,9 @@ const TAG_LOGIC: Record<string, { add: string[]; remove: string[] }> = {
 };
 
 export async function applyPurchaseCampaignTags(pi: Stripe.PaymentIntent) {
-  const email = String(pi.metadata?.email || pi.receipt_email || "").trim().toLowerCase();
+  const email = String(pi.metadata?.email || pi.receipt_email || "")
+    .trim()
+    .toLowerCase();
   if (!email) throw new Error("applyPurchaseCampaignTags: missing email");
 
   const productType = pi.metadata?.product_type;
