@@ -1,6 +1,7 @@
 import ArcAutoOnce from '@/components/ui/ArcFlyOnce';
 import Button from '@/components/ui/Button';
 import RotateOnView from '@/components/ui/RotateOnView';
+import { ILink } from '@/static/links';
 import Image from 'next/image';
 
 export interface IProgramsHero {
@@ -9,14 +10,14 @@ export interface IProgramsHero {
   subtitle: string;
   content: string;
   contentBottom?: string;
-  buttonLabel: string;
+  link: ILink;
   imgSrc: string;
 }
 
 interface Props extends IProgramsHero {} // eslint-disable-line @typescript-eslint/no-empty-object-type
 
 export const ProgramsHero = (props: Props) => {
-  const { title, description, subtitle, content, contentBottom, buttonLabel, imgSrc } = props;
+  const { title, description, subtitle, content, contentBottom, link, imgSrc } = props;
   return (
     <section className='relative pt-10 lg:pt-[80px]  bg-brand-white overflow-hidden'>
       <div className='container px-4 relative z-10'>
@@ -144,8 +145,13 @@ export const ProgramsHero = (props: Props) => {
             )}
           </p>
 
-          <Button variant='primary' size='md' className='w-full lg:w-[30%] xs:text-[12px] mt-[32px] lg:order-3'>
-            {buttonLabel}
+          <Button
+            variant='primary'
+            size='md'
+            className='w-full lg:w-[30%] xs:text-[12px] mt-[32px] lg:order-3'
+            href={link.href}
+          >
+            {link.label}
           </Button>
         </div>
       </div>

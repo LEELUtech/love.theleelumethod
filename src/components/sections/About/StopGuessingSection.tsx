@@ -1,6 +1,7 @@
 import ArcAutoOnce from '@/components/ui/ArcFlyOnce';
 import Button from '@/components/ui/Button';
 import RotateOnView from '@/components/ui/RotateOnView';
+import { ABOUT_LINKS } from '@/static/links';
 import Image from 'next/image';
 
 const StopGuessingSection = () => {
@@ -95,8 +96,13 @@ const StopGuessingSection = () => {
             We rewrite the code.
           </p>
 
-          <Button variant='primary' size='md' className='w-full lg:w-[40%] xs:text-[12px]' href='#checkout'>
-            Access your Operating Manual
+          <Button
+            variant='primary'
+            size='md'
+            className='w-full lg:w-[40%] xs:text-[12px]'
+            href={ABOUT_LINKS.STOP_GUESSING_LINK.href}
+          >
+            {ABOUT_LINKS.STOP_GUESSING_LINK.label}
           </Button>
         </div>
       </div>

@@ -2,6 +2,7 @@ import ArcAutoOnce from '@/components/ui/ArcFlyOnce';
 import Button from '@/components/ui/Button';
 import Header from '@/components/ui/Header';
 import RotateOnView from '@/components/ui/RotateOnView';
+import { ABOUT_LINKS } from '@/static/links';
 import Image from 'next/image';
 
 const content = {
@@ -11,10 +12,7 @@ const content = {
     `After validating the science worked at scale, I traveled through the Middle East and Asia to study the original numerological lineages at their source.`,
     `From these experiences, The Leelu Method was forged—a precise framework that maps and decodes human behavior through ancient intelligence and modern behavioral science.`,
   ],
-  link: {
-    href: '#checkout',
-    label: 'START THE DECODE',
-  },
+  link: ABOUT_LINKS.HERO_LINK,
 };
 
 const HeroSection = () => {

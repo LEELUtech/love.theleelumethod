@@ -1,8 +1,8 @@
 import React from 'react';
 import Image from 'next/image';
 import Button from '@/components/ui/Button';
-import { WEBINAR_URL } from '@/utils/constants';
 import LoveLevelsAnimatedBlock from '@/components/sections/Webinar/LoveLevelsAnimatedBlock';
+import { DESCODE_LINKS } from '@/static/links';
 
 const CARD_CONTENT = [
   {
@@ -168,8 +168,13 @@ const WebinarContentSection = () => {
 
         {/* CTA BUTTON */}
         <div className='flex justify-center w-full'>
-          <Button variant='primary' size='md' className='w-full md:w-[76%] py-[12px]' href={WEBINAR_URL}>
-            Reserve My Spot
+          <Button
+            variant='primary'
+            size='md'
+            className='w-full md:w-[76%] py-[12px]'
+            href={DESCODE_LINKS.RESERVE_LINK.href}
+          >
+            {DESCODE_LINKS.RESERVE_LINK.label}
           </Button>
         </div>
       </div>

@@ -1,8 +1,18 @@
 import Button from '@/components/ui/Button';
 import RotateOnView from '@/components/ui/RotateOnView';
+import { PROGRAMS_LINKS } from '@/static/links';
 import { Flex } from 'antd';
 import Image from 'next/image';
 import React from 'react';
+
+const {
+  SELF_GUIDED_LINK,
+  BREAKTHROUGH_LINK,
+  VIP_LINK,
+  PROTOCOL_ESSENTIALS_LINK,
+  PROTOCOL_BREAKTHROUGH_LINK,
+  PROTOCOL_VIP_LINK,
+} = PROGRAMS_LINKS;
 
 const tiers = [
   {
@@ -25,11 +35,7 @@ const tiers = [
       'Audience Access (Hot Seat Available)',
       '-',
     ],
-
-    link: {
-      href: '/programs/self-guided-transformation',
-      label: 'BEGIN THE PROTOCOL',
-    },
+    link: PROTOCOL_ESSENTIALS_LINK,
   },
   {
     title: 'Guided Breakthrough',
@@ -51,10 +57,7 @@ const tiers = [
       'Hot Seat Priority',
       'Relationship Roadmap (Session-Based)',
     ],
-    link: {
-      href: '/programs/guided-breakthrough',
-      label: 'BREAK THROUGH',
-    },
+    link: PROTOCOL_BREAKTHROUGH_LINK,
   },
   {
     title: 'VIP Immersion',
@@ -76,10 +79,7 @@ const tiers = [
       'Private Analysis Included',
       'Step-by-Step Strategic Plan (Written + Session-Based)',
     ],
-    link: {
-      href: '/programs/vip-immersion',
-      label: 'APPLY FOR VIP',
-    },
+    link: PROTOCOL_VIP_LINK,
   },
 ];
 
@@ -128,10 +128,7 @@ const CARDS: ICard[] = [
       'The Relationship Protocol Workbook (downloadable)',
       'Bonus: Your Personal LeeluTech Breakdown PDF',
     ],
-    link: {
-      href: '/self-guided-transformation',
-      label: 'BEGIN THE PROTOCOL',
-    },
+    link: SELF_GUIDED_LINK,
     for: `You're not in crisis—you're in clarity mode. You've done enough therapy, coaching, or self-work to know what you need to shift; you just need the specific system to do it. You're comfortable working independently, you trust your own discipline, and you'd rather move at your own pace than wait for scheduled calls. You need the blueprint, not a guide holding your hand through it.`,
   },
   {
@@ -144,11 +141,7 @@ const CARDS: ICard[] = [
       `Written Compatibility Analysis: Lily personally reviews your numerological code against your partner's — identifying friction points, communication blind spots, and your hidden compatibility levers (delivered within 5 business days)`,
       `Private Strategy Session (90 Minutes): A deep-dive diagnostic call where Lily applies the system to your specific situation, helps you understand the root pattern, and scripts your next moves`,
     ],
-    link: {
-      href: '/self-guided-transformation',
-      label: 'GET PERSONALIZED SUPPORT',
-    },
-
+    link: BREAKTHROUGH_LINK,
     for: `You're at a crossroads and need clarity now. You want the system—but you also want Lily in your corner, showing you exactly how to apply it to your relationship.`,
   },
   {
@@ -164,10 +157,7 @@ const CARDS: ICard[] = [
       `Custom Relationship Action Plan — a written strategic roadmap based on your unique code, crisis point, and desired outcome`,
       `Partner Profile Add-On: If your partner is willing, Lily will include him in one joint session to accelerate alignment`,
     ],
-    link: {
-      href: '/self-guided-transformation',
-      label: 'APPLY FOR VIP ACCESS',
-    },
+    link: VIP_LINK,
   },
 ];
 

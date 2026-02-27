@@ -1,5 +1,6 @@
 import Button from '@/components/ui/Button';
 import RotateOnView from '@/components/ui/RotateOnView';
+import { ABOUT_LINKS } from '@/static/links';
 
 const SectionText = ({ text }: { text: string }) => (
   <p className='max-auto max-w-[800px] font-medium text-[#5A5757] font-lato tracking-[3%] mb-6 text-[17px]/[26px]'>
@@ -110,8 +111,8 @@ const TheSynthesisSection = () => {
           </p>
 
           {/* CTA */}
-          <Button variant='primary' size='md' className='w-full lg:w-[40%]' href='#checkout'>
-            START THE DECODE
+          <Button variant='primary' size='md' className='w-full lg:w-[40%]' href={ABOUT_LINKS.HERO_LINK.href}>
+            {ABOUT_LINKS.HERO_LINK.label}
           </Button>
         </div>
       </div>

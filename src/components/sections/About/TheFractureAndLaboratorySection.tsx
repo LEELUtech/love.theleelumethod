@@ -1,5 +1,6 @@
 import Button from '@/components/ui/Button';
 import RotateOnView from '@/components/ui/RotateOnView';
+import { ABOUT_LINKS } from '@/static/links';
 import Image from 'next/image';
 
 const TheFractureAndLaboratorySection = () => {
@@ -52,8 +53,8 @@ const TheFractureAndLaboratorySection = () => {
             <p className='font-thin font-canela text-[32px]/[130%] text-brand-deep lg:mb-[30px] md:mb-[30px] mb-[30px]'>
               That session was the spark that lit my path into the world of numerology and eventually, heelutech.
             </p>
-            <Button variant='dark' size='md' className='w-full lg:w-[60%]' href='#checkout'>
-              START THE DECODE
+            <Button variant='dark' size='md' className='w-full lg:w-[60%]' href={ABOUT_LINKS.FRACTURE_LINK.href}>
+              {ABOUT_LINKS.FRACTURE_LINK.label}
             </Button>
           </div>
         </div>

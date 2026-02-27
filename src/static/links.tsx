@@ -1,3 +1,5 @@
+import { QUIZ_URL, WEBINAR_URL } from '@/utils/constants';
+
 export interface ILink {
   label: string;
   href: string;
@@ -6,17 +8,17 @@ export interface ILink {
 type RecordLink = Record<string, ILink>;
 
 export const RESOURCES_LINKS: RecordLink = {
-  CARD_1_LINK: {
+  SECRETS_LINK: {
     label: 'DOWNLOAD FREE GUIDE',
-    href: '#',
+    href: '/resources/secrets',
   },
-  CARD_2_LINK: {
+  COMPATIBILITY_LINK: {
     label: 'GET THE REPORT',
-    href: '#',
+    href: '/resources/compatibility-report',
   },
-  CARD_3_LINK: {
+  QUIZ_LINK: {
     label: 'START QUIZ',
-    href: '#',
+    href: QUIZ_URL,
   },
   DECODED_LINK: {
     label: 'Save My Seat',
@@ -25,13 +27,9 @@ export const RESOURCES_LINKS: RecordLink = {
 };
 
 export const SECRETS_LINKS: RecordLink = {
-  DOWNLOAD_LINK: {
-    label: 'DOWNLOAD THE FREE GUIDE',
-    href: '#',
-  },
   ACCESS_LINK: {
     label: 'ACCESS THE FREE GUIDE',
-    href: '#',
+    href: '#footer-promo',
   },
   CLAIM_LINK: {
     label: 'CLAIM YOUR FREE GUIDE',
@@ -40,32 +38,32 @@ export const SECRETS_LINKS: RecordLink = {
 };
 
 export const DESCODE_LINKS: RecordLink = {
-  SAVE_HERO_LINK: {
+  HERO_LINK: {
     label: 'Save My Seat',
-    href: '#',
+    href: '/resources/secrets',
   },
   RESERVE_LINK: {
     label: 'Reserve My Spot',
-    href: '#',
+    href: WEBINAR_URL,
   },
   REGISTER_LINK: {
     label: 'REGISTER NOW',
-    href: '#',
+    href: WEBINAR_URL,
   },
   FOOTER_PROMO_LINK: {
     label: 'Save My Seat',
-    href: '#',
+    href: '/resources/secrets',
   },
 };
 
 export const COMPABILITY_REPORT_LINKS: RecordLink = {
   HERO_LINK: {
     label: 'GIVE ME MY COMPATIBILITY CODE REPORT',
-    href: '#',
+    href: '#checkout',
   },
-  SECOND_LINK: {
+  PROBLEM_LINK: {
     label: 'GIVE ME MY COMPATIBILITY CODE REPORT',
-    href: '#',
+    href: '#checkout',
   },
   UNLOCK_LINK: {
     label: 'UNLOCK MY COMPATIBILITY CODE - $3.33',
@@ -73,14 +71,14 @@ export const COMPABILITY_REPORT_LINKS: RecordLink = {
   },
   FOOTER_PROMO_LINK: {
     label: 'GIVE ME MY COMPATIBILITY CODE REPORT',
-    href: '#',
+    href: '#checkout',
   },
 };
 
 export const ABOUT_LINKS: RecordLink = {
   HERO_LINK: {
     label: 'START THE DECODE',
-    href: '#',
+    href: '#checkout',
   },
   FRACTURE_LINK: {
     label: 'START THE DECODE',
@@ -99,15 +97,15 @@ export const ABOUT_LINKS: RecordLink = {
 export const PROGRAMS_LINKS: RecordLink = {
   HERO_LINK: {
     label: 'ENROLL NOW',
-    href: '#',
+    href: '#checkout',
   },
-  FRACTURE_LINK: {
+  BLIND_LINK: {
     label: 'READ MORE STORIES',
     href: '#stories', // Stories
   },
   PROTOCOL_LINK: {
     label: 'INITIATE THE PROTOCOL',
-    href: '#',
+    href: '#checkout',
   },
   SELF_GUIDED_LINK: {
     label: 'BEGIN THE PROTOCOL',
@@ -133,7 +131,7 @@ export const PROGRAMS_LINKS: RecordLink = {
     label: 'APPLY FOR VIP',
     href: '/programs/vip-immersion#checkout',
   },
-  ACCESS_LINK: {
+  FOOTER_PROMO_LINK: {
     label: 'ACCESS THE PROTOCOL',
     href: '#',
   },
@@ -212,19 +210,19 @@ export const ESSENTIALS_LINKS: RecordLink = {
 export const GUIDED_BREAKTHROUGH_LINKS: RecordLink = {
   HERO_LINK: {
     label: 'GET PERSONAL',
-    href: '#',
+    href: '#checkout',
   },
   COMPATIBILITY_LINK: {
     label: 'ENROLL NOW',
-    href: '#',
+    href: '#checkout',
   },
   WORKED_LINK: {
     label: 'GET PERSONALIZED SUPPORT',
-    href: '#',
+    href: '#checkout',
   },
   COST_LINK: {
     label: 'CLAIM MY BREAKTHROUGH',
-    href: '#',
+    href: '#checkout',
   },
   CHECKOUT_LINK: {
     label: 'SIGN UP & GET PERSONALIZED SUPPORT',
@@ -235,30 +233,30 @@ export const GUIDED_BREAKTHROUGH_LINKS: RecordLink = {
 export const VIP_LINKS: RecordLink = {
   HERO_LINK: {
     label: 'APPLY FOR ACCESS',
-    href: '#',
+    href: '#checkout',
   },
   MECHANICS_LINK: {
     label: 'SECURE YOUR SPOT',
-    href: '#',
+    href: '#checkout',
   },
   RESULT_LINK: {
     label: 'APPLY FOR VIP ACCESS',
-    href: '#',
+    href: '#checkout',
   },
   WHO_LINK: {
     label: 'APPLY FOR VIP ACCESS',
-    href: '#',
+    href: '#checkout',
   },
   CHECKOUT_LINK: {
     label: 'SIGN UP & APPLY FOR VIP ACCESS',
-    href: '#',
+    href: '#checkout',
   },
 };
 
 export const ONE_ON_ONE_LINKS: RecordLink = {
   HERO_LINK: {
     label: 'BOOK YOUR SESSION',
-    href: '#',
+    href: '#pricing',
   },
   SINGLE_SESSION_LINK: {
     label: 'BOOK SESSION',
@@ -272,9 +270,15 @@ export const ONE_ON_ONE_LINKS: RecordLink = {
     label: 'BOOK PACKAGE',
     href: '#',
   },
-
   PRIMARY_LINK: {
-    label: 'APPLY FOR VIP ACCESS',
+    label: 'BOOK YOUR SESSION',
+    href: '#pricing',
+  },
+};
+
+export const SUCCESS_LINKS: RecordLink = {
+  FOOTER_PROMO_LINK: {
+    label: 'SECURE YOUR SEAT TO RESET THE DYNAMIC',
     href: '#',
   },
 };

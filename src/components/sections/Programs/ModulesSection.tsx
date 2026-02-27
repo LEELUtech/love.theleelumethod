@@ -1,6 +1,7 @@
 import Button from '@/components/ui/Button';
 import Phase3Orb from '@/components/ui/Phase3Orb';
 import RotateOnView from '@/components/ui/RotateOnView';
+import { PROGRAMS_LINKS } from '@/static/links';
 import Image from 'next/image';
 import React from 'react';
 
@@ -420,8 +421,13 @@ export default function ModulesSection() {
               Reconfigure your relationship architecture.
             </h3>
 
-            <Button variant='primary' size='md' className='w-full lg:w-[38%] xs:text-[12px] mt-[32px]' href='#checkout'>
-              INITIATE THE PROTOCOL
+            <Button
+              variant='primary'
+              size='md'
+              className='w-full lg:w-[38%] xs:text-[12px] mt-[32px]'
+              href={PROGRAMS_LINKS.PROTOCOL_LINK.href}
+            >
+              {PROGRAMS_LINKS.PROTOCOL_LINK.label}
             </Button>
           </div>
         </div>

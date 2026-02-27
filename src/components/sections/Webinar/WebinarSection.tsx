@@ -3,6 +3,7 @@ import Image from 'next/image';
 import ArcAutoOnce from '@/components/ui/ArcFlyOnce';
 import Button from '@/components/ui/Button';
 import RotateOnView from '@/components/ui/RotateOnView';
+import { DESCODE_LINKS } from '@/static/links';
 
 const WebinarSection = () => {
   return (
@@ -79,8 +80,13 @@ const WebinarSection = () => {
             </div>
 
             <div className='order-1 md:order-2'>
-              <Button variant='primary' size='md' className='w-full md:w-[65%] py-[12px]' href='/resources/secrets'>
-                Save My Seat
+              <Button
+                variant='primary'
+                size='md'
+                className='w-full md:w-[65%] py-[12px]'
+                href={DESCODE_LINKS.HERO_LINK.href}
+              >
+                {DESCODE_LINKS.HERO_LINK.label}
               </Button>
             </div>
           </div>

@@ -1,6 +1,7 @@
 import ArcAutoOnce from '@/components/ui/ArcFlyOnce';
 import Button from '@/components/ui/Button';
 import RotateOnView from '@/components/ui/RotateOnView';
+import { ONE_ON_ONE_LINKS } from '@/static/links';
 import Image from 'next/image';
 
 const content = {
@@ -47,9 +48,9 @@ export const Diagnostic = () => {
             variant='primary'
             size='md'
             className='mb-8 w-full bs:w-[52%] py-[16px] order-3 md:order-5 md:mb-0'
-            href='#'
+            href={ONE_ON_ONE_LINKS.HERO_LINK.href}
           >
-            BOOK YOUR SESSION
+            {ONE_ON_ONE_LINKS.HERO_LINK.label}
           </Button>
         </div>
       </div>{' '}

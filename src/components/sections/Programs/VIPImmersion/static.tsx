@@ -1,16 +1,18 @@
+import { VIP_LINKS } from '@/static/links';
 import { IProgramsHero } from '../components/hero';
 import { IProgramItWorks } from '../components/it-works';
 import { IProgramsReceive } from '../components/receive';
 import { IProgramResult } from '../components/result';
 import { IProgramsWhoThis } from '../components/who-this';
 import { IVIPImmersionOverview } from './Overwie';
+const { HERO_LINK, RESULT_LINK } = VIP_LINKS;
 
 export const vipImmersionHeroData: IProgramsHero = {
   title: 'THE VIP IMMERSION',
   imgSrc: '/images/lily/lily_4.png',
   subtitle: `Immediate Intervention. Permanent Reconstruction.`,
   content: `For the woman who needs the problem solved immediately. Real-time access. Deep-tissue deprogramming..`,
-  buttonLabel: 'ENROLL NOW',
+  link: HERO_LINK,
 };
 
 export const vipImmersionWhoThisData: IProgramsWhoThis = {
@@ -108,10 +110,7 @@ export const vipImmersionResultData: IProgramResult = {
   title: 'Permanent Shift.',
   description: `This is not a repair job; it is a demolition and a rebuild. We do not patch the cracks; we pour a new foundation. You get the highest level of access to ensure you never return to the old version of your life.`,
   investment: 4_997,
-  link: {
-    href: '#',
-    label: 'APPLY FOR VIP ACCESS',
-  },
+  link: RESULT_LINK,
 };
 
 export const vipImmersionItWorksData: IProgramItWorks = {

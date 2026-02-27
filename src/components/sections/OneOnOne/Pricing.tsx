@@ -3,6 +3,7 @@
 import Button from '@/components/ui/Button';
 import { SectionBadge } from '@/components/ui/SectionBadge';
 import useMediaQuery from '@/hooks/use-media-query';
+import { ILink, ONE_ON_ONE_LINKS } from '@/static/links';
 import Image from 'next/image';
 
 interface PricingOption {
@@ -17,7 +18,7 @@ interface PricingOption {
   perSession?: number;
   save?: number;
   saveLabel?: string;
-  buttonText: string;
+  link: ILink;
   type: 'single' | 'package';
   note?: string;
   priceLabel?: string;
@@ -30,6 +31,8 @@ interface PricingOption {
     }[];
   }[];
 }
+
+const { SINGLE_SESSION_LINK, THREE_PACKAGE_LINK, NINE_PACKAGE_LINK } = ONE_ON_ONE_LINKS;
 
 export const content: PricingOption[] = [
   {
@@ -47,7 +50,7 @@ export const content: PricingOption[] = [
     note: `One session identifies one primary pattern. If you're working across multiple life domains (relationship + career, family + money) or need implementation support as you execute the correction, the multi-session packages provide ongoing diagnostic as implementation surfaces new information.`,
     investment: 497,
     priceLabel: 'Investment',
-    buttonText: 'Book Session',
+    link: SINGLE_SESSION_LINK,
     type: 'single',
   },
   {
@@ -97,7 +100,7 @@ export const content: PricingOption[] = [
     investment: 1350,
     perSession: 450,
     save: 141,
-    buttonText: 'Book Package',
+    link: THREE_PACKAGE_LINK,
     type: 'package',
   },
   {
@@ -110,7 +113,6 @@ export const content: PricingOption[] = [
         title: 'Why nine sessions?',
         description: `Many people either have patterns operating across multiple life domains that need sequential decoding, or they're navigating major transitions where patterns shift as circumstances change. Nine sessions gives you a diagnostic partnership across a full implementation cycle.`,
       },
-
       {
         title: 'What you get:',
         points: [
@@ -133,7 +135,7 @@ export const content: PricingOption[] = [
     investment: 3920,
     perSession: 436,
     save: 553,
-    buttonText: 'Book Package',
+    link: NINE_PACKAGE_LINK,
     type: 'package',
   },
 ];
@@ -158,7 +160,10 @@ export const Pricing = () => {
   const isDesktop = (width || 0) >= 1024;
 
   return (
-    <section className='px-4 bg-gradient-to-b from-[#F2E1E2] to-transparent md:px-6 2xl:px-[180px] relative '>
+    <section
+      id='pricing'
+      className='px-4 bg-gradient-to-b from-[#F2E1E2] to-transparent md:px-6 2xl:px-[180px] relative '
+    >
       <div className='absolute h-[50%] w-full bottom-0 left-0 z-[-1]'>
         <Image src='/images/bg/new_bg.png' alt='' fill priority quality={100} />
       </div>
@@ -174,19 +179,8 @@ export const Pricing = () => {
 
         <ul className='flex flex-col gap-[100px] justify-center lg:flex-row lg:gap-[24px] pb-[110px]'>
           {content.map((item, i) => {
-            const {
-              id,
-              title,
-              subtitle,
-              description,
-              features,
-              whyList,
-              note,
-              investment,
-              perSession,
-              buttonText,
-              save,
-            } = item;
+            const { id, title, subtitle, description, features, whyList, link, note, investment, perSession, save } =
+              item;
 
             const isEven = i % 2 === 1;
 
@@ -266,9 +260,9 @@ export const Pricing = () => {
                     style={{ opacity: perSession ? 100 : 0 }}
                   >
                     (${perSession}/session)
-                  </div>{' '}
-                  <Button href='#' className='py-[16px] block w-full'>
-                    {buttonText}
+                  </div>
+                  <Button href={link.href} className='py-[16px] block w-full'>
+                    {link.label}
                   </Button>
                 </div>
               </li>

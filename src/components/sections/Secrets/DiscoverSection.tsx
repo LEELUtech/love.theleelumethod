@@ -1,5 +1,6 @@
 import Button from '@/components/ui/Button';
 import RotateOnView from '@/components/ui/RotateOnView';
+import { SECRETS_LINKS } from '@/static/links';
 import Image from 'next/image';
 
 export default function DiscoverSection() {
@@ -127,8 +128,13 @@ export default function DiscoverSection() {
           <p className='text-black text-[32px] font-light font-canela mb-[32px] leading-[130%] tracking-normal'>
             This guide gives you 7 evidence-based strategies to reclaim your nervous system and your life.
           </p>
-          <Button variant='primary' size='md' className='w-full mt-[16px] md:w-[45%] md:mt-[66px]'>
-            ACCESS THE FREE GUIDE
+          <Button
+            variant='primary'
+            size='md'
+            href={SECRETS_LINKS.ACCESS_LINK.href}
+            className='w-full mt-[16px] md:w-[45%] md:mt-[66px]'
+          >
+            {SECRETS_LINKS.ACCESS_LINK.label}
           </Button>
         </div>
       </div>

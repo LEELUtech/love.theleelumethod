@@ -21,9 +21,8 @@ interface Props extends IFooterPromo {
 
 export const FooterPromo = (props: Props) => {
   const { title, description, subtitle, link, buttonClassName, button } = props;
-  1;
   return (
-    <section className='bg-brand-white py-12 md:py-16 lg:py-[80px]'>
+    <section className='bg-brand-white py-12 md:py-16 lg:py-[80px]' id='footer-promo'>
       <div className='max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-[60px] 4xl:px-[180px] relative py-[80px] lg:py-[110px]'>
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10 lg:gap-12 items-center'>
           <div className='relative w-full max-w-[400px] md:max-w-[480px] lg:max-w-[551px] mx-auto lg:mx-0'>
