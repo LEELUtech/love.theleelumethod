@@ -10,6 +10,9 @@ const ZOHO_CLIENT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_ID_LILYCHYSTOFAT"
 const ZOHO_CLIENT_SECRET_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_SECRET_LILYCHYSTOFAT");
 const ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT = defineSecret("ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT");
 
+
+const WB_REGISTERED_TIME_FIELD = "wb_registered_time"; // <-- set exact custom field name if different
+
 type EwebinarAction =
   | "Registered"
   | "Joined"
@@ -19,7 +22,9 @@ type EwebinarAction =
   | "MissedWebinar"
   | "Unsubscribed"
   | "Converted"
-  | "WebinarFinished";
+  | "WebinarFinished"
+  | "WebinarStarted"
+  | "WebinarRestarted";
 
 type EwebinarState = "Registered" | "NotJoined" | "Joined" | "Missed" | "Watched";
 
@@ -42,6 +47,12 @@ type EwebinarPayload = {
 
   totalWatchedPercent?: number | string;
   watchedReplayPercent?: number | string;
+
+  firstName?: string;
+  lastName?: string;
+
+  joinLink?: string;
+  replayLink?: string;
 
   tags?: any[];
 
@@ -68,6 +79,8 @@ function normAction(v?: any): EwebinarAction | null {
     "Unsubscribed",
     "Converted",
     "WebinarFinished",
+    "WebinarStarted",
+    "WebinarRestarted",
   ];
 
   return (allowed as string[]).includes(s) ? (s as EwebinarAction) : null;
@@ -99,90 +112,101 @@ function getDedupeKey(body: EwebinarPayload, email: string, action: string): str
   return `${action}:${email}:${ts}`;
 }
 
-/**
- * Main mapping:
- * - Registered -> wb_reg
- * - WebinarFinished:
- *    - state/tags/percent determine watched vs missed vs partial
- *    - sessionType determines live vs replay
- */
+function buildCampaignFields(body: EwebinarPayload): Record<string, any> {
+  const fields: Record<string, any> = {};
+
+  if (body.firstName) fields["First Name"] = String(body.firstName).trim();
+  if (body.lastName) fields["Last Name"] = String(body.lastName).trim();
+
+  if (body.joinLink) fields.wb_join_link = String(body.joinLink).trim();
+  if (body.replayLink) fields.wb_replay_link = String(body.replayLink).trim();
+
+  if (body.registeredTime) fields[WB_REGISTERED_TIME_FIELD] = String(body.registeredTime).trim();
+
+  return fields;
+}
+
 function mapTagDelta(body: EwebinarPayload, action: EwebinarAction): { add: string[]; remove: string[] } {
-  const sessionType = body.sessionType; // "Replay" etc
   const state = normState(body.state);
-
-  const isReplay = sessionType === "Replay";
-
-  const totalPct = toNum(body.totalWatchedPercent);
-  const replayPct = toNum(body.watchedReplayPercent);
-  const pct = isReplay ? replayPct : totalPct;
-
-  const watchedTag = hasTag(body, "watched");
-  const missedTag = hasTag(body, "missed");
 
   switch (action) {
   case "Registered":
     return {
       add: ["wb_reg"],
-      remove: ["wb_live", "wb_replay", "wb_partial", "wb_noshow", "nr_ready", "nr_drip"],
-    };
-
-  case "WebinarFinished": {
-    // 1) явные state/tags
-    const isMissed = state === "Missed" || missedTag;
-    const isWatched = state === "Watched" || watchedTag;
-
-    if (isMissed) {
-      return {
-        add: ["wb_noshow"],
-        remove: ["wb_live", "wb_replay", "wb_partial", "nr_ready", "nr_drip"],
-      };
-    }
-
-    // check percent BEFORE isWatched — eWebinar adds "watched" tag even for partial viewers
-    if (pct !== null && pct < 50) {
-      return {
-        add: ["wb_partial"],
-        remove: ["wb_live", "wb_replay", "wb_noshow", "nr_ready", "nr_drip"],
-      };
-    }
-
-    if (isWatched || (pct !== null && pct >= 50)) {
-      return isReplay
-        ? {
-          add: ["wb_replay", "nr_ready", "nr_drip"],
-          remove: ["wb_live", "wb_partial", "wb_noshow"],
-        }
-        : {
-          add: ["wb_live", "nr_ready", "nr_drip"],
-          remove: ["wb_replay", "wb_partial", "wb_noshow"],
-        };
-    }
-
-    return { add: [], remove: [] };
-  }
-
-  case "WatchedWebinar":
-    return {
-      add: ["wb_live", "nr_ready", "nr_drip"],
-      remove: ["wb_replay", "wb_partial", "wb_noshow"],
-    };
-
-  case "WatchedReplay":
-    return {
-      add: ["wb_replay", "nr_ready", "nr_drip"],
-      remove: ["wb_live", "wb_partial", "wb_noshow"],
+      // Keep your previous behavior: when someone registers again, reset watch-state tags
+      remove: ["wb_live", "wb_replay", "wb_partial", "wb_noshow"],
     };
 
   case "MissedWebinar":
     return {
       add: ["wb_noshow"],
-      remove: ["wb_live", "wb_replay", "wb_partial", "nr_ready", "nr_drip"],
+      remove: ["wb_live", "wb_replay", "wb_partial"],
     };
 
-  case "Left":
+  case "WatchedWebinar":
+    // If eWebinar ever fires this directly, we treat it as completed live watcher
+    return {
+      add: ["wb_live"],
+      remove: ["wb_replay", "wb_partial", "wb_noshow"],
+    };
+
+  case "WatchedReplay":
+    return {
+      add: ["wb_replay"],
+      remove: ["wb_live", "wb_partial", "wb_noshow"],
+    };
+
+  case "WebinarFinished": {
+    const isReplay = body.sessionType === "Replay";
+
+    const totalPct = toNum(body.totalWatchedPercent);
+    const replayPct = toNum(body.watchedReplayPercent);
+
+    // For replay prefer watchedReplayPercent; fallback to totalWatchedPercent
+    const pct = isReplay ? (replayPct ?? totalPct) : totalPct;
+
+    const missedTag = hasTag(body, "missed");
+    const isMissed = state === "Missed" || missedTag;
+
+    if (isMissed) {
+      return {
+        add: ["wb_noshow"],
+        remove: ["wb_live", "wb_replay", "wb_partial"],
+      };
+    }
+
+    // Partial watch: < 50%
+    if (pct !== null && pct < 50) {
+      return {
+        add: ["wb_partial"],
+        remove: ["wb_live", "wb_replay", "wb_noshow"],
+      };
+    }
+
+    // Completed: >= 80%
+    if (pct !== null && pct >= 80) {
+      return isReplay
+        ? {
+          add: ["wb_replay"],
+          remove: ["wb_live", "wb_partial", "wb_noshow"],
+        }
+        : {
+          add: ["wb_live"],
+          remove: ["wb_replay", "wb_partial", "wb_noshow"],
+        };
+    }
+
+    // 50–79%: do nothing (stay in non-watcher nudges)
+    return { add: [], remove: [] };
+  }
+
+  // Not used for tagging in your funnel
   case "Joined":
+  case "Left":
   case "Converted":
   case "Unsubscribed":
+  case "WebinarStarted":
+  case "WebinarRestarted":
   default:
     return { add: [], remove: [] };
   }
@@ -224,7 +248,14 @@ export const ewebinarWebhook = onRequest(
 
       const { add, remove } = mapTagDelta(body, action);
 
+      // Always build fields (safe), but only send them if non-empty
+      const fields = buildCampaignFields(body);
+
       if (!add.length && !remove.length) {
+        if (Object.keys(fields).length) {
+          await upsertContactAndUpdateTags(email, { add: [], remove: [] }, fields);
+        }
+
         res.json({
           ok: true,
           ignored: true,
@@ -235,13 +266,18 @@ export const ewebinarWebhook = onRequest(
           totalWatchedPercent: body.totalWatchedPercent,
           watchedReplayPercent: body.watchedReplayPercent,
           tags: body.tags,
+          fields_written: Object.keys(fields),
         });
         return;
       }
 
       const eventKey = getDedupeKey(body, email, action);
 
-      await upsertContactAndUpdateTags(email, { add, remove });
+      await upsertContactAndUpdateTags(
+        email,
+        { add, remove },
+        Object.keys(fields).length ? fields : undefined,
+      );
 
       res.json({
         ok: true,
@@ -254,6 +290,7 @@ export const ewebinarWebhook = onRequest(
         sessionType: body.sessionType,
         totalWatchedPercent: body.totalWatchedPercent,
         watchedReplayPercent: body.watchedReplayPercent,
+        fields_written: Object.keys(fields),
       });
     } catch (err: any) {
       console.error("ewebinarWebhook error:", err);
