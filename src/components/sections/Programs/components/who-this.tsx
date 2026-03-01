@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { NecktieIC, StarIC } from '@/components/icons';
+import { Section } from '@/components/ui/containers/section';
 
 export interface IProgramsWhoThis {
   title: string;
@@ -32,9 +33,9 @@ export const ProgramsWhoThis = (props: Props) => {
   const { title, imgSrc, items } = props;
 
   return (
-    <section className=' bg-brand-white overflow-visible'>
+    <Section sectionClasses='bg-brand-white'>
       <motion.div
-        className='container px-4 relative py-[12px] md:py-[70px] lg:py-[110px] z-10'
+        className='relative'
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}
@@ -108,6 +109,6 @@ export const ProgramsWhoThis = (props: Props) => {
           </div>
         </div>
       </motion.div>
-    </section>
+    </Section>
   );
 };

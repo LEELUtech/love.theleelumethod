@@ -13,6 +13,7 @@ import {
   selfGuidedWhoThisData,
 } from '@/components/sections/Programs/SelfGuidedTransformation/static';
 import { PROTOCOL_ESSENTIALS } from '@/utils/constants';
+import FooterLayout from '@/components/ui/footer/FooterLayout';
 
 export default function SelfGuidedTransformationPage() {
   return (
@@ -26,6 +27,8 @@ export default function SelfGuidedTransformationPage() {
 
       <CostOfWaitingSection />
       <CheckoutFormSection productId={PROTOCOL_ESSENTIALS} />
+
+      <FooterLayout withNavigation={false} className='lg:mt-[-200px]' backgroundImage='/images/bg/checkout_bg.png' />
     </main>
   );
 }

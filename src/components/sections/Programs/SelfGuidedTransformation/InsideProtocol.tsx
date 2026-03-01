@@ -1,5 +1,6 @@
 import Button from '@/components/ui/Button';
 import { ImageContainer } from '@/components/ui/containers/ImageContainer';
+import { Section } from '@/components/ui/containers/section';
 import { ArrowList } from '@/components/ui/lists';
 
 const content = {
@@ -34,8 +35,8 @@ export const InsideProtocol = () => {
   const { title_top, title_bottom, list, descriptions, highlight, link } = content;
 
   return (
-    <section>
-      <div className='max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-[112px] 2xl:px-[180px] relative py-[80px] lg:py-[112px]'>
+    <Section>
+      <div>
         <ImageContainer src='/images/lily/lily_2.png' alt='Lily' height={832}>
           <div className='flex flex-col'>
             <h2 className='text-[32px]/[126%] md:text-[48px] font-light font-canela mt-11 mb-6 text-brand-deep'>
@@ -59,6 +60,6 @@ export const InsideProtocol = () => {
           </div>
         </ImageContainer>
       </div>
-    </section>
+    </Section>
   );
 };
