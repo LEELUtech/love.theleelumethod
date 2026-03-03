@@ -5,6 +5,7 @@ import ItWorkedForMeSection from "@/components/sections/Programs/VIPImmersion/It
 import MechanicsDeliverablesSection from "@/components/sections/Programs/VIPImmersion/MechanicsDeliverablesSection";
 import TheDiagnosisSection from "@/components/sections/Programs/VIPImmersion/TheDiagnosisSection";
 import TheResultSection from "@/components/sections/Programs/VIPImmersion/TheResultSection";
+import SalesPageTagger from "@/components/sections/SalesPage/SalesPageTagger"
 import Footer from "@/components/ui/Footer";
 import { VIP_IMMERSION } from "@/utils/constants";
 
@@ -18,6 +19,7 @@ export default function VIPImmersionPage() {
 			<ItWorkedForMeSection />
 			<CostOfWaitingSection />
 			<CheckoutFormSection productId={VIP_IMMERSION} />
+			<SalesPageTagger/>
 			{/* <Footer className="lg:pt-[150px]" /> */}
 		</main>
 	);

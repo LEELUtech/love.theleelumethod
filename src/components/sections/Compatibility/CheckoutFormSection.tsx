@@ -237,6 +237,7 @@ export default function CheckoutFormSection() {
 			leadAbortRef.current = controller;
 
 			salesiqIdentify({ email });
+			saveEmailToLS(email)
 
 			const payload = {
 				paymentIntentId: intentId || undefined,

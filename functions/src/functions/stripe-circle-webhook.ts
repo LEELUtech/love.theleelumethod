@@ -569,6 +569,16 @@ export const stripeCircleWebhook = onRequest(
         });
       }
 
+      // Campaigns tags: applied right after paid (guaranteed, independent of delivery)
+      try {
+        await applyPurchaseCampaignTags(pi);
+      } catch (e) {
+        console.error("applyPurchaseCampaignTags failed (non-critical)", {
+          payment_intent_id: pi.id,
+          error: errToMessage(e),
+        });
+      }
+
       // Delivery
       try {
         await processPayment(pi);
@@ -581,16 +591,6 @@ export const stripeCircleWebhook = onRequest(
           funnelStep: "delivered",
           checkoutStatus: "Delivered",
         });
-
-        // ✅ Campaigns tags: purchase_completed logic
-        try {
-          await applyPurchaseCampaignTags(pi);
-        } catch (e) {
-          console.error("applyPurchaseCampaignTags failed (non-critical)", {
-            payment_intent_id: pi.id,
-            error: errToMessage(e),
-          });
-        }
 
         // Analytics: delivered
         try {

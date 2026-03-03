@@ -1,9 +1,8 @@
 import { onCall } from "firebase-functions/v2/https";
 import { upsertContactAndUpdateTags } from "../lib/zoho-campaigns";
 
-const LM_DL_TRIGGER = "lm_dl_trigger"; // твой trigger тег
-
-export const sendEmail = onCall(async (req) => {
+const LM_DL_TRIGGER = "lm_dl_trigger";
+export const sendEmail = onCall({ cors: true }, async (req) => {
   const { firstName, email } = req.data || {};
 
   if (!firstName || !email) {

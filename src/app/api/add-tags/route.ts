@@ -37,13 +37,13 @@ function authHeaders(token: string) {
   return { Authorization: `Zoho-oauthtoken ${token}` };
 }
 
-async function ensureSubscribed(email: string, token: string) {
-  const listkey = process.env.ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT;
-  if (!listkey) throw new Error("Missing ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT");
+async function ensureSubscribed(email: string, token: string, listkey?: string) {
+  const resolvedListKey = listkey || process.env.ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT;
+  if (!resolvedListKey) throw new Error("Missing ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT or listkey param");
 
   const body = new URLSearchParams();
   body.set("resfmt", "JSON");
-  body.set("listkey", listkey);
+  body.set("listkey", resolvedListKey);
   body.set("contactinfo", `{Contact Email:${email}}`);
 
   await fetch("https://campaigns.zoho.com/api/v1.1/json/listsubscribe", {
@@ -92,7 +92,12 @@ export async function POST(req: NextRequest) {
     }
 
     const token = await getAccessToken();
-    await ensureSubscribed(email, token);
+
+    const skipSubscribe = !!body.skip_subscribe || !!body.skipSubscribe || false;
+    if (!skipSubscribe) {
+      const listkeyFromBody = typeof body.listkey === "string" && body.listkey.trim() ? String(body.listkey).trim() : undefined;
+      await ensureSubscribed(email, token, listkeyFromBody);
+    }
 
     for (const tag of [...new Set(remove)].filter(Boolean)) {
       await removeTag(tag, email, token);

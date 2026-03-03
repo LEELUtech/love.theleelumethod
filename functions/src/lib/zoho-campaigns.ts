@@ -32,33 +32,61 @@ function authHeaders(token: string) {
 
 export type ContactMeta = Record<string, string | number | boolean | null | undefined>;
 
-function sanitizeContactInfoValue(v: unknown): string {
-  return String(v)
-    .replace(/[{}]/g, "")
-    .replace(/\r?\n/g, " ")
-    .trim();
+// ─── FETCH EXISTING CONTACT FIELDS ───────────────────────────────────────────
+
+const NAME_FIELDS = ["First Name", "Last Name"];
+
+async function fetchExistingContactFields(email: string, token: string): Promise<Record<string, string>> {
+  try {
+    const url = new URL("https://campaigns.zoho.com/api/v1.1/json/getcontactdetails");
+    url.searchParams.set("resfmt", "JSON");
+    url.searchParams.set("email", email);
+
+    const resp = await fetch(url.toString(), { method: "GET", headers: authHeaders(token) });
+    const data = await resp.json();
+
+    const details = data?.contact_info?.Contact_Details;
+    if (!details || typeof details !== "object") return {};
+
+    const result: Record<string, string> = {};
+    for (const [k, v] of Object.entries(details)) {
+      if (typeof v === "string" && v.trim()) result[k] = v.trim();
+    }
+    return result;
+  } catch {
+    return {};
+  }
 }
+
+// ─── SUBSCRIBE / UPSERT CONTACT ──────────────────────────────────────────────
 
 async function ensureSubscribed(email: string, meta?: ContactMeta): Promise<void> {
   const token = await getAccessToken();
 
-  const pairs: string[] = [`Contact Email:${sanitizeContactInfoValue(email)}`];
+  // Build as JSON object — avoids issues with colons in URLs
+  const contact: Record<string, string> = {
+    "Contact Email": email,
+  };
 
   if (meta) {
-    for (const [keyRaw, value] of Object.entries(meta)) {
+    // For name fields: only set if the contact doesn't already have them
+    const hasNameFields = NAME_FIELDS.some((f) => meta[f] !== undefined && meta[f] !== null && String(meta[f]).trim());
+    let existing: Record<string, string> = {};
+    if (hasNameFields) {
+      existing = await fetchExistingContactFields(email, token);
+    }
+
+    for (const [key, value] of Object.entries(meta)) {
       if (value === undefined || value === null) continue;
-
-      const key = sanitizeContactInfoValue(keyRaw);
-      if (!key) continue;
-
-      const v = sanitizeContactInfoValue(value);
+      const v = String(value).trim();
       if (!v) continue;
-
-      pairs.push(`${key}:${v}`);
+      // Skip name fields if contact already has them
+      if (NAME_FIELDS.includes(key) && existing[key]) continue;
+      contact[key] = v;
     }
   }
 
-  const contactinfo = `{${pairs.join(",")}}`;
+  const contactinfo = JSON.stringify(contact);
 
   const body = new URLSearchParams();
   body.set("resfmt", "JSON");
@@ -68,6 +96,7 @@ async function ensureSubscribed(email: string, meta?: ContactMeta): Promise<void
   console.log("zoho-campaigns listsubscribe", {
     email,
     metaKeys: meta ? Object.keys(meta) : [],
+    contactinfo,
   });
 
   const resp = await fetch("https://campaigns.zoho.com/api/v1.1/json/listsubscribe", {
@@ -78,6 +107,16 @@ async function ensureSubscribed(email: string, meta?: ContactMeta): Promise<void
 
   const txt = await resp.text();
   console.log("zoho-campaigns listsubscribe response", resp.status, txt);
+
+  // Zoho returns HTTP 200 even on errors — check the JSON body
+  try {
+    const json = JSON.parse(txt);
+    if (json.status === "error") {
+      throw new Error(`listsubscribe error: ${json.code} ${json.message}`);
+    }
+  } catch (e: any) {
+    if (e.message.startsWith("listsubscribe error")) throw e;
+  }
 
   if (!resp.ok) {
     throw new Error("listsubscribe failed " + txt);
@@ -128,7 +167,63 @@ async function removeTag(tag: string, email: string): Promise<void> {
   }
 }
 
+// ─── GET ALL CONTACTS FROM LIST ──────────────────────────────────────────────
+
+async function getAllListContacts(): Promise<string[]> {
+  const token = await getAccessToken();
+  const emails: string[] = [];
+  let fromIndex = 1;
+  const pageSize = 100;
+
+  while (true) {
+    const url = new URL("https://campaigns.zoho.com/api/v1.1/json/getcontactsbylistid");
+    url.searchParams.set("resfmt", "JSON");
+    url.searchParams.set("listkey", configs.zohoCampaignsListKey);
+    url.searchParams.set("fromindex", String(fromIndex));
+    url.searchParams.set("toindex", String(fromIndex + pageSize - 1));
+
+    const resp = await fetch(url.toString(), { method: "GET", headers: authHeaders(token) });
+    const data = await resp.json();
+
+    if (data.status === "error" || !Array.isArray(data.list_of_details) || !data.list_of_details.length) break;
+
+    for (const contact of data.list_of_details) {
+      const email = String(contact["Contact Email"] ?? "").trim().toLowerCase();
+      if (email) emails.push(email);
+    }
+
+    if (data.list_of_details.length < pageSize) break;
+    fromIndex += pageSize;
+  }
+
+  return emails;
+}
+
 // ─── PUBLIC API ──────────────────────────────────────────────────────────────
+
+// Bulk-update a single field for every contact in the list (5 concurrent)
+export async function bulkUpdateCampaignsContactField(
+  fieldName: string,
+  fieldValue: string,
+): Promise<{ updated: number; failed: number }> {
+  const emails = await getAllListContacts();
+  console.log("bulkUpdateCampaignsContactField: contacts fetched", { count: emails.length, fieldName });
+
+  let updated = 0;
+  let failed = 0;
+  const CONCURRENT = 5;
+
+  for (let i = 0; i < emails.length; i += CONCURRENT) {
+    const batch = emails.slice(i, i + CONCURRENT);
+    const results = await Promise.allSettled(
+      batch.map((email) => ensureSubscribed(email, { [fieldName]: fieldValue })),
+    );
+    updated += results.filter((r) => r.status === "fulfilled").length;
+    failed += results.filter((r) => r.status === "rejected").length;
+  }
+
+  return { updated, failed };
+}
 
 // Subscribe + add tags (used in sendEmail.ts etc.)
 export async function upsertContactAndAddTags(

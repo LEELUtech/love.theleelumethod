@@ -3,6 +3,7 @@ import CoreValueSection from "@/components/sections/Compatibility/CoreValueSecti
 import HeroSection from "@/components/sections/Compatibility/HeroSection";
 import HeyImLilySection from "@/components/sections/Compatibility/HeyImLilySection";
 import ProblemSolutionSection from "@/components/sections/Compatibility/ProblemSolutionSection";
+import SalesPageTagger from "@/components/sections/SalesPage/SalesPageTagger"
 import Footer from "@/components/ui/Footer"
 import React from "react";
 
@@ -15,6 +16,7 @@ const CompatibilityReport = () => {
 			<CheckoutFormSection />
 			<HeyImLilySection />
 			<Footer />
+			<SalesPageTagger/>
 		</main>
 	);
 };

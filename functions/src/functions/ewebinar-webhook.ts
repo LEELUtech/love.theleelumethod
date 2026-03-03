@@ -11,7 +11,8 @@ const ZOHO_CLIENT_SECRET_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_SECRET_LILYCH
 const ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT = defineSecret("ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT");
 
 
-const WB_REGISTERED_TIME_FIELD = "wb_registered_time"; // <-- set exact custom field name if different
+const WB_REGISTERED_TIME_FIELD = "wb_registered_at";
+const NR_READY_TAG = "nr_ready";
 
 type EwebinarAction =
   | "Registered"
@@ -134,7 +135,7 @@ function mapTagDelta(body: EwebinarPayload, action: EwebinarAction): { add: stri
     return {
       add: ["wb_reg"],
       // Keep your previous behavior: when someone registers again, reset watch-state tags
-      remove: ["wb_live", "wb_replay", "wb_partial", "wb_noshow"],
+      remove: ["wb_live", "wb_replay", "wb_partial", "wb_noshow", NR_READY_TAG],
     };
 
   case "MissedWebinar":
@@ -146,13 +147,13 @@ function mapTagDelta(body: EwebinarPayload, action: EwebinarAction): { add: stri
   case "WatchedWebinar":
     // If eWebinar ever fires this directly, we treat it as completed live watcher
     return {
-      add: ["wb_live"],
+      add: ["wb_live", NR_READY_TAG],
       remove: ["wb_replay", "wb_partial", "wb_noshow"],
     };
 
   case "WatchedReplay":
     return {
-      add: ["wb_replay"],
+      add: ["wb_replay", NR_READY_TAG],
       remove: ["wb_live", "wb_partial", "wb_noshow"],
     };
 
@@ -175,8 +176,8 @@ function mapTagDelta(body: EwebinarPayload, action: EwebinarAction): { add: stri
       };
     }
 
-    // Partial watch: < 50%
-    if (pct !== null && pct < 50) {
+    // Partial watch: > 0% and < 80%
+    if (pct !== null && pct > 0 && pct < 80) {
       return {
         add: ["wb_partial"],
         remove: ["wb_live", "wb_replay", "wb_noshow"],
@@ -187,16 +188,16 @@ function mapTagDelta(body: EwebinarPayload, action: EwebinarAction): { add: stri
     if (pct !== null && pct >= 80) {
       return isReplay
         ? {
-          add: ["wb_replay"],
+          add: ["wb_replay", NR_READY_TAG],
           remove: ["wb_live", "wb_partial", "wb_noshow"],
         }
         : {
-          add: ["wb_live"],
+          add: ["wb_live", NR_READY_TAG],
           remove: ["wb_replay", "wb_partial", "wb_noshow"],
         };
     }
 
-    // 50–79%: do nothing (stay in non-watcher nudges)
+    // pct === 0 or null: no action
     return { add: [], remove: [] };
   }
 

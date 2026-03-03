@@ -9,6 +9,7 @@ import { getStoredFirstUTM } from "@/utils/utm-tracker";
 import { salesiqIdentify } from "@/lib/tracking/salesiqIdentify";
 import Image from "next/image";
 import React from "react";
+import { saveEmailToLS } from "@/lib/tracking/localEmail"
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -35,6 +36,8 @@ export default function SecretsHeroSection() {
 		setSubmitting(true);
 		try {
 			salesiqIdentify({ email: em, firstName: fn });
+			saveEmailToLS(em);
+			
 
 			// fire-and-forget: create contact in Zoho CRM
 			const utm = getStoredFirstUTM();

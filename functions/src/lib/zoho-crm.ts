@@ -32,6 +32,8 @@ const CONTACT_FIELDS = {
 
   Abandoned_Checkout_At: "Abandoned_Checkout_At", // DateTime
   Abandoned_Reason: "Abandoned_Reason", // Single line text / multi-line text
+
+  Cohort_Start_Date_Name: "Cohort_Start_Date_Name",
 } as const;
 
 const DEAL_FIELDS = {
@@ -701,4 +703,62 @@ export async function updateContactFunnelStepByEmail(params: {
   });
 
   return { contactId: existing.id as string };
+}
+
+// ======================================================
+// BULK UPDATE BY SITE (cohort sync)
+// ======================================================
+export async function bulkUpdateCrmContactsBySite(
+  sites: string[],
+  fieldName: string,
+  fieldValue: string,
+): Promise<{ updated: number; failed: number }> {
+  const criteriaInner = sites.map((s) => `(Site:equals:${s})`).join("OR");
+  const criteria = encodeURIComponent(`(${criteriaInner})`);
+
+  let page = 1;
+  let hasMore = true;
+  let updated = 0;
+  let failed = 0;
+
+  while (hasMore) {
+    let contacts: Array<Record<string, unknown>>;
+
+    try {
+      const data = await zohoRequest<any>({
+        method: "GET",
+        url: `https://${configs.zohoApiCRMDomain}/crm/v2/Contacts/search?criteria=${criteria}&page=${page}&per_page=200`,
+      });
+      contacts = data?.data ?? [];
+      hasMore = data?.info?.more_records ?? false;
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        const status = err.response?.status;
+        if (status === 204 || status === 404) break;
+      }
+      throw err;
+    }
+
+    if (!contacts.length) break;
+    page++;
+
+    // Zoho CRM accepts max 100 records per PUT
+    for (let i = 0; i < contacts.length; i += 100) {
+      const batch = contacts.slice(i, i + 100);
+      const patchData = batch.map((c) => ({ id: c.id, [fieldName]: fieldValue }));
+      try {
+        await zohoRequest({
+          method: "PUT",
+          url: `https://${configs.zohoApiCRMDomain}/crm/v2/Contacts`,
+          data: { data: patchData },
+        });
+        updated += batch.length;
+      } catch (e) {
+        failed += batch.length;
+        console.error("bulkUpdateCrmContactsBySite: batch failed", { page, batchStart: i, error: e });
+      }
+    }
+  }
+
+  return { updated, failed };
 }

@@ -24,12 +24,11 @@ export default function QuizResultTagger({ type }: { type: string }) {
     const otherProfileTags = ALL_PROFILE_TAGS.filter((t) => t !== profileTag);
 
     (async () => {
+      // create/update contact and add tags (default behavior)
       await updateCampaignTags(email, {
         remove: otherProfileTags,
         add: ["q_done", profileTag, Q_EMAIL3_TRIGGER],
       });
-
-
     })();
   }, [type]);
 
