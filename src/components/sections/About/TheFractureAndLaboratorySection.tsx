@@ -1,16 +1,14 @@
 import Button from '@/components/ui/Button';
+import { Section } from '@/components/ui/containers/section';
 import RotateOnView from '@/components/ui/RotateOnView';
 import { ABOUT_LINKS } from '@/static/links';
 import Image from 'next/image';
 
 const TheFractureAndLaboratorySection = () => {
   return (
-    <section className='relative pt-[80px] pb-[180px]  lg:pt-[111px] lg:pb-[111px]'>
-      {/* Background Image */}
-      <div className='absolute inset-0 z-[-1]'>
-        <Image src='/images/about/fracture_section_bg.png' alt='' fill priority quality={100} />
-      </div>
-      <div className='container px-4 overflow-hidden'>
+    <Section backgroundImage='/images/about/fracture_section_bg.png'>
+      {' '}
+      <div>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-12 items-center'>
           {/* Left Column - Image */}
           <div className='flex justify-center'>
@@ -32,7 +30,7 @@ const TheFractureAndLaboratorySection = () => {
           </div>
 
           {/* Right Column - The Fracture */}
-          <div className=''>
+          <div>
             <h2 className='font-thin text-[60px] leading-[126%] font-canela text-brand-deep mb-8 '>The Fracture</h2>
             <p className='font-normal text-[#5A5757] font-lato leading-[26px] tracking-normal mb-6'>
               My journey began with collapse.
@@ -59,7 +57,6 @@ const TheFractureAndLaboratorySection = () => {
           </div>
         </div>
 
-        {/* The Laboratory Section */}
         <div className='lg:mt-[400px] mt-[300px] relative'>
           <div
             className='
@@ -178,7 +175,7 @@ const TheFractureAndLaboratorySection = () => {
                 style={{ willChange: 'transform', transform: 'translateZ(0)' }}
               >
                 <Image
-                  src='/icons/ornament_3.svg'
+                  src='/icons/ornament_right.svg'
                   alt=''
                   fill
                   className='object-contain'
@@ -210,7 +207,7 @@ const TheFractureAndLaboratorySection = () => {
           </p>
         </div>
       </div>
-    </section>
+    </Section>
   );
 };
 

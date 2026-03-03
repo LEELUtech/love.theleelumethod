@@ -256,7 +256,7 @@ const ProblemSolutionSection = () => {
                 style={{ willChange: 'transform', transform: 'translateZ(0)' }}
               >
                 <Image
-                  src='/icons/ornament_3.svg'
+                  src='/icons/ornament_right.svg'
                   alt=''
                   fill
                   className='object-contain'

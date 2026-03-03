@@ -1,9 +1,10 @@
+import { Section } from '@/components/ui/containers/section';
 import Image from 'next/image';
 
 const ThePivotAndAccelerantSection = () => {
   return (
-    <section className='relative pb-[80px] pt-[80px] lg:py-[112px] overflow-hidden'>
-      <div className='container px-4'>
+    <Section>
+      <div>
         {/* The Pivot Section */}
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-[120px] md:gap-[80px] lg:gap-40 items-center mb-[121px] lg:mb-[200px]'>
           {/* Images composition */}
@@ -90,7 +91,7 @@ const ThePivotAndAccelerantSection = () => {
           </div>
         </div>
       </div>
-    </section>
+    </Section>
   );
 };
 

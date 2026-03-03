@@ -88,7 +88,7 @@ export const ABOUT_LINKS: RecordLink = {
     label: 'START THE DECODE',
     href: '#',
   },
-  FOOTER_PROMO_LINK: {
+  STOP_GUESSING_LINK: {
     label: 'Access your Operating Manual',
     href: '#',
   },

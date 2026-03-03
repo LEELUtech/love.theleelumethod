@@ -3,29 +3,12 @@ import Image from 'next/image';
 import ArcAutoOnce from '@/components/ui/ArcFlyOnce';
 import Button from '@/components/ui/Button';
 import { DESCODE_LINKS } from '@/static/links';
+import { Section } from '@/components/ui/containers/section';
 
 const WebinarWhatIfSection = () => {
   return (
-    <section
-      className='
-				relative
-
-				/* MOBILE */
-				py-[111px]
-
-				/* TABLET */
-				md:py-24
-
-				/* DESKTOP (unchanged) */
-				lg:py-[111px] lg:h-[1500px]
-			'
-    >
-      {/* Background */}
-      <div className='absolute inset-0 -z-10 overflow-hidden'>
-        <Image src='/images/bg/whatif-bg.jpg' alt='' fill priority className='object-cover' />
-      </div>
-
-      <div className='container px-4 mx-auto'>
+    <Section backgroundImage='/images/bg/whatif-bg.jpg'>
+      <div>
         {/* TOP SECTION */}
         <div
           className='
@@ -107,33 +90,11 @@ const WebinarWhatIfSection = () => {
 
           {/* Text */}
           <div className='w-full md:w-1/2'>
-            <h2
-              className='
-									font-canela font-thin text-brand-deep tracking-normal
-
-									/* MOBILE */
-									text-[48px] leading-[130%] mb-6
-
-									/* TABLET */
-									md:text-[48px] md:mb-8 md:text-left
-
-									/* DESKTOP */
-									lg:text-[60px] lg:leading-[130%] lg:mb-[50px]
-								'
-            >
+            <h2 className='font-canela font-thin text-brand-deep tracking-normal text-[48px]/[130%] mb-6 md:text-[48px] md:mb-8 md:text-left lg:text-[60px] lg:mb-[50px]'>
               What if the women who have the love you want... AREN&apos;T lucky or special?
             </h2>
 
-            <div
-              className='font-lato font-medium text-[#5A5757]
-
-									/* MOBILE */
-									text-[17px] leading-[130%]
-
-									/* TABLET */
-									md:text-[17px] md:leading-[130%] md:text-left
-								'
-            >
+            <div className='font-lato font-medium text-[#5A5757] text-[17px]/[130%] md:text-left'>
               <p>Women who have the love you want aren&apos;t luckier, more confident, or more charming than you.</p>
 
               <p className='mt-4 md:mt-5'>
@@ -142,20 +103,7 @@ const WebinarWhatIfSection = () => {
                 how to read the data.
               </p>
 
-              <p
-                className='
-										font-canela font-thin text-brand-deep tracking-normal mt-8
-
-										/* MOBILE */
-										text-[32px] leading-[130%]
-
-										/* TABLET */
-										md:text-[32px]
-
-										/* DESKTOP */
-										lg:text-[32px] lg:leading-[130%]
-									'
-              >
+              <p className='font-canela font-thin text-brand-deep tracking-normal mt-8 text-[32px]/[130%]'>
                 Because once you understand the architecture of your own love script, you stop repeating the pattern—and
                 start rewriting it.
               </p>
@@ -185,17 +133,7 @@ const WebinarWhatIfSection = () => {
         >
           <h3
             className='
-								font-canela font-thin lg:text-center text-left text-brand-deep
-
-								/* MOBILE */
-								text-[48px] mb-8 leading-[130%]
-
-								/* TABLET */
-								md:text-[40px] md:mb-12
-
-								/* DESKTOP */
-								lg:text-[60px] lg:leading-[130%] lg:mb-[64px]
-							'
+								font-canela font-thin lg:text-center text-left text-brand-deep text-[48px]/[130%] mb-8 md:text-[40px] md:mb-12 lg:text-[60px] lg:mb-[64px]'
           >
             By the end of this free training, you will:
           </h3>
@@ -247,23 +185,10 @@ const WebinarWhatIfSection = () => {
                 ],
               },
             ].map((item, i) => (
-              <div key={i} className={`flex gap-8 lg:gap-8 items-center ${i !== 0 ? 'mt-6 lg:mt-8' : ''}`}>
-                <div className='font-canela font-light text-[32px] lg:text-[32px] flex-shrink-0'>{i + 1}.</div>
+              <div key={i} className={`flex gap-8 items-center ${i !== 0 ? 'mt-6 lg:mt-8' : ''}`}>
+                <div className='font-canela font-light text-[32px] flex-shrink-0'>{i + 1}.</div>
 
-                <p
-                  className='
-					font-lato font-medium text-[#5A5757]
-
-					/* MOBILE */
-					text-[20px] leading-[130%]
-
-					/* TABLET */
-					md:text-[20px]
-
-					/* DESKTOP */
-					lg:text-[20px] lg:leading-[130%]
-				'
-                >
+                <p className='font-lato font-medium text-[#5A5757] text-[20px]/[130%]'>
                   {item.parts.map((part, idx) =>
                     part.bold ? (
                       <span key={idx} className='font-bold text-brand-primary'>
@@ -287,7 +212,7 @@ const WebinarWhatIfSection = () => {
           </div>
         </div>
       </div>
-    </section>
+    </Section>
   );
 };
 

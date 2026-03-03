@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { OrnamentTitle } from '@/components/ui/titles/OrnamentTitle';
+import { Section } from '@/components/ui/containers/section';
 
 const CARD_CONTENT = [
   {
@@ -55,81 +56,75 @@ const CARD_CONTENT = [
 
 export const HowItWorks = () => {
   return (
-    <section
-      className='relative pb-[80px] px-4 md:px-8 2xl:px-[180px] lg:pt-[80px] lg:pb-[103px]'
-      style={{
-        background: "url('/images/bg/new_bg.png')",
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center',
-      }}
-    >
-      <OrnamentTitle
-        color='#E5B8B8'
-        title='HOW IT WORKS:'
-        mt={300}
-        subtitle='The value of our session begins before we speak.'
-      />
+    <Section backgroundImage='/images/bg/new_bg.png'>
+      <>
+        <OrnamentTitle
+          color='#E5B8B8'
+          title='HOW IT WORKS:'
+          mt={300}
+          subtitle='The value of our session begins before we speak.'
+        />
 
-      <div className='grid grid-cols-1 gap-6 items-center justify-items-center mb-10'>
-        {CARD_CONTENT.map(({ text_bottom, text_top, title_top, title_bottom, list, img, icon }) => (
-          <motion.div
-            key={title_top}
-            initial={{ opacity: 0, y: 26 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{
-              once: true,
-              amount: 0.18,
-              margin: '0px 0px -20% 0px',
-            }}
-            transition={{
-              duration: 1.15,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-            className='
+        <div className='grid grid-cols-1 gap-6 items-center justify-items-center mb-10'>
+          {CARD_CONTENT.map(({ text_bottom, text_top, title_top, title_bottom, list, img, icon }) => (
+            <motion.div
+              key={title_top}
+              initial={{ opacity: 0, y: 26 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{
+                once: true,
+                amount: 0.18,
+                margin: '0px 0px -20% 0px',
+              }}
+              transition={{
+                duration: 1.15,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className='
               bg-white rounded-[32px] text-center flex flex-col justify-center py-[42px] px-4
               w-full p-1
               sm:px-6
               md:p-8 md:flex-row md:gap-x-4
               lg:max-w-none lg:w-[1016px] lg:h-[468px] lg:px-[80px] lg:py-[64px] lg:gap-x-[105px]
             '
-          >
-            <div className='max-w-[350px] mx-auto md:mx-0'>
-              {img && (
-                <div className='relative w-[139px] h-[139px] mb-[10px] mx-auto md:mx-0 md:mt-[52px]'>
-                  <Image src={img} alt='' fill className='object-contain opacity-35' />
-                  <Image
-                    src={icon}
-                    alt={title_bottom}
-                    width={90}
-                    height={90}
-                    className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
-                  />
-                </div>
-              )}
+            >
+              <div className='max-w-[350px] mx-auto md:mx-0'>
+                {img && (
+                  <div className='relative w-[139px] h-[139px] mb-[10px] mx-auto md:mx-0 md:mt-[52px]'>
+                    <Image src={img} alt='' fill className='object-contain opacity-35' />
+                    <Image
+                      src={icon}
+                      alt={title_bottom}
+                      width={90}
+                      height={90}
+                      className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
+                    />
+                  </div>
+                )}
 
-              <h4 className='font-canela text-center font-normal mb-6 md:font-light text-brand-black-100 md:mb-3 text-h2 md:text-start'>
-                <span>{title_top}</span> <br />
-                <span>{title_bottom}</span>
-              </h4>
-            </div>
+                <h4 className='font-canela text-center font-normal mb-6 md:font-light text-brand-black-100 md:mb-3 text-h2 md:text-start'>
+                  <span>{title_top}</span> <br />
+                  <span>{title_bottom}</span>
+                </h4>
+              </div>
 
-            <div className='flex flex-1 flex-col gap-8 justify-start font-lato text-start text-brand-gray  text-cta'>
-              <p>{text_top}</p>
+              <div className='flex flex-1 flex-col gap-8 justify-start font-lato text-start text-brand-gray  text-cta'>
+                <p>{text_top}</p>
 
-              <ul className='flex flex-col pl-6'>
-                {list.map(({ title, content }) => (
-                  <li key={title} className='list-disc'>
-                    <span className='font-bold'>{title}</span> <span>{content}</span>
-                  </li>
-                ))}
-              </ul>
+                <ul className='flex flex-col pl-6'>
+                  {list.map(({ title, content }) => (
+                    <li key={title} className='list-disc'>
+                      <span className='font-bold'>{title}</span> <span>{content}</span>
+                    </li>
+                  ))}
+                </ul>
 
-              <p>{text_bottom}</p>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-    </section>
+                <p>{text_bottom}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </>
+    </Section>
   );
 };

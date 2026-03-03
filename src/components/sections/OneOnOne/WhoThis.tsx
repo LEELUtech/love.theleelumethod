@@ -1,4 +1,5 @@
 import { ArrowIC } from '@/components/icons';
+import { Section } from '@/components/ui/containers/section';
 
 const content = [
   {
@@ -49,33 +50,35 @@ const content = [
 
 export const WhoThis = () => {
   return (
-    <section className='max-w-[1600px] mx-auto pt-[80px] pb-[90px] px-4 sm:px-6 md:px-8 2xl:px-[180px] 2xl:pt-[105px] 2xl:pb-[185px]'>
-      <h2 className='text-h1 text-center mb-8 text-brand-deep md:text-left md:text-brand-black md:mb-[88px] font-canela font-thin'>
-        WHO THIS IS FOR
-      </h2>
+    <Section>
+      <>
+        <h2 className='text-h1 text-center mb-8 text-brand-deep md:text-left md:text-brand-black md:mb-[88px] font-canela font-thin'>
+          WHO THIS IS FOR
+        </h2>
 
-      <div className='flex flex-col gap-[24px] bs:flex-row bs:gap-[48px]'>
-        {content.map(({ title_end, title_mid, title_start, list, id }) => (
-          <ul key={id} className='flex flex-col gap-y-[26px]'>
-            <h4 className='font-canela font-light text-h2 text-brand-black-100'>
-              {title_start} <span className='text-brand-primary'>{title_mid}</span> {title_end}
-            </h4>
+        <div className='flex flex-col gap-[24px] bs:flex-row bs:gap-[48px]'>
+          {content.map(({ title_end, title_mid, title_start, list, id }) => (
+            <ul key={id} className='flex flex-col gap-y-[26px]'>
+              <h4 className='font-canela font-light text-h2 text-brand-black-100'>
+                {title_start} <span className='text-brand-primary'>{title_mid}</span> {title_end}
+              </h4>
 
-            {list.map((subItem) => (
-              <li key={subItem.id} className='font-lato flex gap-x-[19px] text-[15px]/[24px] text-[#41444E]'>
-                <div className='w-[20px] h-[20px] pt-2'>
-                  <ArrowIC />
-                </div>
+              {list.map((subItem) => (
+                <li key={subItem.id} className='font-lato flex gap-x-[19px] text-[15px]/[24px] text-[#41444E]'>
+                  <div className='w-[20px] h-[20px] pt-2'>
+                    <ArrowIC />
+                  </div>
 
-                <div>
-                  <h4 className='font-bold'>{subItem.title}</h4>
-                  <p>{subItem.description}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        ))}
-      </div>
-    </section>
+                  <div>
+                    <h4 className='font-bold'>{subItem.title}</h4>
+                    <p>{subItem.description}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ))}
+        </div>
+      </>
+    </Section>
   );
 };
