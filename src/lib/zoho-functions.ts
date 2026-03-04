@@ -1,6 +1,7 @@
 // src/server/zoho/zoho-functions.ts
 import "server-only";
 import { zohoRequest } from "@/lib/zoho-client";
+import { getCohortData } from "@/lib/cohort";
 
 const ZOHO_API_DOMAIN = process.env.ZOHO_API_DOMAIN_LILYCHYSTOFAT;
 const ZOHO_CONTACT_LAYOUT_ID = process.env.ZOHO_CONTACT_LAYOUT_ID_LILYCHYSTOFAT;
@@ -193,6 +194,7 @@ export async function upsertZohoContactFunnel(input: {
 
   const existing = await findContactByEmail(email);
   const nowDT = toZohoDateTime(new Date());
+  const cohort = await getCohortData();
 
   const street = buildMailingStreet(input.address1, input.address2);
 
@@ -216,6 +218,10 @@ export async function upsertZohoContactFunnel(input: {
     // snapshot fields
     setIfEmpty(patch, "Site", existing["Site"], input.site);
     setIfEmpty(patch, "Date_of_Birth", existing["Date_of_Birth"], toZohoCrmDate(input.birthDate1));
+
+    // cohort: fill if empty (bulk sync handles mass updates)
+    setIfEmpty(patch, "Cohort_Start_Date", existing["Cohort_Start_Date"], cohort.date);
+    setIfEmpty(patch, "Cohort_Start_Date_Name", existing["Cohort_Start_Date_Name"], cohort.label);
 
     if (cleanStr(input.stripePaymentIntentId)) {
       patch.Stripe_Payment_Intent_ID = input.stripePaymentIntentId!.trim();
@@ -253,6 +259,9 @@ export async function upsertZohoContactFunnel(input: {
 
   const dob = toZohoCrmDate(input.birthDate1);
   if (dob) createData.Date_of_Birth = dob;
+
+  if (cohort.date) createData.Cohort_Start_Date = cohort.date;
+  if (cohort.label) createData.Cohort_Start_Date_Name = cohort.label;
 
   attachLayoutIfPresent(createData, ZOHO_CONTACT_LAYOUT_ID);
 

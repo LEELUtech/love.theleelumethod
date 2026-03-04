@@ -1,6 +1,7 @@
 export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
+import { getCohortData } from "@/lib/cohort";
 
 let cachedAccessToken: string | null = null;
 let tokenExpiresAt = 0;
@@ -41,10 +42,16 @@ async function ensureSubscribed(email: string, token: string, listkey?: string) 
   const resolvedListKey = listkey || process.env.ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT;
   if (!resolvedListKey) throw new Error("Missing ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT or listkey param");
 
+  const contact: Record<string, string> = { "Contact Email": email };
+
+  const cohort = await getCohortData();
+  if (cohort.date) contact["Cohort Start Date"] = cohort.date;
+  if (cohort.label) contact["Cohort Start Date Name"] = cohort.label;
+
   const body = new URLSearchParams();
   body.set("resfmt", "JSON");
   body.set("listkey", resolvedListKey);
-  body.set("contactinfo", `{Contact Email:${email}}`);
+  body.set("contactinfo", JSON.stringify(contact));
 
   await fetch("https://campaigns.zoho.com/api/v1.1/json/listsubscribe", {
     method: "POST",

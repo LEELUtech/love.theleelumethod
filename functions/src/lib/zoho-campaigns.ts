@@ -1,5 +1,6 @@
 // lib/zoho-campaigns.ts
 import { configs } from "../configs/env";
+import { getCohortData } from "./cohort";
 
 let cachedAccessToken: string | null = null;
 let tokenExpiresAt = 0;
@@ -85,6 +86,11 @@ async function ensureSubscribed(email: string, meta?: ContactMeta): Promise<void
       contact[key] = v;
     }
   }
+
+  // Auto-inject cohort fields from Firebase if not already provided via meta
+  const cohort = await getCohortData();
+  if (cohort.date && !contact["Cohort Start Date"]) contact["Cohort Start Date"] = cohort.date;
+  if (cohort.label && !contact["Cohort Start Date Name"]) contact["Cohort Start Date Name"] = cohort.label;
 
   const contactinfo = JSON.stringify(contact);
 
@@ -201,13 +207,12 @@ async function getAllListContacts(): Promise<string[]> {
 
 // ─── PUBLIC API ──────────────────────────────────────────────────────────────
 
-// Bulk-update a single field for every contact in the list (5 concurrent)
+// Bulk-update fields for every contact in the list (5 concurrent)
 export async function bulkUpdateCampaignsContactField(
-  fieldName: string,
-  fieldValue: string,
+  fields: Record<string, string>,
 ): Promise<{ updated: number; failed: number }> {
   const emails = await getAllListContacts();
-  console.log("bulkUpdateCampaignsContactField: contacts fetched", { count: emails.length, fieldName });
+  console.log("bulkUpdateCampaignsContactField: contacts fetched", { count: emails.length, fields: Object.keys(fields) });
 
   let updated = 0;
   let failed = 0;
@@ -216,7 +221,7 @@ export async function bulkUpdateCampaignsContactField(
   for (let i = 0; i < emails.length; i += CONCURRENT) {
     const batch = emails.slice(i, i + CONCURRENT);
     const results = await Promise.allSettled(
-      batch.map((email) => ensureSubscribed(email, { [fieldName]: fieldValue })),
+      batch.map((email) => ensureSubscribed(email, fields)),
     );
     updated += results.filter((r) => r.status === "fulfilled").length;
     failed += results.filter((r) => r.status === "rejected").length;

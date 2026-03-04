@@ -15,8 +15,6 @@ const ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOK
 const ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT = defineSecret("ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT");
 
 const COHORT_SITES = ["localhost", "leelu-v2.bndigital.dev"];
-const CRM_COHORT_FIELD = "Cohort_Start_Date_Name";
-const CAMPAIGNS_COHORT_FIELD = "Cohort Start Date Name";
 
 function parseCohortDate(value: unknown): string | null {
   if (!value) return null;
@@ -56,24 +54,40 @@ export const syncCohortDate = onDocumentWritten(
     }
 
     const cohortDate = parseCohortDate(newData.cohort_date);
-    if (!cohortDate) {
-      logger.warn("syncCohortDate: cohort_date is empty or missing");
+    const cohortLabel = typeof newData.cohort_date_label === "string"
+      ? newData.cohort_date_label.trim() || null
+      : null;
+
+    if (!cohortDate && !cohortLabel) {
+      logger.warn("syncCohortDate: both cohort_date and cohort_date_label are empty");
       return;
     }
 
-    // Skip if date didn't actually change
+    // Skip if nothing actually changed
     const oldData = event.data?.before?.data();
     const oldDate = oldData ? parseCohortDate(oldData.cohort_date) : null;
-    if (cohortDate === oldDate) {
-      logger.info("syncCohortDate: cohort_date unchanged, skipping", { cohortDate });
+    const oldLabel = oldData && typeof oldData.cohort_date_label === "string"
+      ? oldData.cohort_date_label.trim() || null
+      : null;
+
+    if (cohortDate === oldDate && cohortLabel === oldLabel) {
+      logger.info("syncCohortDate: fields unchanged, skipping", { cohortDate, cohortLabel });
       return;
     }
 
-    logger.info("syncCohortDate: syncing cohort date to Zoho", { cohortDate, oldDate });
+    logger.info("syncCohortDate: syncing to Zoho", { cohortDate, cohortLabel, oldDate, oldLabel });
+
+    const crmFields: Record<string, string> = {};
+    if (cohortDate) crmFields["Cohort_Start_Date"] = cohortDate;
+    if (cohortLabel) crmFields["Cohort_Start_Date_Name"] = cohortLabel;
+
+    const campaignsFields: Record<string, string> = {};
+    if (cohortDate) campaignsFields["Cohort Start Date"] = cohortDate;
+    if (cohortLabel) campaignsFields["Cohort Start Date Name"] = cohortLabel;
 
     const [crmResult, campaignsResult] = await Promise.allSettled([
-      bulkUpdateCrmContactsBySite(COHORT_SITES, CRM_COHORT_FIELD, cohortDate),
-      bulkUpdateCampaignsContactField(CAMPAIGNS_COHORT_FIELD, cohortDate),
+      bulkUpdateCrmContactsBySite(COHORT_SITES, crmFields),
+      bulkUpdateCampaignsContactField(campaignsFields),
     ]);
 
     if (crmResult.status === "fulfilled") {
