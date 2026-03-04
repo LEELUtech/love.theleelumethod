@@ -1,6 +1,7 @@
 import Button from '@/components/ui/Button';
 import Phase3Orb from '@/components/ui/Phase3Orb';
 import RotateOnView from '@/components/ui/RotateOnView';
+import { PROGRAMS_LINKS } from '@/static/links';
 import Image from 'next/image';
 import React from 'react';
 
@@ -100,7 +101,7 @@ const GOAL_CONTENT = {
     phase: 2,
     title: 'THE MECHANICS',
     highlight: '(You & Him)',
-    highlightColor: 'text-brand-primary',
+    highlightColor: 'text-brand-gold',
     description: `Now that you've cleared your own internal scripts, we look at the dance between you. We decode the "Male Operating System" so you can find a rhythm where you feel cherished and he feels inspired.`,
   },
 
@@ -147,7 +148,6 @@ function ModuleCard({ title, text, accent = 'red' }: Module) {
 
 interface GoalContentProps {
   phase: number;
-
   title: string;
   highlight: string;
   highlightColor: string;
@@ -157,13 +157,11 @@ interface GoalContentProps {
 const GoalContent = ({ phase, title, highlight, highlightColor, description }: GoalContentProps) => (
   <>
     <p className='font-canela font-thin text-brand-black text-[22px] md:text-[28px] tracking-[0.18em] uppercase'>
-      {' '}
       PHASE {phase}:
     </p>
 
     <h3 className='mt-1 mb-4 font-canela font-thin text-brand-deep text-[34px] md:text-[46px] lg:text-[56px] leading-[105%]'>
-      {title}
-      <br />
+      {title} <br className='hidden lg:block' />
       <span className={`font-canela font-thin leading-[126%] tracking-normal ${highlightColor}`}>{highlight}</span>
     </h3>
 
@@ -423,8 +421,13 @@ export default function ModulesSection() {
               Reconfigure your relationship architecture.
             </h3>
 
-            <Button variant='primary' size='md' className='w-full lg:w-[38%] xs:text-[12px] mt-[32px]' href='#checkout'>
-              INITIATE THE PROTOCOL
+            <Button
+              variant='primary'
+              size='md'
+              className='w-full lg:w-[38%] xs:text-[12px] mt-[32px]'
+              href={PROGRAMS_LINKS.PROTOCOL_LINK.href}
+            >
+              {PROGRAMS_LINKS.PROTOCOL_LINK.label}
             </Button>
           </div>
         </div>

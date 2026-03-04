@@ -1,6 +1,7 @@
 import ProblemsListAnimated from '@/components/sections/Compatibility/ProblemsListAnimated';
 import Button from '@/components/ui/Button';
 import RotateOnView from '@/components/ui/RotateOnView';
+import { COMPABILITY_REPORT_LINKS } from '@/static/links';
 import Image from 'next/image';
 
 export const PROBLEMS = [
@@ -130,8 +131,8 @@ const ProblemSolutionSection = () => {
 
             <ProblemsListAnimated items={PROBLEMS} />
 
-            <Button variant='primary' size='md' className='w-full' href='#checkout'>
-              GIVE ME MY COMPATIBILITY CODE REPORT
+            <Button variant='primary' size='md' className='w-full' href={COMPABILITY_REPORT_LINKS.PROBLEM_LINK.href}>
+              {COMPABILITY_REPORT_LINKS.PROBLEM_LINK.label}
             </Button>
           </div>
         </div>
@@ -255,7 +256,7 @@ const ProblemSolutionSection = () => {
                 style={{ willChange: 'transform', transform: 'translateZ(0)' }}
               >
                 <Image
-                  src='/icons/ornament_3.svg'
+                  src='/icons/ornament_right.svg'
                   alt=''
                   fill
                   className='object-contain'

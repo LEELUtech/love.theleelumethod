@@ -36,7 +36,7 @@ export const ProgramsReceive = (props: Props) => {
   return (
     <div className='text-center'>
       <Flex gap={35} component='article' className='mb-7'>
-        <Flex vertical align='center' className='hidden md:block w-70' gap={16}>
+        <Flex vertical align='center' className='hidden md:flex w-70' gap={16}>
           <StarIC className='text-brand-gold' />
           <OpacityLineIC />
         </Flex>

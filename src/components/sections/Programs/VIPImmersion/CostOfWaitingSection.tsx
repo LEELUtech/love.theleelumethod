@@ -4,6 +4,7 @@ import ArcAutoOnce from '@/components/ui/ArcFlyOnce';
 import Button from '@/components/ui/Button';
 import { ArrowList } from '@/components/ui/lists';
 import { formatPriceFromCents } from '@/helpers';
+import { VIP_LINKS } from '@/static/links';
 import useProductStore from '@/store/useProductStore';
 import { VIP_IMMERSION } from '@/utils/constants';
 import { Flex } from 'antd';
@@ -173,8 +174,13 @@ export default function CostOfWaitingSection() {
             Investment: {priceLabel}
           </p>
 
-          <Button variant='primary' size='md' className='w-full lg:w-[30%] xs:text-[12px] mt-[32px]'>
-            APPLY FOR VIP ACCESS
+          <Button
+            variant='primary'
+            size='md'
+            className='w-full lg:w-[30%] xs:text-[12px] mt-[32px]'
+            href={VIP_LINKS.WHO_LINK.href}
+          >
+            {VIP_LINKS.WHO_LINK.label}
           </Button>
 
           <p className='font-lato text-body font-normal text-[#757986] mt-[21px]'>

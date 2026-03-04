@@ -9,7 +9,8 @@ import TestimonialsSection from '@/components/sections/Programs/TestimonialsSect
 import WhoThisIsForSection from '@/components/sections/Programs/WhoThisIsForSection';
 import FooterLayout from '@/components/ui/footer/FooterLayout';
 import { FooterPromo } from '@/components/ui/footer/FooterPromo';
-import { PRELOAD_PROGRAM_PRODUCT_IDS, WEBINAR_URL } from '@/utils/constants';
+import { PROGRAMS_LINKS } from '@/static/links';
+import { PRELOAD_PROGRAM_PRODUCT_IDS } from '@/utils/constants';
 
 const footerPromoContent = {
   title: 'I don’t guess. I calculate.',
@@ -18,10 +19,7 @@ const footerPromoContent = {
     `After a successful exit, I pursued the mathematical lineage behind the system—studying its original frameworks across the Middle East and Asia. Those insights converge in The Leelu Method today: ancient pattern intelligence rendered operational through modern behavioral science. Not mysticism. Precision.`,
     `I’ve enabled over a thousand women to stop improvising their love lives and start engineering them.`,
   ],
-  link: {
-    href: WEBINAR_URL,
-    label: 'ACCESS THE PROTOCOL',
-  },
+  link: PROGRAMS_LINKS.FOOTER_PROMO_LINK,
 };
 
 export default function ProgramPage() {

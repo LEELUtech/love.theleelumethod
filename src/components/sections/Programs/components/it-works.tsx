@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import Button from '@/components/ui/Button';
+import { Section } from '@/components/ui/containers/section';
 
 export interface IProgramItWorks {
   description: string[];
@@ -18,20 +19,9 @@ interface Props extends IProgramItWorks {} // eslint-disable-line @typescript-es
 
 export const ProgramItWorks = ({ description, subtitle, link, imgSrc }: Props) => {
   return (
-    <section className='relative overflow-hidden'>
-      <div className='absolute inset-0 z-0'>
-        <Image
-          src='/images/programs/self-guided-transformation/itworks_bg.png'
-          alt='It works background'
-          fill
-          priority
-          quality={100}
-          className='object-cover'
-        />
-      </div>
-
+    <Section backgroundImage='/images/programs/self-guided-transformation/itworks_bg.png'>
       <motion.div
-        className='container px-4 relative z-10 pt-[80px] pb-[160px] md:pt-[110px] md:pb-[300px] lg:pt-[160px] lg:pb-[360px]'
+        className='pt-[40px] pb-[120px] lg:pt-[60px] lg:pb-[160px]'
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, amount: 0.2 }}
@@ -73,6 +63,6 @@ export const ProgramItWorks = ({ description, subtitle, link, imgSrc }: Props) =
           </div>
         </div>
       </motion.div>
-    </section>
+    </Section>
   );
 };

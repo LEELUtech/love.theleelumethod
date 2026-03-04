@@ -4,7 +4,7 @@ import StopGuessingSection from '@/components/sections/About/StopGuessingSection
 import TheFractureAndLaboratorySection from '@/components/sections/About/TheFractureAndLaboratorySection';
 import ThePivotAndAccelerantSection from '@/components/sections/About/ThePivotAndAccelerantSection';
 import TheSynthesisSection from '@/components/sections/About/TheSynthesisSection';
-import Footer from '@/components/ui/Footer';
+import FooterLayout from '@/components/ui/footer/FooterLayout';
 
 const AboutPage = () => {
   return (
@@ -15,7 +15,7 @@ const AboutPage = () => {
       <TheSynthesisSection />
       <CredentialsSection />
       <StopGuessingSection />
-      <Footer />
+      <FooterLayout />
     </main>
   );
 };

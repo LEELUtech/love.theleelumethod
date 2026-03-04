@@ -2,6 +2,8 @@
 
 import React from 'react';
 import AnimatedMechanicStep from './AnimatedMechanicStep';
+import Button from '@/components/ui/Button';
+import { VIP_LINKS } from '@/static/links';
 
 const mechanics = [
   {
@@ -55,6 +57,10 @@ export default function MechanicsDeliverablesSection() {
               <AnimatedMechanicStep key={item.id} {...item} />
             ))}
           </div>
+
+          <Button className='mt-[90px] w-full max-w-[392px]' href={VIP_LINKS.MECHANICS_LINK.href}>
+            {VIP_LINKS.MECHANICS_LINK.label}
+          </Button>
         </div>
       </div>
     </section>

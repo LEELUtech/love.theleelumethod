@@ -1,16 +1,13 @@
+import { Section } from '@/components/ui/containers/section';
 import Image from 'next/image';
 
 const CredentialsSection = () => {
   return (
-    <section className='relative pt-[80px] lg:pt-[112px] pb-[250px] lg:pb-[319px]'>
-      <div className='container px-4'>
+    <Section>
+      <div>
         {/* === MOBILE + TABLET IMAGE (TOP) === */}
         <div className='flex justify-center mb-[128px] lg:hidden'>
-          <div
-            className='relative 
-						w-[361px] h-[500px] md:w-[461px] md:h-[600px]
-					'
-          >
+          <div className='relative w-[361px] h-[500px] md:w-[461px] md:h-[600px]'>
             <Image src='/images/lily/lily_8.png' alt='Credentials' fill quality={100} className='rounded-[113px]' />
 
             {/* Logo Badge */}
@@ -131,7 +128,7 @@ const CredentialsSection = () => {
           </div>
         </div>
       </div>
-    </section>
+    </Section>
   );
 };
 

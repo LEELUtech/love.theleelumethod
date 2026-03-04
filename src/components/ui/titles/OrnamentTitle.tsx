@@ -6,9 +6,10 @@ interface Props {
   color: string;
   title: string;
   titleHightlight?: string;
+  subtitle?: string;
 }
 
-export const OrnamentTitle = ({ mt, color, title, titleHightlight }: Props) => (
+export const OrnamentTitle = ({ mt, color, title, titleHightlight, subtitle }: Props) => (
   <div className='relative' style={{ marginTop: mt }}>
     <div className='absolute z-0 left-1/2 -translate-x-1/2 top-[-150px] md:top-[-180px] lg:top-[-300px] flex flex-row items-center justify-center gap-[130px]'>
       <div
@@ -45,5 +46,11 @@ export const OrnamentTitle = ({ mt, color, title, titleHightlight }: Props) => (
         </>
       )}
     </h2>
+
+    {subtitle && (
+      <p className=' font-canela font-light mb-8 text-[24px] lg:text-[32px]/[150%] text-center md:mb-[64px] text-[#0A0B0D] max-w-[638px] mx-auto'>
+        {subtitle}{' '}
+      </p>
+    )}
   </div>
 );

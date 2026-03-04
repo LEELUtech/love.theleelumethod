@@ -23,11 +23,11 @@ import Select from 'react-select';
 import { countries } from '@/helpers/countries';
 import { CountryOption, selectStyles } from '@/components/ui/Select';
 import CheckoutSectionLoader from '@/components/sections/Checkout/CheckoutSectionLoader';
-import ProgramFooter from '@/app/programs/ProgramFooter';
 import { PROTOCOL_ESSENTIALS, GUIDED_BREAKTHROUGH, VIP_IMMERSION } from '@/utils/constants';
 import { getStoredFirstUTM } from '@/utils/utm-tracker';
 import { salesiqIdentify } from '@/lib/tracking/salesiqIdentify';
 import { saveEmailToLS } from '@/lib/tracking/localEmail';
+import { Section } from '@/components/ui/containers/section';
 
 const pk = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!;
 const stripePromise = loadStripe(pk);
@@ -272,12 +272,12 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
   }, [intentId, intentToken, billing.email, captureLeadInternal]);
 
   return (
-    <section className='relative bg-white py-[37px] md:py-[56px] lg:py-[37px] lg:h-[1497px] overflow-visible'>
-      <div className='absolute inset-0 z-0'>
-        <Image src='/images/bg/checkout_bg.png' alt='Checkout bg' fill quality={100} />
-      </div>
-
-      <div className='container px-4 relative z-10 lg:top-[-100px]'>
+    <Section
+      backgroundImage='/images/bg/checkout_bg.png'
+      sectionClasses='bg-white py-[37px] md:py-[56px] lg:py-[37px]'
+      wrapperClasses='lg:top-[-200px] !pb-0'
+    >
+      <div className=''>
         <div className='relative mx-auto rounded-[32px] bg-white px-6 py-8 md:px-10 md:py-10 lg:px-[104px] lg:py-[51px] shadow-[0px_4px_20px_0px_rgba(0,0,0,0.1)]'>
           {isStripeInitializing ? <CheckoutSectionLoader text='Initializing payment...' /> : null}
 
@@ -462,11 +462,7 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
             </div>
           </div>
         </div>
-      </div>
-
-      <div className='container px-4'>
-        <ProgramFooter />
-      </div>
-    </section>
+      </div>{' '}
+    </Section>
   );
 }

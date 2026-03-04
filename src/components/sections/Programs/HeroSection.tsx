@@ -1,5 +1,6 @@
 import Button from '@/components/ui/Button';
 import RotateOnView from '@/components/ui/RotateOnView';
+import { PROGRAMS_LINKS } from '@/static/links';
 import Image from 'next/image';
 import React from 'react';
 
@@ -124,8 +125,13 @@ const HeroSection = () => {
 
           {/* BUTTON */}
           <div className='order-5 w-full flex justify-center'>
-            <Button variant='primary' size='md' className='w-full lg:w-[32%] xs:text-[12px] mt-[32px]' href='#checkout'>
-              ENROLL NOW
+            <Button
+              variant='primary'
+              size='md'
+              className='w-full lg:w-[32%] xs:text-[12px] mt-[32px]'
+              href={PROGRAMS_LINKS.HERO_LINK.href}
+            >
+              {PROGRAMS_LINKS.HERO_LINK.label}
             </Button>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import Button from '@/components/ui/Button';
+import { PROGRAMS_LINKS } from '@/static/links';
 import Image from 'next/image';
 import React from 'react';
 
@@ -160,8 +161,13 @@ export default function BlindSpotSection() {
               {`. I have broken through my block, and I am living
               everything I've ever dreamed of."`}
             </p>
-            <Button variant='primary' size='md' className='w-full lg:w-[80%] xs:text-[12px]' href='#checkout'>
-              READ MORE STORIES
+            <Button
+              variant='primary'
+              size='md'
+              className='w-full lg:w-[80%] xs:text-[12px]'
+              href={PROGRAMS_LINKS.BLIND_LINK.href}
+            >
+              {PROGRAMS_LINKS.BLIND_LINK.label}
             </Button>
           </div>
         </div>

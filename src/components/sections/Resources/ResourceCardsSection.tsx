@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import Header from '@/components/ui/Header';
 import Button from '@/components/ui/Button';
-import { QUIZ_URL } from '@/utils/constants';
+import { RESOURCES_LINKS } from '@/static/links';
 
 interface ResourceCard {
   title: string;
@@ -14,12 +14,14 @@ interface ResourceCard {
   ctaType?: 'compatibility' | 'quiz' | 'secrets';
 }
 
+const { SECRETS_LINK, COMPATIBILITY_LINK, QUIZ_LINK } = RESOURCES_LINKS;
+
 const resources: ResourceCard[] = [
   {
     title: '7 Secrets to Mend a Broken Heart',
     description: 'This guide gives you 7 evidence-based strategies to reclaim your nervous system and your life.',
-    cta: 'Download free guide',
-    href: '#',
+    cta: SECRETS_LINK.label,
+    href: SECRETS_LINK.href,
     ctaType: 'secrets',
     imageAlt: 'Woman smiling in a red sweater',
     imageSrc: '/images/resources/resources-section-1.png',
@@ -28,8 +30,8 @@ const resources: ResourceCard[] = [
     title: 'The Compatibility Report',
     description:
       'This report gives you code-level clarity: where codes align, where they clash, your compatibility type, and whether this was built to last.',
-    cta: 'GET THE REPORT',
-    href: '#',
+    cta: COMPATIBILITY_LINK.label,
+    href: COMPATIBILITY_LINK.href,
     ctaType: 'compatibility',
     imageAlt: 'Hands holding each other',
     imageSrc: '/images/resources/resources-section-2.png',
@@ -38,8 +40,8 @@ const resources: ResourceCard[] = [
     title: 'The Love Questionnaire',
     description:
       "Wondering why men pull away? I'm going to show you the exact reason. Not fluff, the actual mechanics. And once you see it, you can shift the whole dynamic instantly.",
-    cta: 'Start quiz',
-    href: '#',
+    cta: QUIZ_LINK.label,
+    href: QUIZ_LINK.href,
     ctaType: 'quiz',
     imageAlt: 'Woman sitting by window smiling',
     imageSrc: '/images/resources/resources-section-3.png',
@@ -81,11 +83,11 @@ export function ResourceCardsSection() {
                     variant='primary'
                     size='md'
                     className='w-full py-[12px]'
-                    href='/resources/secrets'
+                    href={item.href}
                     trackingData={{
                       cta_name: 'download_guide',
                       cta_text: 'Download free guide',
-                      cta_target_url: '/resources/secrets',
+                      cta_target_url: item.href,
                       cta_location: 'resources_section',
                     }}
                   >
@@ -96,11 +98,11 @@ export function ResourceCardsSection() {
                     variant='primary'
                     size='md'
                     className='w-full py-[12px]'
-                    href='/resources/compatibility-report'
+                    href={item.href}
                     trackingData={{
                       cta_name: 'get_report',
                       cta_text: 'GET THE REPORT',
-                      cta_target_url: '/resources/compatibility-report',
+                      cta_target_url: item.href,
                       cta_location: 'resources_section',
                     }}
                   >
@@ -111,11 +113,13 @@ export function ResourceCardsSection() {
                     variant='primary'
                     size='md'
                     className='w-full py-[12px]'
-                    href={QUIZ_URL}
+                    href={item.href}
+                    target='_blank'
+                    rel='noopener noreferrer'
                     trackingData={{
                       cta_name: 'start_quiz',
                       cta_text: 'Start quiz',
-                      cta_target_url: QUIZ_URL,
+                      cta_target_url: item.href,
                       cta_location: 'resources_section',
                     }}
                   >

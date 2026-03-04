@@ -41,11 +41,13 @@ const TriageSection = () => {
               />
 
               <div>
-                <div className='font-canela font-light text-[24px] leading-[130%] text-[#41444E]'>Andrea A</div>
+                <div className='font-canela font-light text-[32px]/[130%] text-brand-gray'>Lisa B. Gold, M.A., CH</div>
 
-                <div className=' font-lato italic font-normal lg:text-[22px] leading-[26px] text-[#6F4C40] text-[18px]'>
-                  Teacher
+                <div className='font-lato italic font-normal lg:text-[22px] leading-[26px] text-[#6F4C40] text-[18px]'>
+                  Applied Behavior Analyst
                 </div>
+
+                <div className='font-lato text-[16px] leading-[22px] text-brand-gray-100 mt-1'>Boca Raton, FL</div>
               </div>
             </div>
           </div>
@@ -185,7 +187,7 @@ const TriageSection = () => {
                 style={{ willChange: 'transform', transform: 'translateZ(0)' }}
               >
                 <Image
-                  src='/icons/ornament_3.svg'
+                  src='/icons/ornament_right.svg'
                   alt=''
                   fill
                   className='object-contain'

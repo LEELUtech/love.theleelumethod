@@ -10,6 +10,7 @@ import { ProgramsReceive } from '../components/receive';
 import { selfGuidedModuleData, selfGuidedOverviewData } from './static';
 import { ProgramOverview } from '../components/overview';
 import { OpacityTitleOrnamentIC } from '@/components/icons';
+import { Section } from '@/components/ui/containers/section';
 
 const content = {
   phase: {
@@ -102,17 +103,9 @@ const VideoContent = () => (
 
 export default function MechanicsDeliverablesSection() {
   const { phase, workbook } = content;
-
   return (
-    <section
-      style={{
-        backgroundImage: "url('/images/programs/self-guided-transformation/mechanics_section_bg.png')",
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center',
-      }}
-    >
-      <div className='max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-[112px] 2xl:px-[180px] relative py-[80px] lg:py-[110px]'>
+    <Section backgroundImage='/images/programs/self-guided-transformation/mechanics_section_bg.png'>
+      <div>
         <div className='text-center mb-[90px] md:mb-[150px]'>
           <ProgramsReceive {...selfGuidedModuleData} />
 
@@ -131,7 +124,6 @@ export default function MechanicsDeliverablesSection() {
           </article>
         </div>
 
-        {/* WORKBOOK */}
         <article className='flex flex-col-reverse lg:flex-row justify-center lg:gap-[60px] xl:gap-[90px] 2xl:gap-[130px] mb-[260px]'>
           <div className='flex-1'>
             <VideoContent />
@@ -150,6 +142,6 @@ export default function MechanicsDeliverablesSection() {
 
         <ProgramOverview {...selfGuidedOverviewData} />
       </div>
-    </section>
+    </Section>
   );
 }

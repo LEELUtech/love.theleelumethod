@@ -5,6 +5,9 @@ import { IProgramOverview } from '../components/overview';
 import { IProgramResult } from '../components/result';
 import { IProgramItWorks } from '../components/it-works';
 import { OrnamentTitle } from '@/components/ui/titles/OrnamentTitle';
+import { GUIDED_BREAKTHROUGH_LINKS } from '@/static/links';
+
+const { HERO_LINK, COMPATIBILITY_LINK, WORKED_LINK } = GUIDED_BREAKTHROUGH_LINKS;
 
 export const guidedBreakthroughHeroData: IProgramsHero = {
   title: 'GUIDED BREAKTHROUGH',
@@ -12,7 +15,7 @@ export const guidedBreakthroughHeroData: IProgramsHero = {
   subtitle: 'Personalized Diagnosis and Priority Access',
   content: `Stop guessing and get the precise correction.`,
   contentBottom: `You don't just need the framework. You need someone to diagnose your specific pattern—and hand you the exact fix.`,
-  buttonLabel: 'GET PERSONAL',
+  link: HERO_LINK,
 };
 
 export const guidedBreakthroughWhoThisData: IProgramsWhoThis = {
@@ -185,11 +188,7 @@ export const guidedBreakthroughOverviewData: IProgramOverview = {
       ],
     },
   ],
-
-  link: {
-    label: 'ENROLL NOW',
-    href: '#',
-  },
+  link: COMPATIBILITY_LINK,
 };
 
 export const guidedBreakthroughResultData: IProgramResult = {
@@ -207,9 +206,6 @@ export const guidedBreakthroughItWorksData: IProgramItWorks = {
     `The Leelu Method works. `,
     `I've validated it across thousands of behavioral assessments, hundreds of client relationships, then on myself and my own relationship.`,
   ],
-  link: {
-    label: 'GET PERSONALIZED SUPPORT',
-    href: '#',
-  },
+  link: WORKED_LINK,
   imgSrc: '/images/programs/guided-breakthrough/it_worked_for_me.png',
 };

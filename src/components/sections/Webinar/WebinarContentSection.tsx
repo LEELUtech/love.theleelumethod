@@ -1,8 +1,9 @@
 import React from 'react';
 import Image from 'next/image';
 import Button from '@/components/ui/Button';
-import { WEBINAR_URL } from '@/utils/constants';
 import LoveLevelsAnimatedBlock from '@/components/sections/Webinar/LoveLevelsAnimatedBlock';
+import { DESCODE_LINKS } from '@/static/links';
+import { Section } from '@/components/ui/containers/section';
 
 const CARD_CONTENT = [
   {
@@ -27,41 +28,18 @@ const CARD_CONTENT = [
 
 const WebinarContentSection = () => {
   return (
-    <section className='relative bg-[#f5e8e8] pt-12 pb-[120px] md:py-16 lg:py-32'>
-      {/* Background Image */}
-      <div className='absolute inset-0 z-[0] overflow-hidden'>
-        <Image src='/images/bg/webinar_content_bg.png' alt='' fill priority quality={100} />
-      </div>
-
-      {/* Carousel
-			<TestimonialsCarousel className="absolute z-20 top-[-140px] md:top-[-90px] lg:top-[-110px]" /> */}
-
-      <div className='container px-4 relative z-10 '>
-        {/* FIRST BLOCK */}
-        <div
-          className='
-		flex flex-col md:flex-row items-center justify-between
-
-		/* SPACING */
-		gap-12 md:gap-10 lg:gap-20
-
-		/* MARGINS */
-		mb-[300px] md:mb-[300px] lg:mb-[300px]
-	'
-        >
+    <Section
+      sectionClasses='relative bg-[#f5e8e8] pt-12 pb-[120px] md:py-16 lg:py-32'
+      backgroundImage='/images/bg/webinar_content_bg.png'
+    >
+      <div className='relative'>
+        <div className='flex flex-col md:flex-row items-center justify-between mb-[300px] gap-12 md:gap-10 lg:gap-20'>
           {/* IMAGE */}
           <div className='w-full md:w-1/2 flex justify-center'>
             <div
               className='
 				relative overflow-hidden rounded-[60px]
-
-				/* MOBILE */
 				w-full max-w-[360px] h-[459px]
-
-				/* TABLET */
-				md:max-w-[360px]
-
-				/* DESKTOP (UNTOUCHED) */
 				lg:max-w-none lg:w-[496px] lg:h-[833px]
 			'
             >
@@ -77,23 +55,7 @@ const WebinarContentSection = () => {
 
           {/* TEXT */}
           <div className='w-full md:text-left md:max-w-[400px] lg:max-w-none'>
-            <h2
-              className='
-				font-canela font-thin text-brand-deep tracking-normal leading-[130%]
-
-				/* MOBILE */
-				text-[48px]
-				mb-[40px]
-
-				/* TABLET */
-				md:text-[48px]
-				md:mb-8
-
-				/* DESKTOP */
-				lg:text-[60px]
-				lg:mb-[67px]
-			'
-            >
+            <h2 className='font-canela font-thin text-brand-deep tracking-normal text-[48px]/[130%] mb-[40px] md:mb-8 lg:text-[60px] lg:mb-[67px]'>
               You&apos;re smart, capable…
               <br />
               and still asking,
@@ -106,15 +68,12 @@ const WebinarContentSection = () => {
 				font-lato font-medium text-[#5A5757] tracking-[0.02em]
 
 				/* MOBILE */
-				text-[17px]
-				leading-[22px]
+				text-[17px]/[22px]
 
 				/* TABLET */
-				md:text-[17px]
 				md:leading-[24px]
 
 				/* DESKTOP */
-				lg:text-body
 				lg:leading-[26px]
 				lg:tracking-[0.03em]
 			'
@@ -166,14 +125,18 @@ const WebinarContentSection = () => {
 
         <LoveLevelsAnimatedBlock cards={CARD_CONTENT} />
 
-        {/* CTA BUTTON */}
         <div className='flex justify-center w-full'>
-          <Button variant='primary' size='md' className='w-full md:w-[76%] py-[12px]' href={WEBINAR_URL}>
-            Reserve My Spot
+          <Button
+            variant='primary'
+            size='md'
+            className='w-full md:w-[76%] py-[12px]'
+            href={DESCODE_LINKS.RESERVE_LINK.href}
+          >
+            {DESCODE_LINKS.RESERVE_LINK.label}
           </Button>
         </div>
       </div>
-    </section>
+    </Section>
   );
 };
 

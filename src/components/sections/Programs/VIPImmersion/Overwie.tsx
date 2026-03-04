@@ -1,3 +1,4 @@
+import { Section } from '@/components/ui/containers/section';
 import { ArrowList } from '@/components/ui/lists';
 import { Flex } from 'antd';
 import Image from 'next/image';
@@ -59,21 +60,12 @@ interface Props {
 
 export const VIPImmersionOverview = ({ overviews }: Props) => {
   return (
-    <section
-      style={{
-        backgroundImage: "url('/images/programs/self-guided-transformation/mechanics_section_bg.png')",
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center',
-      }}
-    >
-      <div className='max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-[112px] 2xl:px-[180px] relative py-[80px] lg:py-[110px]'>
-        <Flex vertical gap={120}>
-          {overviews.map((overview) => (
-            <Card key={overview.id} {...overview} />
-          ))}
-        </Flex>
-      </div>
-    </section>
+    <Section backgroundImage='/images/programs/self-guided-transformation/mechanics_section_bg.png'>
+      <Flex vertical gap={120}>
+        {overviews.map((overview) => (
+          <Card key={overview.id} {...overview} />
+        ))}
+      </Flex>
+    </Section>
   );
 };
