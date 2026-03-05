@@ -224,11 +224,11 @@ type SpaceType = "basic" | "chat" | "event" | "course" | "image";
 export const createSpace = async (
   name: string,
   type: SpaceType,
-  id: string,
+  space_group_id: string,
 ): Promise<string | null> => {
   const payload = {
     name,
-    space_id: id,
+    space_group_id,
     space_type: type,
     is_private: true,
     is_hidden: true,
@@ -259,6 +259,23 @@ export const addMemberToSpace = async (email: string, spaceId: string): Promise<
       {
         method: "POST",
         body: JSON.stringify({ email, space_id: spaceId }),
+      },
+      { tolerateIdempotentGrantErrors: true },
+    );
+
+    return response.success;
+  } catch {
+    return false;
+  }
+};
+
+export const addCMToSpace = async (spaceId: string): Promise<boolean> => {
+  try {
+    const response = await makeCircleRequest<GrantAccessResponse>(
+      "/space_members",
+      {
+        method: "POST",
+        body: JSON.stringify({ email: "mykhailo.nikolaiev@bndigital.co", space_id: spaceId }),
       },
       { tolerateIdempotentGrantErrors: true },
     );

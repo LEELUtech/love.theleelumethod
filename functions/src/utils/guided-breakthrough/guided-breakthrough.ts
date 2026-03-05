@@ -1,30 +1,26 @@
 import Stripe from "stripe";
-import { processCircleAccess } from "../../lib/circle";
+import { addCMToSpace, addMemberToSpace, createSpace, processCircleAccess } from "../../lib/circle";
+import { db } from "../../configs/firebase";
+import { ProductType } from "../stripeCircleWebhook.helpers";
 
 export async function handleGuidedBreakthrough(pi: Stripe.PaymentIntent): Promise<void> {
   const email = pi.metadata?.email || pi.receipt_email || "";
   const name = pi.metadata?.name || email.split("@")[0];
-  const spaceId = pi.metadata?.space_id;
+  const productType = pi.metadata?.product_type as ProductType;
 
-  console.log("[Guided Breakthrough] Processing payment", {
-    email,
-    name,
-    space_id: spaceId,
-    payment_intent_id: pi.id,
-  });
+  const doc = await db.collection("offerings").doc(productType).get();
 
-  if (!spaceId) {
-    throw new Error("Missing space_id in metadata");
+  const data = doc?.data();
+
+  if (data?.space_id) {
+    await processCircleAccess(email, name, data.space_id);
   }
 
-  console.log(spaceId);
+  const chat_id = await createSpace(name + email, "chat", "1010467");
 
-  // Find or create Circle member and grant space access
-  const result = await processCircleAccess(email, name, spaceId);
+  if (chat_id) {
+    await addMemberToSpace(email, chat_id);
 
-  console.log("[Guided Breakthrough] Access granted", {
-    email,
-    member_id: result.memberId,
-    is_new_member: result.isNewMember,
-  });
+    await addCMToSpace(chat_id);
+  }
 }
