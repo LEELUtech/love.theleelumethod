@@ -25,6 +25,14 @@ interface GrantAccessResponse {
   message: string;
 }
 
+interface CreateSpaceResponse {
+  success: boolean;
+  message: string;
+  space: {
+    id: string;
+  };
+}
+
 const getCircleConfig = () => ({
   apiKey: configs.circleApiKey || "PLACEHOLDER_API_KEY",
   baseUrl: "https://app.circle.so/api/admin/v2",
@@ -132,65 +140,63 @@ async function makeCircleRequest<T>(
 }
 
 export async function findCircleMemberByEmail(email: string): Promise<CircleMember | null> {
-  console.log(`[Circle Search] Looking for email: ${email}`);
+  try {
+    const response = await makeCircleRequest<CircleMember | CircleMemberNotFound>(
+      `/community_members/search?email=${encodeURIComponent(email)}`,
+      { method: "GET" },
+    );
 
-  const response = await makeCircleRequest<CircleMember | CircleMemberNotFound>(
-    `/community_members/search?email=${encodeURIComponent(email)}`,
-    { method: "GET" },
-  );
-
-  console.log("[Circle Search] Response:", JSON.stringify(response));
-
-  if (isCircleNotFound(response)) return null;
-  return response;
+    if (isCircleNotFound(response)) return null;
+    return response;
+  } catch {
+    return null;
+  }
 }
 
 export async function createCircleMember(email: string, name: string): Promise<CircleMember> {
-  console.log(`[Circle] Creating member with email: ${email}, name: ${name}`);
-
   const response = await makeCircleRequest<CreateMemberResponse>("/community_members", {
     method: "POST",
     body: JSON.stringify({ email, name, skip_invitation: false }),
   });
 
-  console.log(`[Circle] Member created: ${response.community_member.id}`);
   return response.community_member;
 }
 
-export async function grantCircleSpaceAccess(email: string, spaceId: string): Promise<void> {
-  console.log(`[Circle] Granting space access: ${email} -> space ${spaceId}`);
+export async function grantCircleSpaceAccess(email: string, spaceId: string): Promise<boolean> {
+  try {
+    const response = await makeCircleRequest<GrantAccessResponse>(
+      "/space_members?space_id=" + encodeURIComponent(spaceId),
+      {
+        method: "POST",
+        body: JSON.stringify({ email }),
+      },
+      { tolerateIdempotentGrantErrors: true },
+    );
 
-  const response = await makeCircleRequest<GrantAccessResponse>(
-    "/space_members",
-    {
-      method: "POST",
-      body: JSON.stringify({
-        email,
-        space_id: parseInt(spaceId, 10),
-      }),
-    },
-    { tolerateIdempotentGrantErrors: true }, // key change
-  );
-
-  console.log(`[Circle] Space access result: ${response.message}`);
+    return response.success;
+  } catch {
+    return false;
+  }
 }
 
-export async function grantCircleCourseAccess(email: string, courseId: string): Promise<void> {
-  console.log(`[Circle] Granting course access: ${email} -> course ${courseId}`);
+export async function grantCircleCourseAccess(email: string, courseId: string): Promise<boolean> {
+  try {
+    const response = await makeCircleRequest<GrantAccessResponse>(
+      "/course_members",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          email,
+          course_id: parseInt(courseId, 10),
+        }),
+      },
+      { tolerateIdempotentGrantErrors: true },
+    );
 
-  const response = await makeCircleRequest<GrantAccessResponse>(
-    "/course_members",
-    {
-      method: "POST",
-      body: JSON.stringify({
-        email,
-        course_id: parseInt(courseId, 10),
-      }),
-    },
-    { tolerateIdempotentGrantErrors: true }, // key change
-  );
-
-  console.log(`[Circle] Course access result: ${response.message}`);
+    return response.success;
+  } catch {
+    return false;
+  }
 }
 
 export async function processCircleAccess(
@@ -199,11 +205,6 @@ export async function processCircleAccess(
   spaceId?: string,
   courseId?: string,
 ): Promise<{ memberId: number; isNewMember: boolean }> {
-  console.log(`[Circle] Processing access for: ${email}`, {
-    space_id: spaceId,
-    course_id: courseId,
-  });
-
   let member = await findCircleMemberByEmail(email);
   let isNewMember = false;
 
@@ -215,7 +216,55 @@ export async function processCircleAccess(
   if (spaceId) await grantCircleSpaceAccess(email, spaceId);
   if (courseId) await grantCircleCourseAccess(email, courseId);
 
-  console.log(`[Circle] Access completed for: ${email}`);
-
   return { memberId: member.id, isNewMember };
 }
+
+type SpaceType = "basic" | "chat" | "event" | "course" | "image";
+
+export const createSpace = async (
+  name: string,
+  type: SpaceType,
+  id: string,
+): Promise<string | null> => {
+  const payload = {
+    name,
+    space_id: id,
+    space_type: type,
+    is_private: true,
+    is_hidden: true,
+    is_hidden_from_non_members: true,
+    chat_room_show_history: true,
+    chat_room_description: "YOUR WORK (PRIVATE HOMEWORK)",
+  };
+
+  try {
+    const response = await makeCircleRequest<CreateSpaceResponse>(
+      "/spaces",
+      { method: "POST", body: JSON.stringify(payload) },
+      { tolerateIdempotentGrantErrors: true },
+    );
+
+    if (response.success) return response.space.id;
+
+    return null;
+  } catch {
+    return null;
+  }
+};
+
+export const addMemberToSpace = async (email: string, spaceId: string): Promise<boolean> => {
+  try {
+    const response = await makeCircleRequest<GrantAccessResponse>(
+      "/space_members",
+      {
+        method: "POST",
+        body: JSON.stringify({ email, space_id: spaceId }),
+      },
+      { tolerateIdempotentGrantErrors: true },
+    );
+
+    return response.success;
+  } catch {
+    return false;
+  }
+};

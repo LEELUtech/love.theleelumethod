@@ -32,4 +32,3 @@ export const configs = {
   zohoCampaignsListKey: process.env.ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT || "",
   zohoRefreshCampaignsToken: process.env.ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT || "",
 };
-

@@ -43,18 +43,18 @@ type EwebinarPayload = {
   totalWatchedPercent?: number | string;
   watchedReplayPercent?: number | string;
 
-  tags?: any[];
+  tags?: unknown[];
 
-  [k: string]: any;
+  [k: string]: unknown;
 };
 
-function normEmail(v?: any): string | null {
+function normEmail(v?: unknown): string | null {
   if (v === undefined || v === null) return null;
   const s = String(v).trim().toLowerCase();
   return s ? s : null;
 }
 
-function normAction(v?: any): EwebinarAction | null {
+function normAction(v?: unknown): EwebinarAction | null {
   if (!v) return null;
   const s = String(v).trim();
 
@@ -73,14 +73,14 @@ function normAction(v?: any): EwebinarAction | null {
   return (allowed as string[]).includes(s) ? (s as EwebinarAction) : null;
 }
 
-function normState(v?: any): EwebinarState | null {
+function normState(v?: unknown): EwebinarState | null {
   if (!v) return null;
   const s = String(v).trim();
   const allowed: EwebinarState[] = ["Registered", "NotJoined", "Joined", "Missed", "Watched"];
   return (allowed as string[]).includes(s) ? (s as EwebinarState) : null;
 }
 
-function toNum(v: any): number | null {
+function toNum(v: unknown): number | null {
   if (v === undefined || v === null) return null;
   const n = Number(v);
   return Number.isFinite(n) ? n : null;
@@ -106,7 +106,10 @@ function getDedupeKey(body: EwebinarPayload, email: string, action: string): str
  *    - state/tags/percent determine watched vs missed vs partial
  *    - sessionType determines live vs replay
  */
-function mapTagDelta(body: EwebinarPayload, action: EwebinarAction): { add: string[]; remove: string[] } {
+function mapTagDelta(
+  body: EwebinarPayload,
+  action: EwebinarAction,
+): { add: string[]; remove: string[] } {
   const sessionType = body.sessionType; // "Replay" etc
   const state = normState(body.state);
 
@@ -120,71 +123,71 @@ function mapTagDelta(body: EwebinarPayload, action: EwebinarAction): { add: stri
   const missedTag = hasTag(body, "missed");
 
   switch (action) {
-  case "Registered":
-    return {
-      add: ["wb_reg"],
-      remove: ["wb_live", "wb_replay", "wb_partial", "wb_noshow", "nr_ready", "nr_drip"],
-    };
+    case "Registered":
+      return {
+        add: ["wb_reg"],
+        remove: ["wb_live", "wb_replay", "wb_partial", "wb_noshow", "nr_ready", "nr_drip"],
+      };
 
-  case "WebinarFinished": {
-    // 1) явные state/tags
-    const isMissed = state === "Missed" || missedTag;
-    const isWatched = state === "Watched" || watchedTag;
+    case "WebinarFinished": {
+      // 1) явные state/tags
+      const isMissed = state === "Missed" || missedTag;
+      const isWatched = state === "Watched" || watchedTag;
 
-    if (isMissed) {
+      if (isMissed) {
+        return {
+          add: ["wb_noshow"],
+          remove: ["wb_live", "wb_replay", "wb_partial", "nr_ready", "nr_drip"],
+        };
+      }
+
+      // check percent BEFORE isWatched — eWebinar adds "watched" tag even for partial viewers
+      if (pct !== null && pct < 50) {
+        return {
+          add: ["wb_partial"],
+          remove: ["wb_live", "wb_replay", "wb_noshow", "nr_ready", "nr_drip"],
+        };
+      }
+
+      if (isWatched || (pct !== null && pct >= 50)) {
+        return isReplay
+          ? {
+              add: ["wb_replay", "nr_ready", "nr_drip"],
+              remove: ["wb_live", "wb_partial", "wb_noshow"],
+            }
+          : {
+              add: ["wb_live", "nr_ready", "nr_drip"],
+              remove: ["wb_replay", "wb_partial", "wb_noshow"],
+            };
+      }
+
+      return { add: [], remove: [] };
+    }
+
+    case "WatchedWebinar":
+      return {
+        add: ["wb_live", "nr_ready", "nr_drip"],
+        remove: ["wb_replay", "wb_partial", "wb_noshow"],
+      };
+
+    case "WatchedReplay":
+      return {
+        add: ["wb_replay", "nr_ready", "nr_drip"],
+        remove: ["wb_live", "wb_partial", "wb_noshow"],
+      };
+
+    case "MissedWebinar":
       return {
         add: ["wb_noshow"],
         remove: ["wb_live", "wb_replay", "wb_partial", "nr_ready", "nr_drip"],
       };
-    }
 
-    // check percent BEFORE isWatched — eWebinar adds "watched" tag even for partial viewers
-    if (pct !== null && pct < 50) {
-      return {
-        add: ["wb_partial"],
-        remove: ["wb_live", "wb_replay", "wb_noshow", "nr_ready", "nr_drip"],
-      };
-    }
-
-    if (isWatched || (pct !== null && pct >= 50)) {
-      return isReplay
-        ? {
-          add: ["wb_replay", "nr_ready", "nr_drip"],
-          remove: ["wb_live", "wb_partial", "wb_noshow"],
-        }
-        : {
-          add: ["wb_live", "nr_ready", "nr_drip"],
-          remove: ["wb_replay", "wb_partial", "wb_noshow"],
-        };
-    }
-
-    return { add: [], remove: [] };
-  }
-
-  case "WatchedWebinar":
-    return {
-      add: ["wb_live", "nr_ready", "nr_drip"],
-      remove: ["wb_replay", "wb_partial", "wb_noshow"],
-    };
-
-  case "WatchedReplay":
-    return {
-      add: ["wb_replay", "nr_ready", "nr_drip"],
-      remove: ["wb_live", "wb_partial", "wb_noshow"],
-    };
-
-  case "MissedWebinar":
-    return {
-      add: ["wb_noshow"],
-      remove: ["wb_live", "wb_replay", "wb_partial", "nr_ready", "nr_drip"],
-    };
-
-  case "Left":
-  case "Joined":
-  case "Converted":
-  case "Unsubscribed":
-  default:
-    return { add: [], remove: [] };
+    case "Left":
+    case "Joined":
+    case "Converted":
+    case "Unsubscribed":
+    default:
+      return { add: [], remove: [] };
   }
 }
 

@@ -1,28 +1,30 @@
 import Stripe from "stripe";
-import { processCircleAccess } from "../../lib/circle";
+import { addMemberToSpace, createSpace, processCircleAccess } from "../../lib/circle";
+import { ProductType } from "../stripeCircleWebhook.helpers";
+import { db } from "../../configs/firebase";
 
 export async function handleProtocolEssentials(pi: Stripe.PaymentIntent): Promise<void> {
   const email = pi.metadata?.email || pi.receipt_email || "";
   const name = pi.metadata?.name || email.split("@")[0];
-  const spaceId = pi.metadata?.space_id;
+  const productType = pi.metadata?.product_type as ProductType;
 
-  console.log("[Protocol Essentials] Processing payment", {
-    email,
-    name,
-    space_id: spaceId,
-    payment_intent_id: pi.id,
-  });
+  const doc = await db.collection("offerings").doc(productType).get();
 
-  if (!spaceId) {
-    throw new Error("Missing space_id in metadata");
+  const data = doc?.data();
+
+  console.log("Processing Protocol Essentials for:", { email, name, productType });
+
+  console.log("Fetched offering data:", data);
+
+  if (data?.space_id) {
+    const result = await processCircleAccess(email, name, data.space_id);
+
+    console.log(result);
   }
 
-  // Find or create Circle member and grant space access
-  const result = await processCircleAccess(email, name, spaceId);
+  const chat_id = await createSpace(name + email, "chat", "1010467");
 
-  console.log("[Protocol Essentials] Access granted", {
-    email,
-    member_id: result.memberId,
-    is_new_member: result.isNewMember,
-  });
+  if (chat_id) {
+    await addMemberToSpace(email, chat_id);
+  }
 }

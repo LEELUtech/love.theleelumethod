@@ -17,6 +17,8 @@ export async function handleGuidedBreakthrough(pi: Stripe.PaymentIntent): Promis
     throw new Error("Missing space_id in metadata");
   }
 
+  console.log(spaceId);
+
   // Find or create Circle member and grant space access
   const result = await processCircleAccess(email, name, spaceId);
 
