@@ -5,6 +5,7 @@ import { configs } from "../configs/env";
 import { handleCompatibilityReport } from "./compatibility-report/compatibility-report";
 import { handleProtocolEssentials } from "./protocol-essentials/protocol-essentials";
 import { handleVipImmersion } from "./vip-immersion/vip-immersion";
+import { handleGuidedBreakthrough } from "./guided-breakthrough/guided-breakthrough";
 
 export type ProductType =
   | "compatibility_report"
@@ -199,7 +200,7 @@ export async function processPayment(pi: Stripe.PaymentIntent): Promise<void> {
       handleProtocolEssentials(pi);
       break;
     case "guided_breakthrough":
-      console.log("Guided Breakthrough handler is currently disabled.");
+      handleGuidedBreakthrough(pi);
       break;
     case "vip_immersion":
       handleVipImmersion(pi);

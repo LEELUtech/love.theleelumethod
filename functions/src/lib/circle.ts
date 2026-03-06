@@ -285,3 +285,25 @@ export const addCMToSpace = async (spaceId: string): Promise<boolean> => {
     return false;
   }
 };
+
+export const addTagToMember = async (
+  user_email: string,
+  member_tag_id: string,
+): Promise<boolean> => {
+  try {
+    const response = await makeCircleRequest<GrantAccessResponse>(
+      "/tagged_members",
+      {
+        method: "POST",
+        body: JSON.stringify({ user_email, member_tag_id }),
+      },
+      { tolerateIdempotentGrantErrors: true },
+    );
+
+    console.log("Add tag response", response);
+
+    return response.success;
+  } catch {
+    return false;
+  }
+};
