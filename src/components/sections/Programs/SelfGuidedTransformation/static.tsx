@@ -1,9 +1,12 @@
+import { ESSENTIALS_LINKS } from '@/static/links';
 import { IProgramsHero } from '../components/hero';
 import { IProgramItWorks } from '../components/it-works';
 import { IProgramOverview } from '../components/overview';
 import { IProgramsReceive } from '../components/receive';
 import { IProgramResult } from '../components/result';
 import { IProgramsWhoThis } from '../components/who-this';
+
+const { HERO_LINK, RESULT_LINK, WORKED_LINK } = ESSENTIALS_LINKS;
 
 export const selfGuidedHeroData: IProgramsHero = {
   title: 'THE PROTOCOL ESSENTIALS',
@@ -12,8 +15,8 @@ export const selfGuidedHeroData: IProgramsHero = {
   subtitle: `YOUR RELATIONSHIP ISN'T BROKEN. YOU'RE RUNNING THE WRONG CODE.`,
   content: `You don’t need another conversation about "feelings." You need a structural audit of why your relationships keep hitting the same wall.`,
   link: {
-    href: '/enroll',
-    label: 'ENROLL NOW',
+    href: HERO_LINK.href,
+    label: HERO_LINK.label,
   },
 };
 
@@ -148,8 +151,8 @@ export const selfGuidedResultData: IProgramResult = {
     'You stop operating on instinct (which is traumatized) and start operating on intelligence. You will know exactly why your past relationships failed and have the specific behavioral blueprint to build the next one on solid ground.',
   investment: 697,
   link: {
-    label: 'BEGIN THE PROTOCOL',
-    href: '#',
+    label: RESULT_LINK.label,
+    href: RESULT_LINK.href,
   },
 };
 
@@ -159,8 +162,8 @@ export const selfGuidedItWorksData: IProgramItWorks = {
   ],
   subtitle: [`I didn't waste a decade finding the right one—I engineered it.`],
   link: {
-    label: 'BEGIN THE PROTOCOL',
-    href: '#',
+    label: WORKED_LINK.label,
+    href: WORKED_LINK.href,
   },
   imgSrc: '/images/programs/self-guided-transformation/it_worked_for_me.png',
 };
