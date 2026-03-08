@@ -14,22 +14,12 @@ const transformPathResponse = (label: string) => {
 };
 
 export const transformTypeformResponse = (submittedAt: string, answers: TypeformAnswer[]) => {
-  const data: Record<TypeformColumns, string> = {} as Record<TypeformColumns, string>;
+  const data = Object.fromEntries(Object.values(TypeformColumns).map((col) => [col, ""])) as Record<
+    TypeformColumns,
+    string
+  >;
 
   data[TypeformColumns.TIMESTAMP] = formatTime(submittedAt);
-  data[TypeformColumns.EMAIL] = "";
-  data[TypeformColumns.HER_FULL_NAME] = "";
-  data[TypeformColumns.HER_DOB] = "";
-  data[TypeformColumns.TIER] = "";
-  data[TypeformColumns.PATH] = "";
-  data[TypeformColumns.PARTNER_FULL_NAME] = "";
-  data[TypeformColumns.PARTNER_DOB] = "";
-  data[TypeformColumns.PARTNER_DURATION] = "";
-  data[TypeformColumns.REPORT_1_STATUS] = "";
-  data[TypeformColumns.REPORT_2_STATUS] = "";
-  data[TypeformColumns.REPORT_3_STATUS] = "";
-  data[TypeformColumns.REPORT_4_STATUS] = "";
-  data[TypeformColumns.NOTES] = "";
 
   answers.forEach((answer) => {
     const ref = answer.field.ref;

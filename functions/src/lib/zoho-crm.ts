@@ -1,4 +1,3 @@
-// functions/src/lib/zoho-crm.ts
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { configs } from "../configs/env";
 
@@ -423,10 +422,12 @@ export async function createOrUpdateContact(data: {
   const currencyUpper = (data.currency || "usd").toUpperCase();
 
   const safeFirstName = cleanStr(data.firstName)
-    ? truncate(cleanStr(data.firstName)!, 80)
+    ? truncate(cleanStr(data.firstName) as string, 80)
     : undefined;
-  const safeLastName = cleanStr(data.lastName) ? truncate(cleanStr(data.lastName)!, 80) : undefined;
-  const safePhone = cleanStr(data.phone) ? truncate(cleanStr(data.phone)!, 50) : undefined;
+  const safeLastName = cleanStr(data.lastName)
+    ? truncate(cleanStr(data.lastName) as string, 80)
+    : undefined;
+  const safePhone = cleanStr(data.phone) ? truncate(cleanStr(data.phone) as string, 50) : undefined;
 
   const purchasedValue = pickPurchasedProduct(data.productType, data.productNameForZoho);
 

@@ -411,9 +411,7 @@ export const stripeCircleWebhook = onRequest(
               leadSource: leadSource ?? undefined,
             });
 
-            try {
-              await updateZohoContactId(pi.id, c.contactId);
-            } catch {}
+            await updateZohoContactId(pi.id, c.contactId);
 
             await updateContactFunnelStepByEmail({
               email: email.toLowerCase(),

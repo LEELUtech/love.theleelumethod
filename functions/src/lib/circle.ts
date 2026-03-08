@@ -1,39 +1,13 @@
-// functions/src/lib/circle.ts
 import { configs } from "../configs/env";
 import { db } from "../configs/firebase";
+import {
+  CircleMember,
+  CircleMemberNotFound,
+  CreateMemberResponse,
+  CreateSpaceResponse,
+  GrantAccessResponse,
+} from "../types/circle";
 import { getRandomElement } from "../utils/helpers/getRandomElement";
-
-export interface CircleMember {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  name: string;
-}
-
-interface CircleMemberNotFound {
-  success: false;
-  message: string;
-  error_details: { message: string };
-}
-
-interface CreateMemberResponse {
-  message: string;
-  community_member: CircleMember;
-}
-
-interface GrantAccessResponse {
-  success: boolean;
-  message: string;
-}
-
-interface CreateSpaceResponse {
-  success: boolean;
-  message: string;
-  space: {
-    id: string;
-  };
-}
 
 const getCircleConfig = () => ({
   apiKey: configs.circleApiKey || "PLACEHOLDER_API_KEY",
@@ -111,7 +85,6 @@ async function makeCircleRequest<T>(
     },
   });
 
-  // Search endpoint returns 404 when not found
   if (!response.ok && response.status === 404) {
     return (await response.json()) as T;
   }
@@ -119,7 +92,6 @@ async function makeCircleRequest<T>(
   if (!response.ok) {
     const bodyText = await response.text();
 
-    // Do not fail delivery on "already invited/already has access"
     if (cfg?.tolerateIdempotentGrantErrors && isIdempotentGrantError(response.status, bodyText)) {
       console.log("[Circle] Non-fatal grant error (treated as success)", {
         endpoint,
@@ -127,7 +99,6 @@ async function makeCircleRequest<T>(
         body: bodyText,
       });
 
-      // Return a fake "success" response shape
       const fake: GrantAccessResponse = {
         success: true,
         message: "Already has access / invite exists",
