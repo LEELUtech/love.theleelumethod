@@ -95,6 +95,7 @@ async function makeCircleRequest<T>(
   cfg?: { tolerateIdempotentGrantErrors?: boolean },
 ): Promise<T> {
   const config = getCircleConfig();
+
   const url = `${config.baseUrl}${endpoint}`;
 
   if (config.apiKey === "PLACEHOLDER_API_KEY") {
@@ -302,8 +303,11 @@ export const addTagToMember = async (
       { tolerateIdempotentGrantErrors: true },
     );
 
+    console.log("addTagToMember response:", response);
+
     return response.success;
-  } catch {
+  } catch (error) {
+    console.error("Error adding tag to member:", error);
     return false;
   }
 };

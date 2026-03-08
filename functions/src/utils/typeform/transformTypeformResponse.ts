@@ -1,6 +1,17 @@
 import { TypeformColumns, TypeformRef } from "../../static/type-form";
 import { TypeformAnswer } from "../../types/typeform";
 
+const transformPathResponse = (label: string) => {
+  switch (label) {
+    case "I’m going through a breakup":
+      return "Path A";
+    case "I’m in a relationship":
+      return "Path A";
+    default:
+      return "Path C";
+  }
+};
+
 export const transformTypeformResponse = (submittedAt: string, answers: TypeformAnswer[]) => {
   const data: Record<TypeformColumns, string> = {} as Record<TypeformColumns, string>;
 
@@ -41,7 +52,8 @@ export const transformTypeformResponse = (submittedAt: string, answers: Typeform
         break;
 
       case TypeformRef.USER_PATH:
-        if (answer.choice?.label) data[TypeformColumns.PATH] = answer.choice.label;
+        if (answer.choice?.label)
+          data[TypeformColumns.PATH] = transformPathResponse(answer.choice.label);
         break;
 
       case TypeformRef.PARTNER_NAME:
