@@ -92,7 +92,7 @@ export function getStripeClient(): Stripe {
       throw new Error("Stripe secret key (test) is not configured");
     }
     stripe = new Stripe(configs.stripeSecretKeyTest, {
-      apiVersion: "2025-12-15.clover",
+      apiVersion: "2025-04-30.basil",
     });
   }
   return stripe;

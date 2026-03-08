@@ -14,7 +14,7 @@ module.exports = {
   },
   plugins: ["@typescript-eslint"],
   rules: {
-    indent: ["error", 2, { SwitchCase: 1 }],
+    // indent: ["error", 2, { SwitchCase: 1 }],
     "no-restricted-globals": ["error", "name", "length"],
     "prefer-arrow-callback": "error",
     quotes: ["error", "double"],

@@ -258,9 +258,9 @@ export const ewebinarWebhook = onRequest(
         totalWatchedPercent: body.totalWatchedPercent,
         watchedReplayPercent: body.watchedReplayPercent,
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("ewebinarWebhook error:", err);
-      res.status(500).json({ ok: false, error: err?.message || "server_error" });
+      res.status(500).json({ ok: false, error: (err as Error)?.message || "server_error" });
     }
   },
 );
