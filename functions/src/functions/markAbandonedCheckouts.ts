@@ -13,12 +13,16 @@ const ZOHO_CLIENT_SECRET_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_SECRET_LILYCH
 const ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT");
 const ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT");
 const ZOHO_API_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_API_DOMAIN_LILYCHYSTOFAT");
-const ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT");
+const ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT = defineSecret(
+  "ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT",
+);
 const ZOHO_ANALYTICS_API_DOMAIN = defineSecret("ZOHO_ANALYTICS_API_DOMAIN_LILYCHYSTOFAT");
 const ZOHO_ANALYTICS_ORG_ID = defineSecret("ZOHO_ANALYTICS_ORG_ID_LILYCHYSTOFAT");
 const ZOHO_ANALYTICS_WORKSPACE_ID = defineSecret("ZOHO_ANALYTICS_WORKSPACE_ID_LILYCHYSTOFAT");
 const ZOHO_ANALYTICS_VIEW_ID = defineSecret("ZOHO_ANALYTICS_VIEW_ID_LILYCHYSTOFAT");
-const ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT");
+const ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT = defineSecret(
+  "ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT",
+);
 const ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT = defineSecret("ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT");
 
 const ABANDONED_TIMEOUT_MIN = 5;
@@ -26,14 +30,28 @@ const SCAN_LIMIT = 500;
 const ABANDONED_CAMPAIGNS_TAG = "ca_sp";
 
 type FunnelStep =
-  | "unknown" | "checkout_viewed" | "lead_captured" | "abandoned"
-  | "checkout_started" | "paid" | "delivered" | "delivery_failed"
-  | "failed" | "canceled";
+  | "unknown"
+  | "checkout_viewed"
+  | "lead_captured"
+  | "abandoned"
+  | "checkout_started"
+  | "paid"
+  | "delivered"
+  | "delivery_failed"
+  | "failed"
+  | "canceled";
 
 const FUNNEL_RANK: Record<FunnelStep, number> = {
-  unknown: 0, checkout_viewed: 10, lead_captured: 20, abandoned: 25,
-  checkout_started: 30, paid: 40, delivered: 50, delivery_failed: 55,
-  failed: 60, canceled: 60,
+  unknown: 0,
+  checkout_viewed: 10,
+  lead_captured: 20,
+  abandoned: 25,
+  checkout_started: 30,
+  paid: 40,
+  delivered: 50,
+  delivery_failed: 55,
+  failed: 60,
+  canceled: 60,
 };
 
 function normalizeStep(v: unknown): FunnelStep {
@@ -45,22 +63,30 @@ function shouldAdvance(current: unknown, next: FunnelStep) {
   return (FUNNEL_RANK[normalizeStep(current)] ?? 0) <= (FUNNEL_RANK[next] ?? 0);
 }
 
-function minutes(n: number) { return n * 60 * 1000; }
+function minutes(n: number) {
+  return n * 60 * 1000;
+}
 
 function isTimestamp(v: unknown): v is admin.firestore.Timestamp {
   return !!v && typeof (v as { toMillis?: unknown }).toMillis === "function";
 }
 
 function safeLowerEmail(v: unknown) {
-  return String(v ?? "").trim().toLowerCase();
+  return String(v ?? "")
+    .trim()
+    .toLowerCase();
 }
 
 function normalizeHost(raw?: string | null) {
-  const s = String(raw ?? "").trim().toLowerCase();
+  const s = String(raw ?? "")
+    .trim()
+    .toLowerCase();
   if (!s) return "unknown";
   try {
     if (s.startsWith("http://") || s.startsWith("https://")) return new URL(s).host.split(":")[0];
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
   return s.split(":")[0];
 }
 
@@ -71,7 +97,9 @@ function buildLandingPage(site: string, pagePath?: string | null) {
 }
 
 function isAbandonableStatus(processingStatus: string | null): boolean {
-  return processingStatus === "processing" || processingStatus === "created" || processingStatus === null;
+  return (
+    processingStatus === "processing" || processingStatus === "created" || processingStatus === null
+  );
 }
 
 export const markAbandonedCheckouts = onSchedule(
@@ -80,12 +108,18 @@ export const markAbandonedCheckouts = onSchedule(
     schedule: "*/5 * * * *",
     timeZone: "UTC",
     secrets: [
-      ZOHO_CLIENT_ID_LILYCHYSTOFAT, ZOHO_CLIENT_SECRET_LILYCHYSTOFAT,
-      ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT, ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT,
-      ZOHO_API_DOMAIN_LILYCHYSTOFAT, ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT,
-      ZOHO_ANALYTICS_API_DOMAIN, ZOHO_ANALYTICS_ORG_ID,
-      ZOHO_ANALYTICS_WORKSPACE_ID, ZOHO_ANALYTICS_VIEW_ID,
-      ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT, ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT,
+      ZOHO_CLIENT_ID_LILYCHYSTOFAT,
+      ZOHO_CLIENT_SECRET_LILYCHYSTOFAT,
+      ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT,
+      ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT,
+      ZOHO_API_DOMAIN_LILYCHYSTOFAT,
+      ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT,
+      ZOHO_ANALYTICS_API_DOMAIN,
+      ZOHO_ANALYTICS_ORG_ID,
+      ZOHO_ANALYTICS_WORKSPACE_ID,
+      ZOHO_ANALYTICS_VIEW_ID,
+      ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT,
+      ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT,
     ],
   },
   async () => {
@@ -101,15 +135,23 @@ export const markAbandonedCheckouts = onSchedule(
 
     let snap: admin.firestore.QuerySnapshot;
     try {
-      snap = await db.collection("payments").where("created_at", "<", cutoffTs).limit(SCAN_LIMIT).get();
+      snap = await db
+        .collection("payments")
+        .where("created_at", "<", cutoffTs)
+        .limit(SCAN_LIMIT)
+        .get();
       logger.info("markAbandonedCheckouts: query done", { totalDocs: snap.size });
     } catch (e: unknown) {
-      logger.error("markAbandonedCheckouts: query failed", { error: e instanceof Error ? e.message : String(e) });
+      logger.error("markAbandonedCheckouts: query failed", {
+        error: e instanceof Error ? e.message : String(e),
+      });
       return;
     }
 
     if (snap.empty) {
-      logger.info("markAbandonedCheckouts: nothing to do (empty snap)", { ms: Date.now() - startedAt });
+      logger.info("markAbandonedCheckouts: nothing to do (empty snap)", {
+        ms: Date.now() - startedAt,
+      });
       return;
     }
 
@@ -118,7 +160,10 @@ export const markAbandonedCheckouts = onSchedule(
       .filter(({ id, data }) => {
         const processingStatus = (data.processing_status ?? null) as string | null;
         if (!isAbandonableStatus(processingStatus)) {
-          logger.debug("markAbandonedCheckouts: skip - bad processing_status", { id, processingStatus });
+          logger.debug("markAbandonedCheckouts: skip - bad processing_status", {
+            id,
+            processingStatus,
+          });
           return false;
         }
 
@@ -134,11 +179,16 @@ export const markAbandonedCheckouts = onSchedule(
           return false;
         }
         if (pa.toMillis() >= cutoffMs) {
-          logger.debug("markAbandonedCheckouts: skip - too fresh", { id, createdAt: pa.toDate().toISOString() });
+          logger.debug("markAbandonedCheckouts: skip - too fresh", {
+            id,
+            createdAt: pa.toDate().toISOString(),
+          });
           return false;
         }
 
-        const stripeStatus = String((data.stripe_status ?? data.status ?? "") as any).toLowerCase();
+        const stripeStatus = String(
+          (data.stripe_status ?? data.status ?? "") as unknown,
+        ).toLowerCase();
         if (stripeStatus === "succeeded") {
           logger.debug("markAbandonedCheckouts: skip - already succeeded", { id });
           return false;
@@ -158,23 +208,37 @@ export const markAbandonedCheckouts = onSchedule(
     });
 
     if (!candidates.length) {
-      logger.info("markAbandonedCheckouts: nothing to do after filter", { ms: Date.now() - startedAt });
+      logger.info("markAbandonedCheckouts: nothing to do after filter", {
+        ms: Date.now() - startedAt,
+      });
       return;
     }
 
     const now = admin.firestore.FieldValue.serverTimestamp();
 
     type UpdatedPayload = {
-      id: string; ref: admin.firestore.DocumentReference; email: string;
-      site: string; page_path: string | null; checkout_variant: string | null;
-      product_type: string | null; product_name: string | null;
-      amount: number | null; currency: string | null;
-      stripe_status: string | null; stripe_customer_id: string | null;
-      utm_first_source: string | null; utm_first_medium: string | null;
-      utm_first_campaign: string | null; utm_first_content: string | null;
-      utm_first_term: string | null; utm_last_source: string | null;
-      utm_last_medium: string | null; utm_last_campaign: string | null;
-      utm_last_content: string | null; utm_last_term: string | null;
+      id: string;
+      ref: admin.firestore.DocumentReference;
+      email: string;
+      site: string;
+      page_path: string | null;
+      checkout_variant: string | null;
+      product_type: string | null;
+      product_name: string | null;
+      amount: number | null;
+      currency: string | null;
+      stripe_status: string | null;
+      stripe_customer_id: string | null;
+      utm_first_source: string | null;
+      utm_first_medium: string | null;
+      utm_first_campaign: string | null;
+      utm_first_content: string | null;
+      utm_first_term: string | null;
+      utm_last_source: string | null;
+      utm_last_medium: string | null;
+      utm_last_campaign: string | null;
+      utm_last_content: string | null;
+      utm_last_term: string | null;
       lead_source: string | null;
     };
 
@@ -194,13 +258,19 @@ export const markAbandonedCheckouts = onSchedule(
 
           const processingStatus = (d.processing_status ?? null) as string | null;
           if (!isAbandonableStatus(processingStatus)) {
-            logger.warn("markAbandonedCheckouts: tx skip - bad processing_status", { id: c.id, processingStatus });
+            logger.warn("markAbandonedCheckouts: tx skip - bad processing_status", {
+              id: c.id,
+              processingStatus,
+            });
             return { updated: false as const };
           }
 
           const step = normalizeStep(d.funnel_step);
           if (!shouldAdvance(step, "abandoned")) {
-            logger.warn("markAbandonedCheckouts: tx skip - shouldAdvance false", { id: c.id, step });
+            logger.warn("markAbandonedCheckouts: tx skip - shouldAdvance false", {
+              id: c.id,
+              step,
+            });
             return { updated: false as const };
           }
           if (step !== "checkout_viewed" && step !== "lead_captured") {
@@ -218,7 +288,7 @@ export const markAbandonedCheckouts = onSchedule(
             return { updated: false as const };
           }
 
-          const stripeStatus = String((d.stripe_status ?? d.status ?? "") as any).toLowerCase();
+          const stripeStatus = String((d.stripe_status ?? d.status ?? "") as unknown).toLowerCase();
           if (stripeStatus === "succeeded") {
             logger.warn("markAbandonedCheckouts: tx skip - succeeded", { id: c.id });
             return { updated: false as const };
@@ -238,10 +308,12 @@ export const markAbandonedCheckouts = onSchedule(
             funnel_step: "abandoned",
             abandoned_at: now,
             abandoned_reason: `timeout_${ABANDONED_TIMEOUT_MIN}m`,
-            ...(alreadyTagged || pending ? {} : {
-              campaigns_abandoned_tag_pending: true,
-              campaigns_abandoned_tag: ABANDONED_CAMPAIGNS_TAG,
-            }),
+            ...(alreadyTagged || pending
+              ? {}
+              : {
+                  campaigns_abandoned_tag_pending: true,
+                  campaigns_abandoned_tag: ABANDONED_CAMPAIGNS_TAG,
+                }),
           });
 
           const meta = (d.metadata ?? null) as Record<string, unknown> | null;
@@ -250,9 +322,10 @@ export const markAbandonedCheckouts = onSchedule(
           return {
             updated: true as const,
             payload: {
-              id: c.id, ref: c.ref,
+              id: c.id,
+              ref: c.ref,
               email: safeLowerEmail(d.email || meta?.email),
-              site: normalizeHost((d.site ?? meta?.site) as any),
+              site: normalizeHost((d.site ?? meta?.site) as string | null | undefined),
               page_path: str(d.page_path ?? meta?.page_path),
               checkout_variant: str(d.checkout_variant ?? meta?.checkout_variant),
               product_type: str(d.product_type ?? meta?.product_type),
@@ -276,8 +349,8 @@ export const markAbandonedCheckouts = onSchedule(
           };
         });
 
-        if ((result as any).updated) {
-          const p = (result as any).payload;
+        if ((result as unknown as { updated: boolean }).updated) {
+          const p = (result as unknown as any).payload;
           if (p?.email) {
             logger.info("markAbandonedCheckouts: tx success", { id: c.id, email: p.email });
             updated.push(p);
@@ -294,17 +367,25 @@ export const markAbandonedCheckouts = onSchedule(
     }
 
     if (!updated.length) {
-      logger.info("markAbandonedCheckouts: nothing updated after transactions", { ms: Date.now() - startedAt });
+      logger.info("markAbandonedCheckouts: nothing updated after transactions", {
+        ms: Date.now() - startedAt,
+      });
       return;
     }
 
-    logger.info("markAbandonedCheckouts: starting post-processing", { updatedCount: updated.length });
+    logger.info("markAbandonedCheckouts: starting post-processing", {
+      updatedCount: updated.length,
+    });
 
     // 0) Zoho Campaigns tag
     const campaignsResults = await Promise.allSettled(
       updated.map(async (p) => {
         if (!p.email) return;
-        logger.info("markAbandonedCheckouts: setting campaigns tag", { id: p.id, email: p.email, tag: ABANDONED_CAMPAIGNS_TAG });
+        logger.info("markAbandonedCheckouts: setting campaigns tag", {
+          id: p.id,
+          email: p.email,
+          tag: ABANDONED_CAMPAIGNS_TAG,
+        });
         try {
           await upsertContactAndAddTags(p.email, [ABANDONED_CAMPAIGNS_TAG]);
           logger.info("markAbandonedCheckouts: campaigns tag set OK", { id: p.id, email: p.email });
@@ -316,10 +397,13 @@ export const markAbandonedCheckouts = onSchedule(
           });
           throw e;
         }
-        await p.ref.set({
-          campaigns_abandoned_tag_pending: false,
-          campaigns_abandoned_tagged_at: admin.firestore.FieldValue.serverTimestamp(),
-        }, { merge: true });
+        await p.ref.set(
+          {
+            campaigns_abandoned_tag_pending: false,
+            campaigns_abandoned_tagged_at: admin.firestore.FieldValue.serverTimestamp(),
+          },
+          { merge: true },
+        );
       }),
     );
 

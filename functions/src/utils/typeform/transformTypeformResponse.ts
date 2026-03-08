@@ -1,0 +1,71 @@
+import { TypeformColumns, TypeformRef } from "../../static/type-form";
+import { TypeformAnswer } from "../../types/typeform";
+import { formatTime } from "../helpers/formattime";
+
+const transformPathResponse = (label: string) => {
+  switch (label) {
+    case "I’m going through a breakup":
+      return "Path A";
+    case "I’m in a relationship":
+      return "Path A";
+    default:
+      return "Path C";
+  }
+};
+
+export const transformTypeformResponse = (submittedAt: string, answers: TypeformAnswer[]) => {
+  const data = Object.fromEntries(Object.values(TypeformColumns).map((col) => [col, ""])) as Record<
+    TypeformColumns,
+    string
+  >;
+
+  data[TypeformColumns.TIMESTAMP] = formatTime(submittedAt);
+
+  answers.forEach((answer) => {
+    const ref = answer.field.ref;
+
+    switch (ref) {
+      case TypeformRef.USER_EMAIL:
+        if (answer.email) data[TypeformColumns.EMAIL] = answer.email;
+        else if (answer.text) data[TypeformColumns.EMAIL] = answer.text;
+        break;
+
+      case TypeformRef.USER_NAME:
+        if (answer.text) data[TypeformColumns.HER_FULL_NAME] = answer.text;
+        break;
+
+      case TypeformRef.USER_DOB:
+        if (answer.date) data[TypeformColumns.HER_DOB] = answer.date;
+        break;
+
+      case TypeformRef.USER_PROGRAM:
+        if (answer.choice?.label) data[TypeformColumns.TIER] = answer.choice.label;
+        break;
+
+      case TypeformRef.USER_PATH:
+        if (answer.choice?.label)
+          data[TypeformColumns.PATH] = transformPathResponse(answer.choice.label);
+        break;
+
+      case TypeformRef.PARTNER_NAME:
+      case TypeformRef.EX_PARTNER_NAME:
+        if (answer.text) data[TypeformColumns.PARTNER_FULL_NAME] = answer.text;
+        break;
+
+      case TypeformRef.PARTNER_DOB:
+      case TypeformRef.EX_PARTNER_DOB:
+        if (answer.date) data[TypeformColumns.PARTNER_DOB] = answer.date;
+        break;
+
+      case TypeformRef.PARTNER_DURATION:
+      case TypeformRef.EX_PARTNER_DURATION:
+        if (answer.choice) data[TypeformColumns.PARTNER_DURATION] = answer.choice.label;
+        break;
+
+      default:
+        break;
+    }
+  });
+
+  return data;
+};

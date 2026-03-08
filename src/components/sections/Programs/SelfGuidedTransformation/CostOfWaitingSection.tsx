@@ -8,6 +8,7 @@ import useProductStore from '@/store/useProductStore';
 import { PROTOCOL_ESSENTIALS } from '@/utils/constants';
 import { formatPriceFromCents } from '@/helpers';
 import Button from '@/components/ui/Button';
+import { ESSENTIALS_LINKS } from '@/static/links';
 
 export default function CostOfWaitingSection() {
   const productId = PROTOCOL_ESSENTIALS;
@@ -110,8 +111,8 @@ export default function CostOfWaitingSection() {
             Investment: {priceLabel}
           </p>
 
-          <Button variant='primary' size='md' className='w-full lg:w-[30%] py-4 px-[60px] xs:text-[12px] mt-[32px]'>
-            DECODE MY RELATIONSHIP
+          <Button variant='primary' href={ESSENTIALS_LINKS.COST_LINK.href} className='w-[347px] mt-[32px]'>
+            {ESSENTIALS_LINKS.COST_LINK.label}
           </Button>
         </div>
       </div>

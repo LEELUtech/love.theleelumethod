@@ -2,6 +2,7 @@ import Button from '@/components/ui/Button';
 import { ImageContainer } from '@/components/ui/containers/ImageContainer';
 import { Section } from '@/components/ui/containers/section';
 import { ArrowList } from '@/components/ui/lists';
+import { ESSENTIALS_LINKS } from '@/static/links';
 
 const content = {
   title_top: 'Inside The Protocol',
@@ -26,8 +27,8 @@ const content = {
   ],
   highlight: 'It starts feeling safe, alive, and fulfilling.',
   link: {
-    href: '#',
-    label: 'SECURE YOUR SPOT',
+    href: ESSENTIALS_LINKS.INSIDE_LINK.href,
+    label: ESSENTIALS_LINKS.INSIDE_LINK.label,
   },
 };
 
@@ -36,7 +37,7 @@ export const InsideProtocol = () => {
 
   return (
     <Section>
-      <div>
+      <>
         <ImageContainer src='/images/lily/lily_2.png' alt='Lily' height={832}>
           <div className='flex flex-col'>
             <h2 className='text-[32px]/[126%] md:text-[48px] font-light font-canela mt-11 mb-6 text-brand-deep'>
@@ -59,7 +60,7 @@ export const InsideProtocol = () => {
             </Button>
           </div>
         </ImageContainer>
-      </div>
+      </>
     </Section>
   );
 };

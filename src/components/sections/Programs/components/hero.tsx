@@ -69,18 +69,12 @@ export const ProgramsHero = (props: Props) => {
                 "
           >
             <RotateOnView duration={5} amount={0.4} ease='easeOut'>
-              <Image
-                src='/leelu_logo.svg'
-                alt=''
-                width={46}
-                height={46}
-                className='w-[46px] h-[46px] md:w-[46px] md:h-[46px] lg:w-[46px] lg:h-[46px] filter invert'
-              />
+              <Image src='/leelu_logo.svg' alt='' width={46} height={46} className='w-[46px] h-[46px] filter invert' />
             </RotateOnView>
           </div>
         </div>
 
-        <div className='font-light transition text-[24px]/[126%] md:text-[22px]/[126%] lg:text-[24px]/[126%] font-canela flex items-center gap-2 md:gap-2.5 lg:gap-3 text-brand-black  justify-center md:justify-start mt-[63px]'>
+        <div className='font-light transition text-[24px]/[126%] md:text-[22px] lg:text-[24px] font-canela flex items-center gap-2 md:gap-2.5 lg:gap-3 text-brand-black  justify-center md:justify-start mt-[63px]'>
           <span className=' w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 relative flex-shrink-0'>
             <Image src='/leelu_logo.svg' alt='Lily Chystofat Logo' fill className='object-contain' priority />
           </span>
@@ -90,17 +84,13 @@ export const ProgramsHero = (props: Props) => {
           </div>
         </div>
 
-        <h1
-          className='my-4 font-canela font-thin uppercase text-brand-black text-center
-                     text-[46px] leading-[110%] md:text-[56px] lg:text-[60px]
-                    '
-        >
+        <h1 className='my-4 font-canela font-thin uppercase text-brand-black text-center text-[46px] leading-[110%] md:text-[56px] lg:text-[60px]'>
           {title}{' '}
         </h1>
 
         {description && <p className='text-[17px]/[126%] mb-4 font-canela font-thin'>{description}</p>}
 
-        <p className='font-canela font-thin max-w-[820px] text-brand-deep text-center text-[24px] md:text-[28px]'>
+        <p className='font-canela font-thin max-w-[820px] text-brand-deep text-center text-[24px]/[126%] md:text-[28px]'>
           {subtitle}
         </p>
 
@@ -115,12 +105,7 @@ export const ProgramsHero = (props: Props) => {
           )}
         </p>
 
-        <Button
-          variant='primary'
-          size='md'
-          className='w-full lg:w-[30%] xs:text-[12px] mt-[32px] lg:order-3'
-          href={link.href}
-        >
+        <Button variant='primary' className='w-full lg:w-[30%] mt-[32px] lg:order-3' href={link.href}>
           {link.label}
         </Button>
       </div>

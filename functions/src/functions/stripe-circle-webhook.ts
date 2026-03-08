@@ -5,7 +5,7 @@ import { defineSecret } from "firebase-functions/params";
 
 import { configs } from "../configs/env";
 
-import { createOrUpdateContact, createDeal, updateContactFunnelStepByEmail } from "../lib/zoho-crm";
+import { createDeal, createOrUpdateContact, updateContactFunnelStepByEmail } from "../lib/zoho-crm";
 import { emitFunnelEvent } from "../lib/emitFunnelEvent";
 
 import {
@@ -28,7 +28,7 @@ import {
   errToMessage,
   type PaymentRecord,
 } from "../utils/stripeCircleWebhook.helpers";
-import { applyPurchaseCampaignTags } from "../lib/zoho-campaigns-purchase"
+import { applyPurchaseCampaignTags } from "../lib/zoho-campaigns-purchase";
 
 // Secrets must be attached to this function (Firebase v2)
 const ZOHO_CLIENT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_ID_LILYCHYSTOFAT");
@@ -102,7 +102,6 @@ export const stripeCircleWebhook = onRequest(
     ],
   },
   async (req, res) => {
-    const startedAt = Date.now();
     const leaseId = `wh_${Date.now()}_${Math.random().toString(16).slice(2)}`;
 
     try {
@@ -122,6 +121,7 @@ export const stripeCircleWebhook = onRequest(
       const stripe = getStripeClient();
 
       let event: Stripe.Event;
+
       try {
         event = stripe.webhooks.constructEvent(
           rawBody,
@@ -143,6 +143,7 @@ export const stripeCircleWebhook = onRequest(
 
       // Always re-fetch PI from Stripe (fresh status + metadata)
       const pi = await stripe.paymentIntents.retrieve(piFromEvent.id);
+
       const metadata = (pi.metadata || {}) as Record<string, string>;
 
       const intentToken = cleanStr(metadata.intent_token) ?? null;
@@ -387,7 +388,6 @@ export const stripeCircleWebhook = onRequest(
           });
         }
 
-        // Zoho best-effort (NO UTM)
         try {
           const email = cleanStr(metadata.email) || cleanStr(pi.receipt_email);
           const pt = cleanStr(metadata.product_type);
@@ -411,11 +411,7 @@ export const stripeCircleWebhook = onRequest(
               leadSource: leadSource ?? undefined,
             });
 
-            try {
-              await updateZohoContactId(pi.id, c.contactId);
-            } catch {
-              // ignore
-            }
+            await updateZohoContactId(pi.id, c.contactId);
 
             await updateContactFunnelStepByEmail({
               email: email.toLowerCase(),
@@ -444,6 +440,7 @@ export const stripeCircleWebhook = onRequest(
       }
 
       const validation = validatePaymentIntent(pi);
+
       if (!validation.isValid) {
         console.error("Invalid PaymentIntent (no retry)", {
           id: pi.id,
@@ -487,15 +484,6 @@ export const stripeCircleWebhook = onRequest(
         return;
       }
 
-      console.log("Payment succeeded", {
-        payment_intent_id: pi.id,
-        email: validation.email,
-        product_type: validation.productType,
-        amount: `${(pi.amount / 100).toFixed(2)} ${(pi.currency ?? "").toUpperCase()}`,
-        site,
-        leaseId,
-      });
-
       // Firestore: paid (advance-only)
       await markFunnelStepAdvanceOnly(pi.id, "paid");
 
@@ -527,6 +515,7 @@ export const stripeCircleWebhook = onRequest(
       }
 
       // Zoho contact
+
       let contactId: string | undefined;
       try {
         const { firstName, lastName } = splitName(metadata.name);
@@ -569,7 +558,6 @@ export const stripeCircleWebhook = onRequest(
         });
       }
 
-      // Delivery
       try {
         await processPayment(pi);
 
@@ -582,7 +570,6 @@ export const stripeCircleWebhook = onRequest(
           checkoutStatus: "Delivered",
         });
 
-        // ✅ Campaigns tags: purchase_completed logic
         try {
           await applyPurchaseCampaignTags(pi);
         } catch (e) {
@@ -731,13 +718,6 @@ export const stripeCircleWebhook = onRequest(
       }
 
       await updateProcessingStatus(pi.id, "completed");
-
-      console.log("Webhook finished", {
-        payment_intent_id: pi.id,
-        event: safeId(event.id),
-        ms: Date.now() - startedAt,
-        pagePath,
-      });
 
       res.status(200).send("Success");
     } catch (e) {

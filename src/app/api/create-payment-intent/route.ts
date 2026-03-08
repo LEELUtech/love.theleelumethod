@@ -206,6 +206,7 @@ export async function POST(req: NextRequest) {
     // Load offering
     const offeringRef = doc(collection(db, 'offerings'), productType);
     const offeringSnap = await getDoc(offeringRef);
+
     if (!offeringSnap.exists()) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
