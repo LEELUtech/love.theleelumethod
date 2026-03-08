@@ -1,5 +1,7 @@
 // functions/src/lib/circle.ts
 import { configs } from "../configs/env";
+import { db } from "../configs/firebase";
+import { getRandomElement } from "../utils/helpers/getRandomElement";
 
 export interface CircleMember {
   id: number;
@@ -300,10 +302,54 @@ export const addTagToMember = async (
       { tolerateIdempotentGrantErrors: true },
     );
 
-    console.log("Add tag response", response);
-
     return response.success;
   } catch {
     return false;
+  }
+};
+
+export const sendMessageToSpace = async (spaceId: string, message: string) => {
+  const res = await fetch(`https://app.circle.so/api/v1/spaces/${spaceId}/posts`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.CIRCLE_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      body: message,
+    }),
+  });
+
+  return res.json();
+};
+
+export const createOwnSpace = async (name: string, email: string, product_type: string) => {
+  try {
+    const isVip = product_type === "vip_immersion";
+
+    const [
+      // adminsDoc,
+      moderatorsDoc,
+    ] = await Promise.all([
+      db.collection("circle_admins").doc("admins").get(),
+      db.collection("circle_admins").doc("moderators").get(),
+    ]);
+
+    // const admins = adminsDoc.data()?.emails || [];s
+    const moderators = moderatorsDoc.data()?.emails || [];
+
+    const moderator = getRandomElement(moderators);
+
+    const chat_id = await createSpace(name, "chat", "1010467");
+
+    if (chat_id) {
+      await addMemberToSpace(email, chat_id);
+
+      if (!isVip && typeof moderator === "string") {
+        await addMemberToSpace(moderator, chat_id);
+      }
+    }
+  } catch (error) {
+    console.error("Error creating own space:", error);
   }
 };
