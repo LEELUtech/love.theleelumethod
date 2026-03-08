@@ -4,6 +4,8 @@ import { transformTypeformResponse } from "../utils/typeform/transformTypeformRe
 import { TypeformColumns } from "../static/type-form";
 import { db } from "../configs/firebase";
 import { addTagToMember } from "../lib/circle";
+import { configs } from "../configs/env";
+import { appendToSheet } from "../lib/google-sheet";
 
 export const typeformWebhook = onRequest(async (req, res) => {
   const body = req.body as TypeformWebhookRequest;
@@ -22,19 +24,11 @@ export const typeformWebhook = onRequest(async (req, res) => {
     if (docSnap.exists) {
       const data = docSnap.data();
 
-      console.log("Circle tag data:", data);
-
-      if (data?.id) {
-        await addTagToMember(email, data.id);
-      }
+      if (data?.id) await addTagToMember(email, data.id);
     }
   }
 
-  // form_response.definition.fields.forEach((field) => {
-  //   console.log(field);
-  // });
-
-  // answers.forEach(console.log);
+  await appendToSheet(configs.sheetId, configs.sheetName, Object.values(data));
 
   res.send({ status: "ok" });
 });

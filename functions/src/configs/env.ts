@@ -31,4 +31,9 @@ export const configs = {
 
   zohoCampaignsListKey: process.env.ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT || "",
   zohoRefreshCampaignsToken: process.env.ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT || "",
+
+  sheetEmail: process.env.SHEET_EMAIL || "",
+  sheetPrivateKey: process.env.SHEET_PRIVATE_KEY || "",
+  sheetId: process.env.SHEET_ID || "",
+  sheetName: process.env.SHEET_NAME || "",
 };

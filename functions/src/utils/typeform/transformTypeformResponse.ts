@@ -1,5 +1,6 @@
 import { TypeformColumns, TypeformRef } from "../../static/type-form";
 import { TypeformAnswer } from "../../types/typeform";
+import { formatTime } from "../helpers/formattime";
 
 const transformPathResponse = (label: string) => {
   switch (label) {
@@ -15,7 +16,7 @@ const transformPathResponse = (label: string) => {
 export const transformTypeformResponse = (submittedAt: string, answers: TypeformAnswer[]) => {
   const data: Record<TypeformColumns, string> = {} as Record<TypeformColumns, string>;
 
-  data[TypeformColumns.TIMESTAMP] = submittedAt;
+  data[TypeformColumns.TIMESTAMP] = formatTime(submittedAt);
   data[TypeformColumns.EMAIL] = "";
   data[TypeformColumns.HER_FULL_NAME] = "";
   data[TypeformColumns.HER_DOB] = "";
