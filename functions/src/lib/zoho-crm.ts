@@ -1,4 +1,5 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+// functions/src/lib/zoho-crm.ts
+import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import { configs } from "../configs/env";
 
 // -------------------------
@@ -314,10 +315,10 @@ async function zohoRequest<T = unknown>(
     const res = await axios.request<T>(finalConfig);
     return res.data;
   } catch (err: unknown) {
-    const e = err as AxiosError<Error>;
+    const e = err as AxiosError<any>;
     const status = e.response?.status;
 
-    const respData = e.response?.data as AxiosResponse["data"] | undefined;
+    const respData = e.response?.data as any;
     const zohoCode =
       respData?.code || (Array.isArray(respData?.data) ? respData?.data?.[0]?.code : undefined);
 
@@ -359,7 +360,7 @@ async function findContactByEmail(email: string): Promise<Record<string, unknown
   const url = `https://${configs.zohoApiCRMDomain}/crm/v2/Contacts/search?criteria=${criteria}`;
 
   try {
-    const data = await zohoRequest<{ data: Record<string, unknown>[] }>({ method: "GET", url });
+    const data = await zohoRequest<any>({ method: "GET", url });
     return data?.data?.[0] ?? null;
   } catch (err: unknown) {
     if (axios.isAxiosError(err)) {
@@ -380,7 +381,7 @@ async function findDealByPaymentIntentId(
   const url = `https://${configs.zohoApiCRMDomain}/crm/v2/Deals/search?criteria=${criteria}`;
 
   try {
-    const data = await zohoRequest<{ data: Record<string, unknown>[] }>({ method: "GET", url });
+    const data = await zohoRequest<any>({ method: "GET", url });
     return data?.data?.[0] ?? null;
   } catch (err: unknown) {
     if (axios.isAxiosError(err)) {
@@ -422,12 +423,10 @@ export async function createOrUpdateContact(data: {
   const currencyUpper = (data.currency || "usd").toUpperCase();
 
   const safeFirstName = cleanStr(data.firstName)
-    ? truncate(cleanStr(data.firstName) as string, 80)
+    ? truncate(cleanStr(data.firstName)!, 80)
     : undefined;
-  const safeLastName = cleanStr(data.lastName)
-    ? truncate(cleanStr(data.lastName) as string, 80)
-    : undefined;
-  const safePhone = cleanStr(data.phone) ? truncate(cleanStr(data.phone) as string, 50) : undefined;
+  const safeLastName = cleanStr(data.lastName) ? truncate(cleanStr(data.lastName)!, 80) : undefined;
+  const safePhone = cleanStr(data.phone) ? truncate(cleanStr(data.phone)!, 50) : undefined;
 
   const purchasedValue = pickPurchasedProduct(data.productType, data.productNameForZoho);
 

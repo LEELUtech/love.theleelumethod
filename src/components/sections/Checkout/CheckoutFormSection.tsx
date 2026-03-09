@@ -276,9 +276,8 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
       backgroundImage='/images/bg/checkout_bg.png'
       sectionClasses='bg-white py-[37px] md:py-[56px] lg:py-[37px]'
       wrapperClasses='lg:top-[-200px] !pb-0'
-      id='checkout'
     >
-      <>
+      <div className=''>
         <div className='relative mx-auto rounded-[32px] bg-white px-6 py-8 md:px-10 md:py-10 lg:px-[104px] lg:py-[51px] shadow-[0px_4px_20px_0px_rgba(0,0,0,0.1)]'>
           {isStripeInitializing ? <CheckoutSectionLoader text='Initializing payment...' /> : null}
 
@@ -289,7 +288,9 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
           {/* Header */}
           <div className='flex flex-col items-center gap-6 md:flex-row md:items-start md:justify-between md:gap-8'>
             <div className='max-w-[520px]'>
-              <p className='font-lato text-body leading-[1.2] text-[#C6ABB3] text-center md:text-left'>Order now</p>
+              <p className='font-lato font-normal text-body leading-[1.2] text-[#C6ABB3] text-center md:text-left'>
+                Order now
+              </p>
 
               <h2 className='mt-[23px] font-canela font-thin text-brand-black text-[32px] md:text-[52px] lg:text-[54px] leading-[105%] text-center md:text-left'>
                 {productLoading ? 'Loading...' : product?.title}
@@ -307,7 +308,7 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
 
           <hr className='my-8 w-full border-t border-[#DADDE4]' />
 
-          <div className='mt-10 grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-[0.9fr_1.1fr] lg:gap-[164px]'>
+          <div className='mt-10 grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-[164px]'>
             {/* LEFT */}
             <div>
               <h3 className='font-canela font-light text-brand-black text-[32px] md:text-[28px] lg:text-[32px]'>
@@ -461,7 +462,7 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
             </div>
           </div>
         </div>
-      </>
+      </div>{' '}
     </Section>
   );
 }

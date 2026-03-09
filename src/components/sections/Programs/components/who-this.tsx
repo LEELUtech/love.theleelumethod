@@ -33,7 +33,7 @@ export const ProgramsWhoThis = (props: Props) => {
   const { title, imgSrc, items } = props;
 
   return (
-    <Section sectionClasses='bg-brand-white' id='WhoThis'>
+    <Section sectionClasses='bg-brand-white'>
       <motion.div
         className='relative'
         initial={{ opacity: 0, y: 20 }}
@@ -49,7 +49,7 @@ export const ProgramsWhoThis = (props: Props) => {
 
             <div className='mt-[40px] md:mt-[44px] lg:mt-[56px] space-y-6'>
               {items.map((item) => (
-                <div key={item.title} className='rounded-[16px] bg-[#FFF8F8] p-6'>
+                <div key={item.title} className='rounded-[16px] bg-[#FFF8F8] px-6 py-6'>
                   <div className='flex items-start gap-4'>
                     <div>
                       <div className='flex flex-row gap-4 items-center'>
@@ -86,10 +86,17 @@ export const ProgramsWhoThis = (props: Props) => {
                     lg:w-[171px] lg:h-[238px]
                   "
                 >
-                  <div className='relative w-[52px] h-[80px] md:w-[60px] md:h-[110px] lg:w-[69px] lg:h-[167px]'>
+                  <div
+                    className='
+                      relative
+                      w-[52px] h-[80px]
+                      md:w-[60px] md:h-[110px]
+                      lg:w-[69px] lg:h-[167px]
+                    '
+                  >
                     <Image
                       src='/icons/programs_icon_star.svg'
-                      alt='star'
+                      alt=''
                       fill
                       className='object-contain filter brightness-0 invert'
                     />

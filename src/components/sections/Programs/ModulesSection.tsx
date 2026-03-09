@@ -1,5 +1,4 @@
 import Button from '@/components/ui/Button';
-import { Section } from '@/components/ui/containers/section';
 import Phase3Orb from '@/components/ui/Phase3Orb';
 import RotateOnView from '@/components/ui/RotateOnView';
 import { PROGRAMS_LINKS } from '@/static/links';
@@ -174,9 +173,16 @@ const GoalContent = ({ phase, title, highlight, highlightColor, description }: G
 
 export default function ModulesSection() {
   return (
-    <Section backgroundImage='/images/programs/modules_section_bg.png'>
-      <>
+    <section className='relative overflow-hidden'>
+      {/* Background for whole section */}
+      <div className='absolute inset-0 -z-10'>
+        <Image src='/images/programs/modules_section_bg.png' alt='' fill priority />
+      </div>
+
+      <div className='container px-4'>
+        {/* ====== TOP BLOCK (WHY / WHAT / HOW) ====== */}
         <div className='pt-[198px] lg:pt-[176px] pb-[80px] lg:pb-[110px] text-center'>
+          {/* portrait + badge */}
           <div className='mx-auto relative'>
             <div className='relative z-[10] mx-auto w-full max-w-[356px] aspect-[356/384] overflow-hidden'>
               <Image
@@ -392,13 +398,16 @@ export default function ModulesSection() {
 
           {/* ================= PHASE 3 ================= */}
           <div className='mt-14 lg:mt-28 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-start'>
+            {/* left */}
             <div className='text-left'>
               <GoalContent {...GOAL_CONTENT.phase_3} />
+
               <div className='mt-4 md:mt-[65px] relative mx-auto lg:mx-0'>
                 <Phase3Orb />
               </div>
             </div>
 
+            {/* right modules */}
             <div className='grid gap-4'>
               {PHASE_3.map((m) => (
                 <ModuleCard key={m.title} {...m} />
@@ -406,6 +415,7 @@ export default function ModulesSection() {
             </div>
           </div>
 
+          {/* ================= FINAL CTA ================= */}
           <div className='text-center relative mt-12 lg:mt-[100px]'>
             <h3 className='font-canela font-light text-brand-deep text-[28px] md:text-[32px] leading-[120%]'>
               Reconfigure your relationship architecture.
@@ -413,14 +423,15 @@ export default function ModulesSection() {
 
             <Button
               variant='primary'
-              className='w-full max-w-[392px] mt-[32px]'
+              size='md'
+              className='w-full lg:w-[38%] xs:text-[12px] mt-[32px]'
               href={PROGRAMS_LINKS.PROTOCOL_LINK.href}
             >
               {PROGRAMS_LINKS.PROTOCOL_LINK.label}
             </Button>
           </div>
         </div>
-      </>
-    </Section>
+      </div>
+    </section>
   );
 }

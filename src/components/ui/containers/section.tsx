@@ -5,13 +5,17 @@ interface Props {
   backgroundImage?: string;
   sectionClasses?: string;
   wrapperClasses?: string;
-  id?: string;
+
   bottomBackgroundImage?: string;
 }
 
-export const Section = (props: Props) => {
-  const { children, backgroundImage, bottomBackgroundImage, sectionClasses = '', wrapperClasses = '', id = '' } = props;
-
+export const Section = ({
+  children,
+  backgroundImage,
+  bottomBackgroundImage,
+  sectionClasses = '',
+  wrapperClasses = '',
+}: Props) => {
   const style = backgroundImage
     ? {
         backgroundImage: `url('${backgroundImage}')`,
@@ -20,9 +24,8 @@ export const Section = (props: Props) => {
         backgroundPosition: 'center',
       }
     : {};
-
   return (
-    <section className={sectionClasses} style={style} id={id}>
+    <section className={sectionClasses} style={style}>
       <div
         className={`relative z-10 max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-[40px] 4xl:px-[180px] py-4 md:py-[70px] lg:py-[110px] ${wrapperClasses}`}
       >

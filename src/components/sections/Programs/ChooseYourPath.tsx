@@ -1,5 +1,4 @@
 import Button from '@/components/ui/Button';
-import { Section } from '@/components/ui/containers/section';
 import RotateOnView from '@/components/ui/RotateOnView';
 import { PROGRAMS_LINKS } from '@/static/links';
 import { Flex } from 'antd';
@@ -181,7 +180,7 @@ const Card = ({ size, title, description, listTitle, list, link, for: forText }:
     <article
       className={`relative w-full rounded-[20px] bg-brand-white px-6 md:px-7 pt-[89px] pb-[48px] flex flex-col ${cardSizeClasses}`}
     >
-      <h3 className='text-center font-canela text-brand-black text-[30px]/[120%]'>{title}</h3>
+      <h3 className='text-center font-canela font-normal text-brand-black text-[30px] leading-[120%]'>{title}</h3>
 
       <p className='mt-3 text-center font-normal font-lato text-[#5A5757] text-body leading-[18px] mx-auto'>
         {description}
@@ -220,21 +219,26 @@ const Card = ({ size, title, description, listTitle, list, link, for: forText }:
 
 export default function ChooseYourPathSection() {
   return (
-    <Section backgroundImage='/images/programs/choose_your_path_bg.png'>
-      <>
+    <section
+      className='pt-[122px] pb-[122px] lg:py-[120px]'
+      style={{
+        background: "url('/images/programs/choose_your_path_bg.png') no-repeat center center / cover",
+      }}
+    >
+      <div className='max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-[60px] 4xl:px-[180px] relative py-[80px] lg:py-[110px]'>
         <div className='relative flex justify-center'>
           <div
             className="
-    									absolute left-1/2 lg:top-[-220px] top-[-200px] -translate-x-1/2
-    									flex items-center justify-center overflow-hidden
-    									bg-[#EB4F68]
-    									before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay
-    									rounded-[300px]
-    									w-[107px] h-[148px]
-    									md:w-[107px] md:h-[148px]
-    									lg:w-[142px] lg:h-[195px]
-    									z-10
-    								"
+											absolute left-1/2 lg:top-[-220px] top-[-200px] -translate-x-1/2
+											flex items-center justify-center overflow-hidden
+											bg-[#EB4F68]
+											before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay
+											rounded-[300px]
+											w-[107px] h-[148px]
+											md:w-[107px] md:h-[148px]
+											lg:w-[142px] lg:h-[195px]
+											z-10
+										"
           >
             <RotateOnView duration={5} amount={0.4} ease='easeOut'>
               <Image
@@ -258,7 +262,7 @@ export default function ChooseYourPathSection() {
           ))}
         </div>
 
-        <article id='protocol'>
+        <div>
           <div className='mb-[80px]'>
             <h2 className='text-[80px]/[126%] text-center font-canela font-thin mb-4'>
               <span className='text-brand-primary'>Relationship Protocol</span> Tiers{' '}
@@ -330,8 +334,8 @@ export default function ChooseYourPathSection() {
               ))}
             </div>
           </Flex>
-        </article>
-      </>
-    </Section>
+        </div>
+      </div>
+    </section>
   );
 }

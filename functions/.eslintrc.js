@@ -4,7 +4,10 @@ module.exports = {
     es6: true,
     node: true,
   },
-  extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+  extends: [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+  ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     project: ["tsconfig.json"],
@@ -12,18 +15,25 @@ module.exports = {
     ecmaVersion: 2020,
     tsconfigRootDir: __dirname,
   },
-  plugins: ["@typescript-eslint"],
+  plugins: [
+    "@typescript-eslint"
+  ],
   rules: {
-    // indent: ["error", 2, { SwitchCase: 1 }],
+    indent: ["error", 2],
     "no-restricted-globals": ["error", "name", "length"],
     "prefer-arrow-callback": "error",
-    quotes: ["error", "double"],
+    "quotes": ["error", "double"],
   },
-  ignorePatterns: ["/lib/**/*", ".eslintrc.js"],
+  ignorePatterns: [
+    "/lib/**/*",
+    ".eslintrc.js"
+  ],
   overrides: [
     {
       files: ["*.ts", "*.tsx"],
-      extends: ["plugin:@typescript-eslint/recommended"],
+      extends: [
+        "plugin:@typescript-eslint/recommended",
+      ],
     },
   ],
 };
