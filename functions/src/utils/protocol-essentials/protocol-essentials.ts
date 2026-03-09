@@ -1,28 +1,12 @@
 import Stripe from "stripe";
-import { processCircleAccess } from "../../lib/circle";
+import { addTagToMember } from "../../lib/circle";
+import { createChatAndAddMembers, getOffering, getUserData } from "../helpers/circle";
 
 export async function handleProtocolEssentials(pi: Stripe.PaymentIntent): Promise<void> {
-  const email = pi.metadata?.email || pi.receipt_email || "";
-  const name = pi.metadata?.name || email.split("@")[0];
-  const spaceId = pi.metadata?.space_id;
+  const { email, name, productType } = getUserData(pi);
 
-  console.log("[Protocol Essentials] Processing payment", {
-    email,
-    name,
-    space_id: spaceId,
-    payment_intent_id: pi.id,
-  });
+  const data = await getOffering(productType);
+  if (data?.tag) await addTagToMember(email, data.tag);
 
-  if (!spaceId) {
-    throw new Error("Missing space_id in metadata");
-  }
-
-  // Find or create Circle member and grant space access
-  const result = await processCircleAccess(email, name, spaceId);
-
-  console.log("[Protocol Essentials] Access granted", {
-    email,
-    member_id: result.memberId,
-    is_new_member: result.isNewMember,
-  });
+  await createChatAndAddMembers(name, email);
 }

@@ -190,21 +190,21 @@ export async function processPayment(pi: Stripe.PaymentIntent): Promise<void> {
   const productType = pi.metadata?.product_type as ProductType;
 
   switch (productType) {
-  case "compatibility_report":
-    // console.log("Compatibility Report handler is currently disabled.");
-    handleCompatibilityReport(pi);
-    break;
-  case "protocol_essentials":
-    console.log("Protocol Essentials handler is currently disabled.");
-    break;
-  case "guided_breakthrough":
-    console.log("Guided Breakthrough handler is currently disabled.");
-    break;
-  case "vip_immersion":
-    console.log("VIP Immersion handler is currently disabled.");
-    break;
-  default:
-    throw new Error(`Unsupported product type: ${productType}`);
+    case "compatibility_report":
+      // console.log("Compatibility Report handler is currently disabled.");
+      handleCompatibilityReport(pi);
+      break;
+    case "protocol_essentials":
+      console.log("Protocol Essentials handler is currently disabled.");
+      break;
+    case "guided_breakthrough":
+      console.log("Guided Breakthrough handler is currently disabled.");
+      break;
+    case "vip_immersion":
+      console.log("VIP Immersion handler is currently disabled.");
+      break;
+    default:
+      throw new Error(`Unsupported product type: ${productType}`);
   }
 }
 
@@ -526,7 +526,7 @@ export async function acquirePaymentLease(
 
     if (!snap.exists) {
       const fresh: PaymentRecord = {
-        ...(recordBase as any),
+        ...(recordBase as PaymentRecord),
 
         processing_status: "processing",
         funnel_step: "paid",
@@ -584,7 +584,7 @@ export async function acquirePaymentLease(
       : existing.funnel_step;
 
     tx.update(paymentRef, {
-      ...(recordBase as any),
+      ...(recordBase as Partial<PaymentRecord>),
       processing_status: "processing",
       funnel_step: nextFunnel,
       locked_by: leaseId,
@@ -597,7 +597,7 @@ export async function acquirePaymentLease(
       state: "acquired" as const,
       record: {
         ...existing,
-        ...(recordBase as any),
+        ...(recordBase as PaymentRecord),
         processing_status: "processing",
         funnel_step: nextFunnel as FunnelStep,
         locked_by: leaseId,

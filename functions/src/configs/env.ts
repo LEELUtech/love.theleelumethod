@@ -34,5 +34,9 @@ export const configs = {
 
   // ====== CALENDLY ======
   calendlyWebhookSigningKey: process.env.CALENDLY_WEBHOOK_SIGNING_KEY || "",
-};
 
+  sheetEmail: process.env.SHEET_EMAIL || "",
+  sheetPrivateKey: process.env.SHEET_PRIVATE_KEY || "",
+  sheetId: process.env.SHEET_ID || "",
+  sheetName: process.env.SHEET_NAME || "",
+};
