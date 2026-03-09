@@ -131,7 +131,17 @@ const ProblemSolutionSection = () => {
 
             <ProblemsListAnimated items={PROBLEMS} />
 
-            <Button variant='primary' size='md' className='w-full' href={COMPABILITY_REPORT_LINKS.PROBLEM_LINK.href}>
+            <Button
+              variant='primary'
+              size='md'
+              className='w-full'
+              href={COMPABILITY_REPORT_LINKS.PROBLEM_LINK.href}
+              trackingData={{
+                cta_name: 'compatibility_problem_solution_cta',
+                cta_text: COMPABILITY_REPORT_LINKS.PROBLEM_LINK.label,
+                cta_location: 'problem_solution',
+              }}
+            >
               {COMPABILITY_REPORT_LINKS.PROBLEM_LINK.label}
             </Button>
           </div>

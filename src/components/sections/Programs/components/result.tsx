@@ -66,7 +66,7 @@ export const ProgramResult = ({ title, link, investment, description }: Props) =
         {investment && <p className='text-[32px]/[126%] font-canela font-light mb-5'>Investment: ${investment}</p>}
 
         {link && (
-          <Button href={link.href} className='px-[80px] py-4'>
+          <Button href={link.href} className='px-[80px] py-4' trackingData={{ cta_name: 'program_result_cta', cta_text: link.label, cta_target_url: link.href, cta_location: 'result' }}>
             {link.label}
           </Button>
         )}

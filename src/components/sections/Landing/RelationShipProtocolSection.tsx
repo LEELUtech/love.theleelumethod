@@ -106,6 +106,11 @@ const RelationShipProtocolSection = () => {
             leftIconBg='transparent'
             size='md'
             className='w-full lg:w-fit xs:text-[12px] mt-[32px]'
+            trackingData={{
+              cta_name: 'landing_protocol_view_curriculum_cta',
+              cta_text: 'VIEW THE CURRICULUM',
+              cta_location: 'relationship_protocol',
+            }}
           >
             VIEW THE CURRICULUM
           </Button>

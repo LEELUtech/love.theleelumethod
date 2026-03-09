@@ -166,6 +166,11 @@ export default function BlindSpotSection() {
               size='md'
               className='w-full lg:w-[80%] xs:text-[12px]'
               href={PROGRAMS_LINKS.BLIND_LINK.href}
+              trackingData={{
+                cta_name: 'programs_blind_spot_cta',
+                cta_text: PROGRAMS_LINKS.BLIND_LINK.label,
+                cta_location: 'blind_spot',
+              }}
             >
               {PROGRAMS_LINKS.BLIND_LINK.label}
             </Button>

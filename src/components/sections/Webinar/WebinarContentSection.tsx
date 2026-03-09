@@ -131,6 +131,11 @@ const WebinarContentSection = () => {
             size='md'
             className='w-full md:w-[76%] py-[12px]'
             href={DESCODE_LINKS.RESERVE_LINK.href}
+            trackingData={{
+              cta_name: 'webinar_reserve_cta',
+              cta_text: DESCODE_LINKS.RESERVE_LINK.label,
+              cta_location: 'webinar_content',
+            }}
           >
             {DESCODE_LINKS.RESERVE_LINK.label}
           </Button>

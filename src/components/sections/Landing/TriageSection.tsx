@@ -63,7 +63,16 @@ const TriageSection = () => {
               attracted all these men. I would never have thought that such things as personal relationships and family
               lineage could be connected. “
             </p>
-            <Button variant='dark' size='md' className='w-full lg:w-[85%] xs:text-[12px]'>
+            <Button
+              variant='dark'
+              size='md'
+              className='w-full lg:w-[85%] xs:text-[12px]'
+              trackingData={{
+                cta_name: 'landing_triage_read_stories_cta',
+                cta_text: 'READ MORE STORIES',
+                cta_location: 'triage',
+              }}
+            >
               READ MORE STORIES
             </Button>
           </div>
@@ -230,7 +239,17 @@ const TriageSection = () => {
                 <span className='font-semibold'>The Truth:</span> What his behavior is actually saying.
               </p>
 
-              <Button variant='dark' size='md' className='w-full xs:text-[12px] mt-auto' href={QUIZ_URL}>
+              <Button
+                variant='dark'
+                size='md'
+                className='w-full xs:text-[12px] mt-auto'
+                href={QUIZ_URL}
+                trackingData={{
+                  cta_name: 'landing_triage_quiz_cta',
+                  cta_text: 'TAKE THE QUIZ',
+                  cta_location: 'triage',
+                }}
+              >
                 TAKE THE QUIZ
               </Button>
             </div>
@@ -264,7 +283,17 @@ const TriageSection = () => {
                 loyalty.
               </p>
 
-              <Button variant='dark' size='md' className='w-full xs:text-[12px] mt-auto' href={WEBINAR_URL}>
+              <Button
+                variant='dark'
+                size='md'
+                className='w-full xs:text-[12px] mt-auto'
+                href={WEBINAR_URL}
+                trackingData={{
+                  cta_name: 'landing_triage_webinar_cta',
+                  cta_text: 'REGISTER FOR WEBINAR',
+                  cta_location: 'triage',
+                }}
+              >
                 REGISTER FOR WEBINAR
               </Button>
             </div>
@@ -297,6 +326,11 @@ const TriageSection = () => {
                 size='md'
                 className='w-full xs:text-[12px] mt-auto'
                 href='/resources/compatibility-report'
+                trackingData={{
+                  cta_name: 'landing_triage_analysis_cta',
+                  cta_text: 'GET MY ANALYSIS',
+                  cta_location: 'triage',
+                }}
               >
                 GET MY ANALYSIS
               </Button>

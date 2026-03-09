@@ -58,7 +58,7 @@ export default function MechanicsDeliverablesSection() {
             ))}
           </div>
 
-          <Button className='mt-[90px] w-full max-w-[392px]' href={VIP_LINKS.MECHANICS_LINK.href}>
+          <Button className='mt-[90px] w-full max-w-[392px]' href={VIP_LINKS.MECHANICS_LINK.href} trackingData={{ cta_name: 'vip_mechanics_cta', cta_text: VIP_LINKS.MECHANICS_LINK.label, cta_target_url: VIP_LINKS.MECHANICS_LINK.href, cta_location: 'mechanics' }}>
             {VIP_LINKS.MECHANICS_LINK.label}
           </Button>
         </div>

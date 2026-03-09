@@ -179,6 +179,7 @@ export default function CostOfWaitingSection() {
             size='md'
             className='w-full lg:w-[30%] xs:text-[12px] mt-[32px]'
             href={VIP_LINKS.WHO_LINK.href}
+            trackingData={{ cta_name: 'vip_cost_of_waiting_cta', cta_text: VIP_LINKS.WHO_LINK.label, cta_target_url: VIP_LINKS.WHO_LINK.href, cta_location: 'cost_of_waiting' }}
           >
             {VIP_LINKS.WHO_LINK.label}
           </Button>

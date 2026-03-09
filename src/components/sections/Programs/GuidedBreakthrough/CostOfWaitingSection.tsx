@@ -98,7 +98,7 @@ export default function CostOfWaitingSection() {
           Investment: {priceLabel}
         </p>
 
-        <Button variant='primary' size='md' className='w-full lg:w-[30%] xs:text-[12px] mt-[32px]'>
+        <Button variant='primary' size='md' className='w-full lg:w-[30%] xs:text-[12px] mt-[32px]' trackingData={{ cta_name: 'gb_cost_of_waiting_cta', cta_text: 'GET PERSONALIZED SUPPORT', cta_location: 'cost_of_waiting' }}>
           GET PERSONALIZED SUPPORT
         </Button>
 

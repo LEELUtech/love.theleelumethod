@@ -291,7 +291,17 @@ export default function ModulesSection() {
             ))}
           </div>
 
-          <Button variant='primary' size='md' className='w-full lg:w-[28%] xs:text-[12px]' href='#checkout'>
+          <Button
+            variant='primary'
+            size='md'
+            className='w-full lg:w-[28%] xs:text-[12px]'
+            href='#checkout'
+            trackingData={{
+              cta_name: 'programs_modules_initiate_protocol_cta',
+              cta_text: 'INITIATE THE PROTOCOL',
+              cta_location: 'modules',
+            }}
+          >
             INITIATE THE PROTOCOL
           </Button>
         </div>
@@ -426,6 +436,11 @@ export default function ModulesSection() {
               size='md'
               className='w-full lg:w-[38%] xs:text-[12px] mt-[32px]'
               href={PROGRAMS_LINKS.PROTOCOL_LINK.href}
+              trackingData={{
+                cta_name: 'programs_modules_protocol_cta',
+                cta_text: PROGRAMS_LINKS.PROTOCOL_LINK.label,
+                cta_location: 'modules',
+              }}
             >
               {PROGRAMS_LINKS.PROTOCOL_LINK.label}
             </Button>

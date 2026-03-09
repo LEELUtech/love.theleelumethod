@@ -110,7 +110,7 @@ export default function CostOfWaitingSection() {
             Investment: {priceLabel}
           </p>
 
-          <Button variant='primary' size='md' className='w-full lg:w-[30%] py-4 px-[60px] xs:text-[12px] mt-[32px]'>
+          <Button variant='primary' size='md' className='w-full lg:w-[30%] py-4 px-[60px] xs:text-[12px] mt-[32px]' trackingData={{ cta_name: 'sgt_cost_of_waiting_cta', cta_text: 'DECODE MY RELATIONSHIP', cta_location: 'cost_of_waiting' }}>
             DECODE MY RELATIONSHIP
           </Button>
         </div>

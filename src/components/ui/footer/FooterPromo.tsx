@@ -63,13 +63,33 @@ export const FooterPromo = (props: Props) => {
               )}
             </div>
             {link && (
-              <Button variant='primary' size='md' className={`w-full md:w-[55%] ${buttonClassName}`} href={link.href}>
+              <Button
+                variant='primary'
+                size='md'
+                className={`w-full md:w-[55%] ${buttonClassName}`}
+                href={link.href}
+                trackingData={{
+                  cta_name: 'footer_promo_link_cta',
+                  cta_text: link.label,
+                  cta_target_url: link.href,
+                  cta_location: 'footer_promo',
+                }}
+              >
                 {link.label}
               </Button>
             )}
 
             {button && (
-              <Button variant='dark' size='md' className={`w-full lg:w-[55%] xs:text-[12px] ${buttonClassName}`}>
+              <Button
+                variant='dark'
+                size='md'
+                className={`w-full lg:w-[55%] xs:text-[12px] ${buttonClassName}`}
+                trackingData={{
+                  cta_name: 'footer_promo_button_cta',
+                  cta_text: button.label,
+                  cta_location: 'footer_promo',
+                }}
+              >
                 {button.label}
               </Button>
             )}

@@ -85,6 +85,11 @@ const WebinarSection = () => {
                 size='md'
                 className='w-full md:w-[65%] py-[12px]'
                 href={DESCODE_LINKS.HERO_LINK.href}
+                trackingData={{
+                  cta_name: 'webinar_hero_cta',
+                  cta_text: DESCODE_LINKS.HERO_LINK.label,
+                  cta_location: 'hero',
+                }}
               >
                 {DESCODE_LINKS.HERO_LINK.label}
               </Button>
