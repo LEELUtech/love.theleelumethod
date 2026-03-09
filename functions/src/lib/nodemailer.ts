@@ -1,27 +1,32 @@
 import * as nodemailer from "nodemailer";
-import { configs } from "../configs/env";
+import { defineSecret } from "firebase-functions/params";
+
+const NODEMAILER_USER = defineSecret("NODEMAILER_USER");
+const NODEMAILER_PASS = defineSecret("NODEMAILER_PASS");
 
 class EmailService {
   private transporter: nodemailer.Transporter;
   private from: string;
 
   constructor() {
-    this.from = configs.nodemailerUser;
+    const user = NODEMAILER_USER.value();
+    const pass = NODEMAILER_PASS.value();
 
-    console.log(`EmailService configs: ${configs.nodemailerUser}, ${configs.nodemailerPass}`);
+    this.from = user;
+
+    console.log(`EmailService configs: ${user}, ${pass}`);
 
     this.transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 587,
       secure: false,
-      auth: {
-        user: configs.nodemailerUser,
-        pass: configs.nodemailerPass,
-      },
+      auth: { user, pass },
     });
   }
 
   async sendEmail(to: string, name: string, path: string): Promise<void> {
+    console.log(this.from);
+
     await this.transporter.sendMail({
       from: this.from,
       to,
