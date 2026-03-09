@@ -78,19 +78,19 @@ export const COMPABILITY_REPORT_LINKS: RecordLink = {
 export const ABOUT_LINKS: RecordLink = {
   HERO_LINK: {
     label: 'START THE DECODE',
-    href: '/decode',
+    href: '#checkout',
   },
   FRACTURE_LINK: {
     label: 'START THE DECODE',
-    href: '/decode',
+    href: '#',
   },
   SYNTHESIS_LINK: {
     label: 'START THE DECODE',
-    href: '/decode',
+    href: '#',
   },
   STOP_GUESSING_LINK: {
     label: 'Access your Operating Manual',
-    href: '/decode',
+    href: '#',
   },
 };
 
@@ -101,7 +101,7 @@ export const PROGRAMS_LINKS: RecordLink = {
   },
   BLIND_LINK: {
     label: 'READ MORE STORIES',
-    href: '#stories',
+    href: '#stories', // Stories
   },
   PROTOCOL_LINK: {
     label: 'INITIATE THE PROTOCOL',
@@ -133,14 +133,14 @@ export const PROGRAMS_LINKS: RecordLink = {
   },
   FOOTER_PROMO_LINK: {
     label: 'ACCESS THE PROTOCOL',
-    href: '#protocol',
+    href: '#',
   },
 };
 
 export const HOME_LINKS: RecordLink = {
   HERO_LINK: {
     label: 'START THE DECODE',
-    href: '/decode',
+    href: '#',
   },
   READ_LINK: {
     label: 'READ MORE STORIES',
@@ -148,7 +148,7 @@ export const HOME_LINKS: RecordLink = {
   },
   QUIZL_LINK: {
     label: 'TAKE THE QUIZ',
-    href: QUIZ_URL,
+    href: '#',
   },
   REGISTER_LINK: {
     label: 'REGISTER FOR MASTERCLASS',
@@ -183,23 +183,27 @@ export const HOME_LINKS: RecordLink = {
 export const ESSENTIALS_LINKS: RecordLink = {
   HERO_LINK: {
     label: 'ENROLL NOW',
-    href: '#WhoThis',
+    href: '#',
   },
   INSIDE_LINK: {
     label: 'SECURE YOUR SPOT',
-    href: '#checkout',
+    href: '#',
   },
   RESULT_LINK: {
     label: 'BEGIN THE PROTOCOL',
-    href: '#checkout',
+    href: '#',
   },
   WORKED_LINK: {
     label: 'BEGIN THE PROTOCOL',
-    href: '#checkout',
+    href: '#',
   },
   COST_LINK: {
     label: 'DECODE MY RELATIONSHIP',
-    href: '#checkout',
+    href: '#',
+  },
+  CHECKOUT_LINK: {
+    label: 'DECODE MY RELATIONSHIP',
+    href: '#',
   },
 };
 
@@ -220,6 +224,10 @@ export const GUIDED_BREAKTHROUGH_LINKS: RecordLink = {
     label: 'CLAIM MY BREAKTHROUGH',
     href: '#checkout',
   },
+  CHECKOUT_LINK: {
+    label: 'SIGN UP & GET PERSONALIZED SUPPORT',
+    href: '#',
+  },
 };
 
 export const VIP_LINKS: RecordLink = {
@@ -237,6 +245,10 @@ export const VIP_LINKS: RecordLink = {
   },
   WHO_LINK: {
     label: 'APPLY FOR VIP ACCESS',
+    href: '#checkout',
+  },
+  CHECKOUT_LINK: {
+    label: 'SIGN UP & APPLY FOR VIP ACCESS',
     href: '#checkout',
   },
 };

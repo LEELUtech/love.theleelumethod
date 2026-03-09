@@ -1,4 +1,6 @@
-import { configs } from "../configs/env";
+// lib/zoho-campaigns.ts
+
+import { configs } from "../configs/env"
 
 let cachedAccessToken: string | null = null;
 let tokenExpiresAt = 0;
@@ -23,7 +25,7 @@ async function getAccessToken(): Promise<string> {
   cachedAccessToken = data.access_token;
   tokenExpiresAt = Date.now() + (Number(data.expires_in ?? 3600) - 60) * 1000;
 
-  return cachedAccessToken as string;
+  return cachedAccessToken!;
 }
 
 function authHeaders(token: string) {
@@ -39,12 +41,7 @@ async function ensureSubscribed(email: string) {
   body.set("resfmt", "JSON");
   body.set("listkey", configs.zohoCampaignsListKey);
   body.set("contactinfo", contactinfo);
-  console.log(
-    "zoho-campaigns listsubscribe listkey present:",
-    !!configs.zohoCampaignsListKey,
-    "length:",
-    configs.zohoCampaignsListKey.length,
-  );
+  console.log("zoho-campaigns listsubscribe listkey present:", !!configs.zohoCampaignsListKey, "length:", configs.zohoCampaignsListKey.length);
 
   const resp = await fetch("https://campaigns.zoho.com/api/v1.1/json/listsubscribe", {
     method: "POST",
@@ -116,7 +113,7 @@ export async function upsertContactAndAddTags(email: string, tags: string[]) {
 
 export async function upsertContactAndUpdateTags(
   email: string,
-  delta: { add?: string[]; remove?: string[] },
+  delta: { add?: string[]; remove?: string[] }
 ) {
   const add = Array.from(new Set(delta.add ?? [])).filter(Boolean);
   const remove = Array.from(new Set(delta.remove ?? [])).filter(Boolean);
