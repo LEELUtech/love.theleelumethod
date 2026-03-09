@@ -581,10 +581,7 @@ export const stripeCircleWebhook = onRequest(
       }
 
       // CRM scoring: mark compatibility_report purchase (best-effort)
-      if (
-        normalizedProductType === "compatibility_report" &&
-        validation.email
-      ) {
+      if (normalizedProductType === "compatibility_report" && validation.email) {
         try {
           await markCompatibilityCodePurchased(validation.email);
         } catch (e) {

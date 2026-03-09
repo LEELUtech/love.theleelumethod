@@ -1,6 +1,6 @@
 // functions/src/lib/analytics/emitFunnelEvent.ts
 import axios, { AxiosError } from "axios";
-import { configs } from "../configs/env"
+import { configs } from "../configs/env";
 
 export type FunnelValue = string | number | boolean | null;
 
@@ -151,7 +151,9 @@ function isZohoInvalidToken(err: unknown): boolean {
   const data = err.response?.data as unknown;
 
   const obj =
-    data && typeof data === "object" ? (data as Record<string, unknown>) : ({} as Record<string, unknown>);
+    data && typeof data === "object"
+      ? (data as Record<string, unknown>)
+      : ({} as Record<string, unknown>);
 
   const code =
     (typeof obj.code === "string" ? obj.code : undefined) ||
@@ -177,8 +179,6 @@ async function refreshZohoAccessToken(requestId: string): Promise<string> {
   const clientId = configs.zohoClientId;
   const clientSecret = configs.zohoClientSecret;
   const refreshToken = configs.zohoRefreshAnalyticsToken;
-
-
 
   const url = `https://${accountsDomain}/oauth/v2/token`;
 
@@ -226,7 +226,8 @@ async function getZohoAccessToken(requestId: string): Promise<string> {
 function assertZohoImportOk(resData: unknown, requestId: string) {
   const s = safePreview(resData, 4000);
 
-  const asObj = (resData && typeof resData === "object") ? (resData as Record<string, unknown>) : null;
+  const asObj =
+    resData && typeof resData === "object" ? (resData as Record<string, unknown>) : null;
 
   const status =
     (asObj && typeof asObj.status === "string" ? asObj.status : undefined) ||
@@ -240,7 +241,10 @@ function assertZohoImportOk(resData: unknown, requestId: string) {
   const importedZero = /"imported"\s*:\s*0/i.test(s) || /"success"\s*:\s*0/i.test(s);
 
   if (hasFailureWord || importedZero) {
-    console.error("[emitFunnelEvent] Zoho import reported failure-like body", { requestId, body: s });
+    console.error("[emitFunnelEvent] Zoho import reported failure-like body", {
+      requestId,
+      body: s,
+    });
     throw new Error(`Zoho import body indicates failure: ${s}`);
   }
 }
