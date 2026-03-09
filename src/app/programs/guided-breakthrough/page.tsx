@@ -11,6 +11,7 @@ import {
   guidedBreakthroughResultData,
   guidedBreakthroughWhoThisData,
 } from '@/components/sections/Programs/GuidedBreakthrough/static';
+import SalesPageTagger from '@/components/sections/SalesPage/SalesPageTagger';
 
 import { GUIDED_BREAKTHROUGH } from '@/utils/constants';
 
@@ -25,7 +26,7 @@ export default function GuidedBreakthroughPage() {
 
       <CostOfWaitingSection />
       <CheckoutFormSection productId={GUIDED_BREAKTHROUGH} />
-			<SalesPageTagger/>
+      <SalesPageTagger />
     </main>
   );
 }
