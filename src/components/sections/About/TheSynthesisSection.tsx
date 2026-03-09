@@ -83,7 +83,17 @@ const TheSynthesisSection = () => {
           and what you do, so you can live the most impactful, abundant version of the life you were designed to live.
         </p>
 
-        <Button variant='primary' size='md' className='w-full lg:w-[40%]' href={ABOUT_LINKS.HERO_LINK.href}>
+        <Button
+          variant='primary'
+          size='md'
+          className='w-full lg:w-[40%]'
+          href={ABOUT_LINKS.HERO_LINK.href}
+          trackingData={{
+            cta_name: 'about_synthesis_cta',
+            cta_text: ABOUT_LINKS.HERO_LINK.label,
+            cta_location: 'synthesis',
+          }}
+        >
           {ABOUT_LINKS.HERO_LINK.label}
         </Button>
       </div>

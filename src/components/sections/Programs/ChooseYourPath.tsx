@@ -209,7 +209,17 @@ const Card = ({ size, title, description, listTitle, list, link, for: forText }:
       </div>
 
       <div>
-        <Button variant='primary' size='md' className='w-full xs:text-[12px]' href={link.href}>
+        <Button
+          variant='primary'
+          size='md'
+          className='w-full xs:text-[12px]'
+          href={link.href}
+          trackingData={{
+            cta_name: 'programs_choose_path_cta',
+            cta_text: link.label,
+            cta_location: 'choose_your_path',
+          }}
+        >
           {link.label}
         </Button>
       </div>
@@ -326,7 +336,16 @@ export default function ChooseYourPathSection() {
 
                   <div className='mt-10 text-center px-4'>
                     <p className='font-canela font-light mb-5 text-[32px]/[126%] text-[#3C1212]'>{tier.price}</p>
-                    <Button className='w-full max-w-[450px] px-0' variant='dark' href={tier.link.href}>
+                    <Button
+                      className='w-full max-w-[450px] px-0'
+                      variant='dark'
+                      href={tier.link.href}
+                      trackingData={{
+                        cta_name: 'programs_protocol_tier_cta',
+                        cta_text: tier.link.label,
+                        cta_location: 'relationship_protocol_tiers',
+                      }}
+                    >
                       {tier.link.label}
                     </Button>
                   </div>

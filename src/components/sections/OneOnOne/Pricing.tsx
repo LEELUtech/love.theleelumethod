@@ -261,7 +261,15 @@ export const Pricing = () => {
                   >
                     (${perSession}/session)
                   </div>
-                  <Button href={link.href} className='py-[16px] block w-full'>
+                  <Button
+                    href={link.href}
+                    className='py-[16px] block w-full'
+                    trackingData={{
+                      cta_name: 'one_on_one_pricing_cta',
+                      cta_text: link.label,
+                      cta_location: 'pricing',
+                    }}
+                  >
                     {link.label}
                   </Button>
                 </div>

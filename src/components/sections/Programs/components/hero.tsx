@@ -120,6 +120,7 @@ export const ProgramsHero = (props: Props) => {
           size='md'
           className='w-full lg:w-[30%] xs:text-[12px] mt-[32px] lg:order-3'
           href={link.href}
+          trackingData={{ cta_name: 'program_hero_cta', cta_text: link.label, cta_target_url: link.href, cta_location: 'hero' }}
         >
           {link.label}
         </Button>

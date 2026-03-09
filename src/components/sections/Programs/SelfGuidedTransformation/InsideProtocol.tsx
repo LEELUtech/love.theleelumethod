@@ -54,7 +54,7 @@ export const InsideProtocol = () => {
             <p className='text-center md:text-left text-[24px]/[126%] md:text-[32px] font-light font-canela text-brand-primary mb-[60px]'>
               {highlight}
             </p>
-            <Button href={link.href} className='self-center md:self-start md:px-[80px] xl:px-[98px] px-[98px]'>
+            <Button href={link.href} className='self-center md:self-start md:px-[80px] xl:px-[98px] px-[98px]' trackingData={{ cta_name: 'sgt_inside_protocol_cta', cta_text: link.label, cta_target_url: link.href, cta_location: 'inside_protocol' }}>
               {link.label}
             </Button>
           </div>

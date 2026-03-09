@@ -80,6 +80,11 @@ const StopGuessingSection = () => {
           size='md'
           className='w-full lg:w-[40%] xs:text-[12px]'
           href={ABOUT_LINKS.STOP_GUESSING_LINK.href}
+          trackingData={{
+            cta_name: 'about_stop_guessing_cta',
+            cta_text: ABOUT_LINKS.STOP_GUESSING_LINK.label,
+            cta_location: 'stop_guessing',
+          }}
         >
           {ABOUT_LINKS.STOP_GUESSING_LINK.label}
         </Button>

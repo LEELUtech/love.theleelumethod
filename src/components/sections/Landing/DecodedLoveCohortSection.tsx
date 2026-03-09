@@ -141,7 +141,16 @@ export default function DecodedLoveCohortSection() {
               cycle of disappointment.
             </p>
 
-            <Button variant='dark' size='md' className=' w-[340px] text-[18px]'>
+            <Button
+              variant='dark'
+              size='md'
+              className=' w-[340px] text-[18px]'
+              trackingData={{
+                cta_name: 'landing_cohort_save_seat_cta',
+                cta_text: 'Save My Seat',
+                cta_location: 'decoded_love_cohort',
+              }}
+            >
               Save My Seat
             </Button>
           </div>

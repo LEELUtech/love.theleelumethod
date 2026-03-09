@@ -51,7 +51,17 @@ const TheFractureAndLaboratorySection = () => {
             <p className='font-thin font-canela text-[32px]/[130%] text-brand-deep lg:mb-[30px] md:mb-[30px] mb-[30px]'>
               That session was the spark that lit my path into the world of numerology and eventually, heelutech.
             </p>
-            <Button variant='dark' size='md' className='w-full lg:w-[60%]' href={ABOUT_LINKS.FRACTURE_LINK.href}>
+            <Button
+              variant='dark'
+              size='md'
+              className='w-full lg:w-[60%]'
+              href={ABOUT_LINKS.FRACTURE_LINK.href}
+              trackingData={{
+                cta_name: 'about_fracture_cta',
+                cta_text: ABOUT_LINKS.FRACTURE_LINK.label,
+                cta_location: 'fracture',
+              }}
+            >
               {ABOUT_LINKS.FRACTURE_LINK.label}
             </Button>
           </div>

@@ -28,6 +28,11 @@ export const Primary = () => {
             size='md'
             className='w-full px-[8px] md:w-[70%] lg:py-[16px]'
             href={ONE_ON_ONE_LINKS.PRIMARY_LINK.href}
+            trackingData={{
+              cta_name: 'one_on_one_primary_cta',
+              cta_text: ONE_ON_ONE_LINKS.PRIMARY_LINK.label,
+              cta_location: 'primary',
+            }}
           >
             {ONE_ON_ONE_LINKS.PRIMARY_LINK.label}
           </Button>

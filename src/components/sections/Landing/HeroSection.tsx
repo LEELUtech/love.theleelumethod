@@ -37,7 +37,16 @@ const HeroSection = () => {
                 without knowing the steps.
               </p>
 
-              <Button variant='dark' size='md' className='w-full xs:text-[12px]'>
+              <Button
+                variant='dark'
+                size='md'
+                className='w-full xs:text-[12px]'
+                trackingData={{
+                  cta_name: 'landing_hero_start_cta',
+                  cta_text: 'START THE DECODE',
+                  cta_location: 'hero',
+                }}
+              >
                 START THE DECODE
               </Button>
 
@@ -71,7 +80,16 @@ const HeroSection = () => {
               life. So you can stop guessing and start moving with clarity.
             </p>
 
-            <Button variant='dark' size='md' className='w-full lg:w-[65%] xs:text-[12px]'>
+            <Button
+              variant='dark'
+              size='md'
+              className='w-full lg:w-[65%] xs:text-[12px]'
+              trackingData={{
+                cta_name: 'landing_hero_start_cta',
+                cta_text: 'START THE DECODE',
+                cta_location: 'hero',
+              }}
+            >
               START THE DECODE
             </Button>
           </div>

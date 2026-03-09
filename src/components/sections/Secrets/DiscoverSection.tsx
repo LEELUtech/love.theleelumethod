@@ -133,6 +133,11 @@ export default function DiscoverSection() {
             size='md'
             href={SECRETS_LINKS.ACCESS_LINK.href}
             className='w-full mt-[16px] md:w-[45%] md:mt-[66px]'
+            trackingData={{
+              cta_name: 'secrets_discover_access_cta',
+              cta_text: SECRETS_LINKS.ACCESS_LINK.label,
+              cta_location: 'discover',
+            }}
           >
             {SECRETS_LINKS.ACCESS_LINK.label}
           </Button>

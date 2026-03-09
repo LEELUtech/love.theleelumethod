@@ -206,7 +206,17 @@ const WebinarWhatIfSection = () => {
           </div>
 
           <div className='flex justify-center'>
-            <Button variant='primary' size='md' className='w-full md:w-[30%]' href={DESCODE_LINKS.REGISTER_LINK.href}>
+            <Button
+              variant='primary'
+              size='md'
+              className='w-full md:w-[30%]'
+              href={DESCODE_LINKS.REGISTER_LINK.href}
+              trackingData={{
+                cta_name: 'webinar_whatif_register_cta',
+                cta_text: DESCODE_LINKS.REGISTER_LINK.label,
+                cta_location: 'webinar_what_if',
+              }}
+            >
               {DESCODE_LINKS.REGISTER_LINK.label}
             </Button>
           </div>

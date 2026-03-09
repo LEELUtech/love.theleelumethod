@@ -113,6 +113,11 @@ const HeroSection = () => {
                 size='md'
                 className='w-full lg:w-[75%] xs:text-[12px]'
                 href={COMPABILITY_REPORT_LINKS.HERO_LINK.href}
+                trackingData={{
+                  cta_name: 'compatibility_hero_cta',
+                  cta_text: COMPABILITY_REPORT_LINKS.HERO_LINK.label,
+                  cta_location: 'hero',
+                }}
               >
                 {COMPABILITY_REPORT_LINKS.HERO_LINK.label}
               </Button>

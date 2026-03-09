@@ -46,7 +46,7 @@ export const ProgramItWorks = ({ description, subtitle, link, imgSrc }: Props) =
               ))}
             </p>
             {link && (
-              <Button variant='primary' href={link.href} className='w-full lg:w-[70%] xs:text-[12px] mt-[32px]'>
+              <Button variant='primary' href={link.href} className='w-full lg:w-[70%] xs:text-[12px] mt-[32px]' trackingData={{ cta_name: 'program_it_works_cta', cta_text: link.label, cta_target_url: link.href, cta_location: 'it_works' }}>
                 {link.label}
               </Button>
             )}

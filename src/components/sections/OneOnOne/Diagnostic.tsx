@@ -51,6 +51,11 @@ export const Diagnostic = () => {
               size='md'
               className='mb-8 w-full bs:w-[52%] py-[16px] order-3 md:order-5 md:mb-0'
               href={ONE_ON_ONE_LINKS.HERO_LINK.href}
+              trackingData={{
+                cta_name: 'one_on_one_diagnostic_cta',
+                cta_text: ONE_ON_ONE_LINKS.HERO_LINK.label,
+                cta_location: 'diagnostic',
+              }}
             >
               {ONE_ON_ONE_LINKS.HERO_LINK.label}
             </Button>
