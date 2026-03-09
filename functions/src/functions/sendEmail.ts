@@ -1,55 +1,57 @@
 import { onCall } from "firebase-functions/v2/https";
-import { createTransport } from "nodemailer";
-import { configs } from "../configs/env";
-import { getStorage } from "firebase-admin/storage";
-import { upsertContactAndAddTags } from "../lib/zoho-campaigns";
+import { defineSecret } from "firebase-functions/params";
+import { upsertContactAndUpdateTags } from "../lib/zoho-campaigns";
+import { markLeadMagnetDownloaded } from "../lib/zoho-scoring";
 
-export const sendEmail = onCall(async (req) => {
+// Campaigns secrets
+const ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT");
+const ZOHO_CLIENT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_ID_LILYCHYSTOFAT");
+const ZOHO_CLIENT_SECRET_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_SECRET_LILYCHYSTOFAT");
+const ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT = defineSecret("ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT");
+// CRM secrets (for scoring)
+const ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT");
+const ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT");
+const ZOHO_API_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_API_DOMAIN_LILYCHYSTOFAT");
+
+const LM_DL_TRIGGER = "lm_dl_trigger";
+export const sendEmail = onCall({
+  cors: true,
+  secrets: [
+    ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT,
+    ZOHO_CLIENT_ID_LILYCHYSTOFAT,
+    ZOHO_CLIENT_SECRET_LILYCHYSTOFAT,
+    ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT,
+    ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT,
+    ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT,
+    ZOHO_API_DOMAIN_LILYCHYSTOFAT,
+  ],
+}, async (req) => {
   const { firstName, email } = req.data || {};
 
   if (!firstName || !email) {
     throw new Error("Missing required fields: firstName, email");
   }
+  if (!firstName || !email) {
+    throw new Error("Missing required fields: firstName, email");
+  }
 
-  const storage = getStorage();
-  const bucket = storage.bucket();
-  const filePath = "pdf/battle/battle.pdf";
-  const file = bucket.file(filePath);
+  const normalizedEmail = String(email).toLowerCase().trim();
+  const normalizedFirstName = String(firstName).trim();
 
-  const [pdfBuffer] = await file.download();
 
-  const transporter = createTransport({
-    service: "gmail",
-    auth: {
-      user: configs.email,
-      pass: configs.password,
-    },
-  });
+  await upsertContactAndUpdateTags(
+    normalizedEmail,
+    { add: ["lm_dl", LM_DL_TRIGGER] },
+    { firstName: normalizedFirstName }
+  );
 
-  const subject = "Your free guide: 7 Secrets to Mend a Broken Heart";
-  const html = `
-      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-        <p>Hi ${firstName},</p>
-        <p>Thanks for downloading our free guide.</p>
-        <p>Your PDF <b>“7 Secrets to Mend a Broken Heart”</b> is attached to this email.</p>
-        <p>Wishing you all the best,<br/>The Team</p>
-      </div>
-    `;
+  // CRM scoring: mark lead magnet downloaded (best-effort)
+  try {
+    await markLeadMagnetDownloaded(normalizedEmail);
+  } catch (e: any) {
+    console.error("markLeadMagnetDownloaded failed (non-critical)", { email: normalizedEmail, error: e?.message });
+  }
 
-  await transporter.sendMail({
-    from: configs.email,
-    to: email,
-    subject,
-    html,
-    attachments: [
-      {
-        filename: "7_secrets_to_mend_a_broken_heart.pdf",
-        content: pdfBuffer,
-        contentType: "application/pdf",
-      },
-    ],
-  });
-  await upsertContactAndAddTags(email, ["lm_dl"]);
-
+  console.log("sendEmail: lm_dl_trigger added", { email: normalizedEmail });
   return { success: true };
 });

@@ -27,6 +27,7 @@ export default function SelfGuidedTransformationPage() {
 
       <CostOfWaitingSection />
       <CheckoutFormSection productId={PROTOCOL_ESSENTIALS} />
+			<SalesPageTagger/>
 
       <FooterLayout withNavigation={false} className='lg:mt-[-200px]' backgroundImage='/images/bg/checkout_bg.png' />
     </main>

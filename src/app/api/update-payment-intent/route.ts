@@ -358,29 +358,30 @@ export async function POST(req: NextRequest) {
     const afterSnap = await getDoc(ref);
     const final = asPaymentDoc(afterSnap.exists() ? afterSnap.data() : undefined);
 
-    // 5) Zoho snapshot (non-critical)
-    try {
-      await upsertContactCheckoutStarted({
-        email,
-        firstName: body.firstName,
-        lastName: body.lastName,
-        phone: body.phone,
-        address1: body.address1,
-        address2: body.address2,
-        city: body.city,
-        state: body.state,
-        postalCode: body.postalCode,
-        country: body.country,
-        productType: productTypeIn,
-        site: siteFromReq,
-        stripePaymentIntentId: intentId,
-      });
-    } catch (e) {
-      console.error('Zoho checkout_started failed (non-critical)', {
-        requestId,
-        e,
-      });
-    }
+		// 5) Zoho snapshot (non-critical)
+		try {
+			await upsertContactCheckoutStarted({
+				email,
+				firstName: body.firstName,
+				lastName: body.lastName,
+				phone: body.phone,
+				address1: body.address1,
+				address2: body.address2,
+				city: body.city,
+				state: body.state,
+				postalCode: body.postalCode,
+				country: body.country,
+				productType: productTypeIn,
+				site: siteFromReq,
+				stripePaymentIntentId: intentId,
+				birthDate1: clean(body.birthDate1),
+			});
+		} catch (e) {
+			console.error("Zoho checkout_started failed (non-critical)", {
+				requestId,
+				e,
+			});
+		}
 
     // 6) Analytics event (best-effort) — stable event_id (dedup)
     try {

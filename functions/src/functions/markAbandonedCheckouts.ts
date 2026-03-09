@@ -25,6 +25,8 @@ const ABANDONED_TIMEOUT_MIN = 5;
 const SCAN_LIMIT = 500;
 const ABANDONED_CAMPAIGNS_TAG = "ca_sp";
 
+//1hr
+
 type FunnelStep =
   | "unknown" | "checkout_viewed" | "lead_captured" | "abandoned"
   | "checkout_started" | "paid" | "delivered" | "delivery_failed"

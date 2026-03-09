@@ -21,9 +21,19 @@ function assertSandboxZohoEnv() {
 }
 
 async function refreshSandboxAccessToken(): Promise<string> {
+  console.log("[zoho-token] refreshSandboxAccessToken start");
+  console.log("[zoho-token] env check", {
+    hasClientId: !!process.env.ZOHO_CLIENT_ID_LILYCHYSTOFAT,
+    hasClientSecret: !!process.env.ZOHO_CLIENT_SECRET_LILYCHYSTOFAT,
+    hasRefreshToken: !!process.env.ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT,
+    accountsDomain: process.env.ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT,
+    apiDomain: process.env.ZOHO_API_DOMAIN_LILYCHYSTOFAT,
+  });
+
   assertSandboxZohoEnv();
 
   const url = `https://${process.env.ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT}/oauth/v2/token`;
+  console.log("[zoho-token] requesting token from", url);
 
   const res = await axios.post(url, null, {
     params: {
@@ -34,6 +44,8 @@ async function refreshSandboxAccessToken(): Promise<string> {
     },
     timeout: 15_000,
   });
+
+  console.log("[zoho-token] token response", { status: res.status, data: res.data });
 
   const accessToken = res.data?.access_token as string | undefined;
   const expiresInSec = Number(res.data?.expires_in ?? 0);
@@ -48,6 +60,7 @@ async function refreshSandboxAccessToken(): Promise<string> {
   cachedAccessToken = accessToken;
   cachedAccessTokenExpiresAt = Date.now() + expiresInSec * 1000 - 60_000;
 
+  console.log("[zoho-token] token refreshed successfully, expires in", expiresInSec, "sec");
   return accessToken;
 }
 

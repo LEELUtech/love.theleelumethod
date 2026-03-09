@@ -1,6 +1,7 @@
 // src/server/zoho/zoho-functions.ts
 import "server-only";
 import { zohoRequest } from "@/lib/zoho-client";
+import { getCohortData } from "@/lib/cohort";
 
 const ZOHO_API_DOMAIN = process.env.ZOHO_API_DOMAIN_LILYCHYSTOFAT;
 const ZOHO_CONTACT_LAYOUT_ID = process.env.ZOHO_CONTACT_LAYOUT_ID_LILYCHYSTOFAT;
@@ -62,6 +63,15 @@ function checkoutStatusFor(step: FunnelStep) {
 // -------------------------
 // Helpers (non-degrading)
 // -------------------------
+
+// Converts MM/DD/YYYY → YYYY-MM-DD (Zoho CRM date format)
+function toZohoCrmDate(v?: string): string | undefined {
+  if (!v) return undefined;
+  const m = v.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  if (!m) return undefined;
+  return `${m[3]}-${m[1]}-${m[2]}`;
+}
+
 function digitsCount(v: unknown) {
   const s = String(v ?? "");
   const m = s.match(/\d/g);
@@ -174,6 +184,8 @@ export async function upsertZohoContactFunnel(input: {
   state?: string;
   postalCode?: string;
   country?: string;
+
+  birthDate1?: string; // MM/DD/YYYY — saved to Date_of_Birth
 }): Promise<UpsertResult> {
   const apiDomain = ZOHO_API_DOMAIN || env("ZOHO_API_DOMAIN_LILYCHYSTOFAT");
 
@@ -182,6 +194,7 @@ export async function upsertZohoContactFunnel(input: {
 
   const existing = await findContactByEmail(email);
   const nowDT = toZohoDateTime(new Date());
+  const cohort = await getCohortData();
 
   const street = buildMailingStreet(input.address1, input.address2);
 
@@ -204,6 +217,11 @@ export async function upsertZohoContactFunnel(input: {
 
     // snapshot fields
     setIfEmpty(patch, "Site", existing["Site"], input.site);
+    setIfEmpty(patch, "Date_of_Birth", existing["Date_of_Birth"], toZohoCrmDate(input.birthDate1));
+
+    // cohort: fill if empty (bulk sync handles mass updates)
+    setIfEmpty(patch, "Cohort_Start_Date", existing["Cohort_Start_Date"], cohort.date);
+    setIfEmpty(patch, "Cohort_Start_Date_Name", existing["Cohort_Start_Date_Name"], cohort.label);
 
     if (cleanStr(input.stripePaymentIntentId)) {
       patch.Stripe_Payment_Intent_ID = input.stripePaymentIntentId!.trim();
@@ -230,7 +248,7 @@ export async function upsertZohoContactFunnel(input: {
   const createData: Record<string, unknown> = {
     Email: email,
     First_Name: cleanStr(input.firstName) || "Unknown",
-    Last_Name: cleanStr(input.lastName) || "",
+    Last_Name: cleanStr(input.lastName) || ".",
 
     Funnel_Step: input.step,
     Funnel_Updated_At: nowDT,
@@ -238,6 +256,12 @@ export async function upsertZohoContactFunnel(input: {
 
   const st = checkoutStatusFor(input.step);
   if (st) createData.Checkout_Status = st;
+
+  const dob = toZohoCrmDate(input.birthDate1);
+  if (dob) createData.Date_of_Birth = dob;
+
+  if (cohort.date) createData.Cohort_Start_Date = cohort.date;
+  if (cohort.label) createData.Cohort_Start_Date_Name = cohort.label;
 
   attachLayoutIfPresent(createData, ZOHO_CONTACT_LAYOUT_ID);
 
@@ -254,6 +278,7 @@ export async function upsertZohoContactFunnel(input: {
     createData.Stripe_Payment_Intent_ID = input.stripePaymentIntentId!.trim();
   }
 
+  console.log("[zoho-functions] CRM create payload:", JSON.stringify({ data: [createData] }, null, 2));
   const created = await zohoRequest<{ data?: Array<{ details?: { id?: string } }> }>({
     method: "POST",
     url: baseUrl,
@@ -261,7 +286,7 @@ export async function upsertZohoContactFunnel(input: {
   });
 
   const newId = created?.data?.[0]?.details?.id;
-  console.log(created)
+  console.log("[zoho-functions] CRM create response:", JSON.stringify(created, null, 2));
   if (!newId) throw new Error("Zoho create failed: missing id");
 
   return { contactId: newId, isNew: true };
@@ -271,13 +296,15 @@ export async function upsertZohoContactFunnel(input: {
 // Backwards-compatible wrappers
 // -------------------------
 export async function upsertContactLeadCaptured(input: { email: string; site?: string, firstName?: string; lastName?: string }) {
-  return upsertZohoContactFunnel({
+  const res = await upsertZohoContactFunnel({
     email: input.email,
     step: "lead_captured",
     site: input.site,
     firstName: input.firstName,
     lastName: input.lastName,
   });
+  console.log("112313", res)
+  return res;
 }
 
 export async function upsertContactCheckoutStarted(input: {
@@ -298,6 +325,7 @@ export async function upsertContactCheckoutStarted(input: {
   site?: string;
 
   stripePaymentIntentId?: string;
+  birthDate1?: string;
 }) {
   return upsertZohoContactFunnel({
     email: input.email,
@@ -315,5 +343,7 @@ export async function upsertContactCheckoutStarted(input: {
     state: input.state,
     postalCode: input.postalCode,
     country: input.country,
+
+    birthDate1: input.birthDate1,
   });
 }

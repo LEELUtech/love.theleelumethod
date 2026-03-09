@@ -66,7 +66,15 @@ const FixSection = () => {
 							the Loyalty Code.
 						</p>
 
-						<Button className="mt-[28px] md:mt-[36px] px-10 md:px-12 text-[11px] md:text-[12px] tracking-[0.18em] uppercase">
+						<Button
+							className="mt-[28px] md:mt-[36px] px-10 md:px-12 text-[11px] md:text-[12px] tracking-[0.18em] uppercase"
+							trackingData={{
+								cta_name: "secure_seat",
+								cta_text: "SECURE YOUR SEAT TO RESET THE DYNAMIC",
+								cta_target_url: null,
+								cta_location: "quiz_result_fix",
+							}}
+						>
 							SECURE YOUR SEAT TO RESET THE DYNAMIC
 						</Button>
 					</div>

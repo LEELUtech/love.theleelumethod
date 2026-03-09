@@ -2,13 +2,14 @@
 import ArcAutoOnce from "@/components/ui/ArcFlyOnce";
 import Button from "@/components/ui/Button";
 import Header from "@/components/ui/Header";
-import RotateOnView from "@/components/ui/RotateOnView"
+import RotateOnView from "@/components/ui/RotateOnView";
 import { sendFreeGuideEmail } from "@/lib/firebaseFunctions";
 import { api } from "@/lib/api";
 import { getStoredFirstUTM } from "@/utils/utm-tracker";
 import { salesiqIdentify } from "@/lib/tracking/salesiqIdentify";
 import Image from "next/image";
 import React from "react";
+import { saveEmailToLS } from "@/lib/tracking/localEmail"
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -35,22 +36,27 @@ export default function SecretsHeroSection() {
 		setSubmitting(true);
 		try {
 			salesiqIdentify({ email: em, firstName: fn });
+			saveEmailToLS(em);
+			
 
 			// fire-and-forget: create contact in Zoho CRM
 			const utm = getStoredFirstUTM();
-			api.post("/api/resource-optin", {
-				email: em,
-				firstName: fn,
-				resource: "secrets",
-				pagePath: window.location.pathname,
-				sessionId: localStorage.getItem("ff_session_id") || undefined,
-				salesiqVisitorId: localStorage.getItem("ff_salesiq_visitor_id") || undefined,
-				utmSource: utm?.utm_source,
-				utmMedium: utm?.utm_medium,
-				utmCampaign: utm?.utm_campaign,
-				utmContent: utm?.utm_content,
-				utmTerm: utm?.utm_term,
-			}).catch(() => {});
+			api
+				.post("/api/resource-optin", {
+					email: em,
+					firstName: fn,
+					resource: "secrets",
+					pagePath: window.location.pathname,
+					sessionId: localStorage.getItem("ff_session_id") || undefined,
+					salesiqVisitorId:
+						localStorage.getItem("ff_salesiq_visitor_id") || undefined,
+					utmSource: utm?.utm_source,
+					utmMedium: utm?.utm_medium,
+					utmCampaign: utm?.utm_campaign,
+					utmContent: utm?.utm_content,
+					utmTerm: utm?.utm_term,
+				})
+				.catch(() => {});
 
 			const res = await sendFreeGuideEmail({ firstName: fn, email: em });
 			if (!res?.success)
@@ -164,6 +170,12 @@ export default function SecretsHeroSection() {
 							loading={submitting}
 							disabled={submitting}
 							type="submit"
+							trackingData={{
+								cta_name: "download_guide",
+								cta_text: "DOWNLOAD THE FREE GUIDE",
+								cta_target_url: null,
+								cta_location: "secrets_hero",
+							}}
 						>
 							DOWNLOAD THE FREE GUIDE
 						</Button>

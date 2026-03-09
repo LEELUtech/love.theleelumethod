@@ -6,6 +6,7 @@ import UTMTracker from "@/components/ui/UTMTracker"
 import SalesIQScript from "@/components/ui/SalesIQScript"
 import PageTracker from "@/components/ui/PageTracker"
 import EngagementTracker from "@/components/ui/EngagementTracker"
+import SessionScoreTracker from "@/components/ui/SessionScoreTracker"
 
 const inter = Inter({
 	subsets: ["latin"],
@@ -84,6 +85,7 @@ export default function RootLayout({
 				<Suspense fallback={null}>
 					<EngagementTracker />
 				</Suspense>
+				<SessionScoreTracker />
 				{children}
 			</body>
 		</html>

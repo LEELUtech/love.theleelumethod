@@ -25,6 +25,7 @@ export default function GuidedBreakthroughPage() {
 
       <CostOfWaitingSection />
       <CheckoutFormSection productId={GUIDED_BREAKTHROUGH} />
+			<SalesPageTagger/>
     </main>
   );
 }

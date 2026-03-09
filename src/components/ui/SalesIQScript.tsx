@@ -217,10 +217,24 @@ export default function SalesIQScript() {
     } catch (e) {}
   }
 
+  function identifyFromStorage() {
+    try {
+      var email = localStorage.getItem("ff_email");
+      if (!email || !email.trim()) return;
+      email = email.trim();
+      var v = window.$zoho && window.$zoho.salesiq && window.$zoho.salesiq.visitor;
+      if (!v) return;
+      if (typeof v.email === "function") v.email(email);
+      if (typeof v.info === "function") v.info({ Email: email });
+      log("[SalesIQ] auto-identified from localStorage:", email);
+    } catch (e) {}
+  }
+
   window.$zoho.salesiq.ready = function () {
     log("[SalesIQ] READY fired");
 
     getOrCreateSessionId();
+    identifyFromStorage();
     trackCurrentPage();
 
     bindDomOpenTracker();

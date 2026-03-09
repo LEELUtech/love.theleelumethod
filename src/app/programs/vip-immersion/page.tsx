@@ -31,6 +31,7 @@ export default function VIPImmersionPage() {
 
       <CostOfWaitingSection />
       <CheckoutFormSection productId={VIP_IMMERSION} />
+			<SalesPageTagger/>
     </main>
   );
 }

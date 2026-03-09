@@ -30,6 +30,7 @@ const CompatibilityReport = () => {
       <FooterPromo {...footerPromoContent} buttonClassName='!px-2 md:w-[70%]' />
 
       <Footer />
+			<SalesPageTagger/>
     </main>
   );
 };

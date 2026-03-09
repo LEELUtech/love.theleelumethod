@@ -47,6 +47,7 @@ export async function POST(req: NextRequest) {
 
     const email = clean(body.email)?.toLowerCase();
     if (!email || !emailRegex.test(email)) {
+      console.log("[resource-optin] ignored: invalid email", { raw: body.email });
       return NextResponse.json({ ok: true, ignored: true });
     }
 
@@ -55,11 +56,19 @@ export async function POST(req: NextRequest) {
     const site = getIncomingSite(req, body.site);
     const pagePath = clean(body.pagePath);
 
+    console.log("[resource-optin] start", { email, firstName, lastName, site, pagePath, resource: body.resource });
+
     // Zoho CRM — create/update contact (non-critical)
     try {
-      await upsertContactLeadCaptured({ email, site, firstName, lastName });
+      console.log("[resource-optin] CRM upsert start", { email });
+      const crmResult = await upsertContactLeadCaptured({ email, site, firstName, lastName });
+      console.log("[resource-optin] CRM upsert ok", crmResult);
     } catch (e) {
-      console.error("resource-optin: Zoho upsert failed (non-critical)", e);
+      console.error("[resource-optin] CRM upsert FAILED", {
+        email,
+        error: e instanceof Error ? e.message : String(e),
+        stack: e instanceof Error ? e.stack : undefined,
+      });
     }
 
     // Analytics event
@@ -67,6 +76,7 @@ export async function POST(req: NextRequest) {
       const sessionId = clean(body.sessionId);
       const eventId = `${sessionId ?? email}:resource_optin:${email}`;
 
+      console.log("[resource-optin] emitFunnelEvent start", { eventId });
       await emitFunnelEvent({
         event_id: eventId,
         event_time: new Date().toISOString(),
@@ -91,10 +101,14 @@ export async function POST(req: NextRequest) {
         utm_last_content: clean(body.utmContent) ?? null,
         utm_last_term: clean(body.utmTerm) ?? null,
       });
+      console.log("[resource-optin] emitFunnelEvent ok", { eventId });
     } catch (e) {
-      console.error("resource-optin: emitFunnelEvent failed (non-critical)", e);
+      console.error("[resource-optin] emitFunnelEvent FAILED", {
+        error: e instanceof Error ? e.message : String(e),
+      });
     }
 
+    console.log("[resource-optin] done", { email });
     return NextResponse.json({ ok: true });
   } catch (e) {
     console.error("resource-optin error:", e);
