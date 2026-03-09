@@ -2,6 +2,11 @@
 import { onRequest } from "firebase-functions/v2/https";
 import { defineSecret } from "firebase-functions/params";
 import { upsertContactAndUpdateTags } from "../lib/zoho-campaigns";
+import {
+  markWebinarRegistered,
+  markWebinarAttendedLive,
+  markWebinarAttendedReplay,
+} from "../lib/zoho-scoring";
 
 const ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT = defineSecret(
   "ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT",
@@ -9,10 +14,12 @@ const ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT = defineSecret(
 const ZOHO_CLIENT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_ID_LILYCHYSTOFAT");
 const ZOHO_CLIENT_SECRET_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_SECRET_LILYCHYSTOFAT");
 const ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT = defineSecret("ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT");
+const ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT");
+const ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT");
+const ZOHO_API_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_API_DOMAIN_LILYCHYSTOFAT");
 
 
 const WB_REGISTERED_TIME_FIELD = "wb_registered_at";
-const NR_READY_TAG = "nr_ready";
 
 type EwebinarAction =
   | "Registered"
@@ -135,7 +142,7 @@ function mapTagDelta(body: EwebinarPayload, action: EwebinarAction): { add: stri
     return {
       add: ["wb_reg"],
       // Keep your previous behavior: when someone registers again, reset watch-state tags
-      remove: ["wb_live", "wb_replay", "wb_partial", "wb_noshow", NR_READY_TAG],
+      remove: ["wb_live", "wb_replay", "wb_partial", "wb_noshow"],
     };
 
   case "MissedWebinar":
@@ -147,13 +154,13 @@ function mapTagDelta(body: EwebinarPayload, action: EwebinarAction): { add: stri
   case "WatchedWebinar":
     // If eWebinar ever fires this directly, we treat it as completed live watcher
     return {
-      add: ["wb_live", NR_READY_TAG],
+      add: ["wb_live"],
       remove: ["wb_replay", "wb_partial", "wb_noshow"],
     };
 
   case "WatchedReplay":
     return {
-      add: ["wb_replay", NR_READY_TAG],
+      add: ["wb_replay"],
       remove: ["wb_live", "wb_partial", "wb_noshow"],
     };
 
@@ -188,11 +195,11 @@ function mapTagDelta(body: EwebinarPayload, action: EwebinarAction): { add: stri
     if (pct !== null && pct >= 80) {
       return isReplay
         ? {
-          add: ["wb_replay", NR_READY_TAG],
+          add: ["wb_replay"],
           remove: ["wb_live", "wb_partial", "wb_noshow"],
         }
         : {
-          add: ["wb_live", NR_READY_TAG],
+          add: ["wb_live"],
           remove: ["wb_replay", "wb_partial", "wb_noshow"],
         };
     }
@@ -221,6 +228,9 @@ export const ewebinarWebhook = onRequest(
       ZOHO_CLIENT_ID_LILYCHYSTOFAT,
       ZOHO_CLIENT_SECRET_LILYCHYSTOFAT,
       ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT,
+      ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT,
+      ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT,
+      ZOHO_API_DOMAIN_LILYCHYSTOFAT,
     ],
   },
   async (req, res) => {
@@ -279,6 +289,33 @@ export const ewebinarWebhook = onRequest(
         { add, remove },
         Object.keys(fields).length ? fields : undefined,
       );
+
+      // CRM scoring fields (best-effort, non-blocking)
+      // In practice eWebinar only fires Registered and WebinarFinished.
+      try {
+        if (action === "Registered") {
+          await markWebinarRegistered(email);
+        } else if (action === "WebinarFinished") {
+          const isReplay = body.sessionType === "Replay";
+          const totalPct = toNum(body.totalWatchedPercent);
+          const replayPct = toNum(body.watchedReplayPercent);
+          const pct = isReplay ? (replayPct ?? totalPct) : totalPct;
+
+          if (pct !== null && pct >= 80) {
+            if (isReplay) {
+              await markWebinarAttendedReplay(email);
+            } else {
+              await markWebinarAttendedLive(email);
+            }
+          }
+        }
+      } catch (scoringErr: any) {
+        console.error("ewebinarWebhook: CRM scoring failed (non-critical)", {
+          action,
+          email,
+          error: scoringErr?.message,
+        });
+      }
 
       res.json({
         ok: true,

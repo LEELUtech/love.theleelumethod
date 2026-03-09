@@ -1,6 +1,7 @@
 import { calculateCompatibility } from "./compatibility-report.service";
 import Stripe from "stripe";
 import { upsertContactAndUpdateTags } from "../../lib/zoho-campaigns";
+import { setCompatState } from "../../lib/zoho-scoring";
 
 const ALL_COMPAT_STATE_TAGS = [
   "cc_battle",
@@ -19,6 +20,16 @@ function mapCompatTag(typeRaw: string): string | null {
   if (t.includes("victory")) return "cc_victory";
   if (t.includes("revolution")) return "cc_revolution";
   if (t.includes("absorption")) return "cc_absorption";
+  return null;
+}
+
+function mapCompatStateLabel(typeRaw: string): string | null {
+  const t = (typeRaw || "").trim().toLowerCase();
+  if (t.includes("battle")) return "Battle";
+  if (t.includes("truce")) return "Truce";
+  if (t.includes("victory")) return "Victory";
+  if (t.includes("revolution")) return "Revolution";
+  if (t.includes("absorption")) return "Absorption";
   return null;
 }
 
@@ -49,19 +60,33 @@ export async function handleCompatibilityReport(pi: Stripe.PaymentIntent) {
   });
 
   const stateTag = mapCompatTag(compatibility.type);
+  const stateLabel = mapCompatStateLabel(compatibility.type);
 
   const remove = stateTag
     ? ALL_COMPAT_STATE_TAGS.filter((t) => t !== stateTag)
     : [...ALL_COMPAT_STATE_TAGS];
 
-  await upsertContactAndUpdateTags(email, {
-    add: ["cc_done", ...(stateTag ? [stateTag] : []), CC_EMAIL4_TRIGGER],
-    remove: remove,
-  });
+  // Campaigns: tags + "Compat State" field
+  const meta = stateLabel ? { "Compat State": stateLabel } : undefined;
+  await upsertContactAndUpdateTags(
+    email,
+    { add: ["cc_done", ...(stateTag ? [stateTag] : []), CC_EMAIL4_TRIGGER], remove },
+    meta,
+  );
 
-  console.log("Zoho tags applied:", {
+  // CRM: Compat_State field (best-effort)
+  if (stateLabel) {
+    try {
+      await setCompatState(email, stateLabel);
+    } catch (e: unknown) {
+      console.error("setCompatState failed (non-critical)", { email, stateLabel, error: e instanceof Error ? e.message : String(e) });
+    }
+  }
+
+  console.log("Zoho tags + compat state applied:", {
     email,
     stateTag,
+    stateLabel,
     compatibilityType: compatibility.type,
   });
 

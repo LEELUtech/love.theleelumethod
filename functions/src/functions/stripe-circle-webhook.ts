@@ -28,7 +28,8 @@ import {
   errToMessage,
   type PaymentRecord,
 } from "../utils/stripeCircleWebhook.helpers";
-import { applyPurchaseCampaignTags } from "../lib/zoho-campaigns-purchase"
+import { applyPurchaseCampaignTags } from "../lib/zoho-campaigns-purchase";
+import { markCompatibilityCodePurchased } from "../lib/zoho-scoring";
 
 // Secrets must be attached to this function (Firebase v2)
 const ZOHO_CLIENT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_ID_LILYCHYSTOFAT");
@@ -577,6 +578,21 @@ export const stripeCircleWebhook = onRequest(
           payment_intent_id: pi.id,
           error: errToMessage(e),
         });
+      }
+
+      // CRM scoring: mark compatibility_report purchase (best-effort)
+      if (
+        normalizedProductType === "compatibility_report" &&
+        validation.email
+      ) {
+        try {
+          await markCompatibilityCodePurchased(validation.email);
+        } catch (e) {
+          console.error("markCompatibilityCodePurchased failed (non-critical)", {
+            payment_intent_id: pi.id,
+            error: errToMessage(e),
+          });
+        }
       }
 
       // Delivery

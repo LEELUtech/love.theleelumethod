@@ -9,12 +9,14 @@ import StopImprovisingSection from "@/components/sections/Programs/StopImprovisi
 import TestimonialsSection from "@/components/sections/Programs/TestimonialsSection";
 import WhoThisIsForSection from "@/components/sections/Programs/WhoThisIsForSection";
 import Footer from "@/components/ui/Footer";
+import SalesPageTagger from "@/components/sections/SalesPage/SalesPageTagger";
 import { PRELOAD_PROGRAM_PRODUCT_IDS } from "@/utils/constants";
 
 export default function ProgramPage() {
 	return (
 		<ProgramPreloader ids={[...PRELOAD_PROGRAM_PRODUCT_IDS]}>
 			<main>
+				<SalesPageTagger scoringEvent="pricing_page_visited" campaignTag="pp_view" />
 				<HeroSection />
 				<StopImprovisingSection />
 				<BlindSpotSection />
