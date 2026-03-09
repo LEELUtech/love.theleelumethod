@@ -3,9 +3,9 @@ import { TypeformWebhookRequest } from "../types/typeform";
 import { TypeformColumns } from "../static/typeform";
 import { db } from "../configs/firebase";
 import { addTagToMember } from "../lib/circle";
-import { googleSheetService } from "../lib/google-sheet";
+import { appendRowFunction } from "../lib/google-sheet";
 import { transformTypeformResponse } from "../utils/typeform/transformTypeformResponse";
-import { emailService } from "../lib/nodemailer";
+import { sendEmailFunction } from "../lib/nodemailer";
 
 export const typeformWebhook = onRequest(
   {
@@ -35,10 +35,10 @@ export const typeformWebhook = onRequest(
     }
 
     if (path && email && name) {
-      await emailService.sendEmail(email, name, path);
+      await sendEmailFunction(email, name, path);
     }
 
-    await googleSheetService.appendToSheet(Object.values(data));
+    await appendRowFunction(Object.values(data));
 
     res.send({ status: "ok" });
   },
