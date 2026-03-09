@@ -1,10 +1,5 @@
 import { google, sheets_v4, Auth } from "googleapis";
-import { defineSecret } from "firebase-functions/params";
-
-const SHEET_EMAIL = defineSecret("SHEET_EMAIL");
-const SHEET_PRIVATE_KEY = defineSecret("SHEET_PRIVATE_KEY");
-const SHEET_ID = defineSecret("SHEET_ID");
-const SHEET_NAME = defineSecret("SHEET_NAME");
+import { configs } from "../configs/env";
 
 export class GoogleSheetService {
   private sheets!: sheets_v4.Sheets;
@@ -13,10 +8,11 @@ export class GoogleSheetService {
   private sheetName!: string;
 
   async init() {
-    const email = await SHEET_EMAIL.value();
-    const key = (await SHEET_PRIVATE_KEY.value()).replace(/\\n/g, "\n");
-    this.spreadsheetId = await SHEET_ID.value();
-    this.sheetName = await SHEET_NAME.value();
+    const email = configs.sheetEmail;
+    const key = configs.sheetPrivateKey;
+
+    this.spreadsheetId = configs.sheetId;
+    this.sheetName = configs.sheetName;
 
     this.auth = new google.auth.JWT({
       email,

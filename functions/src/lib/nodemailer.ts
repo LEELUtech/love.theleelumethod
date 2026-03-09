@@ -1,15 +1,12 @@
 import * as nodemailer from "nodemailer";
-import { defineSecret } from "firebase-functions/params";
-
-const NODEMAILER_USER = defineSecret("NODEMAILER_USER");
-const NODEMAILER_PASS = defineSecret("NODEMAILER_PASS");
+import { configs } from "../configs/env";
 
 class EmailService {
   private transporter!: nodemailer.Transporter;
 
   async init() {
-    const user = await NODEMAILER_USER.value();
-    const pass = await NODEMAILER_PASS.value();
+    const user = configs.nodemailerUser;
+    const pass = configs.nodemailerPass;
 
     this.transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
@@ -24,9 +21,8 @@ class EmailService {
   async sendEmail(to: string, name: string, path: string): Promise<void> {
     if (!this.transporter) throw new Error("Transporter not initialized. Call init() first.");
 
-    const from = await NODEMAILER_USER.value();
     await this.transporter.sendMail({
-      from,
+      from: configs.nodemailerUser,
       to,
       subject: "Thanks for completing the form",
       html: `

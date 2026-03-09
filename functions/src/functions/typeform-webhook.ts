@@ -6,11 +6,28 @@ import { addTagToMember } from "../lib/circle";
 import { appendRowFunction } from "../lib/google-sheet";
 import { transformTypeformResponse } from "../utils/typeform/transformTypeformResponse";
 import { sendEmailFunction } from "../lib/nodemailer";
+import { defineSecret } from "firebase-functions/params";
+
+const SHEET_EMAIL = defineSecret("SHEET_EMAIL");
+const SHEET_PRIVATE_KEY = defineSecret("SHEET_PRIVATE_KEY");
+const SHEET_ID = defineSecret("SHEET_ID");
+const SHEET_NAME = defineSecret("SHEET_NAME");
+
+const NODEMAILER_USER = defineSecret("NODEMAILER_USER");
+const NODEMAILER_PASS = defineSecret("NODEMAILER_PASS");
 
 export const typeformWebhook = onRequest(
   {
     cors: true,
     region: "us-central1",
+    secrets: [
+      SHEET_EMAIL,
+      SHEET_PRIVATE_KEY,
+      SHEET_ID,
+      SHEET_NAME,
+      NODEMAILER_USER,
+      NODEMAILER_PASS,
+    ],
   },
   async (req, res) => {
     const body = req.body as TypeformWebhookRequest;
