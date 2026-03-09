@@ -6,17 +6,21 @@ const SHEET_PRIVATE_KEY = defineSecret("SHEET_PRIVATE_KEY");
 const SHEET_ID = defineSecret("SHEET_ID");
 const SHEET_NAME = defineSecret("SHEET_NAME");
 
-class GoogleSheetService {
-  private sheets: sheets_v4.Sheets;
-  private auth: Auth.JWT;
+export class GoogleSheetService {
+  private sheets!: sheets_v4.Sheets;
+  private auth!: Auth.JWT;
+  private spreadsheetId!: string;
+  private sheetName!: string;
 
-  constructor() {
-    const email = SHEET_EMAIL.value();
-    const key = SHEET_PRIVATE_KEY.value();
+  async init() {
+    const email = await SHEET_EMAIL.value();
+    const key = (await SHEET_PRIVATE_KEY.value()).replace(/\\n/g, "\n");
+    this.spreadsheetId = await SHEET_ID.value();
+    this.sheetName = await SHEET_NAME.value();
 
     this.auth = new google.auth.JWT({
-      email: email,
-      key: key,
+      email,
+      key,
       scopes: ["https://www.googleapis.com/auth/spreadsheets"],
     });
 
@@ -24,15 +28,14 @@ class GoogleSheetService {
   }
 
   async appendToSheet(data: string[]): Promise<void> {
-    const spreadsheetId = SHEET_ID.value();
-    const range = SHEET_NAME.value();
+    if (!this.sheets) throw new Error("Sheets not initialized. Call init() first.");
 
     try {
       await this.sheets.spreadsheets.values.append({
-        spreadsheetId,
-        range,
+        spreadsheetId: this.spreadsheetId,
+        range: this.sheetName,
         valueInputOption: "RAW",
-        requestBody: { values: [Object.values(data)] },
+        requestBody: { values: [data] },
       });
     } catch (error) {
       console.error("Error appending to Google Sheets:", error);
@@ -41,3 +44,8 @@ class GoogleSheetService {
 }
 
 export const googleSheetService = new GoogleSheetService();
+
+export const appendRowFunction = async (data: string[]) => {
+  await googleSheetService.init();
+  await googleSheetService.appendToSheet(data);
+};

@@ -5,16 +5,11 @@ const NODEMAILER_USER = defineSecret("NODEMAILER_USER");
 const NODEMAILER_PASS = defineSecret("NODEMAILER_PASS");
 
 class EmailService {
-  private transporter: nodemailer.Transporter;
-  private from: string;
+  private transporter!: nodemailer.Transporter;
 
-  constructor() {
-    const user = NODEMAILER_USER.value();
-    const pass = NODEMAILER_PASS.value();
-
-    this.from = user;
-
-    console.log(`EmailService configs: ${user}, ${pass}`);
+  async init() {
+    const user = await NODEMAILER_USER.value();
+    const pass = await NODEMAILER_PASS.value();
 
     this.transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
@@ -22,13 +17,16 @@ class EmailService {
       secure: false,
       auth: { user, pass },
     });
+
+    return user;
   }
 
   async sendEmail(to: string, name: string, path: string): Promise<void> {
-    console.log(this.from);
+    if (!this.transporter) throw new Error("Transporter not initialized. Call init() first.");
 
+    const from = await NODEMAILER_USER.value();
     await this.transporter.sendMail({
-      from: this.from,
+      from,
       to,
       subject: "Thanks for completing the form",
       html: `
@@ -43,3 +41,8 @@ class EmailService {
 }
 
 export const emailService = new EmailService();
+
+export const sendEmailFunction = async (to: string, name: string, path: string) => {
+  await emailService.init();
+  await emailService.sendEmail(to, name, path);
+};
