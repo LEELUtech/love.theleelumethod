@@ -1,191 +1,169 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const NAV_LINKS = [
-	{ href: "/programs", label: "Programs" },
-	{ href: "/resources", label: "Resources" },
-	{ href: "/about", label: "About" },
+  { href: '/programs', label: 'Programs' },
+  { href: '/resources', label: 'Resources' },
+  { href: '/about', label: 'About' },
 ] as const;
 
 export default function Header({ className }: { className?: string }) {
-	const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
-	// ESC + lock scroll while menu open
-	useEffect(() => {
-		if (!open) return;
+  // ESC + lock scroll while menu open
+  useEffect(() => {
+    if (!open) return;
 
-		const onKeyDown = (e: KeyboardEvent) => {
-			if (e.key === "Escape") setOpen(false);
-		};
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
 
-		document.addEventListener("keydown", onKeyDown);
-		document.body.style.overflow = "hidden";
+    document.addEventListener('keydown', onKeyDown);
+    document.body.style.overflow = 'hidden';
 
-		return () => {
-			document.removeEventListener("keydown", onKeyDown);
-			document.body.style.overflow = "";
-		};
-	}, [open]);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [open]);
 
-	// optional: close on route click already handled by onClick
+  // optional: close on route click already handled by onClick
 
-	return (
-		<header
-			className={`relative py-4 md:py-5 lg:py-[21px] px-4 md:px-8 lg:px-[56px] bg-transparent z-50 ${className ?? ""}`}
-		>
-			<nav className="flex items-center justify-between md:justify-between lg:justify-between w-full">
-				{/* Logo */}
-				<Link
-					href="/"
-					className="px-2 md:px-3 lg:px-4 font-light transition text-[20px] md:text-[22px] lg:text-[24px] leading-[100%] font-canela flex items-center gap-2 md:gap-2.5 lg:gap-3"
-					onClick={() => setOpen(false)}
-				>
-					<span className="inline-block w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 relative flex-shrink-0">
-						<Image
-							src="/leelu_logo.svg"
-							alt="Lily Chystofat Logo"
-							fill
-							className="object-contain"
-							priority
-						/>
-					</span>
-					<div className="whitespace-nowrap">
-						<span className="font-medium font-canela tracking-tight mr-1">
-							LILY
-						</span>
-						<span className="font-canela font-light">CHYSTOFAT</span>
-					</div>
-				</Link>
+  return (
+    <header
+      className={`relative py-4 md:py-5 lg:py-[21px] px-4 md:px-8 lg:px-[56px] bg-transparent z-50 ${className ?? ''}`}
+    >
+      <nav className='flex items-center justify-between md:justify-between lg:justify-between w-full'>
+        {/* Logo */}
+        <Link
+          href='/'
+          className='px-2 md:px-3 lg:px-4 font-light transition text-[20px] md:text-[22px] lg:text-[24px] leading-[126%] font-canela flex items-center gap-2 md:gap-2.5 lg:gap-3'
+          onClick={() => setOpen(false)}
+        >
+          <span className='inline-block w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 relative flex-shrink-0'>
+            <Image src='/leelu_logo.svg' alt='Lily Chystofat Logo' fill className='object-contain' priority />
+          </span>
+          <div className='whitespace-nowrap'>
+            <span className='font-medium font-canela tracking-tight mr-1'>LILY</span>
+            <span className='font-canela font-light'>CHYSTOFAT</span>
+          </div>
+        </Link>
 
-				{/* Desktop menu (ONLY on lg+) */}
-				<div className="hidden lg:flex gap-4 md:gap-6 lg:gap-[33px]">
-					{NAV_LINKS.map((link) => (
-						<Link
-							key={link.href}
-							href={link.href}
-							className="font-medium text-[11px] md:text-[13px] lg:text-[15px] leading-[145%] tracking-[1.5px] md:tracking-[2px] text-[#6F4C40] font-lato uppercase"
-						>
-							{link.label}
-						</Link>
-					))}
-				</div>
+        {/* Desktop menu (ONLY on lg+) */}
+        <div className='hidden lg:flex gap-4 md:gap-6 lg:gap-[33px]'>
+          {NAV_LINKS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className='font-medium text-[11px] md:text-[13px] lg:text-[15px] leading-[145%] tracking-[1.5px] md:tracking-[2px] text-[#6F4C40] font-lato uppercase'
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
 
-				{/* Burger button (mobile + tablet, hidden on lg+) */}
-				<button
-					className="lg:hidden w-10 h-10 flex items-center justify-center relative z-[70]"
-					onClick={() => setOpen((v) => !v)}
-					aria-label="Toggle menu"
-					aria-expanded={open}
-					type="button"
-				>
-					{/* fixed-size box so burger & X always align perfectly */}
-					<div className="relative w-6 h-6">
-						{/* Top */}
-						<span
-							className={[
-								"absolute left-0 top-[5px] w-5 h-[2px] bg-brand-black origin-center transition-transform duration-200",
-								// open ? "translate-y-[7px] rotate-45" : "translate-y-0 rotate-0",
-							].join(" ")}
-						/>
-						{/* Middle */}
-						<span
-							className={[
-								"absolute left-0 top-[12px] w-5 h-[2px] bg-brand-black transition-opacity duration-200",
-								// open ? "opacity-0" : "opacity-100",
-							].join(" ")}
-						/>
-						{/* Bottom */}
-						<span
-							className={[
-								"absolute left-0 top-[19px] w-5 h-[2px] bg-brand-black origin-center transition-transform duration-200",
-								// open
-								// 	? "-translate-y-[7px] -rotate-45"
-								// 	: "translate-y-0 rotate-0",
-							].join(" ")}
-						/>
-					</div>
-				</button>
-			</nav>
+        {/* Burger button (mobile + tablet, hidden on lg+) */}
+        <button
+          className='lg:hidden w-10 h-10 flex items-center justify-center relative z-[70]'
+          onClick={() => setOpen((v) => !v)}
+          aria-label='Toggle menu'
+          aria-expanded={open}
+          type='button'
+        >
+          {/* fixed-size box so burger & X always align perfectly */}
+          <div className='relative w-6 h-6'>
+            {/* Top */}
+            <span
+              className={[
+                'absolute left-0 top-[5px] w-5 h-[2px] bg-brand-black origin-center transition-transform duration-200',
+                // open ? "translate-y-[7px] rotate-45" : "translate-y-0 rotate-0",
+              ].join(' ')}
+            />
+            {/* Middle */}
+            <span
+              className={[
+                'absolute left-0 top-[12px] w-5 h-[2px] bg-brand-black transition-opacity duration-200',
+                // open ? "opacity-0" : "opacity-100",
+              ].join(' ')}
+            />
+            {/* Bottom */}
+            <span
+              className={[
+                'absolute left-0 top-[19px] w-5 h-[2px] bg-brand-black origin-center transition-transform duration-200',
+                // open
+                // 	? "-translate-y-[7px] -rotate-45"
+                // 	: "translate-y-0 rotate-0",
+              ].join(' ')}
+            />
+          </div>
+        </button>
+      </nav>
 
-			{/* Mobile/Tablet overlay menu */}
-			<AnimatePresence>
-				{open && (
-					<motion.div
-						className="fixed inset-0 z-[60]"
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						exit={{ opacity: 0 }}
-						transition={{ duration: 0.18 }}
-					>
-						{/* Backdrop (dark area on the right) */}
-						<motion.button
-							type="button"
-							aria-label="Close menu"
-							onClick={() => setOpen(false)}
-							className="absolute inset-0 bg-black/40"
-							initial={{ opacity: 0 }}
-							animate={{ opacity: 1 }}
-							exit={{ opacity: 0 }}
-							transition={{ duration: 0.18 }}
-						/>
+      {/* Mobile/Tablet overlay menu */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            className='fixed inset-0 z-[60]'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+          >
+            {/* Backdrop (dark area on the right) */}
+            <motion.button
+              type='button'
+              aria-label='Close menu'
+              onClick={() => setOpen(false)}
+              className='absolute inset-0 bg-black/40'
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.18 }}
+            />
 
-						{/* Panel */}
-						<motion.aside
-							className="absolute left-0 top-0 h-full w-[80%] max-w-[380px] bg-[#FFF3F0] px-6 pt-8"
-							initial={{ x: "-100%" }}
-							animate={{ x: 0 }}
-							exit={{ x: "-100%" }}
-							transition={{ duration: 0.22, ease: "easeOut" }}
-						>
-							{/* Top row: logo + close */}
-							<div className="flex items-center justify-between">
-								<Link
-									href="/"
-									onClick={() => setOpen(false)}
-									className="font-canela flex items-center gap-3"
-								>
-									<span className="inline-block w-7 h-7 relative flex-shrink-0">
-										<Image
-											src="/leelu_logo.svg"
-											alt="Lily Chystofat Logo"
-											fill
-											className="object-contain"
-											priority
-										/>
-									</span>
+            {/* Panel */}
+            <motion.aside
+              className='absolute left-0 top-0 h-full w-[80%] max-w-[380px] bg-[#FFF3F0] px-6 pt-8'
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ duration: 0.22, ease: 'easeOut' }}
+            >
+              {/* Top row: logo + close */}
+              <div className='flex items-center justify-between'>
+                <Link href='/' onClick={() => setOpen(false)} className='font-canela flex items-center gap-3'>
+                  <span className='inline-block w-7 h-7 relative flex-shrink-0'>
+                    <Image src='/leelu_logo.svg' alt='Lily Chystofat Logo' fill className='object-contain' priority />
+                  </span>
 
-									<div className="whitespace-nowrap leading-[100%]">
-										<span className="font-medium tracking-tight mr-1 text-[24px] text-brand-black">
-											LILY
-										</span>
-										<span className="font-thin text-[24px] text-brand-black">CHYSTOFAT</span>
-									</div>
-								</Link>
+                  <div className='whitespace-nowrap leading-[126%]'>
+                    <span className='font-medium tracking-tight mr-1 text-[24px] text-brand-black'>LILY</span>
+                    <span className='font-thin text-[24px] text-brand-black'>CHYSTOFAT</span>
+                  </div>
+                </Link>
+              </div>
 
-						
-							</div>
-
-							{/* Links */}
-							<nav className="mt-14 flex flex-col gap-6">
-								{NAV_LINKS.map((link) => (
-									<Link
-										key={link.href}
-										href={link.href}
-										onClick={() => setOpen(false)}
-										className="uppercase font-lato text-[#6F4C40] text-[16px] tracking-[3px] font-medium"
-									>
-										{link.label}
-									</Link>
-								))}
-							</nav>
-						</motion.aside>
-					</motion.div>
-				)}
-			</AnimatePresence>
-		</header>
-	);
+              {/* Links */}
+              <nav className='mt-14 flex flex-col gap-6'>
+                {NAV_LINKS.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setOpen(false)}
+                    className='uppercase font-lato text-[#6F4C40] text-[16px] tracking-[3px] font-medium'
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+            </motion.aside>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </header>
+  );
 }

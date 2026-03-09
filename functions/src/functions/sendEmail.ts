@@ -31,6 +31,9 @@ export const sendEmail = onCall({
   if (!firstName || !email) {
     throw new Error("Missing required fields: firstName, email");
   }
+  if (!firstName || !email) {
+    throw new Error("Missing required fields: firstName, email");
+  }
 
   const normalizedEmail = String(email).toLowerCase().trim();
   const normalizedFirstName = String(firstName).trim();

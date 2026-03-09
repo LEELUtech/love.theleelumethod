@@ -1,31 +1,33 @@
-import { DatePicker } from "antd";
-import React from "react";
-import type { Dayjs } from "dayjs";
-import { DATE_FORMAT } from "@/utils/constants"
+import { DatePicker } from 'antd';
+import React from 'react';
+import type { Dayjs } from 'dayjs';
+import { DATE_FORMAT } from '@/utils/constants';
+import { CalendarIC } from '../icons';
 
 // Date picker component with popup container fix for modals
 export default function BirthDatePicker({
-	placeholder,
-	onChange,
+  placeholder,
+  onChange,
 }: {
-	placeholder: string;
-	onChange: (val: Dayjs | null) => void;
+  placeholder: string;
+  onChange: (val: Dayjs | null) => void;
 }) {
-	const wrapRef = React.useRef<HTMLDivElement | null>(null);
+  const wrapRef = React.useRef<HTMLDivElement | null>(null);
 
-	return (
-		<div ref={wrapRef} className="relative w-full">
-			<DatePicker
-				getPopupContainer={() => wrapRef.current ?? document.body}
-				classNames={{
-					popup: { root: "date-popup-fit" },
-				}}
-				className="!w-full !rounded-[6px] !border-[#C3C6D1] !px-[18px] !py-[10px] font-lato text-body text-[#757986]"
-				placeholder={placeholder}
-				format={DATE_FORMAT}
-				inputReadOnly
-				onChange={onChange}
-			/>
-		</div>
-	);
+  return (
+    <div ref={wrapRef} className='relative w-full'>
+      <DatePicker
+        getPopupContainer={() => wrapRef.current ?? document.body}
+        classNames={{
+          popup: { root: 'date-popup-fit' },
+        }}
+        suffixIcon={<CalendarIC className='text-[#1C1B1F]' />}
+        className='!w-full !rounded-[6px] !border-[#C3C6D1] !px-[18px] !py-[10px] font-lato text-body text-[#757986]'
+        placeholder={placeholder}
+        format={DATE_FORMAT}
+        inputReadOnly
+        onChange={onChange}
+      />
+    </div>
+  );
 }
