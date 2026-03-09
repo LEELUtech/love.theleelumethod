@@ -1,23 +1,36 @@
-import { google } from "googleapis";
+import { google, sheets_v4, Auth } from "googleapis";
 import { configs } from "../configs/env";
 
-const auth = new google.auth.JWT({
-  email: configs.sheetEmail,
-  key: configs.sheetPrivateKey.replace(/\\n/g, "\n"),
-  scopes: ["https://www.googleapis.com/auth/spreadsheets"],
-});
+class GoogleSheetService {
+  private sheets: sheets_v4.Sheets;
+  private auth: Auth.JWT;
 
-const sheets = google.sheets({ version: "v4", auth });
+  constructor() {
+    console.log(`GoogleSheetService configs: ${configs.sheetEmail}, ${configs.sheetPrivateKey}`);
 
-export const appendToSheet = async (id: string, name: string, data: string[]) => {
-  try {
-    await sheets.spreadsheets.values.append({
-      spreadsheetId: id,
-      range: name,
-      valueInputOption: "RAW",
-      requestBody: { values: [Object.values(data)] },
+    this.auth = new google.auth.JWT({
+      email: configs.sheetEmail,
+      key: configs.sheetPrivateKey,
+      scopes: ["https://www.googleapis.com/auth/spreadsheets"],
     });
-  } catch (error) {
-    console.error("Error appending to Google Sheets:", error);
+
+    this.sheets = google.sheets({ version: "v4", auth: this.auth });
   }
-};
+
+  async appendToSheet(data: string[]): Promise<void> {
+    console.log(`appendToSheet configs: ${configs.sheetId}, ${configs.sheetName}`);
+
+    try {
+      await this.sheets.spreadsheets.values.append({
+        spreadsheetId: configs.sheetId,
+        range: configs.sheetName,
+        valueInputOption: "RAW",
+        requestBody: { values: [Object.values(data)] },
+      });
+    } catch (error) {
+      console.error("Error appending to Google Sheets:", error);
+    }
+  }
+}
+
+export const googleSheetService = new GoogleSheetService();

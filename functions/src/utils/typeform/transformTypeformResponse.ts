@@ -5,7 +5,7 @@ import { formatTime } from "../helpers/formatTime";
 const transformPathResponse = (label: string) => {
   switch (label) {
     case "I’m going through a breakup":
-      return "Path A";
+      return "Path B";
     case "I’m in a relationship":
       return "Path A";
     default:

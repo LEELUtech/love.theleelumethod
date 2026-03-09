@@ -39,4 +39,7 @@ export const configs = {
   sheetPrivateKey: process.env.SHEET_PRIVATE_KEY || "",
   sheetId: process.env.SHEET_ID || "",
   sheetName: process.env.SHEET_NAME || "",
+
+  nodemailerUser: process.env.NODEMAILER_USER || "",
+  nodemailerPass: process.env.NODEMAILER_PASS || "",
 };

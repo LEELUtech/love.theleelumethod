@@ -3,32 +3,43 @@ import { TypeformWebhookRequest } from "../types/typeform";
 import { TypeformColumns } from "../static/typeform";
 import { db } from "../configs/firebase";
 import { addTagToMember } from "../lib/circle";
-import { configs } from "../configs/env";
-import { appendToSheet } from "../lib/google-sheet";
+import { googleSheetService } from "../lib/google-sheet";
 import { transformTypeformResponse } from "../utils/typeform/transformTypeformResponse";
+import { emailService } from "../lib/nodemailer";
 
-export const typeformWebhook = onRequest(async (req, res) => {
-  const body = req.body as TypeformWebhookRequest;
+export const typeformWebhook = onRequest(
+  {
+    cors: true,
+    region: "us-central1",
+  },
+  async (req, res) => {
+    const body = req.body as TypeformWebhookRequest;
 
-  const { submitted_at, answers } = body.form_response;
+    const { submitted_at, answers } = body.form_response;
 
-  const data = transformTypeformResponse(submitted_at, answers);
+    const data = transformTypeformResponse(submitted_at, answers);
 
-  const path = data[TypeformColumns.PATH];
-  const email = data[TypeformColumns.EMAIL];
+    const path = data[TypeformColumns.PATH];
+    const email = data[TypeformColumns.EMAIL];
+    const name = data[TypeformColumns.HER_FULL_NAME];
 
-  if (path && email) {
-    const docRef = db.collection("circle_tags").doc(path);
-    const docSnap = await docRef.get();
+    if (path && email) {
+      const docRef = db.collection("circle_tags").doc(path);
+      const docSnap = await docRef.get();
 
-    if (docSnap.exists) {
-      const data = docSnap.data();
+      if (docSnap.exists) {
+        const data = docSnap.data();
 
-      if (data?.id) await addTagToMember(email, data.id);
+        if (data?.id) await addTagToMember(email, data.id);
+      }
     }
-  }
 
-  await appendToSheet(configs.sheetId, configs.sheetName, Object.values(data));
+    if (path && email && name) {
+      await emailService.sendEmail(email, name, path);
+    }
 
-  res.send({ status: "ok" });
-});
+    await googleSheetService.appendToSheet(Object.values(data));
+
+    res.send({ status: "ok" });
+  },
+);
