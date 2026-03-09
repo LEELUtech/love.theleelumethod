@@ -15,6 +15,7 @@ import {
   vipImmersionResultData,
   vipImmersionWhoThisData,
 } from '@/components/sections/Programs/VIPImmersion/static';
+import SalesPageTagger from '@/components/sections/SalesPage/SalesPageTagger';
 import { VIP_IMMERSION } from '@/utils/constants';
 
 export default function VIPImmersionPage() {
@@ -31,7 +32,7 @@ export default function VIPImmersionPage() {
 
       <CostOfWaitingSection />
       <CheckoutFormSection productId={VIP_IMMERSION} />
-			<SalesPageTagger/>
+      <SalesPageTagger />
     </main>
   );
 }
