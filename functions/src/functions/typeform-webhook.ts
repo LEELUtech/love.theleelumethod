@@ -1,4 +1,4 @@
-import { onRequest } from "firebase-functions/https";
+import { onRequest } from "firebase-functions/v2/https";
 import { TypeformWebhookRequest } from "../types/typeform";
 import { TypeformColumns } from "../static/typeform";
 import { db } from "../configs/firebase";
