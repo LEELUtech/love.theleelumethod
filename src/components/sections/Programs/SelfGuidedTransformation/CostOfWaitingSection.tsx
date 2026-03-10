@@ -35,7 +35,7 @@ export default function CostOfWaitingSection() {
         <div className='text-center'>
           {/* Top Image */}
           <div className='flex justify-center relative pt-[180px] sm:pt-[270px] md:pt-[300px] lg:pt-[300px]'>
-            <div className='absolute w-[268px] h-[290px] sm:w-[358px] sm:h-[376px] -top-[200px] lg:-top-[180px] overflow-visible'>
+            <div className='absolute w-[268px] h-[290px] sm:w-[358px] sm:h-[376px] -top-[200px] overflow-visible'>
               <Image
                 src='/images/programs/self-guided-transformation/sad-anxiety-depressed.jpg'
                 alt='Stop Guessing'
