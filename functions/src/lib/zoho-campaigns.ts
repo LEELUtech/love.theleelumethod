@@ -70,26 +70,6 @@ async function fetchExistingContactFields(email: string, token: string): Promise
   }
 }
 
-// ─── UPDATE EXISTING CONTACT FIELDS ──────────────────────────────────────────
-
-async function updateContactFields(contact: Record<string, string>, token: string): Promise<void> {
-  const contactinfo = JSON.stringify(contact);
-  const body = new URLSearchParams();
-  body.set("resfmt", "JSON");
-  body.set("contactinfo", contactinfo);
-
-  console.log("zoho-campaigns updatecontact", { email: contact["Contact Email"], contactinfo });
-
-  const resp = await fetch("https://campaigns.zoho.com/api/v1.1/json/updatecontact", {
-    method: "POST",
-    headers: { ...authHeaders(token), "Content-Type": "application/x-www-form-urlencoded" },
-    body,
-  });
-
-  const txt = await resp.text();
-  console.log("zoho-campaigns updatecontact response", resp.status, txt);
-}
-
 // ─── SUBSCRIBE / UPSERT CONTACT ──────────────────────────────────────────────
 
 async function ensureSubscribed(email: string, meta?: ContactMeta): Promise<void> {
@@ -120,53 +100,28 @@ async function ensureSubscribed(email: string, meta?: ContactMeta): Promise<void
 
   // Auto-inject cohort fields from Firebase if not already provided via meta
   const cohort = await getCohortData();
-  if (cohort.date && !contact["Cohort Start Date"]) contact["Cohort Start Date"] = cohort.date;
+  if (cohort.date && !contact["Cohort Start Date"]) {
+    const [y, m, d] = cohort.date.split("-");
+    contact["Cohort Start Date"] = `${m}/${d}/${y}`;
+  }
   if (cohort.label && !contact["Cohort Start Date Name"]) contact["Cohort Start Date Name"] = cohort.label;
 
   const contactinfo = JSON.stringify(contact);
 
-  const body = new URLSearchParams();
-  body.set("resfmt", "JSON");
-  body.set("listkey", configs.zohoCampaignsListKey);
-  body.set("contactinfo", contactinfo);
+  const bodyStr = `resfmt=JSON&listkey=${encodeURIComponent(configs.zohoCampaignsListKey)}&contactinfo=${encodeURIComponent(contactinfo)}`;
 
-  console.log("zoho-campaigns listsubscribe", {
-    email,
-    listkey: configs.zohoCampaignsListKey ? configs.zohoCampaignsListKey.slice(0, 8) + "…" : "EMPTY",
-    metaKeys: meta ? Object.keys(meta) : [],
-    contactinfo,
-  });
+  console.log("zoho-campaigns listsubscribe sending", { contactinfo, listkey: configs.zohoCampaignsListKey?.slice(0, 8) + "…" });
 
   const resp = await fetch("https://campaigns.zoho.com/api/v1.1/json/listsubscribe", {
     method: "POST",
     headers: { ...authHeaders(token), "Content-Type": "application/x-www-form-urlencoded" },
-    body,
+    body: bodyStr,
   });
 
   const txt = await resp.text();
   console.log("zoho-campaigns listsubscribe response", resp.status, txt);
 
   // Zoho returns HTTP 200 even on errors — check the JSON body
-  try {
-    const json = JSON.parse(txt);
-    if (json.status === "error") {
-      // 2001 = contact already exists/unsubscribed — update fields separately, then continue with tags
-      if (json.code === 2001 || json.code === "2001") {
-        console.warn("zoho-campaigns listsubscribe 2001, trying updatecontact for fields", { email });
-        if (Object.keys(contact).length > 1) {
-          try {
-            await updateContactFields(contact, token);
-          } catch (e) {
-            console.error("zoho-campaigns updatecontact failed (non-critical)", { email, error: e });
-          }
-        }
-        return;
-      }
-      throw new Error(`listsubscribe error: ${json.code} ${json.message}`);
-    }
-  } catch (e: any) {
-    if (e.message.startsWith("listsubscribe error")) throw e;
-  }
 
   if (!resp.ok) {
     throw new Error("listsubscribe failed " + txt);
