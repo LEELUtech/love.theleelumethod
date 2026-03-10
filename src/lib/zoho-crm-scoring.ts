@@ -2,7 +2,7 @@ import "server-only";
 import axios from "axios";
 import { zohoRequest } from "@/lib/zoho-client";
 
-const API_DOMAIN = process.env.ZOHO_API_DOMAIN_LILYCHYSTOFAT;
+const API_DOMAIN = process.env.ZOHO_API_DOMAIN_LILYCHYSTOFAT || "www.zohoapis.com";
 const MAX_COUNT = 10;
 
 async function findContact(email: string): Promise<{ id: string; fields: Record<string, any> } | null> {

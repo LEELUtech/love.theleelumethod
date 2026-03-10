@@ -13,9 +13,6 @@ function assertSandboxZohoEnv() {
   if (!process.env.ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT)
     throw new Error("ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT missing");
 
-  if (!process.env.ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT)
-    throw new Error("ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT missing");
-
   if (!process.env.ZOHO_API_DOMAIN_LILYCHYSTOFAT)
     throw new Error("ZOHO_API_DOMAIN_LILYCHYSTOFAT missing");
 }
@@ -32,7 +29,7 @@ async function refreshSandboxAccessToken(): Promise<string> {
 
   assertSandboxZohoEnv();
 
-  const url = `https://${process.env.ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT}/oauth/v2/token`;
+  const url = `https://${process.env.ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT || "accounts.zoho.com"}/oauth/v2/token`;
   console.log("[zoho-token] requesting token from", url);
 
   const res = await axios.post(url, null, {

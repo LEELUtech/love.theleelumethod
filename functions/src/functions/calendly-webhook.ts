@@ -3,13 +3,15 @@ import { onRequest } from "firebase-functions/v2/https";
 import { defineSecret } from "firebase-functions/params";
 
 import { upsertContactAndUpdateTags } from "../lib/zoho-campaigns";
-import type { SessionPackageTier } from "../lib/zoho-sessions";
+import { markSessionPurchased, markSessionCanceled, type SessionPackageTier } from "../lib/zoho-sessions";
 
 const ZOHO_CLIENT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_ID_LILYCHYSTOFAT");
 const ZOHO_CLIENT_SECRET_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_SECRET_LILYCHYSTOFAT");
 const ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT");
 const ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT = defineSecret("ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT");
 const ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT");
+const ZOHO_API_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_API_DOMAIN_LILYCHYSTOFAT");
+const ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT");
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
@@ -88,6 +90,8 @@ export const calendlyWebhook = onRequest(
       ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT,
       ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT,
       ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT,
+      ZOHO_API_DOMAIN_LILYCHYSTOFAT,
+      ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT,
     ],
   },
   async (req, res) => {
@@ -121,6 +125,12 @@ export const calendlyWebhook = onRequest(
 
         await upsertContactAndUpdateTags(email, { add, remove });
 
+        try {
+          await markSessionCanceled(email);
+        } catch (e) {
+          console.error("calendlyWebhook: markSessionCanceled failed (non-critical)", { email, error: e });
+        }
+
         res.json({ ok: true, event: eventType, email, add, remove });
         return;
       }
@@ -152,6 +162,12 @@ export const calendlyWebhook = onRequest(
       }
 
       await upsertContactAndUpdateTags(email, { add, remove }, Object.keys(meta).length ? meta : undefined);
+
+      try {
+        await markSessionPurchased(email, tier);
+      } catch (e) {
+        console.error("calendlyWebhook: markSessionPurchased failed (non-critical)", { email, tier, error: e });
+      }
 
       res.json({ ok: true, event: eventType, email, tier, add, remove });
     } catch (err: any) {
