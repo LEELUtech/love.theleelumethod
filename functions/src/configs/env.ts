@@ -11,6 +11,7 @@ export const configs = {
   baseUrl: process.env.NEXT_PUBLIC_BASE_URL || process.env.DOMAIN_URL || "http://localhost:3000",
   // Circle API configuration
   circleApiKey: process.env.CIRCLE_API_KEY || "",
+  circleHeadlessKey: process.env.CIRCLE_HEADLESS_KEY || "",
   circleCommunityId: process.env.CIRCLE_COMMUNITY_ID || "",
   circleCommunityUrl: process.env.CIRCLE_COMMUNITY_URL || "",
 

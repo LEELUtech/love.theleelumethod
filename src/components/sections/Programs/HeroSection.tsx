@@ -1,4 +1,5 @@
 import Button from '@/components/ui/Button';
+import { Logo } from '@/components/ui/Logo';
 import RotateOnView from '@/components/ui/RotateOnView';
 import { PROGRAMS_LINKS } from '@/static/links';
 import Image from 'next/image';
@@ -13,16 +14,7 @@ const HeroSection = () => {
       </div>
 
       <div className='container px-4 relative z-10'>
-        <div
-          className='
-						flex flex-col items-center
-						pt-[10px]
-						md:pt-[56px]
-						lg:pt-[40px]
-						pb-[62px]
-						lg:pb-[76px]
-					'
-        >
+        <div className='flex flex-col items-center pt-[10px] md:pt-[56px] lg:pt-[40px] pb-[62px] lg:pb-[76px]'>
           <div
             className='
 							order-1 lg:order-2
@@ -33,24 +25,11 @@ const HeroSection = () => {
 							mt-0 lg:mt-[63px]
 						'
           >
-            <span className='w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 relative flex-shrink-0'>
-              <Image src='/leelu_logo.svg' alt='Lily Chystofat Logo' fill className='object-contain' priority />
-            </span>
-
-            <div className='whitespace-nowrap'>
-              <span className='font-medium font-canela tracking-tight mr-1'>LILY</span>
-              <span className='font-canela font-light'>CHYSTOFAT</span>
-            </div>
+            <Logo />
           </div>
 
           <div className='relative order-2 lg:order-1 mt-[18px] lg:mt-0'>
-            <div
-              className='
-								w-[359px] h-[305px]
-								md:w-[520px] md:h-[420px]
-								lg:w-[356px] lg:h-[384px]
-							'
-            >
+            <div className='w-[359px] h-[305px] md:w-[520px] md:h-[420px] lg:w-[356px] lg:h-[384px]'>
               <Image
                 src='/images/programs/hero_section.png'
                 alt='Lily'
@@ -109,16 +88,7 @@ const HeroSection = () => {
           </h1>
 
           {/* SUBTITLE */}
-          <p
-            className='
-							order-4
-							mt-4
-							font-canela font-thin text-brand-deep text-center
-							text-[24px]
-							md:text-[28px]
-							lg:text-[32px]
-						'
-          >
+          <p className='order-4 mt-4 font-canela font-thin text-brand-deep text-center text-[24px] md:text-[28px] lg:text-[32px]'>
             The Operating Manual for Human Connection. <br className='hidden lg:block' />
             For women who feel confused, anxious, or stuck in relationship loops.
           </p>

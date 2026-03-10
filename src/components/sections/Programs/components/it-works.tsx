@@ -21,7 +21,7 @@ export const ProgramItWorks = ({ description, subtitle, link, imgSrc }: Props) =
   return (
     <Section backgroundImage='/images/programs/self-guided-transformation/itworks_bg.png'>
       <motion.div
-        className='pt-[40px] pb-[120px] lg:pt-[60px] lg:pb-[160px]'
+        className='pt-[40px] pb-[160px] lg:pt-[60px]'
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, amount: 0.2 }}

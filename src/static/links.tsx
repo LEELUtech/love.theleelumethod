@@ -146,17 +146,17 @@ export const HOME_LINKS: RecordLink = {
     label: 'READ MORE STORIES',
     href: '#stories',
   },
-  QUIZL_LINK: {
+  QUIZ_LINK: {
     label: 'TAKE THE QUIZ',
-    href: '#',
+    href: QUIZ_URL,
   },
   REGISTER_LINK: {
     label: 'REGISTER FOR MASTERCLASS',
-    href: '#',
+    href: WEBINAR_URL,
   },
   PERSONALIZED_LINK: {
     label: 'GET MY PERSONALIZED REPORT',
-    href: '#',
+    href: '/resources/compatibility-report',
   },
   DECODED_LINK: {
     label: 'Save My Seat',

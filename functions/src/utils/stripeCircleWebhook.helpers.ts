@@ -3,6 +3,9 @@ import Stripe from "stripe";
 import { db } from "../configs/firebase";
 import { configs } from "../configs/env";
 import { handleCompatibilityReport } from "./compatibility-report/compatibility-report";
+import { handleGuidedBreakthrough } from "./guided-breakthrough/guided-breakthrough";
+import { handleProtocolEssentials } from "./protocol-essentials/protocol-essentials";
+import { handleVipImmersion } from "./vip-immersion/vip-immersion";
 
 export type ProductType =
   | "compatibility_report"
@@ -183,25 +186,23 @@ export function validatePaymentIntent(pi: Stripe.PaymentIntent): {
   return { isValid: errors.length === 0, email, productType, errors };
 }
 
-// --------------------
-// delivery handlers (stubs for now)
-// --------------------
 export async function processPayment(pi: Stripe.PaymentIntent): Promise<void> {
   const productType = pi.metadata?.product_type as ProductType;
 
+  console.log(`Processing payment for product type: ${pi}`);
+
   switch (productType) {
     case "compatibility_report":
-      // console.log("Compatibility Report handler is currently disabled.");
       handleCompatibilityReport(pi);
       break;
     case "protocol_essentials":
-      console.log("Protocol Essentials handler is currently disabled.");
+      handleProtocolEssentials(pi);
       break;
     case "guided_breakthrough":
-      console.log("Guided Breakthrough handler is currently disabled.");
+      handleGuidedBreakthrough(pi);
       break;
     case "vip_immersion":
-      console.log("VIP Immersion handler is currently disabled.");
+      handleVipImmersion(pi);
       break;
     default:
       throw new Error(`Unsupported product type: ${productType}`);

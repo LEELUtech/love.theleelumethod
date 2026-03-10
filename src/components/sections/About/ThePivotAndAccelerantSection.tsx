@@ -75,8 +75,9 @@ const ThePivotAndAccelerantSection = () => {
               The system I used to escape was effective, but I wanted military- grade precision.
             </p>
             <p className='font-normal text-body text-[#5A5757] font-lato leading-[26px] tracking-normal mb-6'>
-              I sought out the most advanced training in the world, located in a restricted facility in St. Petersburg.
-              This was not a school for mystics. It was a training ground for government-level personnel profiling.
+              I sought out the most advanced training in the world — a restricted facility, not open to the public, not
+              affiliated with any university. This was not a school for mystics. It was a training ground for
+              government-level personnel profiling.
             </p>
             <p className='font-normal text-body text-[#5A5757] font-lato leading-[26px] tracking-normal mb-6'>
               For seven years, I trained in an environment of total isolation. No phones. No recording devices. We
