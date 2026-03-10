@@ -9,7 +9,7 @@ export class GoogleSheetService {
 
   async init() {
     const email = configs.sheetEmail;
-    const key = configs.sheetPrivateKey;
+    const key = configs.sheetPrivateKey.replace(/\\n/g, "\n");
 
     this.spreadsheetId = configs.sheetId;
     this.sheetName = configs.sheetName;

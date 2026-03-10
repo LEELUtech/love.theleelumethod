@@ -173,12 +173,20 @@ export async function grantCircleCourseAccess(email: string, courseId: string): 
   }
 }
 
-export async function processCircleAccess(
-  email: string,
-  name: string,
-  spaceId?: string,
-  courseId?: string,
-): Promise<{ memberId: number; isNewMember: boolean }> {
+interface IProcessCircleAccess {
+  email: string;
+  name: string;
+  spaceId?: string;
+  courseId?: string;
+}
+
+type ProcessCircleAccess = (
+  params: IProcessCircleAccess,
+) => Promise<{ memberId: number; isNewMember: boolean }>;
+
+export const processCircleAccess: ProcessCircleAccess = async (params) => {
+  const { email, name, spaceId, courseId } = params;
+
   let member = await findCircleMemberByEmail(email);
   let isNewMember = false;
 
@@ -191,7 +199,7 @@ export async function processCircleAccess(
   if (courseId) await grantCircleCourseAccess(email, courseId);
 
   return { memberId: member.id, isNewMember };
-}
+};
 
 type SpaceType = "basic" | "chat" | "event" | "course" | "image";
 
