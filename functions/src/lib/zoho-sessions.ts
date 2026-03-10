@@ -92,12 +92,26 @@ export async function markSessionPurchased(
 
   await patchContact(id, {
     Session_Purchased: true,
-    Package_Tier_Purchased: packageTier,
+    Session_Tier_Purchased: packageTier,
     Last_Session_Booked_At: new Date().toISOString(),
     ...extraFields,
   });
 
   console.log("[zoho-sessions] session purchased set", { email, packageTier });
+}
+
+/**
+ * Called when a Trust Temple session is booked or canceled via Calendly.
+ */
+export async function markTrustTempleBooked(email: string, booked: boolean): Promise<void> {
+  const id = await findContactId(email);
+  if (!id) {
+    console.warn("[zoho-sessions] contact not found for trust temple, skipping", { email });
+    return;
+  }
+
+  await patchContact(id, { Trust_Temple_Booked: booked });
+  console.log("[zoho-sessions] trust temple booked set", { email, booked });
 }
 
 /**
@@ -113,7 +127,7 @@ export async function markSessionCanceled(email: string): Promise<void> {
 
   await patchContact(id, {
     Session_Purchased: false,
-    Package_Tier_Purchased: null,
+    Session_Tier_Purchased: "",
   });
 
   console.log("[zoho-sessions] session canceled", { email });

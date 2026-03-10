@@ -158,11 +158,10 @@ async function addTag(tag: string, email: string): Promise<void> {
 
 async function removeTag(tag: string, email: string): Promise<void> {
   const token = await getAccessToken();
-  const url = new URL("https://campaigns.zoho.com/api/v1.1/tag/disassociate");
+  const url = new URL("https://campaigns.zoho.com/api/v1.1/tag/deassociate");
   url.searchParams.set("resfmt", "JSON");
   url.searchParams.set("tagName", tag);
   url.searchParams.set("lead_email", email);
-
   const resp = await fetch(url.toString(), { method: "GET", headers: authHeaders(token) });
   const txt = await resp.text();
   console.log("zoho-campaigns removeTag", tag, email, resp.status, txt);
