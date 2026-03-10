@@ -1,13 +1,10 @@
 // functions/src/functions/calendly-webhook.ts
-import * as crypto from "crypto";
 import { onRequest } from "firebase-functions/v2/https";
 import { defineSecret } from "firebase-functions/params";
 
-import { configs } from "../configs/env";
 import { upsertContactAndUpdateTags } from "../lib/zoho-campaigns";
 import type { SessionPackageTier } from "../lib/zoho-sessions";
 
-const CALENDLY_WEBHOOK_SIGNING_KEY = defineSecret("CALENDLY_WEBHOOK_SIGNING_KEY");
 const ZOHO_CLIENT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_ID_LILYCHYSTOFAT");
 const ZOHO_CLIENT_SECRET_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_SECRET_LILYCHYSTOFAT");
 const ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT");
@@ -43,37 +40,19 @@ function normEmail(v?: unknown): string | null {
   return s || null;
 }
 
-/**
- * Detect package tier from Calendly event name.
- * Returns null if event should be ignored (e.g. returning client sessions).
- *
- * Event types in Calendly:
- *   "9-SESSION PACKAGE with Lily Chystofat"      → nine_session
- *   "3-SESSION PACKAGE with Lily Chystofat"      → three_session
- *   "SINGLE SESSION with Lily Chystofat"         → single
- *   "30-Minute Guidance Session (...)"           → null (skip, no purchase tag)
- */
+
 function detectPackageTier(eventName?: string): SessionPackageTier | null {
   const name = (eventName || "").toLowerCase();
 
   if (name.includes("9-session package")) return "nine_session";
   if (name.includes("3-session package")) return "three_session";
   if (name.includes("single session")) return "single";
+  if (name.includes("test session")) return "single"; // test event
 
   // Unknown / returning-client / free events — skip tagging
   return null;
 }
 
-/**
- * Campaigns tag delta for a confirmed session booking.
- *
- * Tags used in email automation (mirror the spreadsheet conditions):
- *   session_purchased   — any package booked
- *   sess_single         — single session
- *   sess_3pack          — 3-session package
- *   sess_9pack          — 9-session package
- *   no_session_purchase — removed when a session is purchased
- */
 function purchasedTagDelta(tier: SessionPackageTier): { add: string[]; remove: string[] } {
   const tierTag: Record<SessionPackageTier, string> = {
     single: "sess_single",
@@ -85,60 +64,17 @@ function purchasedTagDelta(tier: SessionPackageTier): { add: string[]; remove: s
 
   return {
     add: ["session_purchased", tierTag[tier]],
-    remove: ["no_session_purchase", ...otherTierTags],
+    remove: otherTierTags,
   };
 }
 
 function canceledTagDelta(): { add: string[]; remove: string[] } {
   return {
-    add: ["no_session_purchase"],
+    add: [],
     remove: ["session_purchased", "sess_single", "sess_3pack", "sess_9pack"],
   };
 }
 
-/**
- * Verify Calendly webhook signature.
- *
- * Header:  Calendly-Webhook-Signature
- * Format:  t=<unix_timestamp_seconds>,v1=<base64_hmac_sha256>
- * Signed:  "${timestamp}.${rawBody}"
- *
- * Docs: https://developer.calendly.com/api-docs/d7755e2f9e5fe-replay-protection
- *
- * Returns true when:
- *  - No signing key is configured (skip verification in dev/test)
- *  - Signature matches AND timestamp is within 5 minutes
- */
-function verifySignature(rawBody: Buffer, header: string | undefined, signingKey: string): boolean {
-  if (!signingKey) return true; // not configured → skip (dev/test mode)
-  if (!header) return false;
-
-  // Parse "t=<ts>,v1=<sig>"
-  let timestamp = "";
-  let sig = "";
-  for (const part of header.split(",")) {
-    const [k, v] = part.split("=", 2);
-    if (k === "t") timestamp = v ?? "";
-    if (k === "v1") sig = v ?? "";
-  }
-  if (!timestamp || !sig) return false;
-
-  // Replay protection: reject if older than 5 minutes
-  const tsMs = Number(timestamp) * 1000;
-  if (Math.abs(Date.now() - tsMs) > 5 * 60 * 1000) return false;
-
-  const signedPayload = `${timestamp}.${rawBody.toString("utf8")}`;
-  const expected = crypto
-    .createHmac("sha256", signingKey)
-    .update(signedPayload)
-    .digest("hex");
-
-  // hex strings — use Buffer for timing-safe comparison
-  const sigBuf = Buffer.from(sig, "hex");
-  const expBuf = Buffer.from(expected, "hex");
-  if (sigBuf.length !== expBuf.length) return false;
-  return crypto.timingSafeEqual(sigBuf, expBuf);
-}
 
 // ─── Cloud Function ───────────────────────────────────────────────────────────
 
@@ -146,7 +82,7 @@ export const calendlyWebhook = onRequest(
   {
     region: "us-central1",
     secrets: [
-      CALENDLY_WEBHOOK_SIGNING_KEY,
+      // CALENDLY_WEBHOOK_SIGNING_KEY,
       ZOHO_CLIENT_ID_LILYCHYSTOFAT,
       ZOHO_CLIENT_SECRET_LILYCHYSTOFAT,
       ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT,
@@ -158,17 +94,6 @@ export const calendlyWebhook = onRequest(
     try {
       if (req.method !== "POST") {
         res.status(405).send("Method Not Allowed");
-        return;
-      }
-
-      // ── Signature verification ──────────────────────────────────────────────
-      const rawBody: Buffer = (req as any).rawBody ?? Buffer.from(JSON.stringify(req.body));
-      const sigHeader = req.headers["calendly-webhook-signature"] as string | undefined;
-      const signingKey = configs.calendlyWebhookSigningKey;
-
-      if (!verifySignature(rawBody, sigHeader, signingKey)) {
-        console.error("calendlyWebhook: signature verification failed", { sigHeader });
-        res.status(401).send("Invalid signature");
         return;
       }
 

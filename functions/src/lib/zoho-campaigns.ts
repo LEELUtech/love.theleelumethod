@@ -15,8 +15,19 @@ async function getAccessToken(): Promise<string> {
   url.searchParams.set("client_secret", configs.zohoClientSecret);
   url.searchParams.set("grant_type", "refresh_token");
 
+  console.log("zoho-campaigns getAccessToken: refreshing token", {
+    clientId: configs.zohoClientId ? configs.zohoClientId.slice(0, 6) + "…" : "EMPTY",
+    refreshToken: configs.zohoRefreshCampaignsToken ? configs.zohoRefreshCampaignsToken.slice(0, 6) + "…" : "EMPTY",
+  });
+
   const resp = await fetch(url.toString(), { method: "POST" });
   const data = await resp.json();
+
+  console.log("zoho-campaigns getAccessToken: response", {
+    status: resp.status,
+    hasAccessToken: !!data.access_token,
+    error: data.error ?? null,
+  });
 
   if (!resp.ok || !data.access_token) {
     throw new Error(`Failed to refresh Zoho access token: ${JSON.stringify(data)}`);
@@ -101,6 +112,7 @@ async function ensureSubscribed(email: string, meta?: ContactMeta): Promise<void
 
   console.log("zoho-campaigns listsubscribe", {
     email,
+    listkey: configs.zohoCampaignsListKey ? configs.zohoCampaignsListKey.slice(0, 8) + "…" : "EMPTY",
     metaKeys: meta ? Object.keys(meta) : [],
     contactinfo,
   });
@@ -118,6 +130,11 @@ async function ensureSubscribed(email: string, meta?: ContactMeta): Promise<void
   try {
     const json = JSON.parse(txt);
     if (json.status === "error") {
+      // 2001 = contact unsubscribed/exists — not fatal, continue with tags
+      if (json.code === 2001 || json.code === "2001") {
+        console.warn(`zoho-campaigns listsubscribe 2001 (skipping): ${json.message}`, { email });
+        return;
+      }
       throw new Error(`listsubscribe error: ${json.code} ${json.message}`);
     }
   } catch (e: any) {
