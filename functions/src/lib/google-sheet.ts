@@ -11,6 +11,8 @@ export class GoogleSheetService {
     const email = configs.sheetEmail;
     const key = configs.sheetPrivateKey.replace(/\\n/g, "\n");
 
+    console.log("SHEET KEY:", key);
+
     this.spreadsheetId = configs.sheetId;
     this.sheetName = configs.sheetName;
 

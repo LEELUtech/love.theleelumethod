@@ -1,7 +1,7 @@
 import Stripe from "stripe";
 import { addTagToMember, processCircleAccess } from "../../lib/circle";
 import { getOffering, getUserData } from "../helpers/circle";
-import { sendWelcomeMessage } from "../helpers/circle/sendGreetMessage";
+import { CIRCLE_COURSE_ID } from "../../static/circle";
 
 export async function handleVipImmersion(pi: Stripe.PaymentIntent): Promise<void> {
   const { email, name, productType } = getUserData(pi);
@@ -11,13 +11,11 @@ export async function handleVipImmersion(pi: Stripe.PaymentIntent): Promise<void
   if (data?.tag) await addTagToMember(email, data.tag);
 
   if (data?.space_id) {
-    const { memberId } = await processCircleAccess({
+    await processCircleAccess({
       email,
       name,
-      courseId: "457048",
+      courseId: CIRCLE_COURSE_ID,
       spaceId: data.space_id,
     });
-
-    if (memberId) await sendWelcomeMessage(memberId, name, productType);
   }
 }

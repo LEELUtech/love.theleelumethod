@@ -68,7 +68,6 @@ function BlindSpotCard({ title, text, variant }: BlindCard) {
 export default function BlindSpotSection() {
   return (
     <section className='relative py-[72px] lg:py-[120px]'>
-      {/* background */}
       <div className='absolute inset-0 -mt-[120px] z-'>
         <Image
           src='/images/programs/blindspot_section_bg.png'
@@ -85,7 +84,6 @@ export default function BlindSpotSection() {
       </div>
 
       <div className='container relative z-10'>
-        {/* top heading */}
         <div className='text-center mx-auto'>
           <h2 className='font-canela font-thin text-brand-deep text-[48px] md:text-[48px] lg:text-[60px] leading-[110%]'>
             THE BLIND SPOT: Why You Can’t See It
@@ -98,24 +96,20 @@ export default function BlindSpotSection() {
           </p>
         </div>
 
-        {/* 4 cards */}
         <div className='mt-10 lg:mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-[100px] lg:mb-[112px]'>
           {CARDS.map((c) => (
             <BlindSpotCard key={c.title} {...c} />
           ))}
         </div>
 
-        {/* big statement */}
-
         <h2 className='font-thin text-[48px] lg:text-[60px] leading-[126%] font-canela text-brand-deep mb-[50px] lg:mb-[100px] text-center'>
           You cannot fix a pattern you cannot see.
         </h2>
         <div className='grid grid-cols-1 md:grid-cols-[4fr,3fr] gap-[43px] lg:gap-[102px] '>
-          {/* Left Column - Image */}
           <div className='flex flex-col gap-5 lg:gap-8 justify-center'>
-            <div className='relative md:mb-0 lg:mb-0 w-full h-[245px] lg:w-[600px] lg:h-[380px]'>
+            <div className='relative md:mb-0 lg:mb-0 w-full h-[245px] lg:w-[600px] lg:h-[380px] rounded-[32px]  overflow-hidden'>
               <Image
-                src='/images/landing/triage_section_women.png'
+                src='/images/landing/triage_section_women_new.png'
                 alt='Person sitting with a laptop'
                 fill
                 priority
@@ -147,7 +141,6 @@ export default function BlindSpotSection() {
             </div>
           </div>
 
-          {/* Right Column - The Fracture */}
           <div>
             <p className='font-thin text-[32px] leading-[126%] font-canela text-brand-black mb-2'>Thank you</p>
             <h2 className='font-thin text-[42px] leading-[126%] font-canela text-brand-deep mb-8'>
