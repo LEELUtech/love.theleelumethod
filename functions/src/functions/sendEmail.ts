@@ -31,9 +31,6 @@ export const sendEmail = onCall({
   if (!firstName || !email) {
     throw new Error("Missing required fields: firstName, email");
   }
-  if (!firstName || !email) {
-    throw new Error("Missing required fields: firstName, email");
-  }
 
   const normalizedEmail = String(email).toLowerCase().trim();
   const normalizedFirstName = String(firstName).trim();
@@ -42,7 +39,7 @@ export const sendEmail = onCall({
   await upsertContactAndUpdateTags(
     normalizedEmail,
     { add: ["lm_dl", LM_DL_TRIGGER] },
-    { firstName: normalizedFirstName }
+    { "First Name": normalizedFirstName }
   );
 
   // CRM scoring: mark lead magnet downloaded (best-effort)
