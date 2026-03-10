@@ -303,7 +303,6 @@ export async function upsertContactLeadCaptured(input: { email: string; site?: s
     firstName: input.firstName,
     lastName: input.lastName,
   });
-  console.log("112313", res)
   return res;
 }
 

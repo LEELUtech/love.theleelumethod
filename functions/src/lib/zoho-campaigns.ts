@@ -9,14 +9,25 @@ async function getAccessToken(): Promise<string> {
   const now = Date.now();
   if (cachedAccessToken && now < tokenExpiresAt) return cachedAccessToken;
 
-  const url = new URL("https://accounts.zoho.com/oauth/v2/token");
+  const url = new URL(`https://${configs.zohoAccountsDomain}/oauth/v2/token`);
   url.searchParams.set("refresh_token", configs.zohoRefreshCampaignsToken);
   url.searchParams.set("client_id", configs.zohoClientId);
   url.searchParams.set("client_secret", configs.zohoClientSecret);
   url.searchParams.set("grant_type", "refresh_token");
 
+  console.log("zoho-campaigns getAccessToken: refreshing token", {
+    clientId: configs.zohoClientId ? configs.zohoClientId.slice(0, 6) + "…" : "EMPTY",
+    refreshToken: configs.zohoRefreshCampaignsToken ? configs.zohoRefreshCampaignsToken.slice(0, 6) + "…" : "EMPTY",
+  });
+
   const resp = await fetch(url.toString(), { method: "POST" });
   const data = await resp.json();
+
+  console.log("zoho-campaigns getAccessToken: response", {
+    status: resp.status,
+    hasAccessToken: !!data.access_token,
+    error: data.error ?? null,
+  });
 
   if (!resp.ok || !data.access_token) {
     throw new Error(`Failed to refresh Zoho access token: ${JSON.stringify(data)}`);
@@ -57,6 +68,26 @@ async function fetchExistingContactFields(email: string, token: string): Promise
   } catch {
     return {};
   }
+}
+
+// ─── UPDATE EXISTING CONTACT FIELDS ──────────────────────────────────────────
+
+async function updateContactFields(contact: Record<string, string>, token: string): Promise<void> {
+  const contactinfo = JSON.stringify(contact);
+  const body = new URLSearchParams();
+  body.set("resfmt", "JSON");
+  body.set("contactinfo", contactinfo);
+
+  console.log("zoho-campaigns updatecontact", { email: contact["Contact Email"], contactinfo });
+
+  const resp = await fetch("https://campaigns.zoho.com/api/v1.1/json/updatecontact", {
+    method: "POST",
+    headers: { ...authHeaders(token), "Content-Type": "application/x-www-form-urlencoded" },
+    body,
+  });
+
+  const txt = await resp.text();
+  console.log("zoho-campaigns updatecontact response", resp.status, txt);
 }
 
 // ─── SUBSCRIBE / UPSERT CONTACT ──────────────────────────────────────────────
@@ -101,6 +132,7 @@ async function ensureSubscribed(email: string, meta?: ContactMeta): Promise<void
 
   console.log("zoho-campaigns listsubscribe", {
     email,
+    listkey: configs.zohoCampaignsListKey ? configs.zohoCampaignsListKey.slice(0, 8) + "…" : "EMPTY",
     metaKeys: meta ? Object.keys(meta) : [],
     contactinfo,
   });
@@ -118,6 +150,18 @@ async function ensureSubscribed(email: string, meta?: ContactMeta): Promise<void
   try {
     const json = JSON.parse(txt);
     if (json.status === "error") {
+      // 2001 = contact already exists/unsubscribed — update fields separately, then continue with tags
+      if (json.code === 2001 || json.code === "2001") {
+        console.warn("zoho-campaigns listsubscribe 2001, trying updatecontact for fields", { email });
+        if (Object.keys(contact).length > 1) {
+          try {
+            await updateContactFields(contact, token);
+          } catch (e) {
+            console.error("zoho-campaigns updatecontact failed (non-critical)", { email, error: e });
+          }
+        }
+        return;
+      }
       throw new Error(`listsubscribe error: ${json.code} ${json.message}`);
     }
   } catch (e: any) {
@@ -181,7 +225,8 @@ async function getAllListContacts(): Promise<string[]> {
   let fromIndex = 1;
   const pageSize = 100;
 
-  while (true) {
+  let hasMore = true;
+  while (hasMore) {
     const url = new URL("https://campaigns.zoho.com/api/v1.1/json/getcontactsbylistid");
     url.searchParams.set("resfmt", "JSON");
     url.searchParams.set("listkey", configs.zohoCampaignsListKey);
@@ -198,7 +243,7 @@ async function getAllListContacts(): Promise<string[]> {
       if (email) emails.push(email);
     }
 
-    if (data.list_of_details.length < pageSize) break;
+    hasMore = data.list_of_details.length >= pageSize;
     fromIndex += pageSize;
   }
 
