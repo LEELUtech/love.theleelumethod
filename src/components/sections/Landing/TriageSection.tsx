@@ -1,4 +1,5 @@
 import Button from '@/components/ui/Button';
+import { CantFix } from '@/components/ui/CantFix';
 import RotateOnView from '@/components/ui/RotateOnView';
 import { QUIZ_URL, WEBINAR_URL } from '@/utils/constants';
 import Image from 'next/image';
@@ -7,7 +8,6 @@ import React from 'react';
 const TriageSection = () => {
   return (
     <section className='relative pt-[57px] pb-[22px] lg:pt-[120px] lg:pb-[112px] overflow-hidden'>
-      {/* Background Image */}
       <div className='absolute inset-0 -z-10'>
         <Image src='/images/landing/triage_section_bg.png' alt='' fill priority quality={100} sizes='100vw' />
       </div>
@@ -77,31 +77,21 @@ const TriageSection = () => {
             </Button>
           </div>
         </div>
+        <CantFix buttonVariant='dark' href='' linkLabel='READ MORE STORIES' />
 
         <div className='lg:mt-[250px] mt-[200px] mb-[52px] relative lg:mb-[32px]'>
-          <div
-            className='
-						absolute z-0
-						left-1/2 -translate-x-1/2
-						top-[-150px]
-						md:top-[-180px]
-						lg:top-[-200px]
-				
-						flex flex-row items-center justify-center gap-[130px]
-						pointer-events-none
-					'
-          >
+          <div className='absolute z-0 left-1/2 -translate-x-1/2 top-[-150px] md:top-[-180px] lg:top-[-200px] flex flex-row items-center justify-center gap-[130px]'>
             {/* LEFT ornament */}
             <div
               className='
-    relative overflow-hidden
-    w-[180px] h-[180px]
-    lg:w-[238px] lg:h-[249px]
+      relative overflow-hidden
+      w-[180px] h-[180px]
+      lg:w-[238px] lg:h-[249px]
 
-    translate-x-[250px] translate-y-[80px]
-    md:translate-x-[120px] md:translate-y-[50px]
-    lg:translate-x-[125px] lg:translate-y-[60px]
-  '
+      translate-x-[250px] translate-y-[80px]
+      md:translate-x-[120px] md:translate-y-[50px]
+      lg:translate-x-[125px] lg:translate-y-[60px]
+    '
               style={{
                 WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 15%, rgba(0,0,0,0) 100%)',
                 maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 15%, rgba(0,0,0,0) 100%)',
@@ -131,10 +121,7 @@ const TriageSection = () => {
             </div>
             {/* CENTER ornament */}
             <div
-              className='relative overflow-hidden
-    w-[261px] h-[266px]
-    lg:w-[512px] lg:h-[524px]
-  '
+              className='relative overflow-hidden w-[261px] h-[266px] lg:w-[512px] lg:h-[524px]'
               style={{
                 WebkitMaskImage:
                   'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 22%, rgba(0,0,0,0.6) 58%, rgba(0,0,0,0) 88%)',
@@ -169,14 +156,14 @@ const TriageSection = () => {
             {/* RIGHT ornament */}
             <div
               className='
-    relative overflow-hidden
-    w-[180px] h-[180px]
-    lg:w-[259px] lg:h-[242px]
+      relative overflow-hidden
+      w-[180px] h-[180px]
+      lg:w-[259px] lg:h-[242px]
 
-    -translate-x-[250px] translate-y-[90px]
-    md:-translate-x-[120px] md:translate-y-[50px]
-    lg:-translate-x-[120px] lg:translate-y-[60px]
-  '
+      -translate-x-[250px] translate-y-[90px]
+      md:-translate-x-[120px] md:translate-y-[50px]
+      lg:-translate-x-[120px] lg:translate-y-[60px]
+    '
               style={{
                 WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 15%, rgba(0,0,0,0) 100%)',
                 maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 15%, rgba(0,0,0,0) 100%)',
@@ -343,3 +330,30 @@ const TriageSection = () => {
 };
 
 export default TriageSection;
+
+// CARD 2
+
+//  <Button
+//             variant='dark'
+//             size='md'
+//             className='w-full xs:text-[12px] mt-auto'
+//             href={WEBINAR_URL}
+//             trackingData={{
+//               cta_name: 'landing_triage_webinar_cta',
+//               cta_text: 'REGISTER FOR WEBINAR',
+//               cta_location: 'triage',
+//             }}
+//           >
+//             REGISTER FOR WEBINAR
+//           </Button>
+
+// CARD 3
+
+// trackingData={{
+//             cta_name: 'landing_triage_analysis_cta',
+//             cta_text: 'GET MY ANALYSIS',
+//             cta_location: 'triage',
+//           }}
+//         >
+//           GET MY ANALYSIS
+//         </Button>
