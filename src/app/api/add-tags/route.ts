@@ -75,7 +75,7 @@ async function addTag(tag: string, email: string, token: string) {
 }
 
 async function removeTag(tag: string, email: string, token: string) {
-  const url = new URL("https://campaigns.zoho.com/api/v1.1/tag/disassociate");
+  const url = new URL("https://campaigns.zoho.com/api/v1.1/tag/deassociate");
   url.searchParams.set("resfmt", "JSON");
   url.searchParams.set("tagName", tag);
   url.searchParams.set("lead_email", email);
