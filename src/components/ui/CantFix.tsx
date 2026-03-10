@@ -5,7 +5,7 @@ interface Props {
   href: string;
   linkLabel: string;
   buttonVariant?: ButtonVariant;
-  trackingData: TrackingData;
+  trackingData?: TrackingData;
 }
 
 export const CantFix = ({ href, linkLabel, buttonVariant = 'primary' }: Props) => {

@@ -6,8 +6,7 @@ function SocialIcon({ children, href }: { children: React.ReactNode; href: strin
       href={href}
       target='_blank'
       rel='noopener noreferrer'
-      className='
-				w-[30px] h-[30px]
+      className='w-[30px] h-[30px]
 				rounded-full
 				border border-[#8c8c8c]
 				flex items-center justify-center

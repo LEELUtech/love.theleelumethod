@@ -1,4 +1,3 @@
-import Button from '@/components/ui/Button';
 import { CantFix } from '@/components/ui/CantFix';
 import { PROGRAMS_LINKS } from '@/static/links';
 import Image from 'next/image';

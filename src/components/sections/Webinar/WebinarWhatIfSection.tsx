@@ -7,16 +7,10 @@ import { Section } from '@/components/ui/containers/section';
 
 const WebinarWhatIfSection = () => {
   return (
-    <Section backgroundImage='/images/bg/whatif-bg.jpg'>
+    <Section backgroundImage='/images/bg/whatif-bg.jpg' wrapperClasses='xs:!pb-[300px] lg:!pb-[650px]'>
       <div>
         {/* TOP SECTION */}
-        <div
-          className='
-							flex flex-col items-center gap-[107px] mb-12
-
-							md:flex-row md:gap-12 md:mb-20
-						'
-        >
+        <div className='flex flex-col items-center gap-[107px] mb-12	md:flex-row md:gap-12 md:mb-20'>
           {/* Image */}
           <div
             className='

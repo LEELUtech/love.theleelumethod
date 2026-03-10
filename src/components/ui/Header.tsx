@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Logo } from './Logo';
 
 const NAV_LINKS = [
   { href: '/programs', label: 'Programs' },
@@ -44,13 +44,7 @@ export default function Header({ className }: { className?: string }) {
           className='px-2 md:px-3 lg:px-4 font-light transition text-[20px] md:text-[22px] lg:text-[24px] leading-[126%] font-canela flex items-center gap-2 md:gap-2.5 lg:gap-3'
           onClick={() => setOpen(false)}
         >
-          <span className='inline-block w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 relative flex-shrink-0'>
-            <Image src='/leelu_logo.svg' alt='Lily Chystofat Logo' fill className='object-contain' priority />
-          </span>
-          <div className='whitespace-nowrap'>
-            <span className='font-medium font-canela tracking-tight mr-1'>LILY</span>
-            <span className='font-canela font-light'>CHYSTOFAT</span>
-          </div>
+          <Logo />
         </Link>
 
         {/* Desktop menu (ONLY on lg+) */}
@@ -136,14 +130,7 @@ export default function Header({ className }: { className?: string }) {
               {/* Top row: logo + close */}
               <div className='flex items-center justify-between'>
                 <Link href='/' onClick={() => setOpen(false)} className='font-canela flex items-center gap-3'>
-                  <span className='inline-block w-7 h-7 relative flex-shrink-0'>
-                    <Image src='/leelu_logo.svg' alt='Lily Chystofat Logo' fill className='object-contain' priority />
-                  </span>
-
-                  <div className='whitespace-nowrap leading-[126%]'>
-                    <span className='font-medium tracking-tight mr-1 text-[24px] text-brand-black'>LILY</span>
-                    <span className='font-thin text-[24px] text-brand-black'>CHYSTOFAT</span>
-                  </div>
+                  <Logo />
                 </Link>
               </div>
 

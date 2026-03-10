@@ -1,6 +1,7 @@
 import ArcAutoOnce from '@/components/ui/ArcFlyOnce';
 import Button from '@/components/ui/Button';
 import { Section } from '@/components/ui/containers/section';
+import { Logo } from '@/components/ui/Logo';
 import RotateOnView from '@/components/ui/RotateOnView';
 import { ILink } from '@/static/links';
 import Image from 'next/image';
@@ -81,13 +82,7 @@ export const ProgramsHero = (props: Props) => {
         </div>
 
         <div className='font-light transition text-[24px]/[126%] md:text-[22px]/[126%] lg:text-[24px]/[126%] font-canela flex items-center gap-2 md:gap-2.5 lg:gap-3 text-brand-black  justify-center md:justify-start mt-[63px]'>
-          <span className=' w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 relative flex-shrink-0'>
-            <Image src='/leelu_logo.svg' alt='Lily Chystofat Logo' fill className='object-contain' priority />
-          </span>
-          <div className='whitespace-nowrap lg:order-2'>
-            <span className='font-medium font-canela tracking-tight mr-1'>LILY</span>
-            <span className='font-canela font-light'>CHYSTOFAT</span>
-          </div>
+          <Logo />
         </div>
 
         <h1
@@ -120,7 +115,12 @@ export const ProgramsHero = (props: Props) => {
           size='md'
           className='w-full lg:w-[30%] xs:text-[12px] mt-[32px] lg:order-3'
           href={link.href}
-          trackingData={{ cta_name: 'program_hero_cta', cta_text: link.label, cta_target_url: link.href, cta_location: 'hero' }}
+          trackingData={{
+            cta_name: 'program_hero_cta',
+            cta_text: link.label,
+            cta_target_url: link.href,
+            cta_location: 'hero',
+          }}
         >
           {link.label}
         </Button>

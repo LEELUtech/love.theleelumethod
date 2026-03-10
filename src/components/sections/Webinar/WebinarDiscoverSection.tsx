@@ -42,7 +42,7 @@ const WebinarDiscoverSection = () => {
   });
 
   return (
-    <Section>
+    <Section wrapperClasses='xs:!pt-[1000px] md:!pt-[550px] lg:!pt-[420px]'>
       <div className='max-w-[1200px] mx-auto'>
         <motion.div ref={ref} variants={wrap} initial='hidden' animate={inView ? 'show' : 'hidden'}>
           {/* Title */}
