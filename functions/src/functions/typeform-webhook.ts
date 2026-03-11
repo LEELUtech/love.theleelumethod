@@ -63,11 +63,11 @@ export const typeformWebhook = onRequest(
       if (data?.id) await addTagToMember(email, data.id);
     }
 
-    await sendEmailFunction(email, fullName, pathLabel);
-
     await sendWelcomeMessage(memberId, memberName, tier);
 
     await appendRowFunction(Object.values(data));
+
+    await sendEmailFunction(email, fullName, pathLabel);
 
     res.send({ status: "ok" });
   },
