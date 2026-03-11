@@ -8,72 +8,18 @@ import { DATE_FORMAT } from '@/utils/constants';
 import { ThankYou } from '@/components/sections/Form/ThankYou';
 import { Select } from '@/components/ui/select/index';
 import { ErrorLabel, FieldLabel, HelperLabel } from '@/components/ui/labels';
+import { DURATION_OPTIONS, initialReportForm, PATH_OPTIONS, TIER_OPTIONS } from '@/static/report-form';
+import { ReportFormData } from '@/types/report-form';
+import { sendReportData } from '@/lib/report-form';
 
-type Path = 'A' | 'B' | 'C' | null;
-
-interface FormData {
-  email: string;
-  fullName: string;
-  dob: string;
-  tier: string;
-  path: Path;
-  partnerName: string;
-  partnerDob: string;
-  duration: string;
-  consent: boolean;
-}
-
-const initialForm: FormData = {
-  email: '',
-  fullName: '',
-  dob: '',
-  tier: '',
-  path: null,
-  partnerName: '',
-  partnerDob: '',
-  duration: '',
-  consent: false,
-};
-
-const PATH_OPTIONS = [
-  {
-    value: 'A' as const,
-    label: "I'm going through a breakup",
-    desc: "I recently ended a relationship or I'm in the process of separating. I want to understand why it didn't work and how to move forward.",
-  },
-  {
-    value: 'B' as const,
-    label: "I'm in a relationship",
-    desc: "I'm currently with a partner. I want to decode our dynamic, understand what we both need, and strengthen the connection.",
-  },
-  {
-    value: 'C' as const,
-    label: "I'm single and looking",
-    desc: "I'm not in a relationship right now. I want to understand my patterns, clear what's blocking me, and attract the right partner.",
-  },
-];
-
-const TIER_OPTIONS = [
-  { value: 'essentials', label: 'The Essentials' },
-  { value: 'guided_breakthrough', label: 'Guided Breakthrough' },
-  { value: 'vip_immersion', label: 'VIP Immersion' },
-];
-
-const DURATION_OPTIONS = [
-  { value: 'lt_6m', label: 'Less than 6 months' },
-  { value: '6m_1y', label: '6 months - 1 year' },
-  { value: '1y_3y', label: '1-3 years' },
-  { value: '3y_5y', label: '3-5 years' },
-  { value: '5y_plus', label: '5+ years' },
-];
-
-export default function FormPage() {
-  const [form, setForm] = React.useState<FormData>(initialForm);
-  const [errors, setErrors] = React.useState<Partial<Record<keyof FormData, string>>>({});
+export default function ReportFormPage() {
+  const [form, setForm] = React.useState<ReportFormData>(initialReportForm);
+  const [errors, setErrors] = React.useState<Partial<Record<keyof ReportFormData, string>>>({});
   const [submitted, setSubmitted] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
-  const set = <K extends keyof FormData>(key: K, value: FormData[K]) => setForm((prev) => ({ ...prev, [key]: value }));
+  const set = <K extends keyof ReportFormData>(key: K, value: ReportFormData[K]) =>
+    setForm((prev) => ({ ...prev, [key]: value }));
 
   const section2Title = form.path === 'A' ? 'About Your Ex-Partner' : 'About Your Partner';
 
@@ -100,7 +46,7 @@ export default function FormPage() {
   };
 
   const validate = (): boolean => {
-    const e: Partial<Record<keyof FormData, string>> = {};
+    const e: Partial<Record<keyof ReportFormData, string>> = {};
 
     if (!form.email.trim()) e.email = 'Email is required.';
     else if (!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(form.email)) e.email = 'Enter a valid email address.';
@@ -134,12 +80,14 @@ export default function FormPage() {
 
     const payload = { ...form, submittedAt: dayjs().format('DD/MM/YYYY') };
 
-    console.log(payload);
+    // setLoading(true);
 
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 800));
-    setLoading(false);
-    setSubmitted(true);
+    const res = await sendReportData(payload);
+
+    console.log(res);
+
+    // setLoading(false);
+    // setSubmitted(true);
   };
 
   if (submitted) return <ThankYou />;

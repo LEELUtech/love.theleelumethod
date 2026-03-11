@@ -41,6 +41,6 @@ export const configs = {
   sheetId: process.env.SHEET_ID || "",
   sheetName: process.env.SHEET_NAME || "",
 
-  nodemailerUser: process.env.NODEMAILER_USER || "",
-  nodemailerPass: process.env.NODEMAILER_PASS || "",
+  sendingEmal: process.env.SENDING_EMAIL || "",
+  sendingPass: process.env.SENDING_PASSWORD || "",
 };

@@ -309,20 +309,14 @@ type CreateChat = (
 export const createChat: CreateChat = async (memberId, token, tier) => {
   const isEssential = tier === TIER.ESSENTIALS;
 
-  const [adminDoc, moderatorDoc] = await Promise.all([
-    db.collection("circle_admins").doc("Admin").get(),
-    db.collection("circle_admins").doc("Moderator").get(),
-  ]);
+  const adminDoc = await db.collection("circle_admins").doc("Admin").get();
 
   const adminId = adminDoc.data()?.id;
-  const moderatorId = moderatorDoc.data()?.id;
 
-  const community_member_ids = isEssential
-    ? [moderatorId, memberId]
-    : [moderatorId, adminId, memberId];
+  const community_member_ids = isEssential ? [memberId + ""] : [adminId + "", memberId + ""];
 
   const payload = {
-    chat_room: { kind: "group_chat", community_member_ids },
+    chat_room: { kind: "group_chat", community_member_ids, title: "YOUR WORK (PRIVATE HOMEWORK)" },
   };
 
   try {
@@ -337,11 +331,13 @@ export const createChat: CreateChat = async (memberId, token, tier) => {
 
     if (res.status == 200) {
       const data = await res.json();
+
       return data as CreateChatResponse;
     }
 
     return null;
-  } catch {
+  } catch (err) {
+    console.log(err);
     return null;
   }
 };
