@@ -40,7 +40,4 @@ export const configs = {
   sheetPrivateKey: process.env.SHEET_PRIVATE_KEY || "",
   sheetId: process.env.SHEET_ID || "",
   sheetName: process.env.SHEET_NAME || "",
-
-  sendingEmal: process.env.SENDING_EMAIL || "",
-  sendingPass: process.env.SENDING_PASSWORD || "",
 };

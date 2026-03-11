@@ -1,6 +1,8 @@
 import { ReportFormData } from '@/types/report-form';
 
-const URL = 'https://lucidly-experiential-delois.ngrok-free.dev/leelu-tech/us-central1/typeformWebhook';
+// const LOCAL_URL = 'https://lucidly-experiential-delois.ngrok-free.dev/leelu-tech/us-central1/typeformWebhook';
+
+const URL = 'https://us-central1-leelu-tech.cloudfunctions.net/typeformWebhook';
 
 export const sendReportData = async (payload: ReportFormData & { submittedAt: string }) => {
   try {
@@ -12,7 +14,7 @@ export const sendReportData = async (payload: ReportFormData & { submittedAt: st
 
     const data = await res.json();
 
-    console.log({ data });
+    return data;
   } catch (err) {
     console.log({ err });
   }

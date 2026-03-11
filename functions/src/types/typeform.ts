@@ -5,7 +5,7 @@ export enum PATH {
 }
 
 export enum TypeFormError {
-  INVALID_EMAIL = "INVALID_EMAL",
+  INVALID_EMAIL = "INVALID_EMAIL",
   MISSING_FIELDS = "MISSING REQUIRED FIELDS",
 }
 

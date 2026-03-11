@@ -1,10 +1,6 @@
 import { onRequest } from "firebase-functions/v2/https";
 import { PATH_LABELS, TypeFormError, TypeformWebhookRequest } from "../types/typeform";
-// import { db } from "../configs/firebase";
 import { addTagToMember, findCircleMemberByEmail } from "../lib/circle";
-// import { appendRowFunction } from "../lib/google-sheet";
-// import { transformTypeformResponse } from "../utils/typeform/transformTypeformResponse";
-// import { sendEmailFunction } from "../lib/nodemailer";
 import { defineSecret } from "firebase-functions/params";
 import { sendWelcomeMessage } from "../utils/helpers/circle";
 import { transformTypeformResponse } from "../utils/typeform/transformTypeformResponse";
@@ -29,6 +25,7 @@ export const typeformWebhook = onRequest(
       SHEET_PRIVATE_KEY,
       SHEET_ID,
       SHEET_NAME,
+
       SENDING_EMAIL,
       SENDING_PASSWORD,
     ],
