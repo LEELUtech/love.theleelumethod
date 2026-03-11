@@ -12,21 +12,25 @@ import {
   guidedBreakthroughWhoThisData,
 } from '@/components/sections/Programs/GuidedBreakthrough/static';
 import SalesPageTagger from '@/components/sections/SalesPage/SalesPageTagger';
+import FooterLayout from '@/components/ui/footer/FooterLayout';
 
 import { GUIDED_BREAKTHROUGH } from '@/utils/constants';
 
 export default function GuidedBreakthroughPage() {
   return (
-    <main>
-      <ProgramsHero {...guidedBreakthroughHeroData} />
-      <ProgramsWhoThis {...guidedBreakthroughWhoThisData} />
-      <MechanicsDeliverablesSection />
-      <ProgramResult {...guidedBreakthroughResultData} />
-      <ProgramItWorks {...guidedBreakthroughItWorksData} />
+    <>
+      <main>
+        <ProgramsHero {...guidedBreakthroughHeroData} />
+        <ProgramsWhoThis {...guidedBreakthroughWhoThisData} />
+        <MechanicsDeliverablesSection />
+        <ProgramResult {...guidedBreakthroughResultData} />
+        <ProgramItWorks {...guidedBreakthroughItWorksData} />
 
-      <CostOfWaitingSection />
-      <CheckoutFormSection productId={GUIDED_BREAKTHROUGH} />
-      <SalesPageTagger />
-    </main>
+        <CostOfWaitingSection />
+        <CheckoutFormSection productId={GUIDED_BREAKTHROUGH} />
+        <SalesPageTagger />
+      </main>{' '}
+      <FooterLayout withNavigation={false} className='lg:mt-[-200px]' backgroundImage='/images/bg/checkout_bg.png' />
+    </>
   );
 }

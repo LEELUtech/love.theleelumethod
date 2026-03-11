@@ -37,7 +37,9 @@ const ZOHO_CLIENT_SECRET_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_SECRET_LILYCH
 const ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT");
 const ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT");
 const ZOHO_API_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_API_DOMAIN_LILYCHYSTOFAT");
-const ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT");
+const ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT = defineSecret(
+  "ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT",
+);
 const ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT = defineSecret("ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT");
 // const ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT");
 const ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT = "6782764000008928434";
@@ -576,8 +578,12 @@ export const stripeCircleWebhook = onRequest(
 
       // Campaigns tags: applied right after paid (guaranteed, independent of delivery)
       console.log("applyPurchaseCampaignTags: env check", {
-        refreshToken: process.env.ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT ? process.env.ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT.slice(0, 6) + "…" : "EMPTY",
-        listkey: process.env.ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT ? process.env.ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT.slice(0, 6) + "…" : "EMPTY",
+        refreshToken: process.env.ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT
+          ? process.env.ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT.slice(0, 6) + "…"
+          : "EMPTY",
+        listkey: process.env.ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT
+          ? process.env.ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT.slice(0, 6) + "…"
+          : "EMPTY",
       });
       try {
         await applyPurchaseCampaignTags(pi);

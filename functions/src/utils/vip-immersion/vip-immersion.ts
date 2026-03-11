@@ -8,14 +8,12 @@ export async function handleVipImmersion(pi: Stripe.PaymentIntent): Promise<void
 
   const data = await getOffering(productType);
 
-  if (data?.tag) await addTagToMember(email, data.tag);
+  await processCircleAccess({
+    email,
+    name,
+    courseId: CIRCLE_COURSE_ID,
+    spaceId: data?.space_id,
+  });
 
-  if (data?.space_id) {
-    await processCircleAccess({
-      email,
-      name,
-      courseId: CIRCLE_COURSE_ID,
-      spaceId: data.space_id,
-    });
-  }
+  if (data?.tag) await addTagToMember(email, data.tag);
 }
