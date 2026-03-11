@@ -58,17 +58,24 @@ function detectEventKind(eventName?: string): CalendlyEventKind | null {
   return null;
 }
 
-function purchasedTagDelta(tier: SessionPackageTier): { add: string[]; remove: string[] } {
+function purchasedTagDelta(kind: CalendlyEventKind): { add: string[]; remove: string[] } {
   const tierTag: Record<SessionPackageTier, string> = {
     single: "sess_single",
     three_session: "sess_3pack",
     nine_session: "sess_9pack",
   };
 
-  const otherTierTags = Object.values(tierTag).filter((t) => t !== tierTag[tier]);
+  if (kind === "trust_temple") {
+    return {
+      add: ["session_purchased", "trust_temple_session"],
+      remove: Object.values(tierTag),
+    };
+  }
+
+  const otherTierTags = Object.values(tierTag).filter((t) => t !== tierTag[kind]);
 
   return {
-    add: ["session_purchased", tierTag[tier]],
+    add: ["session_purchased", tierTag[kind]],
     remove: otherTierTags,
   };
 }
@@ -76,7 +83,7 @@ function purchasedTagDelta(tier: SessionPackageTier): { add: string[]; remove: s
 function canceledTagDelta(): { add: string[]; remove: string[] } {
   return {
     add: [],
-    remove: ["session_purchased", "sess_single", "sess_3pack", "sess_9pack"],
+    remove: ["session_purchased", "trust_temple_session", "sess_single", "sess_3pack", "sess_9pack"],
   };
 }
 
@@ -128,28 +135,24 @@ export const calendlyWebhook = onRequest(
 
       // ── invitee.canceled ────────────────────────────────────────────────────
       if (eventType === "invitee.canceled") {
+        const { add: cancelAdd, remove: cancelRemove } = canceledTagDelta();
+        await upsertContactAndUpdateTags(email, { add: cancelAdd, remove: cancelRemove });
+
         if (kind === "trust_temple") {
-          await upsertContactAndUpdateTags(email, { add: [], remove: ["trust_temple_session"] });
           try {
             await markTrustTempleBooked(email, false);
           } catch (e) {
             console.error("calendlyWebhook: markTrustTempleBooked(false) failed (non-critical)", { email, error: e });
           }
-          res.json({ ok: true, event: eventType, email, eventName });
-          return;
+        } else {
+          try {
+            await markSessionCanceled(email);
+          } catch (e) {
+            console.error("calendlyWebhook: markSessionCanceled failed (non-critical)", { email, error: e });
+          }
         }
 
-        const { add, remove } = canceledTagDelta();
-
-        await upsertContactAndUpdateTags(email, { add, remove });
-
-        try {
-          await markSessionCanceled(email);
-        } catch (e) {
-          console.error("calendlyWebhook: markSessionCanceled failed (non-critical)", { email, error: e });
-        }
-
-        res.json({ ok: true, event: eventType, email, add, remove });
+        res.json({ ok: true, event: eventType, email, add: cancelAdd, remove: cancelRemove });
         return;
       }
 
@@ -168,17 +171,6 @@ export const calendlyWebhook = onRequest(
         lastName: derivedLast || undefined,
       };
 
-      if (kind === "trust_temple") {
-        await upsertContactAndUpdateTags(email, { add: ["trust_temple_session"], remove: [] });
-        try {
-          await markTrustTempleBooked(email, true, inviteeMeta);
-        } catch (e) {
-          console.error("calendlyWebhook: markTrustTempleBooked(true) failed (non-critical)", { email, error: e });
-        }
-        res.json({ ok: true, event: eventType, email, eventName });
-        return;
-      }
-
       if (!kind) {
         console.warn("calendlyWebhook: unrecognized event type, skipping tags", { email, eventName });
         res.json({ ok: true, ignored: true, reason: "unrecognized_event_type", email, eventName });
@@ -189,7 +181,6 @@ export const calendlyWebhook = onRequest(
 
       const { add, remove } = purchasedTagDelta(kind);
 
-      // Meta fields to write to Campaigns contact
       const meta: Record<string, string> = {};
       if (derivedFirst) meta["First Name"] = derivedFirst;
       if (derivedLast) meta["Last Name"] = derivedLast;
@@ -199,10 +190,18 @@ export const calendlyWebhook = onRequest(
 
       await upsertContactAndUpdateTags(email, { add, remove }, Object.keys(meta).length ? meta : undefined);
 
-      try {
-        await markSessionPurchased(email, kind, undefined, inviteeMeta);
-      } catch (e) {
-        console.error("calendlyWebhook: markSessionPurchased failed (non-critical)", { email, kind, error: e });
+      if (kind === "trust_temple") {
+        try {
+          await markTrustTempleBooked(email, true, inviteeMeta);
+        } catch (e) {
+          console.error("calendlyWebhook: markTrustTempleBooked(true) failed (non-critical)", { email, error: e });
+        }
+      } else {
+        try {
+          await markSessionPurchased(email, kind, undefined, inviteeMeta);
+        } catch (e) {
+          console.error("calendlyWebhook: markSessionPurchased failed (non-critical)", { email, kind, error: e });
+        }
       }
 
       res.json({ ok: true, event: eventType, email, kind, add, remove });
