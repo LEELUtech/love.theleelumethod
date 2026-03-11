@@ -10,7 +10,7 @@ import WhoThisIsForSection from '@/components/sections/Programs/WhoThisIsForSect
 import FooterLayout from '@/components/ui/footer/FooterLayout';
 import { FooterPromo } from '@/components/ui/footer/FooterPromo';
 import { PROGRAMS_LINKS } from '@/static/links';
-import SalesPageTagger from "@/components/sections/SalesPage/SalesPageTagger";
+import SalesPageTagger from '@/components/sections/SalesPage/SalesPageTagger';
 import { PRELOAD_PROGRAM_PRODUCT_IDS } from '@/utils/constants';
 
 const footerPromoContent = {
@@ -27,7 +27,7 @@ export default function ProgramPage() {
   return (
     <ProgramPreloader ids={[...PRELOAD_PROGRAM_PRODUCT_IDS]}>
       <main>
-				<SalesPageTagger scoringEvent="pricing_page_visited" campaignTag="pp_view" />
+        <SalesPageTagger scoringEvent='pricing_page_visited' campaignTag='pp_view' />
         <HeroSection />
         <StopImprovisingSection />
         <BlindSpotSection />
