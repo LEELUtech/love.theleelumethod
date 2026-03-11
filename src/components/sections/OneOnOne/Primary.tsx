@@ -40,7 +40,7 @@ export const Primary = () => {
 
         <div className='flex-1 order-1 md:order-2 relative'>
           <div className='max-w-full md:max-w-[600px] rounded-[100px] overflow-hidden '>
-            <Image src='/images/lily/lily_10.png' width={600} height={600} alt='' className='w-full h-auto' />
+            <Image src='/images/lily/lily_15.jpeg' width={600} height={600} alt='' className='w-full h-auto' />
           </div>{' '}
           {isTablet && <SectionBadge position='right' size='md' color='coral' />}
         </div>

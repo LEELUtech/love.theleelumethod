@@ -7,10 +7,12 @@ import {
   CreateSpaceResponse,
   GrantAccessResponse,
 } from "../types/circle";
-import { getRandomElement } from "../utils/helpers/getRandomElement";
+import { TIER } from "../types/typeform";
 
 const getCircleConfig = () => ({
   apiKey: configs.circleApiKey || "PLACEHOLDER_API_KEY",
+  headlessKey: configs.circleHeadlessKey || "PLACEHOLDER_HEADLESS_KEY",
+
   baseUrl: "https://app.circle.so/api/admin/v2",
 });
 
@@ -173,12 +175,20 @@ export async function grantCircleCourseAccess(email: string, courseId: string): 
   }
 }
 
-export async function processCircleAccess(
-  email: string,
-  name: string,
-  spaceId?: string,
-  courseId?: string,
-): Promise<{ memberId: number; isNewMember: boolean }> {
+interface IProcessCircleAccess {
+  email: string;
+  name: string;
+  spaceId?: string;
+  courseId?: string;
+}
+
+type ProcessCircleAccess = (
+  params: IProcessCircleAccess,
+) => Promise<{ memberId: number; isNewMember: boolean }>;
+
+export const processCircleAccess: ProcessCircleAccess = async (params) => {
+  const { email, name, spaceId, courseId } = params;
+
   let member = await findCircleMemberByEmail(email);
   let isNewMember = false;
 
@@ -191,7 +201,7 @@ export async function processCircleAccess(
   if (courseId) await grantCircleCourseAccess(email, courseId);
 
   return { memberId: member.id, isNewMember };
-}
+};
 
 type SpaceType = "basic" | "chat" | "event" | "course" | "image";
 
@@ -283,48 +293,108 @@ export const addTagToMember = async (
   }
 };
 
-export const sendMessageToSpace = async (spaceId: string, message: string) => {
-  const res = await fetch(`https://app.circle.so/api/v1/spaces/${spaceId}/posts`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.CIRCLE_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      body: message,
-    }),
-  });
+interface CreateChatResponse {
+  chat_room: {
+    id: number;
+    uuid: string;
+  };
+}
 
-  return res.json();
+type CreateChat = (
+  memberId: number,
+  token: string,
+  tier: TIER,
+) => Promise<CreateChatResponse | null>;
+
+export const createChat: CreateChat = async (memberId, token, tier) => {
+  const isEssential = tier === TIER.ESSENTIALS;
+
+  const adminDoc = await db.collection("circle_admins").doc("Admin").get();
+
+  const adminId = adminDoc.data()?.id;
+
+  const community_member_ids = isEssential ? [memberId + ""] : [adminId + "", memberId + ""];
+
+  const payload = {
+    chat_room: { kind: "group_chat", community_member_ids, title: "YOUR WORK (PRIVATE HOMEWORK)" },
+  };
+
+  try {
+    const res = await fetch("https://app.circle.so/api/headless/v1/messages", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (res.status == 200) {
+      const data = await res.json();
+
+      return data as CreateChatResponse;
+    }
+
+    return null;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
 };
 
-export const createOwnSpace = async (name: string, email: string, product_type: string) => {
+export const sendMessage = async (chatId: string, text: string, token: string): Promise<void> => {
+  const payload = {
+    rich_text_body: {
+      body: {
+        type: "doc",
+        content: [{ type: "paragraph", content: [{ type: "text", text }] }],
+      },
+    },
+  };
+
   try {
-    const isVip = product_type === "vip_immersion";
+    await fetch(`https://app.circle.so/api/headless/v1/messages/${chatId}/chat_room_messages`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+  } catch {
+    console.log("Error sending message to Circle chat:", { chatId, text });
+  }
+};
 
-    const [
-      // adminsDoc,
-      moderatorsDoc,
-    ] = await Promise.all([
-      db.collection("circle_admins").doc("admins").get(),
-      db.collection("circle_admins").doc("moderators").get(),
-    ]);
+interface MemberTokenResponse {
+  access_token: string;
+  community_member_id: number;
+  expires_in: number;
+}
 
-    // const admins = adminsDoc.data()?.emails || [];s
-    const moderators = moderatorsDoc.data()?.emails || [];
+type GetMemberToken = (email: string) => Promise<MemberTokenResponse | null>;
 
-    const moderator = getRandomElement(moderators);
+export const getMemberToken: GetMemberToken = async (email) => {
+  const { headlessKey } = getCircleConfig();
 
-    const chat_id = await createSpace(name, "chat", "1010467");
+  try {
+    const res = await fetch("https://app.circle.so/api/v1/headless/auth_token", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${headlessKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
 
-    if (chat_id) {
-      await addMemberToSpace(email, chat_id);
-
-      if (!isVip && typeof moderator === "string") {
-        await addMemberToSpace(moderator, chat_id);
-      }
+    if (res.status === 200) {
+      const tokenData: MemberTokenResponse = await res.json();
+      return tokenData;
     }
-  } catch (error) {
-    console.error("Error creating own space:", error);
+
+    return null;
+  } catch (err) {
+    console.error("Error fetching member token:", err);
+    return null;
   }
 };

@@ -2,12 +2,12 @@ import { Section } from '@/components/ui/containers/section';
 import Image from 'next/image';
 
 const testimonials = [
-  { src: '/images/testimonials/testimonial_1.png', showOnMobile: true },
-  { src: '/images/testimonials/testimonial_2.png', showOnMobile: true },
-  { src: '/images/testimonials/testimonial_3.png', showOnMobile: false },
-  { src: '/images/testimonials/testimonial_4.png', showOnMobile: false },
-  { src: '/images/testimonials/testimonial_5.png', showOnMobile: true },
-  { src: '/images/testimonials/testimonial_6.png', showOnMobile: false },
+  { src: '/images/testimonials/decode/testimonial_1.png', showOnMobile: true },
+  { src: '/images/testimonials/decode/testimonial_2.png', showOnMobile: true },
+  { src: '/images/testimonials/decode/testimonial_3.png', showOnMobile: true },
+  { src: '/images/testimonials/decode/testimonial_4.png', showOnMobile: true },
+  { src: '/images/testimonials/decode/testimonial_5.png', showOnMobile: true },
+  { src: '/images/testimonials/decode/testimonial_6.png', showOnMobile: true },
 ];
 
 export default function TestimonialsSection() {

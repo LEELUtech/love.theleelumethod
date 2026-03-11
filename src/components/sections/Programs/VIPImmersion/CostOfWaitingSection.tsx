@@ -164,8 +164,8 @@ export default function CostOfWaitingSection() {
             </div>
 
             <div className='relative mx-auto w-full max-w-[560px]'>
-              <div className='relative max-w-[595px] h-[530px] md:h-[813px] lg:h-[813px]'>
-                <Image src='/images/programs/vip-immersion/who_this_is_for.png' alt='' fill quality={100} />
+              <div className='relative max-w-[595px] h-[530px] md:h-[813px] lg:h-[813px] rounded-[100px] overflow-hidden'>
+                <Image src='/images/lily/lily_15.jpeg' alt='' fill quality={100} />
               </div>
             </div>
           </div>
@@ -179,7 +179,12 @@ export default function CostOfWaitingSection() {
             size='md'
             className='w-full lg:w-[30%] xs:text-[12px] mt-[32px]'
             href={VIP_LINKS.WHO_LINK.href}
-            trackingData={{ cta_name: 'vip_cost_of_waiting_cta', cta_text: VIP_LINKS.WHO_LINK.label, cta_target_url: VIP_LINKS.WHO_LINK.href, cta_location: 'cost_of_waiting' }}
+            trackingData={{
+              cta_name: 'vip_cost_of_waiting_cta',
+              cta_text: VIP_LINKS.WHO_LINK.label,
+              cta_target_url: VIP_LINKS.WHO_LINK.href,
+              cta_location: 'cost_of_waiting',
+            }}
           >
             {VIP_LINKS.WHO_LINK.label}
           </Button>

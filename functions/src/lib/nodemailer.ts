@@ -6,7 +6,7 @@ class EmailService {
 
   async init() {
     const user = configs.nodemailerUser;
-    const pass = configs.nodemailerPass;
+    const pass = configs.nodemailerUser;
 
     this.transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",

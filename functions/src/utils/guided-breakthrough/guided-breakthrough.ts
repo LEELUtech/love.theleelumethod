@@ -1,13 +1,14 @@
 import Stripe from "stripe";
-import { addTagToMember } from "../../lib/circle";
-import { createChatAndAddMembers, getOffering, getUserData } from "../helpers/circle";
+import { addTagToMember, processCircleAccess } from "../../lib/circle";
+import { getOffering, getUserData } from "../helpers/circle";
+import { CIRCLE_COURSE_ID } from "../../static/circle";
 
 export async function handleGuidedBreakthrough(pi: Stripe.PaymentIntent): Promise<void> {
   const { email, name, productType } = getUserData(pi);
 
   const data = await getOffering(productType);
 
-  if (data?.tag) await addTagToMember(email, data.tag);
+  await processCircleAccess({ email, name, courseId: CIRCLE_COURSE_ID });
 
-  await createChatAndAddMembers(name, email);
+  if (data?.tag) await addTagToMember(email, data.tag);
 }

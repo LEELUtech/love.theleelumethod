@@ -12,6 +12,7 @@ export const configs = {
   zohoWebsiteDomain: process.env.ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT || "",
   // Circle API configuration
   circleApiKey: process.env.CIRCLE_API_KEY || "",
+  circleHeadlessKey: process.env.CIRCLE_HEADLESS_KEY || "",
   circleCommunityId: process.env.CIRCLE_COMMUNITY_ID || "",
   circleCommunityUrl: process.env.CIRCLE_COMMUNITY_URL || "",
 

@@ -1,12 +1,12 @@
 import { onRequest } from "firebase-functions/v2/https";
-import { TypeformWebhookRequest } from "../types/typeform";
-import { TypeformColumns } from "../static/typeform";
-import { db } from "../configs/firebase";
-import { addTagToMember } from "../lib/circle";
-import { appendRowFunction } from "../lib/google-sheet";
+import { PATH_LABELS, TypeFormError, TypeformWebhookRequest } from "../types/typeform";
+import { addTagToMember, findCircleMemberByEmail } from "../lib/circle";
+import { defineSecret } from "firebase-functions/params";
+import { sendWelcomeMessage } from "../utils/helpers/circle";
 import { transformTypeformResponse } from "../utils/typeform/transformTypeformResponse";
 import { sendEmailFunction } from "../lib/nodemailer";
-import { defineSecret } from "firebase-functions/params";
+import { appendRowFunction } from "../lib/google-sheet";
+import { db } from "../configs/firebase";
 
 const SHEET_EMAIL = defineSecret("SHEET_EMAIL");
 const SHEET_PRIVATE_KEY = defineSecret("SHEET_PRIVATE_KEY");
@@ -25,6 +25,7 @@ export const typeformWebhook = onRequest(
       SHEET_PRIVATE_KEY,
       SHEET_ID,
       SHEET_NAME,
+
       NODEMAILER_USER,
       NODEMAILER_PASS,
     ],
@@ -32,28 +33,39 @@ export const typeformWebhook = onRequest(
   async (req, res) => {
     const body = req.body as TypeformWebhookRequest;
 
-    const { submitted_at, answers } = body.form_response;
+    const { email, tier, path, fullName } = body;
 
-    const data = transformTypeformResponse(submitted_at, answers);
-
-    const path = data[TypeformColumns.PATH];
-    const email = data[TypeformColumns.EMAIL];
-    const name = data[TypeformColumns.HER_FULL_NAME];
-
-    if (path && email) {
-      const docRef = db.collection("circle_tags").doc(path);
-      const docSnap = await docRef.get();
-
-      if (docSnap.exists) {
-        const data = docSnap.data();
-
-        if (data?.id) await addTagToMember(email, data.id);
-      }
+    if (!email || !fullName || !tier || !path) {
+      res.status(400).json({ status: TypeFormError.MISSING_FIELDS });
+      return;
     }
 
-    if (path && email && name) {
-      await sendEmailFunction(email, name, path);
+    const pathLabel = PATH_LABELS[path];
+
+    const member = await findCircleMemberByEmail(email);
+
+    if (!member) {
+      res.status(404).json({ status: TypeFormError.INVALID_EMAIL });
+      return;
     }
+
+    const { first_name, last_name, id: memberId } = member;
+    const memberName = first_name + " " + last_name;
+
+    const data = transformTypeformResponse(body);
+
+    const docRef = db.collection("circle_tags").doc(pathLabel);
+    const docSnap = await docRef.get();
+
+    if (docSnap.exists) {
+      const data = docSnap.data();
+
+      if (data?.id) await addTagToMember(email, data.id);
+    }
+
+    await sendEmailFunction(email, fullName, pathLabel);
+
+    await sendWelcomeMessage(memberId, memberName, tier);
 
     await appendRowFunction(Object.values(data));
 

@@ -4,8 +4,15 @@ import * as React from 'react';
 import Link from 'next/link';
 import { trackCTA } from '@/lib/tracking/trackCTA';
 
-type ButtonVariant = 'primary' | 'dark';
+export type ButtonVariant = 'primary' | 'dark';
 type ButtonSize = 'md' | 'lg';
+
+export interface TrackingData {
+  cta_name: string;
+  cta_text?: string | null;
+  cta_target_url?: string | null;
+  cta_location?: string | null;
+}
 
 type CommonProps = {
   children: React.ReactNode;
@@ -22,12 +29,7 @@ type CommonProps = {
   className?: string;
 
   // Optional tracking data for analytics
-  trackingData?: {
-    cta_name: string;
-    cta_text?: string | null;
-    cta_target_url?: string | null;
-    cta_location?: string | null;
-  };
+  trackingData?: TrackingData;
 };
 
 type ButtonAsButton = CommonProps &

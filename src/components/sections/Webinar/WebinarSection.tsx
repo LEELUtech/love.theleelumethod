@@ -4,6 +4,7 @@ import ArcAutoOnce from '@/components/ui/ArcFlyOnce';
 import Button from '@/components/ui/Button';
 import RotateOnView from '@/components/ui/RotateOnView';
 import { DESCODE_LINKS } from '@/static/links';
+import { Logo } from '@/components/ui/Logo';
 
 const WebinarSection = () => {
   return (
@@ -14,26 +15,14 @@ const WebinarSection = () => {
       {/* <Header />	 */}
 
       <div className='font-light lg:hidden transition text-[20px] md:text-[22px] lg:text-[24px] leading-[126%] font-canela flex items-center gap-2 md:gap-2.5 lg:gap-3 text-brand-black mb-[32px] justify-center md:justify-start mt-[50px]'>
-        <span className=' w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 relative flex-shrink-0 lg:hidden'>
-          <Image src='/leelu_logo.svg' alt='Lily Chystofat Logo' fill className='object-contain' priority />
-        </span>
-        <div className='whitespace-nowrap lg:hidden lg:order-2'>
-          <span className='font-medium font-canela tracking-tight mr-1'>LILY</span>
-          <span className='font-canela font-light'>CHYSTOFAT</span>
-        </div>
+        <Logo />
       </div>
 
       <div className='container pt-[33px] pb-[30px] md:pb-28 lg:pt-[97px] lg:pb-[165px] px-4 flex flex-col lg:flex-row items-center justify-between md:gap-12 lg:gap-16'>
         {/* LEFT CONTENT */}
         <div className='order-2 md:order-1 w-full max-w-[530px] lg:text-left xs:relative xs:top-[-120px] md:static  xs:z-10'>
           <div className='font-light transition text-[20px] md:text-[22px] lg:text-[24px] leading-[126%] font-canela flex items-center gap-2 md:gap-2.5 lg:gap-3 text-brand-black mb-[32px] justify-center md:justify-start'>
-            <span className=' w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 relative flex-shrink-0 hidden lg:inline-block'>
-              <Image src='/leelu_logo.svg' alt='Lily Chystofat Logo' fill className='object-contain' priority />
-            </span>
-            <div className='whitespace-nowrap hidden lg:block lg:order-2'>
-              <span className='font-medium font-canela tracking-tight mr-1'>LILY</span>
-              <span className='font-canela font-light'>CHYSTOFAT</span>
-            </div>
+            <Logo />
           </div>
 
           <h1 className='lg:text-[60px] leading-tight font-thin md:text-[48px] font-canela text-brand-deep mb-6 text-[48px] text-center lg:text-left md:text-left'>
