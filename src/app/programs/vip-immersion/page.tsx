@@ -16,23 +16,28 @@ import {
   vipImmersionWhoThisData,
 } from '@/components/sections/Programs/VIPImmersion/static';
 import SalesPageTagger from '@/components/sections/SalesPage/SalesPageTagger';
+import FooterLayout from '@/components/ui/footer/FooterLayout';
 import { VIP_IMMERSION } from '@/utils/constants';
 
 export default function VIPImmersionPage() {
   return (
-    <main>
-      <ProgramsHero {...vipImmersionHeroData} />
-      <ProgramsWhoThis {...vipImmersionWhoThisData} />
-      <MechanicsDeliverablesSection />
-      <VIPImmersionReceive />
-      <VIPImmersionAudit />
-      <VIPImmersionOverview overviews={vipImmersionOverviewData} />
-      <ProgramResult {...vipImmersionResultData} />
-      <ProgramItWorks {...vipImmersionItWorksData} />
+    <>
+      <main>
+        <ProgramsHero {...vipImmersionHeroData} />
+        <ProgramsWhoThis {...vipImmersionWhoThisData} />
+        <MechanicsDeliverablesSection />
+        <VIPImmersionReceive />
+        <VIPImmersionAudit />
+        <VIPImmersionOverview overviews={vipImmersionOverviewData} />
+        <ProgramResult {...vipImmersionResultData} />
+        <ProgramItWorks {...vipImmersionItWorksData} />
 
-      <CostOfWaitingSection />
-      <CheckoutFormSection productId={VIP_IMMERSION} />
-      <SalesPageTagger />
-    </main>
+        <CostOfWaitingSection />
+        <CheckoutFormSection productId={VIP_IMMERSION} />
+        <SalesPageTagger />
+      </main>
+
+      <FooterLayout withNavigation={false} className='lg:mt-[-200px]' backgroundImage='/images/bg/checkout_bg.png' />
+    </>
   );
 }
