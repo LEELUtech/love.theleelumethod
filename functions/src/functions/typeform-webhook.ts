@@ -2,7 +2,7 @@ import { onRequest } from "firebase-functions/v2/https";
 import { PATH_LABELS, TypeFormError, TypeformWebhookRequest } from "../types/typeform";
 import { addTagToMember, findCircleMemberByEmail } from "../lib/circle";
 import { defineSecret } from "firebase-functions/params";
-import { sendWelcomeMessage } from "../utils/helpers/circle";
+import { getTier, sendWelcomeMessage } from "../utils/helpers/circle";
 import { transformTypeformResponse } from "../utils/typeform/transformTypeformResponse";
 import { sendEmailFunction } from "../lib/nodemailer";
 import { appendRowFunction } from "../lib/google-sheet";
@@ -33,9 +33,9 @@ export const typeformWebhook = onRequest(
   async (req, res) => {
     const body = req.body as TypeformWebhookRequest;
 
-    const { email, tier, path, fullName } = body;
+    const { email, path, fullName } = body;
 
-    if (!email || !fullName || !tier || !path) {
+    if (!email || !fullName || !path) {
       res.status(400).json({ status: TypeFormError.MISSING_FIELDS });
       return;
     }
@@ -49,10 +49,16 @@ export const typeformWebhook = onRequest(
       return;
     }
 
-    const { first_name, last_name, id: memberId } = member;
-    const memberName = first_name + " " + last_name;
+    const { id: memberId, member_tags } = member;
 
-    const data = transformTypeformResponse(body);
+    const tier = getTier(member_tags);
+
+    if (!tier) {
+      res.status(404).json({ status: TypeFormError.MISSING_TIER });
+      return;
+    }
+
+    const data = transformTypeformResponse(body, tier);
 
     const docRef = db.collection("circle_tags").doc(pathLabel);
     const docSnap = await docRef.get();
@@ -63,7 +69,7 @@ export const typeformWebhook = onRequest(
       if (data?.id) await addTagToMember(email, data.id);
     }
 
-    await sendWelcomeMessage(memberId, memberName, tier);
+    await sendWelcomeMessage(memberId, fullName, tier);
 
     await appendRowFunction(Object.values(data));
 

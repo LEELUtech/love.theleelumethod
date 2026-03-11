@@ -112,6 +112,8 @@ export const stripeCircleWebhook = onRequest(
     const startedAt = Date.now();
     const leaseId = `wh_${Date.now()}_${Math.random().toString(16).slice(2)}`;
 
+    console.log("stripeCircleWebhook IniT");
+
     try {
       if (req.method !== "POST") {
         res.status(405).send("Method Not Allowed");
@@ -121,7 +123,13 @@ export const stripeCircleWebhook = onRequest(
       const sig = req.headers["stripe-signature"];
       const rawBody = (req as unknown as StripeRawBodyRequest).rawBody;
 
+      console.log({ rawBody });
+      console.log({ sig });
+      console.log(configs.stripeCircleWebhookSecret);
+
       if (!rawBody || !sig || !configs.stripeCircleWebhookSecret) {
+        console.log("stripeCircleWebhook Configs");
+
         res.status(400).send("Missing required webhook data");
         return;
       }
@@ -136,6 +144,8 @@ export const stripeCircleWebhook = onRequest(
           configs.stripeCircleWebhookSecret,
         );
       } catch (e) {
+        console.log("Event Error");
+
         console.error("Stripe signature verification failed", errToMessage(e));
         res.status(400).send("Webhook signature verification failed");
         return;
