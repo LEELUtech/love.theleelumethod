@@ -18,19 +18,20 @@ import SalesPageTagger from '@/components/sections/SalesPage/SalesPageTagger';
 
 export default function SelfGuidedTransformationPage() {
   return (
-    <main>
-      <ProgramsHero {...selfGuidedHeroData} />
-      <ProgramsWhoThis {...selfGuidedWhoThisData} />
-      <MechanicsDeliverablesSection />
-      <InsideProtocol />
-      <ProgramResult {...selfGuidedResultData} />
-      <ProgramItWorks {...selfGuidedItWorksData} />
+    <>
+      <main>
+        <ProgramsHero {...selfGuidedHeroData} />
+        <ProgramsWhoThis {...selfGuidedWhoThisData} />
+        <MechanicsDeliverablesSection />
+        <InsideProtocol />
+        <ProgramResult {...selfGuidedResultData} />
+        <ProgramItWorks {...selfGuidedItWorksData} />
 
-      <CostOfWaitingSection />
-      <CheckoutFormSection productId={PROTOCOL_ESSENTIALS} />
-      <SalesPageTagger />
-
+        <CostOfWaitingSection />
+        <CheckoutFormSection productId={PROTOCOL_ESSENTIALS} />
+        <SalesPageTagger />
+      </main>{' '}
       <FooterLayout withNavigation={false} className='lg:mt-[-200px]' backgroundImage='/images/bg/checkout_bg.png' />
-    </main>
+    </>
   );
 }

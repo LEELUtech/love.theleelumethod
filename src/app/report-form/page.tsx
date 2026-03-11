@@ -7,7 +7,7 @@ import { DATE_FORMAT } from '@/utils/constants';
 import { ThankYou } from '@/components/sections/Form/ThankYou';
 import { Select } from '@/components/ui/select/index';
 import { ErrorLabel, FieldLabel, HelperLabel } from '@/components/ui/labels';
-import { DURATION_OPTIONS, initialReportForm, PATH_OPTIONS, TIER_OPTIONS } from '@/static/report-form';
+import { DURATION_OPTIONS, initialReportForm, PATH_OPTIONS } from '@/static/report-form';
 import { ReportFormData } from '@/types/report-form';
 import { sendReportData } from '@/lib/report-form';
 import { CustomPicker } from '@/components/ui/picker/custom-picker';
@@ -38,7 +38,7 @@ export default function ReportFormPage() {
     const dobError = validateBirthDate(form.dob);
     if (dobError) e.dob = dobError;
 
-    if (!form.tier) e.tier = 'Please select your program.';
+    // if (!form.tier) e.tier = 'Please select your program.';
     if (!form.path) e.path = 'Please select your path.';
 
     if (form.path === 'A' || form.path === 'B') {
@@ -115,7 +115,6 @@ export default function ReportFormPage() {
 
                   {errors.email && <ErrorLabel label={errors.email} />}
                 </div>
-
                 <div>
                   <FieldLabel required label='Your full name (as given at birth)' />
 
@@ -132,15 +131,15 @@ export default function ReportFormPage() {
 
                   {errors.fullName && <ErrorLabel label={errors.fullName} />}
                 </div>
-
                 <div>
                   <FieldLabel required label='Your date of birth' />
 
                   <CustomPicker onChange={(val: Dayjs | null) => set('dob', val ? val.format(DATE_FORMAT) : '')} />
                   {errors.dob && <ErrorLabel label={errors.dob} />}
                 </div>
-
-                <div>
+                {/* TODO: */}
+                {/* <============== TIER ====================> */}
+                {/* <div>
                   <FieldLabel required label='Which program did you enroll in?' />
                   <Select
                     value={form.tier}
@@ -149,8 +148,8 @@ export default function ReportFormPage() {
                     placeholder='Select your program'
                   />
                   {errors.tier && <ErrorLabel label={errors.tier} />}
-                </div>
-
+                </div> */}
+                {/* <============== TIER ====================> */}
                 <div>
                   <FieldLabel required label='Where are you right now?' />
                   <div className='mt-2 space-y-3'>

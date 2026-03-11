@@ -1,8 +1,12 @@
 import { db } from "../../../configs/firebase";
 import { createChat, getMemberToken, sendMessage } from "../../../lib/circle";
-import { TIER } from "../../../types/typeform";
+import { CIRCLE_TIER } from "../../../types/typeform";
 
-type SendWelcomeMessage = (memberId: number, memberName: string, tier: TIER) => Promise<void>;
+type SendWelcomeMessage = (
+  memberId: number,
+  memberName: string,
+  tier: CIRCLE_TIER,
+) => Promise<void>;
 
 export const sendWelcomeMessage: SendWelcomeMessage = async (memberId, memberName, tier) => {
   const moderatorDoc = await db.collection("circle_admins").doc("Moderator").get();

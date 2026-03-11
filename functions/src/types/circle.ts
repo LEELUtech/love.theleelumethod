@@ -1,10 +1,15 @@
+export interface CircleTag {
+  name: string;
+  id: number;
+}
+
 export interface CircleMember {
   id: number;
   first_name: string;
   last_name: string;
   email: string;
   name: string;
-  member_tags: { name: string; id: number }[];
+  member_tags: CircleTag[];
 }
 
 export interface CircleMemberNotFound {

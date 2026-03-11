@@ -7,7 +7,7 @@ import {
   CreateSpaceResponse,
   GrantAccessResponse,
 } from "../types/circle";
-import { TIER } from "../types/typeform";
+import { CIRCLE_TIER } from "../types/typeform";
 
 const getCircleConfig = () => ({
   apiKey: configs.circleApiKey || "PLACEHOLDER_API_KEY",
@@ -303,11 +303,11 @@ interface CreateChatResponse {
 type CreateChat = (
   memberId: number,
   token: string,
-  tier: TIER,
+  tier: CIRCLE_TIER,
 ) => Promise<CreateChatResponse | null>;
 
 export const createChat: CreateChat = async (memberId, token, tier) => {
-  const isEssential = tier === TIER.ESSENTIALS;
+  const isEssential = tier === CIRCLE_TIER.ESSENTIALS;
 
   const adminDoc = await db.collection("circle_admins").doc("Admin").get();
 

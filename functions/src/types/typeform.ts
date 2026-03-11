@@ -7,6 +7,7 @@ export enum PATH {
 export enum TypeFormError {
   INVALID_EMAIL = "INVALID_EMAIL",
   MISSING_FIELDS = "MISSING REQUIRED FIELDS",
+  MISSING_TIER = "MISSING_TIER",
 }
 
 export const PATH_LABELS = {
@@ -15,23 +16,23 @@ export const PATH_LABELS = {
   [PATH.C]: "Path C",
 };
 
-export enum TIER {
-  ESSENTIALS = "essentials",
-  GUIDED = "guided_breakthrough",
-  VIP = "guided_vip_immersionbreakthrough",
+export enum CIRCLE_TIER {
+  ESSENTIALS = "Essentials",
+  GUIDED = "Guided",
+  VIP = "VIP",
 }
 
 export const TIER_LABELS = {
-  [TIER.ESSENTIALS]: "The Essentials",
-  [TIER.GUIDED]: "Guided Breakthrough",
-  [TIER.VIP]: "VIP Immersion",
+  [CIRCLE_TIER.ESSENTIALS]: "The Essentials",
+  [CIRCLE_TIER.GUIDED]: "Guided Breakthrough",
+  [CIRCLE_TIER.VIP]: "VIP Immersion",
 };
 
 export interface TypeformWebhookRequest {
   email: string;
   fullName: string;
   dob: string;
-  tier: TIER;
+  // tier: TIER;
   path: PATH;
   partnerName?: string;
   partnerDob?: string;

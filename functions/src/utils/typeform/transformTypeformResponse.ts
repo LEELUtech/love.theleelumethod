@@ -1,11 +1,19 @@
 import { TypeformColumns } from "../../static/typeform";
-import { PATH, PATH_LABELS, TIER, TIER_LABELS, TypeformWebhookRequest } from "../../types/typeform";
+import {
+  CIRCLE_TIER,
+  PATH,
+  PATH_LABELS,
+  TIER_LABELS,
+  TypeformWebhookRequest,
+} from "../../types/typeform";
 
-export const transformTypeformResponse = (payload: TypeformWebhookRequest) => {
+export const transformTypeformResponse = (payload: TypeformWebhookRequest, tier: CIRCLE_TIER) => {
   const data = Object.fromEntries(Object.values(TypeformColumns).map((col) => [col, ""])) as Record<
     TypeformColumns,
     string
   >;
+
+  data[TypeformColumns.TIER] = TIER_LABELS[tier];
 
   Object.entries(payload).forEach(([key, value]) => {
     switch (true) {
@@ -22,9 +30,9 @@ export const transformTypeformResponse = (payload: TypeformWebhookRequest) => {
       case key === "dob":
         data[TypeformColumns.HER_DOB] = value;
         break;
-      case key === "tier":
-        data[TypeformColumns.TIER] = TIER_LABELS[value as TIER];
-        break;
+      // case key === "tier":
+      //   data[TypeformColumns.TIER] = TIER_LABELS[value as CIRCLE_TIER];
+      //   break;
       case key === "path":
         data[TypeformColumns.PATH] = PATH_LABELS[value as PATH];
         break;

@@ -1,10 +1,16 @@
 import { ReportFormData } from '@/types/report-form';
 
+export enum TIER {
+  ESSENTIALS = 'Essentials',
+  GUIDED = 'Guided',
+  VIP = 'VIP',
+}
+
 export const initialReportForm: ReportFormData = {
   email: '',
   fullName: '',
   dob: '',
-  tier: '',
+  // tier: '',
   path: null,
   partnerName: '',
   partnerDob: '',
@@ -31,9 +37,9 @@ export const PATH_OPTIONS = [
 ];
 
 export const TIER_OPTIONS = [
-  { value: 'essentials', label: 'The Essentials' },
-  { value: 'guided_breakthrough', label: 'Guided Breakthrough' },
-  { value: 'vip_immersion', label: 'VIP Immersion' },
+  { value: TIER.ESSENTIALS, label: 'The Essentials' },
+  { value: TIER.GUIDED, label: 'Guided Breakthrough' },
+  { value: TIER.VIP, label: 'VIP Immersion' },
 ];
 
 export const DURATION_OPTIONS = [
