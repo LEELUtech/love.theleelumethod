@@ -41,26 +41,6 @@ function clean(v?: string | null): string | undefined {
   return s ? s : undefined;
 }
 
-function normalizeSite(raw?: string | null): string | undefined {
-  const s = (raw || '').trim();
-  if (!s) return undefined;
-
-  try {
-    if (s.startsWith('http://') || s.startsWith('https://')) {
-      const host = new URL(s).host.toLowerCase();
-      return host.split(':')[0];
-    }
-  } catch {
-    // ignore
-  }
-
-  return s.replace(/\/+$/, '').toLowerCase().split(':')[0];
-}
-
-function getIncomingSite(req: Request): string {
-  const raw = req.headers.get('x-forwarded-host') || req.headers.get('host') || process.env.DOMAIN_URL || 'unknown';
-  return normalizeSite(raw) || 'unknown';
-}
 
 function buildLandingPage(site: string, pagePath?: string) {
   const pp = clean(pagePath);
@@ -225,7 +205,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid product price' }, { status: 500 });
     }
 
-    const site = getIncomingSite(req);
+    const site = process.env.ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT || "unknown";
     const pagePath = clean(body.pagePath);
     const landingPage = buildLandingPage(site, pagePath);
 

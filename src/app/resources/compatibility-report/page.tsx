@@ -2,7 +2,6 @@ import CheckoutFormSection from '@/components/sections/Compatibility/CheckoutFor
 import CoreValueSection from '@/components/sections/Compatibility/CoreValueSection';
 import HeroSection from '@/components/sections/Compatibility/HeroSection';
 import ProblemSolutionSection from '@/components/sections/Compatibility/ProblemSolutionSection';
-import SalesPageTagger from '@/components/sections/SalesPage/SalesPageTagger';
 import Footer from '@/components/ui/Footer';
 import { FooterPromo } from '@/components/ui/footer/FooterPromo';
 import React from 'react';
@@ -31,7 +30,6 @@ const CompatibilityReport = () => {
       <FooterPromo {...footerPromoContent} buttonClassName='!px-2 md:w-[70%]' />
 
       <Footer />
-      <SalesPageTagger />
     </main>
   );
 };

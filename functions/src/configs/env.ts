@@ -9,6 +9,7 @@ export const configs = {
   stripeSecretKey: process.env.STRIPE_SECRET_KEY_TEST,
   stripeSecretKeyTest: process.env.STRIPE_SECRET_KEY_TEST,
   baseUrl: process.env.NEXT_PUBLIC_BASE_URL || process.env.DOMAIN_URL || "http://localhost:3000",
+  zohoWebsiteDomain: process.env.ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT || "",
   // Circle API configuration
   circleApiKey: process.env.CIRCLE_API_KEY || "",
   circleCommunityId: process.env.CIRCLE_COMMUNITY_ID || "",
@@ -28,6 +29,7 @@ export const configs = {
   zohoAnalyticsViewId: process.env.ZOHO_ANALYTICS_VIEW_ID_LILYCHYSTOFAT || "",
 
   zohoDealLayoutId: process.env.ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT,
+  zohoContactLayoutId: process.env.ZOHO_CONTACT_LAYOUT_ID_LILYCHYSTOFAT,
 
   zohoCampaignsListKey: process.env.ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT || "",
   zohoRefreshCampaignsToken: process.env.ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT || "",

@@ -57,30 +57,6 @@ function clean(v?: string | null): string | undefined {
 	return s ? s : undefined;
 }
 
-function normalizeSite(raw?: string | null): string | undefined {
-	const s = (raw || "").trim();
-	if (!s) return undefined;
-
-	try {
-		if (s.startsWith("http://") || s.startsWith("https://")) {
-			return new URL(s).host.split(":")[0].toLowerCase();
-		}
-	} catch {
-		// ignore
-	}
-
-	return s.split(":")[0].toLowerCase();
-}
-
-function getIncomingSite(req: Request, bodySite?: string): string {
-	const raw =
-		req.headers.get("x-forwarded-host") ||
-		req.headers.get("host") ||
-		bodySite ||
-		process.env.DOMAIN_URL ||
-		"unknown";
-	return normalizeSite(raw) || "unknown";
-}
 
 function buildLandingPage(site: string, pagePath?: string) {
 	const pp = clean(pagePath);
@@ -222,7 +198,7 @@ export async function POST(req: NextRequest) {
 			return NextResponse.json({ ok: true, ignored: true });
 		}
 
-		const siteFromReq = getIncomingSite(req, body.site);
+		const siteFromReq = process.env.ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT || "unknown";
 		const pagePathIn = clean(body.pagePath);
 
 		let paymentIntentId = clean(body.paymentIntentId);

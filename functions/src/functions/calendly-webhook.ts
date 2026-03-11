@@ -12,6 +12,8 @@ const ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT = defineSecret("ZOHO_CAMPAIGNS_LISTKE
 const ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT");
 const ZOHO_API_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_API_DOMAIN_LILYCHYSTOFAT");
 const ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT");
+const ZOHO_CONTACT_LAYOUT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_CONTACT_LAYOUT_ID_LILYCHYSTOFAT");
+const ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT");
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
@@ -92,6 +94,8 @@ export const calendlyWebhook = onRequest(
       ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT,
       ZOHO_API_DOMAIN_LILYCHYSTOFAT,
       ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT,
+      ZOHO_CONTACT_LAYOUT_ID_LILYCHYSTOFAT,
+      ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT,
     ],
   },
   async (req, res) => {
@@ -150,10 +154,24 @@ export const calendlyWebhook = onRequest(
       }
 
       // ── invitee.created ─────────────────────────────────────────────────────
+      // Calendly sometimes sends first_name/last_name as null — fall back to splitting name
+      const fullNameParts = payload.name ? String(payload.name).trim().split(/\s+/) : [];
+      const derivedFirst = payload.first_name
+        ? String(payload.first_name).trim()
+        : fullNameParts.slice(0, -1).join(" ") || fullNameParts[0];
+      const derivedLast = payload.last_name
+        ? String(payload.last_name).trim()
+        : fullNameParts.length > 1 ? fullNameParts[fullNameParts.length - 1] : undefined;
+
+      const inviteeMeta = {
+        firstName: derivedFirst || undefined,
+        lastName: derivedLast || undefined,
+      };
+
       if (kind === "trust_temple") {
         await upsertContactAndUpdateTags(email, { add: ["trust_temple_session"], remove: [] });
         try {
-          await markTrustTempleBooked(email, true);
+          await markTrustTempleBooked(email, true, inviteeMeta);
         } catch (e) {
           console.error("calendlyWebhook: markTrustTempleBooked(true) failed (non-critical)", { email, error: e });
         }
@@ -173,8 +191,8 @@ export const calendlyWebhook = onRequest(
 
       // Meta fields to write to Campaigns contact
       const meta: Record<string, string> = {};
-      if (payload.first_name) meta["First Name"] = String(payload.first_name).trim();
-      if (payload.last_name) meta["Last Name"] = String(payload.last_name).trim();
+      if (derivedFirst) meta["First Name"] = derivedFirst;
+      if (derivedLast) meta["Last Name"] = derivedLast;
       if (payload.scheduled_event?.start_time) {
         meta["session_start_time"] = String(payload.scheduled_event.start_time);
       }
@@ -182,7 +200,7 @@ export const calendlyWebhook = onRequest(
       await upsertContactAndUpdateTags(email, { add, remove }, Object.keys(meta).length ? meta : undefined);
 
       try {
-        await markSessionPurchased(email, kind);
+        await markSessionPurchased(email, kind, undefined, inviteeMeta);
       } catch (e) {
         console.error("calendlyWebhook: markSessionPurchased failed (non-critical)", { email, kind, error: e });
       }
