@@ -12,6 +12,8 @@ const ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT = defineSecret("ZOHO_CAMPAIGNS_LISTKE
 const ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT");
 const ZOHO_API_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_API_DOMAIN_LILYCHYSTOFAT");
 const ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT");
+const ZOHO_CONTACT_LAYOUT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_CONTACT_LAYOUT_ID_LILYCHYSTOFAT");
+const ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT");
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
@@ -56,17 +58,24 @@ function detectEventKind(eventName?: string): CalendlyEventKind | null {
   return null;
 }
 
-function purchasedTagDelta(tier: SessionPackageTier): { add: string[]; remove: string[] } {
+function purchasedTagDelta(kind: CalendlyEventKind): { add: string[]; remove: string[] } {
   const tierTag: Record<SessionPackageTier, string> = {
     single: "sess_single",
     three_session: "sess_3pack",
     nine_session: "sess_9pack",
   };
 
-  const otherTierTags = Object.values(tierTag).filter((t) => t !== tierTag[tier]);
+  if (kind === "trust_temple") {
+    return {
+      add: ["session_purchased", "trust_temple_session"],
+      remove: Object.values(tierTag),
+    };
+  }
+
+  const otherTierTags = Object.values(tierTag).filter((t) => t !== tierTag[kind]);
 
   return {
-    add: ["session_purchased", tierTag[tier]],
+    add: ["session_purchased", tierTag[kind]],
     remove: otherTierTags,
   };
 }
@@ -74,7 +83,7 @@ function purchasedTagDelta(tier: SessionPackageTier): { add: string[]; remove: s
 function canceledTagDelta(): { add: string[]; remove: string[] } {
   return {
     add: [],
-    remove: ["session_purchased", "sess_single", "sess_3pack", "sess_9pack"],
+    remove: ["session_purchased", "trust_temple_session", "sess_single", "sess_3pack", "sess_9pack"],
   };
 }
 
@@ -92,6 +101,8 @@ export const calendlyWebhook = onRequest(
       ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT,
       ZOHO_API_DOMAIN_LILYCHYSTOFAT,
       ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT,
+      ZOHO_CONTACT_LAYOUT_ID_LILYCHYSTOFAT,
+      ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT,
     ],
   },
   async (req, res) => {
@@ -124,42 +135,41 @@ export const calendlyWebhook = onRequest(
 
       // ── invitee.canceled ────────────────────────────────────────────────────
       if (eventType === "invitee.canceled") {
+        const { add: cancelAdd, remove: cancelRemove } = canceledTagDelta();
+        await upsertContactAndUpdateTags(email, { add: cancelAdd, remove: cancelRemove });
+
         if (kind === "trust_temple") {
-          await upsertContactAndUpdateTags(email, { add: [], remove: ["trust_temple_session"] });
           try {
             await markTrustTempleBooked(email, false);
           } catch (e) {
             console.error("calendlyWebhook: markTrustTempleBooked(false) failed (non-critical)", { email, error: e });
           }
-          res.json({ ok: true, event: eventType, email, eventName });
-          return;
+        } else {
+          try {
+            await markSessionCanceled(email);
+          } catch (e) {
+            console.error("calendlyWebhook: markSessionCanceled failed (non-critical)", { email, error: e });
+          }
         }
 
-        const { add, remove } = canceledTagDelta();
-
-        await upsertContactAndUpdateTags(email, { add, remove });
-
-        try {
-          await markSessionCanceled(email);
-        } catch (e) {
-          console.error("calendlyWebhook: markSessionCanceled failed (non-critical)", { email, error: e });
-        }
-
-        res.json({ ok: true, event: eventType, email, add, remove });
+        res.json({ ok: true, event: eventType, email, add: cancelAdd, remove: cancelRemove });
         return;
       }
 
       // ── invitee.created ─────────────────────────────────────────────────────
-      if (kind === "trust_temple") {
-        await upsertContactAndUpdateTags(email, { add: ["trust_temple_session"], remove: [] });
-        try {
-          await markTrustTempleBooked(email, true);
-        } catch (e) {
-          console.error("calendlyWebhook: markTrustTempleBooked(true) failed (non-critical)", { email, error: e });
-        }
-        res.json({ ok: true, event: eventType, email, eventName });
-        return;
-      }
+      // Calendly sometimes sends first_name/last_name as null — fall back to splitting name
+      const fullNameParts = payload.name ? String(payload.name).trim().split(/\s+/) : [];
+      const derivedFirst = payload.first_name
+        ? String(payload.first_name).trim()
+        : fullNameParts.slice(0, -1).join(" ") || fullNameParts[0];
+      const derivedLast = payload.last_name
+        ? String(payload.last_name).trim()
+        : fullNameParts.length > 1 ? fullNameParts[fullNameParts.length - 1] : undefined;
+
+      const inviteeMeta = {
+        firstName: derivedFirst || undefined,
+        lastName: derivedLast || undefined,
+      };
 
       if (!kind) {
         console.warn("calendlyWebhook: unrecognized event type, skipping tags", { email, eventName });
@@ -171,20 +181,27 @@ export const calendlyWebhook = onRequest(
 
       const { add, remove } = purchasedTagDelta(kind);
 
-      // Meta fields to write to Campaigns contact
       const meta: Record<string, string> = {};
-      if (payload.first_name) meta["First Name"] = String(payload.first_name).trim();
-      if (payload.last_name) meta["Last Name"] = String(payload.last_name).trim();
+      if (derivedFirst) meta["First Name"] = derivedFirst;
+      if (derivedLast) meta["Last Name"] = derivedLast;
       if (payload.scheduled_event?.start_time) {
         meta["session_start_time"] = String(payload.scheduled_event.start_time);
       }
 
       await upsertContactAndUpdateTags(email, { add, remove }, Object.keys(meta).length ? meta : undefined);
 
-      try {
-        await markSessionPurchased(email, kind);
-      } catch (e) {
-        console.error("calendlyWebhook: markSessionPurchased failed (non-critical)", { email, kind, error: e });
+      if (kind === "trust_temple") {
+        try {
+          await markTrustTempleBooked(email, true, inviteeMeta);
+        } catch (e) {
+          console.error("calendlyWebhook: markTrustTempleBooked(true) failed (non-critical)", { email, error: e });
+        }
+      } else {
+        try {
+          await markSessionPurchased(email, kind, undefined, inviteeMeta);
+        } catch (e) {
+          console.error("calendlyWebhook: markSessionPurchased failed (non-critical)", { email, kind, error: e });
+        }
       }
 
       res.json({ ok: true, event: eventType, email, kind, add, remove });

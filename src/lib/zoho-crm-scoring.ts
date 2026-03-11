@@ -3,6 +3,7 @@ import axios from "axios";
 import { zohoRequest } from "@/lib/zoho-client";
 
 const API_DOMAIN = process.env.ZOHO_API_DOMAIN_LILYCHYSTOFAT || "www.zohoapis.com";
+const LAYOUT_ID = process.env.ZOHO_CONTACT_LAYOUT_ID_LILYCHYSTOFAT;
 const MAX_COUNT = 10;
 
 async function findContact(email: string): Promise<{ id: string; fields: Record<string, any> } | null> {
@@ -63,6 +64,30 @@ async function incrementCounter(email: string, field: string): Promise<void> {
   console.log(`[score-crm] contact id=${contact.id} field=${field} current=${current} → next=${next}`);
   await patchContact(contact.id, { [field]: next }, `${field}=${next}`);
   console.log(`[score-crm] incrementCounter DONE field=${field} email=${email} new_value=${next}`);
+}
+
+async function ensureContact(email: string, site?: string): Promise<string> {
+  const contact = await findContact(email);
+  if (contact) return contact.id;
+
+  const record: Record<string, unknown> = { Email: email, Last_Name: "." };
+  if (site) record.Site = site;
+  if (LAYOUT_ID) record.Layout = { id: LAYOUT_ID };
+
+  const res = await zohoRequest<any>({
+    method: "POST",
+    url: `https://${API_DOMAIN}/crm/v2/Contacts`,
+    data: { data: [record] },
+  });
+  const newId = res?.data?.[0]?.details?.id as string | undefined;
+  if (!newId) throw new Error(`[zoho-crm-scoring] ensureContact failed: ${JSON.stringify(res)}`);
+  console.log("[zoho-crm-scoring] contact created", { email, site, id: newId });
+  return newId;
+}
+
+export async function markQuizCompleted(email: string, site?: string): Promise<void> {
+  const id = await ensureContact(email, site);
+  await patchContact(id, { Quiz_Completed: true }, "Quiz_Completed=true");
 }
 
 export async function markSalesPageVisited(email: string): Promise<void> {

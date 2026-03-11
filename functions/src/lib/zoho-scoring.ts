@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { configs } from "../configs/env";
+import { ensureCRMContact } from "./zoho-crm";
 
 // ─── Scoring field API names ──────────────────────────────────────────────────
 
@@ -91,6 +92,19 @@ async function setFields(email: string, fields: Record<string, true>): Promise<v
   console.log("[zoho-scoring] fields set", { email, fields: Object.keys(fields) });
 }
 
+async function setFieldsOrCreate(
+  email: string,
+  fields: Record<string, true>,
+  meta?: { firstName?: string; lastName?: string },
+): Promise<void> {
+  let id = await findContactId(email);
+  if (!id) {
+    id = await ensureCRMContact(email, meta);
+  }
+  await patchContact(id, fields);
+  console.log("[zoho-scoring] fields set", { email, fields: Object.keys(fields) });
+}
+
 // ─── Public helpers ───────────────────────────────────────────────────────────
 
 /** Call when user downloads the lead magnet. */
@@ -108,9 +122,12 @@ export async function markCompatibilityCodePurchased(email: string): Promise<voi
   await setFields(email, { [SCORING_FIELDS.Compatibility_Code_Purchased]: true });
 }
 
-/** Call when user registers for a webinar. */
-export async function markWebinarRegistered(email: string): Promise<void> {
-  await setFields(email, { [SCORING_FIELDS.Webinar_Registered]: true });
+/** Call when user registers for a webinar. Creates CRM contact if it doesn't exist yet. */
+export async function markWebinarRegistered(
+  email: string,
+  meta?: { firstName?: string; lastName?: string },
+): Promise<void> {
+  await setFieldsOrCreate(email, { [SCORING_FIELDS.Webinar_Registered]: true }, meta);
 }
 
 /** Call when user watched the live webinar (≥80%). */

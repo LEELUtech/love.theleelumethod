@@ -2,6 +2,7 @@
 // CRM helpers for 1:1 Diagnostic Session purchases (Calendly + Stripe)
 import axios, { AxiosRequestConfig } from "axios";
 import { configs } from "../configs/env";
+import { ensureCRMContact } from "./zoho-crm";
 
 export type SessionPackageTier = "single" | "three_session" | "nine_session";
 
@@ -83,12 +84,9 @@ export async function markSessionPurchased(
   email: string,
   packageTier: SessionPackageTier,
   extraFields?: Record<string, unknown>,
+  meta?: { firstName?: string; lastName?: string },
 ): Promise<void> {
-  const id = await findContactId(email);
-  if (!id) {
-    console.warn("[zoho-sessions] contact not found, skipping", { email, packageTier });
-    return;
-  }
+  const id = await ensureCRMContact(email, meta);
 
   await patchContact(id, {
     Session_Purchased: true,
@@ -103,10 +101,16 @@ export async function markSessionPurchased(
 /**
  * Called when a Trust Temple session is booked or canceled via Calendly.
  */
-export async function markTrustTempleBooked(email: string, booked: boolean): Promise<void> {
-  const id = await findContactId(email);
+export async function markTrustTempleBooked(
+  email: string,
+  booked: boolean,
+  meta?: { firstName?: string; lastName?: string },
+): Promise<void> {
+  const id = booked
+    ? await ensureCRMContact(email, meta)
+    : await findContactId(email);
   if (!id) {
-    console.warn("[zoho-sessions] contact not found for trust temple, skipping", { email });
+    console.warn("[zoho-sessions] contact not found for trust temple cancel, skipping", { email });
     return;
   }
 

@@ -80,7 +80,7 @@ function digitsCount(v: unknown) {
 
 function isPlaceholderName(v: unknown) {
   const s = String(v ?? "").trim().toLowerCase();
-  return !s || s === "unknown" || s === "lead" || s === "customer";
+  return !s || s === "." || s === "unknown" || s === "lead" || s === "customer";
 }
 
 function setIfEmpty(obj: Record<string, unknown>, key: string, current: unknown, next?: unknown) {

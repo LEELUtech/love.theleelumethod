@@ -30,16 +30,6 @@ function clean(v?: string | null): string | undefined {
   return s ? s : undefined;
 }
 
-function getIncomingSite(req: Request, bodySite?: string): string {
-  const raw =
-    req.headers.get("x-forwarded-host") ||
-    req.headers.get("host") ||
-    bodySite ||
-    process.env.DOMAIN_URL ||
-    "unknown";
-  const s = (raw ?? "").trim().split(":")[0].toLowerCase();
-  return s || "unknown";
-}
 
 export async function POST(req: NextRequest) {
   try {
@@ -53,7 +43,7 @@ export async function POST(req: NextRequest) {
 
     const firstName = clean(body.firstName);
     const lastName = clean(body.lastName);
-    const site = getIncomingSite(req, body.site);
+    const site = process.env.ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT || "unknown";
     const pagePath = clean(body.pagePath);
 
     console.log("[resource-optin] start", { email, firstName, lastName, site, pagePath, resource: body.resource });

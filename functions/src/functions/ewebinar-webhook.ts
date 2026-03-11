@@ -17,6 +17,8 @@ const ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT = defineSecret("ZOHO_CAMPAIGNS_LISTKE
 const ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT");
 const ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT");
 const ZOHO_API_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_API_DOMAIN_LILYCHYSTOFAT");
+const ZOHO_CONTACT_LAYOUT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_CONTACT_LAYOUT_ID_LILYCHYSTOFAT");
+const ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT");
 
 
 const WB_REGISTERED_TIME_FIELD = "wb_registered_at";
@@ -231,6 +233,8 @@ export const ewebinarWebhook = onRequest(
       ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT,
       ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT,
       ZOHO_API_DOMAIN_LILYCHYSTOFAT,
+      ZOHO_CONTACT_LAYOUT_ID_LILYCHYSTOFAT,
+      ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT,
     ],
   },
   async (req, res) => {
@@ -294,7 +298,10 @@ export const ewebinarWebhook = onRequest(
       // In practice eWebinar only fires Registered and WebinarFinished.
       try {
         if (action === "Registered") {
-          await markWebinarRegistered(email);
+          await markWebinarRegistered(email, {
+            firstName: body.firstName ? String(body.firstName).trim() : undefined,
+            lastName: body.lastName ? String(body.lastName).trim() : undefined,
+          });
         } else if (action === "WebinarFinished") {
           const isReplay = body.sessionType === "Replay";
           const totalPct = toNum(body.totalWatchedPercent);

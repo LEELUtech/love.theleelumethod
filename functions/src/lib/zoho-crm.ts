@@ -129,7 +129,7 @@ function isPlaceholderName(v: unknown) {
   const s = String(v ?? "")
     .trim()
     .toLowerCase();
-  return !s || s === "unknown" || s === "lead" || s === "customer";
+  return !s || s === "." || s === "unknown" || s === "lead" || s === "customer";
 }
 
 function digitsCount(v: unknown) {
@@ -394,6 +394,45 @@ async function findDealByPaymentIntentId(
     }
     throw err;
   }
+}
+
+// ======================================================
+// ENSURE CONTACT EXISTS (lightweight — no purchase data required)
+// ======================================================
+export async function ensureCRMContact(
+  email: string,
+  meta?: { firstName?: string; lastName?: string },
+): Promise<string> {
+  const normalizedEmail = cleanStr(email)?.toLowerCase();
+  if (!normalizedEmail) throw new Error("Email is required");
+
+  const existing = await findContactByEmail(normalizedEmail);
+  if (existing?.id) return existing.id as string;
+
+  const record: Record<string, unknown> = {
+    [CONTACT_FIELDS.Email]: normalizedEmail,
+    [CONTACT_FIELDS.Last_Name]: ".",
+  };
+  if (meta?.firstName) record[CONTACT_FIELDS.First_Name] = truncate(meta.firstName.trim(), 80);
+  if (meta?.lastName) record[CONTACT_FIELDS.Last_Name] = truncate(meta.lastName.trim(), 80);
+  if (configs.zohoWebsiteDomain) record[CONTACT_FIELDS.Site] = configs.zohoWebsiteDomain;
+  if (configs.zohoContactLayoutId) record.Layout = { id: configs.zohoContactLayoutId };
+
+  const cohort = await getCohortData();
+  if (cohort.date) record[CONTACT_FIELDS.Cohort_Start_Date] = cohort.date;
+  if (cohort.label) record[CONTACT_FIELDS.Cohort_Start_Date_Name] = cohort.label;
+
+  const res = await zohoRequest<any>({
+    method: "POST",
+    url: `https://${configs.zohoApiCRMDomain}/crm/v2/Contacts`,
+    data: { data: [record] },
+  });
+
+  const newId = res?.data?.[0]?.details?.id as string | undefined;
+  if (!newId) throw new Error(`[zoho-crm] ensureCRMContact failed: ${JSON.stringify(res)}`);
+
+  console.log("[zoho-crm] contact created", { email: normalizedEmail, id: newId });
+  return newId;
 }
 
 // ======================================================
