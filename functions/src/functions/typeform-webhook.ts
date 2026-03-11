@@ -13,8 +13,8 @@ const SHEET_PRIVATE_KEY = defineSecret("SHEET_PRIVATE_KEY");
 const SHEET_ID = defineSecret("SHEET_ID");
 const SHEET_NAME = defineSecret("SHEET_NAME");
 
-const SENDING_EMAIL = defineSecret("SENDING_EMAIL");
-const SENDING_PASSWORD = defineSecret("SENDING_PASSWORD");
+const NODEMAILER_USER = defineSecret("NODEMAILER_USER");
+const NODEMAILER_PASS = defineSecret("NODEMAILER_PASS");
 
 export const typeformWebhook = onRequest(
   {
@@ -26,8 +26,8 @@ export const typeformWebhook = onRequest(
       SHEET_ID,
       SHEET_NAME,
 
-      SENDING_EMAIL,
-      SENDING_PASSWORD,
+      NODEMAILER_USER,
+      NODEMAILER_PASS,
     ],
   },
   async (req, res) => {

@@ -5,8 +5,8 @@ class EmailService {
   private transporter!: nodemailer.Transporter;
 
   async init() {
-    const user = configs.email;
-    const pass = configs.password;
+    const user = configs.nodemailerUser;
+    const pass = configs.nodemailerUser;
 
     this.transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
@@ -22,7 +22,7 @@ class EmailService {
     if (!this.transporter) throw new Error("Transporter not initialized. Call init() first.");
 
     await this.transporter.sendMail({
-      from: configs.email,
+      from: configs.nodemailerUser,
       to,
       subject: "Thanks for completing the form",
       html: `
