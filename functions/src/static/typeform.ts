@@ -1,21 +1,3 @@
-export enum TypeformRef {
-  USER_EMAIL = "user_email",
-  USER_NAME = "user_name",
-  USER_DOB = "user_dob",
-  USER_PROGRAM = "user_program",
-  USER_PATH = "user_path",
-
-  EX_PARTNER_NAME = "ex_partner_name",
-  EX_PARTNER_DOB = "ex_partner_dob",
-  EX_PARTNER_DURATION = "ex_partner_duration",
-
-  PARTNER_NAME = "partner_name",
-  PARTNER_DOB = "partner_dob",
-  PARTNER_DURATION = "partner_duration",
-
-  CONFIRMATION = "confirmation",
-}
-
 export enum TypeformColumns {
   TIMESTAMP = "Timestamp",
   EMAIL = "Email",

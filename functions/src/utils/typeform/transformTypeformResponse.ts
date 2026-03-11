@@ -1,65 +1,41 @@
-import { TypeformColumns, TypeformRef } from "../../static/typeform";
-import { TypeformAnswer } from "../../types/typeform";
-import { formatTime } from "../helpers/formatTime";
+import { TypeformColumns } from "../../static/typeform";
+import { PATH, PATH_LABELS, TIER, TIER_LABELS, TypeformWebhookRequest } from "../../types/typeform";
 
-const transformPathResponse = (label: string) => {
-  switch (label) {
-    case "I’m going through a breakup":
-      return "Path B";
-    case "I’m in a relationship":
-      return "Path A";
-    default:
-      return "Path C";
-  }
-};
-
-export const transformTypeformResponse = (submittedAt: string, answers: TypeformAnswer[]) => {
+export const transformTypeformResponse = (payload: TypeformWebhookRequest) => {
   const data = Object.fromEntries(Object.values(TypeformColumns).map((col) => [col, ""])) as Record<
     TypeformColumns,
     string
   >;
 
-  data[TypeformColumns.TIMESTAMP] = formatTime(submittedAt);
-
-  answers.forEach((answer) => {
-    const ref = answer.field.ref;
-
-    switch (ref) {
-      case TypeformRef.USER_EMAIL:
-        if (answer.email) data[TypeformColumns.EMAIL] = answer.email;
-        else if (answer.text) data[TypeformColumns.EMAIL] = answer.text;
+  Object.entries(payload).forEach(([key, value]) => {
+    switch (true) {
+      case key === "submittedAt":
+        data[TypeformColumns.TIMESTAMP] = value;
         break;
 
-      case TypeformRef.USER_NAME:
-        if (answer.text) data[TypeformColumns.HER_FULL_NAME] = answer.text;
+      case key === "email":
+        data[TypeformColumns.EMAIL] = value;
         break;
-
-      case TypeformRef.USER_DOB:
-        if (answer.date) data[TypeformColumns.HER_DOB] = answer.date;
+      case key === "fullName":
+        data[TypeformColumns.HER_FULL_NAME] = value;
         break;
-
-      case TypeformRef.USER_PROGRAM:
-        if (answer.choice?.label) data[TypeformColumns.TIER] = answer.choice.label;
+      case key === "dob":
+        data[TypeformColumns.HER_DOB] = value;
         break;
-
-      case TypeformRef.USER_PATH:
-        if (answer.choice?.label)
-          data[TypeformColumns.PATH] = transformPathResponse(answer.choice.label);
+      case key === "tier":
+        data[TypeformColumns.TIER] = TIER_LABELS[value as TIER];
         break;
-
-      case TypeformRef.PARTNER_NAME:
-      case TypeformRef.EX_PARTNER_NAME:
-        if (answer.text) data[TypeformColumns.PARTNER_FULL_NAME] = answer.text;
+      case key === "path":
+        data[TypeformColumns.PATH] = PATH_LABELS[value as PATH];
         break;
-
-      case TypeformRef.PARTNER_DOB:
-      case TypeformRef.EX_PARTNER_DOB:
-        if (answer.date) data[TypeformColumns.PARTNER_DOB] = answer.date;
+      case key === "partnerName" && value:
+        data[TypeformColumns.PARTNER_FULL_NAME] = value;
         break;
-
-      case TypeformRef.PARTNER_DURATION:
-      case TypeformRef.EX_PARTNER_DURATION:
-        if (answer.choice) data[TypeformColumns.PARTNER_DURATION] = answer.choice.label;
+      case key === "partnerDob" && value:
+        data[TypeformColumns.PARTNER_DOB] = value;
+        break;
+      case key === "duration" && value:
+        data[TypeformColumns.PARTNER_DURATION] = value;
         break;
 
       default:

@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import * as React from "react";
+import * as React from 'react';
 
 type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   placeholder: string;
@@ -22,8 +22,8 @@ export default function Input({ className, ...props }: InputProps) {
         placeholder:text-[#757986]
         outline-none
       `,
-        className ?? "",
-      ].join(" ")}
+        className ?? '',
+      ].join(' ')}
     />
   );
 }

@@ -4,6 +4,7 @@ export interface CircleMember {
   last_name: string;
   email: string;
   name: string;
+  member_tags: { name: string; id: number }[];
 }
 
 export interface CircleMemberNotFound {
