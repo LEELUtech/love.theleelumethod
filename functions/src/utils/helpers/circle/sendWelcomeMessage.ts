@@ -1,13 +1,10 @@
 import { db } from "../../../configs/firebase";
 import { createChat, getMemberToken, sendMessage } from "../../../lib/circle";
+import { TIER } from "../../../types/typeform";
 
-type SendWelcomeMessage = (
-  memberId: number,
-  memberName: string,
-  productType: string,
-) => Promise<void>;
+type SendWelcomeMessage = (memberId: number, memberName: string, tier: TIER) => Promise<void>;
 
-export const sendWelcomeMessage: SendWelcomeMessage = async (memberId, memberName, productType) => {
+export const sendWelcomeMessage: SendWelcomeMessage = async (memberId, memberName, tier) => {
   const moderatorDoc = await db.collection("circle_admins").doc("Moderator").get();
 
   const moderatorEmail = moderatorDoc.data()?.email;
@@ -18,7 +15,7 @@ export const sendWelcomeMessage: SendWelcomeMessage = async (memberId, memberNam
   if (moderatorEmail) {
     const res = await getMemberToken(moderatorEmail);
     if (res) {
-      const chatRes = await createChat(memberId, res.access_token, productType);
+      const chatRes = await createChat(memberId, res.access_token, tier);
 
       if (chatRes) {
         await sendMessage(chatRes.chat_room.uuid, text, res.access_token);

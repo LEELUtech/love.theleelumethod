@@ -1,41 +1,43 @@
-import { TypeformRef } from "../static/typeform";
-
-interface TypeformChoice {
-  id: string;
-  label: string;
-  ref: string;
+export enum PATH {
+  A = "A",
+  B = "B",
+  C = "C",
 }
 
-export interface TypeformField {
-  id: string;
-  type: string;
-  ref: TypeformRef;
+export enum TypeFormError {
+  INVALID_EMAIL = "INVALID_EMAL",
+  MISSING_FIELDS = "MISSING REQUIRED FIELDS",
 }
 
-export interface TypeformAnswer {
-  type: string;
-  email?: string;
-  text?: string;
-  date?: string;
-  choice?: TypeformChoice;
-  answer_url?: string;
-  field: TypeformField;
+export const PATH_LABELS = {
+  [PATH.A]: "Path A",
+  [PATH.B]: "Path B",
+  [PATH.C]: "Path C",
+};
+
+export enum TIER {
+  ESSENTIALS = "essentials",
+  GUIDED = "guided_breakthrough",
+  VIP = "guided_vip_immersionbreakthrough",
 }
+
+export const TIER_LABELS = {
+  [TIER.ESSENTIALS]: "The Essentials",
+  [TIER.GUIDED]: "Guided Breakthrough",
+  [TIER.VIP]: "VIP Immersion",
+};
 
 export interface TypeformWebhookRequest {
-  event_id: string;
-  event_type: string;
-  form_response: {
-    form_id: string;
-    landed_at: Date;
-    submitted_at: string;
-    token: string;
-    definition: {
-      id: string;
-      title: string;
-      endings: unknown[];
-      fields: TypeformField[];
-    };
-    answers: TypeformAnswer[];
-  };
+  email: string;
+  fullName: string;
+  dob: string;
+  tier: TIER;
+  path: PATH;
+  partnerName?: string;
+  partnerDob?: string;
+  duration?: string;
+  consent: boolean;
+  submittedAt: string;
 }
+
+/// Essentials Guided VIP

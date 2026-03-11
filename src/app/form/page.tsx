@@ -3,7 +3,7 @@
 import React from 'react';
 import Input from '@/components/ui/Input';
 import BirthDatePicker from '@/components/ui/BirthDatePicker';
-import type { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { DATE_FORMAT } from '@/utils/constants';
 import { ThankYou } from '@/components/sections/Form/ThankYou';
 import { Select } from '@/components/ui/select/index';
@@ -131,6 +131,10 @@ export default function FormPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
+
+    const payload = { ...form, submittedAt: dayjs().format('DD/MM/YYYY') };
+
+    console.log(payload);
 
     setLoading(true);
     await new Promise((r) => setTimeout(r, 800));

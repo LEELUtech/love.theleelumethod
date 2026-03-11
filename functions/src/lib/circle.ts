@@ -7,7 +7,7 @@ import {
   CreateSpaceResponse,
   GrantAccessResponse,
 } from "../types/circle";
-import { getRandomElement } from "../utils/helpers/getRandomElement";
+import { TIER } from "../types/typeform";
 
 const getCircleConfig = () => ({
   apiKey: configs.circleApiKey || "PLACEHOLDER_API_KEY",
@@ -293,37 +293,6 @@ export const addTagToMember = async (
   }
 };
 
-export const createOwnSpace = async (name: string, email: string, product_type: string) => {
-  try {
-    const isVip = product_type === "vip_immersion";
-
-    const [
-      // adminsDoc,
-      moderatorsDoc,
-    ] = await Promise.all([
-      db.collection("circle_admins").doc("admins").get(),
-      db.collection("circle_admins").doc("moderators").get(),
-    ]);
-
-    // const admins = adminsDoc.data()?.emails || [];s
-    const moderators = moderatorsDoc.data()?.emails || [];
-
-    const moderator = getRandomElement(moderators);
-
-    const chat_id = await createSpace(name, "chat", "1010467");
-
-    if (chat_id) {
-      await addMemberToSpace(email, chat_id);
-
-      if (!isVip && typeof moderator === "string") {
-        await addMemberToSpace(moderator, chat_id);
-      }
-    }
-  } catch (error) {
-    console.error("Error creating own space:", error);
-  }
-};
-
 interface CreateChatResponse {
   chat_room: {
     id: number;
@@ -334,11 +303,11 @@ interface CreateChatResponse {
 type CreateChat = (
   memberId: number,
   token: string,
-  product_type: string,
+  tier: TIER,
 ) => Promise<CreateChatResponse | null>;
 
-export const createChat: CreateChat = async (memberId, token, product_type) => {
-  const isEssential = product_type === "protocol_essentials";
+export const createChat: CreateChat = async (memberId, token, tier) => {
+  const isEssential = tier === TIER.ESSENTIALS;
 
   const [adminDoc, moderatorDoc] = await Promise.all([
     db.collection("circle_admins").doc("Admin").get(),
