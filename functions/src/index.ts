@@ -4,4 +4,5 @@ export { markAbandonedCheckouts } from "./functions/markAbandonedCheckouts";
 export { ewebinarWebhook } from "./functions/ewebinar-webhook";
 export { syncCohortDate } from "./functions/syncCohortDate";
 export { calendlyWebhook } from "./functions/calendly-webhook";
+export { completeTrustTemple } from "./functions/completeTrustTemple";
 export { typeformWebhook } from "./functions/typeform-webhook";

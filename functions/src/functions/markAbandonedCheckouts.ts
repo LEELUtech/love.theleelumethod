@@ -21,7 +21,7 @@ const ZOHO_ANALYTICS_VIEW_ID = defineSecret("ZOHO_ANALYTICS_VIEW_ID_LILYCHYSTOFA
 const ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT");
 const ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT = defineSecret("ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT");
 
-const ABANDONED_TIMEOUT_MIN = 5;
+const ABANDONED_TIMEOUT_MIN = 60;
 const SCAN_LIMIT = 500;
 const ABANDONED_CAMPAIGNS_TAG = "ca_sp";
 
@@ -103,7 +103,11 @@ export const markAbandonedCheckouts = onSchedule(
 
     let snap: admin.firestore.QuerySnapshot;
     try {
-      snap = await db.collection("payments").where("created_at", "<", cutoffTs).limit(SCAN_LIMIT).get();
+      snap = await db.collection("payments")
+        .where("funnel_step", "in", ["checkout_viewed", "lead_captured"])
+        .where("created_at", "<", cutoffTs)
+        .limit(SCAN_LIMIT)
+        .get();
       logger.info("markAbandonedCheckouts: query done", { totalDocs: snap.size });
     } catch (e: unknown) {
       logger.error("markAbandonedCheckouts: query failed", { error: e instanceof Error ? e.message : String(e) });

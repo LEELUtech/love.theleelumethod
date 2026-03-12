@@ -119,6 +119,20 @@ export async function markTrustTempleBooked(
 }
 
 /**
+ * Called when a Trust Temple session is completed (attended).
+ */
+export async function markTrustTempleCompleted(email: string): Promise<void> {
+  const id = await findContactId(email);
+  if (!id) {
+    console.warn("[zoho-sessions] contact not found for trust temple completed, skipping", { email });
+    return;
+  }
+
+  await patchContact(id, { Trust_Temple_Completed: true });
+  console.log("[zoho-sessions] trust temple completed set", { email });
+}
+
+/**
  * Called when a Calendly booking is canceled.
  * Clears Session_Purchased and Package_Tier_Purchased.
  */
