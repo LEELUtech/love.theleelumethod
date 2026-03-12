@@ -50,15 +50,11 @@ export const CantFix = ({ href, linkLabel, buttonVariant = 'primary' }: Props) =
         </div>
 
         <div>
-          <p className='font-thin text-[32px] leading-[126%] font-canela text-brand-black mb-2'>Thank you</p>
-          <h2 className='font-thin text-[42px] leading-[126%] font-canela text-brand-deep mb-8'>It was eye-opening</h2>
-          <p className='font-normal italic text-[#6F4C40] font-lato leading-[26px] tracking-normal mb-6'>
-            {`"I've been a behavioral analyst for 25 years, and I am literally`}
-            <span className='text-brand-primary'> blown away</span> by the accuracy. She hit it{' '}
-            <span className='text-brand-primary'>spot on</span> what my relationship patterns were… She completed the{' '}
-            <span className='text-brand-primary'>missing piece</span>
-            {`. I have broken through my block, and I am living
-                everything I've ever dreamed of."`}
+          <h2 className='font-thin text-[42px]/[126%] lg:text-[60px] font-canela text-brand-deep mb-4'>
+            I am literally blown away...
+          </h2>
+          <p className='italic text-[#6F4C40] max-w-[496px] font-lato text-[22px]/[30px] mb-8'>
+            {`“I've been a behavioral analyst for 25 years, and I am literally blown away by the accuracy. She hit it spot on what my relationship patterns were… She completed the missing piece. I have broken through my block, and I am living everything I've ever dreamed of.”`}
           </p>
           <Button variant={buttonVariant} className='w-full max-w-[392px]' href={href}>
             {linkLabel}

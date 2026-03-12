@@ -272,7 +272,7 @@ export const addCMToSpace = async (spaceId: string): Promise<boolean> => {
 
 export const addTagToMember = async (
   user_email: string,
-  member_tag_id: string,
+  member_tag_id: number,
 ): Promise<boolean> => {
   try {
     const response = await makeCircleRequest<GrantAccessResponse>(

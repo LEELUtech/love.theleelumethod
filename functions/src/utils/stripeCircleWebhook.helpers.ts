@@ -3,9 +3,8 @@ import Stripe from "stripe";
 import { db } from "../configs/firebase";
 import { configs } from "../configs/env";
 import { handleCompatibilityReport } from "./compatibility-report/compatibility-report";
-import { handleGuidedBreakthrough } from "./guided-breakthrough/guided-breakthrough";
-import { handleProtocolEssentials } from "./protocol-essentials/protocol-essentials";
-import { handleVipImmersion } from "./vip-immersion/vip-immersion";
+
+import { handleCircleProduct } from "./helpers/circle/handleCircleProduct";
 
 export type ProductType =
   | "compatibility_report"
@@ -196,14 +195,11 @@ export async function processPayment(pi: Stripe.PaymentIntent): Promise<void> {
       handleCompatibilityReport(pi);
       break;
     case "protocol_essentials":
-      handleProtocolEssentials(pi);
-      break;
     case "guided_breakthrough":
-      handleGuidedBreakthrough(pi);
-      break;
     case "vip_immersion":
-      handleVipImmersion(pi);
+      handleCircleProduct(pi);
       break;
+
     default:
       throw new Error(`Unsupported product type: ${productType}`);
   }

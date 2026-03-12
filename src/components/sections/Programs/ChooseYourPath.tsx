@@ -230,7 +230,7 @@ const Card = ({ size, title, description, listTitle, list, link, for: forText }:
 export default function ChooseYourPathSection() {
   return (
     <section
-      className='pt-[122px] pb-[122px] lg:py-[120px]'
+      className='pt-0 pb-[122px] '
       style={{
         background: "url('/images/programs/choose_your_path_bg.png') no-repeat center center / cover",
       }}

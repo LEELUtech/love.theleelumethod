@@ -66,12 +66,23 @@ export default function ReportFormPage() {
 
       const res = await sendReportData(payload);
 
+      console.log(res);
+
       if (res.status === 'INVALID_EMAIL') {
         return setResponseError({
           title: 'Email Not Recognized',
           message: 'Please enter the same email address you use for your Circle account.',
         });
       }
+
+      if (res.status === 'FORM_SUBMITTED') {
+        return setResponseError({
+          title: 'Form Already Submitted',
+          message:
+            'It looks like you’ve already submitted this form. If you need to make changes, please contact support.',
+        });
+      }
+
       setIsSubmitted(true);
     } finally {
       setLoading(false);
