@@ -1,9 +1,72 @@
 // functions/src/functions/calendly-webhook.ts
 import { onRequest } from "firebase-functions/v2/https";
 import { defineSecret } from "firebase-functions/params";
+import { CloudTasksClient } from "@google-cloud/tasks";
+import { db } from "../configs/firebase";
 
 import { upsertContactAndUpdateTags } from "../lib/zoho-campaigns";
 import { markSessionPurchased, markSessionCanceled, markTrustTempleBooked, type SessionPackageTier } from "../lib/zoho-sessions";
+
+// ─── Cloud Tasks config ────────────────────────────────────────────────────────
+const GCP_PROJECT = "leelu-tech";
+const GCP_LOCATION = "us-central1";
+const TASK_QUEUE = "trust-temple-complete";
+// Session duration in minutes — task fires after this delay from start_time
+const SESSION_DURATION_MIN = 20;
+
+const tasksClient = new CloudTasksClient();
+
+async function scheduleCompleteTask(email: string, startTimeISO: string): Promise<void> {
+  const startMs = new Date(startTimeISO).getTime();
+  const scheduleMs = startMs + SESSION_DURATION_MIN * 60 * 1000;
+  const scheduleSeconds = Math.floor(scheduleMs / 1000);
+
+  const functionUrl = `https://${GCP_LOCATION}-${GCP_PROJECT}.cloudfunctions.net/completeTrustTemple`;
+  const parent = tasksClient.queuePath(GCP_PROJECT, GCP_LOCATION, TASK_QUEUE);
+
+  const [task] = await tasksClient.createTask({
+    parent,
+    task: {
+      scheduleTime: { seconds: scheduleSeconds },
+      httpRequest: {
+        httpMethod: "POST" as const,
+        url: functionUrl,
+        headers: { "Content-Type": "application/json" },
+        body: Buffer.from(JSON.stringify({ email })).toString("base64"),
+      },
+    },
+  });
+
+  const taskName = task.name ?? "";
+  await db.collection("trust_temple_tasks").doc(email.replace(/[^a-z0-9]/g, "_")).set({
+    email,
+    taskName,
+    scheduledAt: new Date(),
+    startTime: startTimeISO,
+  });
+
+  console.log("calendlyWebhook: cloud task scheduled", { email, taskName, scheduleAt: new Date(scheduleMs).toISOString() });
+}
+
+async function cancelCompleteTask(email: string): Promise<void> {
+  const docId = email.replace(/[^a-z0-9]/g, "_");
+  const doc = await db.collection("trust_temple_tasks").doc(docId).get();
+  if (!doc.exists) {
+    console.log("calendlyWebhook: no task found to cancel", { email });
+    return;
+  }
+
+  const { taskName } = doc.data() as { taskName: string };
+  try {
+    await tasksClient.deleteTask({ name: taskName });
+    console.log("calendlyWebhook: cloud task deleted", { email, taskName });
+  } catch (e: unknown) {
+    // Task may have already executed — not critical
+    console.warn("calendlyWebhook: deleteTask failed (may already be done)", { email, taskName, error: e instanceof Error ? e.message : String(e) });
+  }
+
+  await db.collection("trust_temple_tasks").doc(docId).delete();
+}
 
 const ZOHO_CLIENT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_ID_LILYCHYSTOFAT");
 const ZOHO_CLIENT_SECRET_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_SECRET_LILYCHYSTOFAT");
@@ -29,7 +92,7 @@ type CalendlyInvitee = {
     name?: string;
     start_time?: string;
   };
-  [k: string]: any;
+  [k: string]: unknown;
 };
 
 type CalendlyWebhookBody = {
@@ -144,6 +207,11 @@ export const calendlyWebhook = onRequest(
           } catch (e) {
             console.error("calendlyWebhook: markTrustTempleBooked(false) failed (non-critical)", { email, error: e });
           }
+          try {
+            await cancelCompleteTask(email);
+          } catch (e) {
+            console.error("calendlyWebhook: cancelCompleteTask failed (non-critical)", { email, error: e });
+          }
         } else {
           try {
             await markSessionCanceled(email);
@@ -196,6 +264,13 @@ export const calendlyWebhook = onRequest(
         } catch (e) {
           console.error("calendlyWebhook: markTrustTempleBooked(true) failed (non-critical)", { email, error: e });
         }
+        if (payload.scheduled_event?.start_time) {
+          try {
+            await scheduleCompleteTask(email, String(payload.scheduled_event.start_time));
+          } catch (e) {
+            console.error("calendlyWebhook: scheduleCompleteTask failed (non-critical)", { email, error: e });
+          }
+        }
       } else {
         try {
           await markSessionPurchased(email, kind, undefined, inviteeMeta);
@@ -205,9 +280,9 @@ export const calendlyWebhook = onRequest(
       }
 
       res.json({ ok: true, event: eventType, email, kind, add, remove });
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("calendlyWebhook error:", err);
-      res.status(500).json({ ok: false, error: err?.message || "server_error" });
+      res.status(500).json({ ok: false, error: err instanceof Error ? err.message : "server_error" });
     }
   },
 );

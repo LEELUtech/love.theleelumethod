@@ -142,9 +142,9 @@ function mapTagDelta(body: EwebinarPayload, action: EwebinarAction): { add: stri
   switch (action) {
   case "Registered":
     return {
-      add: ["wb_reg"],
-      // Keep your previous behavior: when someone registers again, reset watch-state tags
-      remove: ["wb_live", "wb_replay", "wb_partial", "wb_noshow"],
+      // wb_reg — for other automations; wb_welcome — triggers registration email each time (removed by Zoho automation after send)
+      add: ["wb_reg", "wb_welcome"],
+      remove: [],
     };
 
   case "MissedWebinar":
