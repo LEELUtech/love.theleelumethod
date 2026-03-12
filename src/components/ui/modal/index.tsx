@@ -18,7 +18,7 @@ export const ErrorModal = ({ isOpen, onClose, message, title = 'Something went w
             <ErrorIcon />
           </div>
         </div>
-        <h2 className='font-canela font-light text-[24px] text-brand-black mb-2'>{title}</h2>
+        <h2 className='font-canela font-light text-[32px]/[126%] text-brand-primary mb-2'>{title}</h2>
         <p className='font-lato text-[14px]/[1.6] text-[#757986] mb-6'>{message}</p>
 
         <Button onClick={onClose} className='w-full max-w-[350px]'>

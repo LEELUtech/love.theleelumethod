@@ -1,5 +1,4 @@
 import Button from '@/components/ui/Button';
-import { CantFix } from '@/components/ui/CantFix';
 import RotateOnView from '@/components/ui/RotateOnView';
 import { HOME_LINKS } from '@/static/links';
 import Image from 'next/image';
@@ -91,7 +90,13 @@ const TriageSection = () => {
         <Image src='/images/landing/triage_section_bg.png' alt='' fill priority quality={100} sizes='100vw' />
       </div>
       <div className='container w-full px-4'>
-        <CantFix
+        <p className='font-canela text-[42px]/[126%] lg:text-[60px] font-thin text-brand-deep text-center mb-[300px] lg:mb-[400px]'>
+          We fought for years and tried everything. A friend referred us to Lily. She ran our codes, showing us exactly
+          where we clash, where we naturally align, and how to navigate our differences. Words cannot describe the
+          impact she had. Without Lily, our relationship would have crumbled.
+        </p>
+
+        {/* <CantFix
           buttonVariant='dark'
           href=''
           linkLabel='READ MORE STORIES'
@@ -100,7 +105,7 @@ const TriageSection = () => {
             cta_text: 'READ MORE STORIES',
             cta_location: 'triage',
           }}
-        />
+        /> */}
 
         <div className='lg:mt-[250px] mt-[200px] mb-[52px] relative lg:mb-[32px]'>
           <div className='absolute z-0 left-1/2 -translate-x-1/2 top-[-150px] md:top-[-180px] lg:top-[-200px] flex flex-row items-center justify-center gap-[130px]'>
