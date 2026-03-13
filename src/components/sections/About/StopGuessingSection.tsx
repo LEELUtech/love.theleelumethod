@@ -53,9 +53,9 @@ const StopGuessingSection = () => {
               durMs={1500}
               startDelayMs={500}
               arrowRotateDeg={254}
-              arrowScale={0.8}
+              arrowScale={1.2}
               arrowCenterX={6.5}
-              arrowCenterY={-6}
+              arrowCenterY={-5}
               arrowOffsetY={3}
               arcRx={220}
               arcRy={208}
@@ -64,7 +64,7 @@ const StopGuessingSection = () => {
         </div>
 
         {/* Heading */}
-        <h2 className='font-thin pt-[100px] md:pt-0 text-[48px] lg:text-[60px] leading-[126%] font-canela text-brand-deep mb-6'>
+        <h2 className='font-thin pt-[40px] md:pt-0 text-[48px] lg:text-[60px] leading-[126%] font-canela text-brand-deep mb-6'>
           Stop Guessing. Start Knowing.
         </h2>
 
@@ -77,8 +77,7 @@ const StopGuessingSection = () => {
 
         <Button
           variant='primary'
-          size='md'
-          className='w-full lg:w-[40%] xs:text-[12px]'
+          className='w-full max-w-[380px]'
           href={ABOUT_LINKS.STOP_GUESSING_LINK.href}
           trackingData={{
             cta_name: 'about_stop_guessing_cta',

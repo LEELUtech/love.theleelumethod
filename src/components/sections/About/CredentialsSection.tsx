@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 const CredentialsSection = () => {
   return (
-    <Section>
+    <Section wrapperClasses='py-[60px]'>
       <div>
         {/* === MOBILE + TABLET IMAGE (TOP) === */}
         <div className='flex justify-center mb-[128px] lg:hidden'>
@@ -13,20 +13,8 @@ const CredentialsSection = () => {
             {/* Logo Badge */}
             <div
               className="
-    absolute
-    bottom-[-35px] right-[-10px]
-
-    flex items-center justify-center overflow-hidden
-    bg-[#d8ac9e] rounded-[300px]
-
-    w-[100px] h-[130px]
-    md:w-[90px] md:h-[115px]
-    z-10
-
-    before:absolute before:inset-0
-    before:bg-[url('/icons/noise.png')]
-    before:opacity-15
-    before:mix-blend-overlay
+    absolute bottom-[-35px] right-[-10px] flex items-center justify-center overflow-hidden bg-[#d8ac9e] rounded-[300px] w-[100px] h-[130px] md:w-[90px] md:h-[115px] z-10
+    before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay
   "
             >
               <Image
@@ -43,7 +31,7 @@ const CredentialsSection = () => {
         {/* === TITLE === */}
         <div className='flex items-start gap-[24px] lg:gap-[37px] mb-[60px] lg:mb-[82px] justify-center lg:justify-start'>
           <Image src='/icons/star_with_line.png' alt='' width={48} height={48} />
-          <h2 className='font-thin text-[48px] lg:text-[60px] leading-[126%] font-canela text-brand-deep text-center lg:text-left'>
+          <h2 className='font-thin text-[48px] lg:text-[60px] leading-[126%] font-canela text-brand-deep text-left'>
             Credentials At Glance
           </h2>
         </div>

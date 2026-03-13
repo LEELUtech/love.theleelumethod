@@ -6,7 +6,7 @@ import Image from 'next/image';
 
 const TheFractureAndLaboratorySection = () => {
   return (
-    <Section backgroundImage='/images/about/fracture_section_bg.png'>
+    <Section backgroundImage='/images/about/fracture_section_bg.png' wrapperClasses='py-[80px]'>
       {' '}
       <div>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-12 items-center'>
@@ -21,7 +21,7 @@ const TheFractureAndLaboratorySection = () => {
                 quality={100}
                 className='rounded-lg'
               />
-              <div className='absolute flex bottom-[-30px] left-[-10px] lg:left-[-30px] items-center justify-center bg-[#d8ac9e] rounded-[300px] w-[80px] h-[100px] md:w-[100px] md:h-[126px] lg:w-[123px] lg:h-[155px] z-10'>
+              <div className='absolute flex bottom-[-40px] left-[50%] -translate-x-[50%] md:-translate-x-0 md:left-[-30px] items-center justify-center bg-[#EB4F68] rounded-[300px] w-[80px] h-[100px] md:w-[100px] md:h-[126px] lg:w-[123px] lg:h-[155px] z-10'>
                 <div className=' relative w-[55px] h-[55px] lg:w-[75px] lg:h-[75px]'>
                   <Image src='/leelu_logo.svg' alt='' fill className='absolute filter brightness-0 invert' />
                 </div>
@@ -67,19 +67,8 @@ const TheFractureAndLaboratorySection = () => {
           </div>
         </div>
 
-        <div className='lg:mt-[400px] mt-[300px] relative'>
-          <div
-            className='
-						absolute z-0
-						left-1/2 -translate-x-1/2
-						top-[-150px]
-						md:top-[-180px]
-						lg:top-[-300px]
-				
-						flex flex-row items-center justify-center gap-[130px]
-						pointer-events-none
-					'
-          >
+        <div className='mt-[200px] md:mt-[300px] lg:mt-[400px] relative'>
+          <div className='absolute z-0 left-1/2 -translate-x-1/2 top-[-150px] md:top-[-180px] lg:top-[-300px] flex flex-row items-center justify-center gap-[130px]'>
             {/* LEFT ornament */}
             <div
               className='

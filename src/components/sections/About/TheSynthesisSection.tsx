@@ -16,7 +16,7 @@ const TheSynthesisSection = () => {
     <Section backgroundImage='/images/about/synthesis_section_bg.png'>
       <div className='max-w-[800px] mx-auto text-center px-2'>
         {/* Top Image */}
-        <div className='flex justify-center mb-12 lg:mb-[75px]'>
+        <div className='flex justify-center mb-[120px] lg:mb-[75px]'>
           <div className='relative w-[361px] h-[377px] sm:w-[320px] sm:h-[340px] md:w-[380px] md:h-[400px] lg:w-[511px] lg:h-[534px]'>
             <Image src='/images/about/synthesis_section_img.png' alt='The Synthesis' fill quality={100} />
 

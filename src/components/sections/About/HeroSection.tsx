@@ -23,7 +23,7 @@ const HeroSection = () => {
       <div className='container px-4 flex flex-col lg:flex-row items-center justify-between lg:gap-12 gap-0 mt-[80px]'>
         {/* Text Content */}
         <div className='lg:w-1/2 xs:relative xs:top-[-60px] flex flex-col max-w-[549px] order-2'>
-          <h1 className='font-canela font-thin text-brand-deep mb-12 leading-[126%] tracking-normal text-[48px] lg:text-[60px] text-center lg:text-left'>
+          <h1 className='font-canela font-thin text-brand-deep mb-6 lg:mb-12 leading-[126%] tracking-normal text-[48px] lg:text-[60px] text-center lg:text-left'>
             {title}
           </h1>
 
@@ -81,8 +81,9 @@ const HeroSection = () => {
             >
               <Image src='/icons/ornament_13.svg' alt='' width={209} height={215} priority quality={100} className='' />
             </RotateOnView>
+
             <ArcAutoOnce
-              className='absolute inset-0 -z-0 -translate-y-[13%] pointer-events-none -translate-x-[-7%]'
+              className='absolute hidden lg:block inset-0 -z-0 -translate-y-[13%] pointer-events-none -translate-x-[-7%]'
               // endAt={0.9}
               flightStart={0.2}
               durMs={1500}
