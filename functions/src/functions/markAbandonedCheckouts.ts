@@ -25,8 +25,6 @@ const ABANDONED_TIMEOUT_MIN = 60;
 const SCAN_LIMIT = 500;
 const ABANDONED_CAMPAIGNS_TAG = "ca_sp";
 
-//1hr
-
 type FunnelStep =
   | "unknown" | "checkout_viewed" | "lead_captured" | "abandoned"
   | "checkout_started" | "paid" | "delivered" | "delivery_failed"
@@ -306,7 +304,6 @@ export const markAbandonedCheckouts = onSchedule(
 
     logger.info("markAbandonedCheckouts: starting post-processing", { updatedCount: updated.length });
 
-    // 0) Zoho Campaigns tag
     const campaignsResults = await Promise.allSettled(
       updated.map(async (p) => {
         if (!p.email) return;
@@ -329,7 +326,6 @@ export const markAbandonedCheckouts = onSchedule(
       }),
     );
 
-    // 1) Zoho CRM
     const zohoResults = await Promise.allSettled(
       updated.map(async (p) => {
         if (!p.email) return;
@@ -353,7 +349,6 @@ export const markAbandonedCheckouts = onSchedule(
       }),
     );
 
-    // 2) Zoho Analytics
     const analyticsResults = await Promise.allSettled(
       updated.map(async (p) => {
         logger.info("markAbandonedCheckouts: emitting analytics", { id: p.id, email: p.email });
