@@ -19,8 +19,7 @@ const WebinarSection = () => {
       </div>
 
       <div className='container pt-[33px] pb-[30px] md:pb-28 lg:pt-[97px] lg:pb-[165px] px-4 flex flex-col lg:flex-row items-center justify-between md:gap-12 lg:gap-16'>
-        {/* LEFT CONTENT */}
-        <div className='order-2 md:order-1 w-full max-w-[530px] lg:text-left xs:relative xs:top-[-120px] md:static  xs:z-10'>
+        <div className='order-2 md:order-1 w-full max-w-[530px] lg:text-left xs:relative xs:mt-[-120px] md:static  xs:z-10'>
           <div className='font-light transition text-[20px] md:text-[22px] lg:text-[24px] leading-[126%] font-canela flex items-center gap-2 md:gap-2.5 lg:gap-3 text-brand-black mb-[32px] justify-center md:justify-start'>
             <Logo />
           </div>
@@ -92,7 +91,7 @@ const WebinarSection = () => {
             <Image src='/images/webinar/hero_lily.png' alt='Decoded Love Masterclass' fill priority quality={100} />
 
             <ArcAutoOnce
-              className='absolute inset-0 -z-0 -translate-y-[13%] pointer-events-none -translate-x-[-7%]'
+              className='absolute hidden md:block inset-0 -z-0 -translate-y-[13%] pointer-events-none -translate-x-[-7%]'
               // endAt={0.9}
               flightStart={0.2}
               durMs={1500}

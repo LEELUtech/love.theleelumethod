@@ -1,5 +1,6 @@
 import Button from '@/components/ui/Button';
 import Header from '@/components/ui/Header';
+import { HOME_LINKS } from '@/static/links';
 import React from 'react';
 
 const HeroSection = () => {
@@ -41,13 +42,14 @@ const HeroSection = () => {
                 variant='dark'
                 size='md'
                 className='w-full xs:text-[12px]'
+                href={HOME_LINKS.HERO_LINK.href}
                 trackingData={{
                   cta_name: 'landing_hero_start_cta',
                   cta_text: 'START THE DECODE',
                   cta_location: 'hero',
                 }}
               >
-                START THE DECODE
+                {HOME_LINKS.HERO_LINK.label}
               </Button>
 
               <p className='text-brand-gray text-[15px]/[24px] mt-[32px]'>

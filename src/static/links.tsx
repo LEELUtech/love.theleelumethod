@@ -40,7 +40,7 @@ export const SECRETS_LINKS: RecordLink = {
 export const DESCODE_LINKS: RecordLink = {
   HERO_LINK: {
     label: 'Save My Seat',
-    href: '/resources/secrets',
+    href: WEBINAR_URL,
   },
   RESERVE_LINK: {
     label: 'Reserve My Spot',
@@ -52,7 +52,7 @@ export const DESCODE_LINKS: RecordLink = {
   },
   FOOTER_PROMO_LINK: {
     label: 'Save My Seat',
-    href: '/resources/secrets',
+    href: WEBINAR_URL,
   },
 };
 
@@ -78,15 +78,15 @@ export const COMPABILITY_REPORT_LINKS: RecordLink = {
 export const ABOUT_LINKS: RecordLink = {
   HERO_LINK: {
     label: 'START THE DECODE',
-    href: '#checkout',
+    href: '/decode',
   },
   FRACTURE_LINK: {
     label: 'START THE DECODE',
-    href: '#',
+    href: '/decode',
   },
   SYNTHESIS_LINK: {
     label: 'START THE DECODE',
-    href: '#',
+    href: '/decode',
   },
   STOP_GUESSING_LINK: {
     label: 'Access your Operating Manual',
@@ -140,7 +140,7 @@ export const PROGRAMS_LINKS: RecordLink = {
 export const HOME_LINKS: RecordLink = {
   HERO_LINK: {
     label: 'START THE DECODE',
-    href: '#',
+    href: '/decode',
   },
   READ_LINK: {
     label: 'READ MORE STORIES',

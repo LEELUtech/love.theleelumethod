@@ -36,8 +36,8 @@ const HeroSection = ({ title }: HeroSectionProps) => {
             <Image src='/leelu_logo.svg' alt='Lily Chystofat Logo' fill className='object-contain' priority />
           </span>
           <div className='whitespace-nowrap'>
-            <span className='font-medium tracking-tight mr-1'>LILY</span>
-            <span className='font-light'>CHYSTOFAT</span>
+            <span className='font-medium tracking-tight mr-1'>THE LEELU</span>
+            <span className='font-light'>METHOD</span>
           </div>
         </div>
       </div>

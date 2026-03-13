@@ -66,8 +66,6 @@ export default function ReportFormPage() {
 
       const res = await sendReportData(payload);
 
-      console.log(res);
-
       if (res.status === 'INVALID_EMAIL') {
         return setResponseError({
           title: 'Email Not Recognized',

@@ -12,7 +12,7 @@ const footerPromoContent = {
     `I’ve enabled over a thousand women to stop improvising their love lives and start engineering them.`,
   ],
   subtitle: 'Are you next?',
-  link: SECRETS_LINKS.ACCESS_LINK,
+  link: SECRETS_LINKS.CLAIM_LINK,
 };
 
 export default function SecretsResourcePage() {

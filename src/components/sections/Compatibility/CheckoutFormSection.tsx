@@ -20,12 +20,9 @@ import { getStoredFirstUTM } from '@/utils/utm-tracker';
 import { salesiqIdentify } from '@/lib/tracking/salesiqIdentify';
 import { saveEmailToLS } from '@/lib/tracking/localEmail';
 
-import {
-	StripeCardPart,
-	type StripePayState,
-} from "@/components/sections/Compatibility/StripeCardPart";
-import CheckoutSectionLoader from "@/components/sections/Checkout/CheckoutSectionLoader";
-import Button from "@/components/ui/Button";
+import { StripeCardPart, type StripePayState } from '@/components/sections/Compatibility/StripeCardPart';
+import CheckoutSectionLoader from '@/components/sections/Checkout/CheckoutSectionLoader';
+import Button from '@/components/ui/Button';
 
 const pk = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!;
 const stripePromise = loadStripe(pk);
@@ -127,29 +124,46 @@ export default function CheckoutFormSection() {
     return !!v && emailRegex.test(v);
   }, [form.email]);
 
-	const buttonDisabled =
-		!clientSecret ||
-		isStripeInitializing ||
-		!payState.canPay ||
-		payState.paying;
+  const buttonDisabled = !clientSecret || isStripeInitializing || !payState.canPay || payState.paying;
 
+<<<<<<< HEAD
 	React.useEffect(() => {
 		setCtx(getClientContext());
 	}, []);
 
+=======
+  // Initialize client context once after mount
+  React.useEffect(() => {
+    setCtx(getClientContext());
+  }, []);
+
+  // Track if we've had a clientSecret (for UI state)
+>>>>>>> 247310c (fix:decode page)
   React.useEffect(() => {
     if (clientSecret) setHadSecretOnce(true);
   }, [clientSecret]);
 
+<<<<<<< HEAD
+=======
+  // Reset if product type changed
+>>>>>>> 247310c (fix:decode page)
   React.useEffect(() => {
     const expectedKey = `create:${productId}`;
     if (intentKey && intentKey !== expectedKey) reset();
   }, [intentKey, productId, reset]);
 
+<<<<<<< HEAD
+=======
+  // Fetch product data on mount
+>>>>>>> 247310c (fix:decode page)
   React.useEffect(() => {
     if (!product && !productLoading) fetchProduct(productId);
   }, [product, productLoading, fetchProduct, productId]);
 
+<<<<<<< HEAD
+=======
+  // Auto-create PaymentIntent when ready
+>>>>>>> 247310c (fix:decode page)
   React.useEffect(() => {
     if (!product || productLoading) return;
 
@@ -174,17 +188,29 @@ export default function CheckoutFormSection() {
     }).catch(() => {});
   }, [product, productLoading, productId, intentKey, clientSecret, status, createIntent, reset, ctx]);
 
+<<<<<<< HEAD
+=======
+  // Sync checkout errors to payment state
+>>>>>>> 247310c (fix:decode page)
   React.useEffect(() => {
     if (!checkoutError) return;
     setPayState((prev) => ({ ...prev, error: checkoutError }));
   }, [checkoutError]);
 
+<<<<<<< HEAD
+=======
+  // Cleanup on unmount
+>>>>>>> 247310c (fix:decode page)
   React.useEffect(() => {
     return () => {
       reset();
     };
   }, [reset]);
 
+<<<<<<< HEAD
+=======
+  // Lead capture
+>>>>>>> 247310c (fix:decode page)
   const captureLeadInternal = React.useCallback(
     async (opts?: { force?: boolean }) => {
       const email = (form.email || '').trim().toLowerCase();
@@ -206,15 +232,14 @@ export default function CheckoutFormSection() {
       leadAbortRef.current = controller;
 
       salesiqIdentify({ email });
-			saveEmailToLS(email)
+      saveEmailToLS(email);
 
       const payload = {
         paymentIntentId: intentId || undefined,
         intentToken: intentToken || undefined,
         email,
         sessionId: localStorage.getItem('ff_session_id') || undefined,
-        salesiqVisitorId:
-					localStorage.getItem('ff_salesiq_visitor_id') || undefined,
+        salesiqVisitorId: localStorage.getItem('ff_salesiq_visitor_id') || undefined,
         ...(ctx || {}),
       };
 
@@ -233,6 +258,10 @@ export default function CheckoutFormSection() {
     [form.email, intentId, intentToken, ctx],
   );
 
+<<<<<<< HEAD
+=======
+  // Catch-up: if PI/token appeared later - send again (once) with PI/token
+>>>>>>> 247310c (fix:decode page)
   React.useEffect(() => {
     const email = (form.email || '').trim().toLowerCase();
     if (!email) return;
@@ -241,6 +270,10 @@ export default function CheckoutFormSection() {
     captureLeadInternal({ force: true }).catch(() => {});
   }, [intentId, intentToken, form.email, captureLeadInternal]);
 
+<<<<<<< HEAD
+=======
+  // Form field updater
+>>>>>>> 247310c (fix:decode page)
   const setField = React.useCallback(<K extends keyof CompatibilityCheckoutForm>(key: K, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   }, []);
@@ -269,6 +302,10 @@ export default function CheckoutFormSection() {
     router.push('/success');
   }, [router, markSuccess]);
 
+<<<<<<< HEAD
+=======
+  // Validates form before payment
+>>>>>>> 247310c (fix:decode page)
   const validateOnSubmit = React.useCallback((data: CompatibilityCheckoutForm) => {
     const next: FormErrors = {};
 
@@ -281,6 +318,10 @@ export default function CheckoutFormSection() {
     return next;
   }, []);
 
+<<<<<<< HEAD
+=======
+  // Handles payment button click
+>>>>>>> 247310c (fix:decode page)
   const onPayClick = React.useCallback(async () => {
     setSubmitAttempted(true);
 
@@ -440,22 +481,22 @@ export default function CheckoutFormSection() {
                 </div>
               </div>
 
-							<Button
-								type="button"
-								onClick={onPayClick}
-								disabled={buttonDisabled}
-								loading={payState.paying}
-								fullWidth
-								className="mt-[24px] md:mt-10 lg:mt-[80px] xs:px-0 xs:text-[12px] md:px-6 md:text-[15px]"
-								trackingData={{
-									cta_name: "complete_purchase",
-									cta_text: "UNLOCK MY COMPATIBILITY CODE",
-									cta_target_url: null,
-									cta_location: "checkout_compatibility",
-								}}
-							>
-								UNLOCK MY COMPATIBILITY CODE
-							</Button>
+              <Button
+                type='button'
+                onClick={onPayClick}
+                disabled={buttonDisabled}
+                loading={payState.paying}
+                fullWidth
+                className='mt-[24px] md:mt-10 lg:mt-[80px] xs:px-0 xs:text-[12px] md:px-6 md:text-[15px]'
+                trackingData={{
+                  cta_name: 'complete_purchase',
+                  cta_text: 'UNLOCK MY COMPATIBILITY CODE',
+                  cta_target_url: null,
+                  cta_location: 'checkout_compatibility',
+                }}
+              >
+                UNLOCK MY COMPATIBILITY CODE
+              </Button>
 
               {payState.error ? <p className='mt-3 text-sm font-lato text-red-600'>{payState.error}</p> : null}
               {payState.cardError ? <p className='mt-2 text-sm font-lato text-red-600'>{payState.cardError}</p> : null}
