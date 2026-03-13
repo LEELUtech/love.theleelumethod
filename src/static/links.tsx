@@ -59,11 +59,11 @@ export const DESCODE_LINKS: RecordLink = {
 export const COMPABILITY_REPORT_LINKS: RecordLink = {
   HERO_LINK: {
     label: 'GIVE ME MY COMPATIBILITY CODE REPORT',
-    href: '#checkout',
+    href: '#checkout_form',
   },
   PROBLEM_LINK: {
     label: 'GIVE ME MY COMPATIBILITY CODE REPORT',
-    href: '#checkout',
+    href: '#checkout_form',
   },
   UNLOCK_LINK: {
     label: 'UNLOCK MY COMPATIBILITY CODE - $3.33',
@@ -71,7 +71,7 @@ export const COMPABILITY_REPORT_LINKS: RecordLink = {
   },
   FOOTER_PROMO_LINK: {
     label: 'GIVE ME MY COMPATIBILITY CODE REPORT',
-    href: '#checkout',
+    href: '#checkout_form',
   },
 };
 

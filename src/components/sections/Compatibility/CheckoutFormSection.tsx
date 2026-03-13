@@ -350,12 +350,12 @@ export default function CheckoutFormSection() {
   );
 
   return (
-    <section id='checkout' className='relative bg-white overflow-visible lg:h-[742px] py-[80px] lg:py-0'>
+    <section id='checkout' className='relative bg-white overflow-visible lg:h-[742px] lg:mb-[200px] py-[80px] lg:py-0'>
       <div className='absolute inset-0 z-0'>
         <Image src='/images/bg/checkout_bg.png' alt='Checkout bg' fill quality={100} />
       </div>
 
-      <div className='container relative z-10 lg:top-[-100px]'>
+      <div id='checkout_form' className='container relative z-10 lg:top-[-100px]'>
         <div className='relative mx-auto rounded-[32px] bg-white px-6 py-8 md:px-10 md:py-10 lg:px-[104px] lg:py-[51px] shadow-[0px_4px_20px_0px_rgba(0,0,0,0.1)]'>
           {isStripeInitializing ? <CheckoutSectionLoader text='Initializing payment...' /> : null}
 
