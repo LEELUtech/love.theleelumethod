@@ -1,4 +1,3 @@
-// app/.../CheckoutFormSection.tsx
 'use client';
 
 import React from 'react';
@@ -62,7 +61,6 @@ interface CheckoutFormSectionProps {
   productId: string;
 }
 
-// helper: collect context (site/pagePath/utm) on client side
 function getClientContext() {
   if (typeof window === 'undefined') return {};
 
@@ -86,7 +84,6 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
   const selectId = React.useId();
   const router = useRouter();
 
-  // stores
   const product = useProductStore((s) => s.getProduct(productId));
   const productLoading = useProductStore((s) => s.isLoading(productId));
   const fetchProduct = useProductStore((s) => s.fetchProduct);
@@ -103,20 +100,17 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
     intentToken,
   } = useCheckoutStore();
 
-  // local state
   const [billing, setBilling] = React.useState<BillingForm>(initialBilling);
   const [submitAttempted, setSubmitAttempted] = React.useState(false);
   const [hadSecretOnce, setHadSecretOnce] = React.useState(false);
   const [errors, setErrors] = React.useState(() => validateBilling(initialBilling));
 
-  // ctx as state (not ref) - fixed once after mount
   const [ctx, setCtx] = React.useState<ClientCtx>({});
 
   React.useEffect(() => {
     setCtx(getClientContext());
   }, []);
 
-  // derived
   const priceLabel =
     !productLoading && product
       ? formatPriceFromCents(product.price, {
@@ -134,7 +128,6 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
     return { clientSecret, appearance: { theme: 'stripe' } };
   }, [clientSecret]);
 
-  // effects
   React.useEffect(() => {
     const expectedKey = `create:${productId}`;
     if (intentKey && intentKey !== expectedKey) reset();
@@ -163,7 +156,6 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
 
     if (!ctx?.site) return;
 
-    // create-intent receives first-touch ctx
     createIntent({
       productType: productId,
       sessionId: localStorage.getItem('ff_session_id') || undefined,
@@ -178,7 +170,6 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
     };
   }, [reset]);
 
-  // handlers
   const setField = React.useCallback(<K extends keyof BillingForm>(key: K, value: string) => {
     setBilling((prev) => ({ ...prev, [key]: value }));
   }, []);
@@ -195,7 +186,6 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
     return isEmptyErrors(nextErrors);
   }, [billing]);
 
-  // --- lead-captured ---
   const lastLeadEmailRef = React.useRef<string>('');
   const lastLeadEmailWithPIRef = React.useRef<string>('');
   const leadAbortRef = React.useRef<AbortController | null>(null);
@@ -212,13 +202,9 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
 
       const force = !!opts?.force;
 
-      // if same email already sent (any mode) - don't resend
       if (!force && lastLeadEmailRef.current === email) return;
-
-      // if PI exists and we already sent this email WITH PI - don't resend
       if (hasPI && lastLeadEmailWithPIRef.current === email) return;
 
-      // ✅ always remember the email we attempted to send (even force)
       lastLeadEmailRef.current = email;
       if (hasPI) lastLeadEmailWithPIRef.current = email;
 
@@ -251,7 +237,7 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
           keepalive: true,
         });
       } catch {
-        // silent
+        //
       }
     },
     [billing.email, billing.firstName, billing.lastName, intentId, intentToken, ctx],
@@ -262,7 +248,6 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
     captureLeadInternal().catch(() => {});
   }, [billing.email, captureLeadInternal]);
 
-  // catch-up: if PI/token appeared later - send again (once) with PI/token
   React.useEffect(() => {
     const email = (billing.email || '').trim().toLowerCase();
     if (!email) return;
@@ -285,7 +270,6 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
             <p className='mb-4 text-sm font-lato text-red-600'>{checkoutError}</p>
           ) : null}
 
-          {/* Header */}
           <div className='flex flex-col items-center gap-6 md:flex-row md:items-start md:justify-between md:gap-8'>
             <div className='max-w-[520px]'>
               <p className='font-lato font-normal text-body leading-[1.2] text-[#C6ABB3] text-center md:text-left'>
@@ -309,7 +293,6 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
           <hr className='my-8 w-full border-t border-[#DADDE4]' />
 
           <div className='mt-10 grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-[164px]'>
-            {/* LEFT */}
             <div>
               <h3 className='font-canela font-light text-brand-black text-[32px] md:text-[28px] lg:text-[32px]'>
                 Billing Information
@@ -424,7 +407,6 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
               </div>
             </div>
 
-            {/* RIGHT */}
             <div>
               <h3 className='font-canela font-light text-brand-black text-[32px] md:text-[28px] lg:text-[32px]'>
                 Payment Info

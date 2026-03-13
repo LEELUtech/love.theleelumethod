@@ -65,12 +65,10 @@ function getClientContext() {
 
 type ClientCtx = ReturnType<typeof getClientContext>;
 
-// Main checkout form component for Compatibility Report
 export default function CheckoutFormSection() {
   const productId = COMPATIBILITY_REPORT;
   const router = useRouter();
 
-  // stores
   const product = useProductStore((s) => s.getProduct(productId));
   const productLoading = useProductStore((s) => s.isLoading(productId));
   const fetchProduct = useProductStore((s) => s.fetchProduct);
@@ -87,17 +85,14 @@ export default function CheckoutFormSection() {
     intentToken,
   } = useCheckoutStore();
 
-  // local state
   const [form, setForm] = React.useState<CompatibilityCheckoutForm>(initialForm);
 
   const [submitAttempted, setSubmitAttempted] = React.useState(false);
   const [errors, setErrors] = React.useState<FormErrors>({});
   const [hadSecretOnce, setHadSecretOnce] = React.useState(false);
 
-  // ctx as state (not ref) - fixed once after mount
   const [ctx, setCtx] = React.useState<ClientCtx>({});
 
-  // lead capture refs
   const lastLeadEmailRef = React.useRef<string>('');
   const lastLeadEmailWithPIRef = React.useRef<string>('');
   const leadAbortRef = React.useRef<AbortController | null>(null);
@@ -110,7 +105,6 @@ export default function CheckoutFormSection() {
     cardError: null,
   });
 
-  // derived
   const priceLabel =
     !productLoading && product
       ? formatPriceFromCents(product.price, {
@@ -139,28 +133,23 @@ export default function CheckoutFormSection() {
 		!payState.canPay ||
 		payState.paying;
 
-	// Initialize client context once after mount
 	React.useEffect(() => {
 		setCtx(getClientContext());
 	}, []);
 
-	// Track if we've had a clientSecret (for UI state)
   React.useEffect(() => {
     if (clientSecret) setHadSecretOnce(true);
   }, [clientSecret]);
 
-	// Reset if product type changed
   React.useEffect(() => {
     const expectedKey = `create:${productId}`;
     if (intentKey && intentKey !== expectedKey) reset();
   }, [intentKey, productId, reset]);
 
-	// Fetch product data on mount
   React.useEffect(() => {
     if (!product && !productLoading) fetchProduct(productId);
   }, [product, productLoading, fetchProduct, productId]);
 
-	// Auto-create PaymentIntent when ready
   React.useEffect(() => {
     if (!product || productLoading) return;
 
@@ -185,20 +174,17 @@ export default function CheckoutFormSection() {
     }).catch(() => {});
   }, [product, productLoading, productId, intentKey, clientSecret, status, createIntent, reset, ctx]);
 
-	// Sync checkout errors to payment state
   React.useEffect(() => {
     if (!checkoutError) return;
     setPayState((prev) => ({ ...prev, error: checkoutError }));
   }, [checkoutError]);
 
-	// Cleanup on unmount
   React.useEffect(() => {
     return () => {
       reset();
     };
   }, [reset]);
 
-	// Lead capture
   const captureLeadInternal = React.useCallback(
     async (opts?: { force?: boolean }) => {
       const email = (form.email || '').trim().toLowerCase();
@@ -241,13 +227,12 @@ export default function CheckoutFormSection() {
           keepalive: true,
         });
       } catch {
-        // silent
+        //
       }
     },
     [form.email, intentId, intentToken, ctx],
   );
 
-	// Catch-up: if PI/token appeared later - send again (once) with PI/token
   React.useEffect(() => {
     const email = (form.email || '').trim().toLowerCase();
     if (!email) return;
@@ -256,7 +241,6 @@ export default function CheckoutFormSection() {
     captureLeadInternal({ force: true }).catch(() => {});
   }, [intentId, intentToken, form.email, captureLeadInternal]);
 
-	// Form field updater
   const setField = React.useCallback(<K extends keyof CompatibilityCheckoutForm>(key: K, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   }, []);
@@ -285,7 +269,6 @@ export default function CheckoutFormSection() {
     router.push('/success');
   }, [router, markSuccess]);
 
-	// Validates form before payment
   const validateOnSubmit = React.useCallback((data: CompatibilityCheckoutForm) => {
     const next: FormErrors = {};
 
@@ -298,7 +281,6 @@ export default function CheckoutFormSection() {
     return next;
   }, []);
 
-	// Handles payment button click
   const onPayClick = React.useCallback(async () => {
     setSubmitAttempted(true);
 
@@ -340,7 +322,6 @@ export default function CheckoutFormSection() {
             <p className='mb-4 text-sm font-lato text-red-600'>{checkoutError}</p>
           ) : null}
 
-          {/* Header */}
           <div className='flex flex-col items-center gap-6 md:flex-row md:items-start md:justify-between md:gap-8'>
             <div className='max-w-[520px]'>
               <p className='font-lato font-normal text-body leading-[1.2] text-[#C6ABB3] text-center md:text-left'>
@@ -360,7 +341,6 @@ export default function CheckoutFormSection() {
           <hr className='my-8 w-full border-t border-[#DADDE4]' />
 
           <div className='mt-10 grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-10 lg:grid-cols-[1fr_1fr] lg:gap-[96px]'>
-            {/* LEFT */}
             <div>
               <h3 className='font-canela font-light text-brand-black text-[32px] md:text-[28px] lg:text-[32px]'>
                 Enter Your Birthdates &amp; Get Instant Access:
@@ -431,7 +411,6 @@ export default function CheckoutFormSection() {
               </div>
             </div>
 
-            {/* RIGHT */}
             <div>
               <h4 className='font-canela font-light text-brand-black text-[32px] md:text-[28px] lg:text-[32px]'>
                 Order summary

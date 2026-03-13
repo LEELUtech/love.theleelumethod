@@ -1,4 +1,4 @@
-import CheckoutFormSection from '@/components/sections/Compatibility/CheckoutFormSection';
+import CheckoutFormSectionLazy from '@/components/sections/Compatibility/CheckoutFormSectionLazy';
 import CoreValueSection from '@/components/sections/Compatibility/CoreValueSection';
 import HeroSection from '@/components/sections/Compatibility/HeroSection';
 import ProblemSolutionSection from '@/components/sections/Compatibility/ProblemSolutionSection';
@@ -26,7 +26,7 @@ const CompatibilityReport = () => {
       <HeroSection />
       <ProblemSolutionSection />
       <CoreValueSection />
-      <CheckoutFormSection />
+      <CheckoutFormSectionLazy />
       <FooterPromo {...footerPromoContent} buttonClassName='!px-2 md:w-[70%]' />
 
       <FooterLayout withNavigation={false} />
