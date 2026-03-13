@@ -5,7 +5,7 @@ import React from 'react';
 
 const HeroSection = () => {
   return (
-    <section className='relative xs:h-[968px] md:h-[968px] lg:h-[1048px] bg-[#fcefeb] w-full md:bg-transparent'>
+    <section className='relative xs:h-[938px] md:h-[968px] lg:h-[1048px] bg-[#fcefeb] w-full md:bg-transparent'>
       <div
         className='hidden lg:block absolute inset-0 bg-cover bg-center'
         style={{ backgroundImage: 'url(/images/landing/hero_section_bg.png)' }}
@@ -26,11 +26,11 @@ const HeroSection = () => {
           {/* Overlay Card */}
           <div className='absolute left-1/2 -translate-x-1/2 bottom-[-440px] md:bottom-[-360px] w-[calc(100%-32px)] md:w-[calc(100%-64px)] max-w-[360px] md:max-w-[560px] z-40'>
             <div className='rounded-[20px] bg-brand-white shadow-[0_4px_20px_rgba(0,0,0,0.05)] px-4 md:px-8 pt-4 md:pt-6 pb-6 md:pb-8 text-center'>
-              <p className='font-canela font-thin text-[42px]/[90px] md:text-[44px] italic text-brand-black'>
+              <p className='font-canela font-thin text-[42px] md:text-[44px] italic text-brand-black'>
                 Love isn’t a mystery.
               </p>
 
-              <h1 className='font-canela text-brand-black font-thin text-[42px]/[90px] mb-[24px]'>IT’S A DANCE.</h1>
+              <h1 className='font-canela text-brand-black font-thin text-[42px] mb-[24px]'>IT’S A DANCE.</h1>
 
               <p className='text-brand-black-100 font-lato  md:text-[17px]/[26px] mb-[24px]'>
                 Every relationship has a rhythm. When you know the steps, it flows. When you don’t, it’s chaos. Whether
@@ -40,8 +40,7 @@ const HeroSection = () => {
 
               <Button
                 variant='dark'
-                size='md'
-                className='w-full xs:text-[12px]'
+                className='w-full'
                 href={HOME_LINKS.HERO_LINK.href}
                 trackingData={{
                   cta_name: 'landing_hero_start_cta',
@@ -84,15 +83,15 @@ const HeroSection = () => {
 
             <Button
               variant='dark'
-              size='md'
-              className='w-full lg:w-[65%] xs:text-[12px]'
+              className='w-full max-w-[320px]'
+              href={HOME_LINKS.HERO_LINK.href}
               trackingData={{
                 cta_name: 'landing_hero_start_cta',
                 cta_text: 'START THE DECODE',
                 cta_location: 'hero',
               }}
             >
-              START THE DECODE
+              {HOME_LINKS.HERO_LINK.label}
             </Button>
           </div>
         </div>

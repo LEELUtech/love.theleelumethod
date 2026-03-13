@@ -1,4 +1,4 @@
-import Button from '@/components/ui/Button';
+import Button, { ButtonVariant } from '@/components/ui/Button';
 import RotateOnView from '@/components/ui/RotateOnView';
 import Image from 'next/image';
 
@@ -8,6 +8,7 @@ export interface IFooterPromo {
   link?: {
     href: string;
     label: string;
+    variant?: ButtonVariant;
   };
   button?: {
     label: string;
@@ -31,6 +32,7 @@ export const FooterPromo = (props: Props) => {
     title_top = 'I don’t guess.',
     title_bottom = 'I calculate.',
   } = props;
+
   return (
     <section className='bg-brand-white' id='footer-promo'>
       <div className='max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-[60px] 4xl:px-[180px] relative py-[80px] lg:py-[110px]'>
@@ -73,9 +75,10 @@ export const FooterPromo = (props: Props) => {
                 <p className='font-canela font-thin text-brand-deep  text-[32px]/[130%] tracking-normal'>{subtitle}</p>
               )}
             </div>
+
             {link && (
               <Button
-                variant='primary'
+                variant={link.variant}
                 className={`!w-full !max-w-[380px] ${buttonClassName}`}
                 href={link.href}
                 trackingData={{

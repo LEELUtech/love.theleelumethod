@@ -2,6 +2,7 @@ import CohortLearnCards from '@/components/sections/Landing/CohortLearnCards';
 import ArcAutoOnce from '@/components/ui/ArcFlyOnce';
 import Button from '@/components/ui/Button';
 import RotateOnView from '@/components/ui/RotateOnView';
+import { HOME_LINKS } from '@/static/links';
 import Image from 'next/image';
 import React from 'react';
 
@@ -143,15 +144,15 @@ export default function DecodedLoveCohortSection() {
 
             <Button
               variant='dark'
-              size='md'
-              className=' w-[340px] text-[18px]'
+              className='w-[340px]'
+              href={HOME_LINKS.DECODED_LOVE_LINK.href}
               trackingData={{
                 cta_name: 'landing_cohort_save_seat_cta',
                 cta_text: 'Save My Seat',
                 cta_location: 'decoded_love_cohort',
               }}
             >
-              Save My Seat
+              {HOME_LINKS.DECODED_LOVE_LINK.label}
             </Button>
           </div>
 
@@ -188,11 +189,7 @@ export default function DecodedLoveCohortSection() {
               fill
               quality={100}
               priority
-              className='
-				object-cover
-				scale-[2] md:scale-[2] lg:scale-[1.2]
-				object-[80%_30%] lg:object-[90%_50%] lg:-translate-x-[100px]
-			'
+              className='object-cover scale-[2] md:scale-[2] lg:scale-[1.2] object-[80%_30%] lg:object-[90%_50%] lg:-translate-x-[100px]'
             />
           </div>
 

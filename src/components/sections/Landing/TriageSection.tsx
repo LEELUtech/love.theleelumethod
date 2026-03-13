@@ -90,7 +90,7 @@ const TriageSection = () => {
         <Image src='/images/landing/triage_section_bg.png' alt='' fill priority quality={100} sizes='100vw' />
       </div>
       <div className='container w-full px-4'>
-        <p className='font-canela text-[42px]/[126%] lg:text-[60px] font-thin text-brand-deep text-center mb-[300px] lg:mb-[400px]'>
+        <p className='font-canela text-[42px]/[126%] lg:text-[60px] font-thin text-brand-deep text-center mb-[200px] md:mb-[300px] lg:mb-[400px]'>
           We fought for years and tried everything. A friend referred us to Lily. She ran our codes, showing us exactly
           where we clash, where we naturally align, and how to navigate our differences. Words cannot describe the
           impact she had. Without Lily, our relationship would have crumbled.
@@ -230,7 +230,7 @@ const TriageSection = () => {
                 key={i}
                 className={`
                   max-w-[392px] w-full rounded-[24px] bg-brand-white backdrop-blur-md
-                  px-[25px] py-[47px] shadow-[0_4px_20px_rgba(0,0,0,0.05)]
+                  px-[22.5px] py-[47px] shadow-[0_4px_20px_rgba(0,0,0,0.05)]
                   flex flex-col
                   ${card.raised ? 'lg:-translate-y-10' : ''}
                   ${i === 2 ? 'md:col-span-2 md:max-w-[820px] lg:col-span-1 lg:max-w-[392px]' : ''}
@@ -254,7 +254,7 @@ const TriageSection = () => {
                   ),
                 )}
 
-                <Button variant='dark' size='md' className='w-full xs:text-[12px] mt-auto' href={card.button.href}>
+                <Button variant='dark' className='w-full mt-auto' href={card.button.href}>
                   {card.button.label}
                 </Button>
               </div>

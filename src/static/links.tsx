@@ -160,11 +160,11 @@ export const HOME_LINKS: RecordLink = {
   },
   DECODED_LINK: {
     label: 'Save My Seat',
-    href: '#',
+    href: WEBINAR_URL,
   },
   DECODED_LOVE_LINK: {
     label: 'Save My Seat',
-    href: '#',
+    href: WEBINAR_URL,
   },
   RELATIONSHIP_LINK: {
     label: 'VIEW THE CURRICULUM',

@@ -3,8 +3,10 @@ import HeroSection from '@/components/sections/Landing/HeroSection';
 import { MasterclassSection } from '@/components/sections/Landing/MasterclassSection';
 import RelationShipProtocolSection from '@/components/sections/Landing/RelationShipProtocolSection';
 import TriageSection from '@/components/sections/Landing/TriageSection';
+import { ButtonVariant } from '@/components/ui/Button';
 import Footer from '@/components/ui/Footer';
 import { FooterPromo } from '@/components/ui/footer/FooterPromo';
+import { HOME_LINKS } from '@/static/links';
 
 const footerPromoContent = {
   title: `I'm Lily Chystofat.`,
@@ -15,9 +17,8 @@ const footerPromoContent = {
   ],
   subtitle:
     'The result is clarity, not platitudes. Strategy, not spiritual bypass. This is where the guessing ends, and certainty begins.',
-  button: {
-    label: `YES, I'M IN`,
-  },
+
+  link: { ...HOME_LINKS.FOOTER_PROMO_LINK, variant: 'dark' as ButtonVariant },
 };
 
 export default function HomePage() {

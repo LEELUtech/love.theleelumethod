@@ -1,4 +1,5 @@
 import Button from '@/components/ui/Button';
+import { HOME_LINKS } from '@/static/links';
 import Image from 'next/image';
 import React from 'react';
 
@@ -55,7 +56,7 @@ const RelationShipProtocolSection = () => {
   const ornamentIcon = <Image src='/icons/ornament_1.svg' alt='' width={24} height={24} />;
 
   return (
-    <section className='relative pb-[80px] pt-[100px]'>
+    <section className='relative pb-[80px] lg:pt-[100px]'>
       {/* Background Image */}
       <div className='absolute inset-0 -z-10'>
         <Image
@@ -104,15 +105,15 @@ const RelationShipProtocolSection = () => {
             variant='dark'
             leftIcon={ornamentIcon}
             leftIconBg='transparent'
-            size='md'
-            className='w-full lg:w-fit xs:text-[12px] mt-[32px]'
+            className='w-full max-w-[340px] mt-[32px]'
+            href={HOME_LINKS.RELATIONSHIP_LINK.href}
             trackingData={{
               cta_name: 'landing_protocol_view_curriculum_cta',
               cta_text: 'VIEW THE CURRICULUM',
               cta_location: 'relationship_protocol',
             }}
           >
-            VIEW THE CURRICULUM
+            {HOME_LINKS.RELATIONSHIP_LINK.label}
           </Button>
         </div>
 
