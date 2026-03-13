@@ -160,6 +160,9 @@ export default function SecretsHeroSection() {
 							placeholder="Email Address"
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
+							autoCorrect="off"
+							autoCapitalize="off"
+							spellCheck={false}
 							className="w-full mt-4 rounded-md border border-[#E3D6CF] bg-white px-4 py-3 text-base text-[#1A0F0A] placeholder:text-[#5A5757] placeholder:text-lg outline-none"
 						/>
 

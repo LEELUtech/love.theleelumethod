@@ -133,6 +133,30 @@ export async function markTrustTempleCompleted(email: string): Promise<void> {
 }
 
 /**
+ * Increments Diagnostic_Sessions_Completed counter in CRM by 1.
+ * Returns the new value.
+ */
+export async function incrementDiagnosticSessions(email: string): Promise<number> {
+  const token = await getToken();
+  const id = await findContactId(email);
+  if (!id) {
+    console.warn("[zoho-sessions] contact not found for incrementDiagnosticSessions, skipping", { email });
+    return 0;
+  }
+
+  const res = await axios.get<{ data?: Array<{ Diagnostic_Sessions_Completed?: unknown }> }>(
+    `https://${configs.zohoApiCRMDomain}/crm/v2/Contacts/${id}`,
+    { timeout: 15000, headers: { Authorization: `Zoho-oauthtoken ${token}` } },
+  );
+  const current = Number(res.data?.data?.[0]?.Diagnostic_Sessions_Completed ?? 0);
+  const next = current + 1;
+
+  await patchContact(id, { Diagnostic_Sessions_Completed: next });
+  console.log("[zoho-sessions] diagnostic sessions incremented", { email, from: current, to: next });
+  return next;
+}
+
+/**
  * Called when a Calendly booking is canceled.
  * Clears Session_Purchased and Package_Tier_Purchased.
  */
