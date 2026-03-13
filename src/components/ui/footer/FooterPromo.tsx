@@ -76,7 +76,6 @@ export const FooterPromo = (props: Props) => {
             {link && (
               <Button
                 variant='primary'
-                size='md'
                 className={`!w-full !max-w-[380px] ${buttonClassName}`}
                 href={link.href}
                 trackingData={{
@@ -93,7 +92,7 @@ export const FooterPromo = (props: Props) => {
             {button && (
               <Button
                 variant='dark'
-                className={`!w-full !max-w-[380px] xs:text-[12px] ${buttonClassName}`}
+                className={`!w-full !max-w-[380px] ${buttonClassName}`}
                 trackingData={{
                   cta_name: 'footer_promo_button_cta',
                   cta_text: button.label,

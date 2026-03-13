@@ -161,7 +161,7 @@ const CARDS: ICard[] = [
   },
 ];
 
-const Card = ({ size, title, description, listTitle, list, link, for: forText }: ICard) => {
+const Card = ({ size, title, description, listTitle, list, link, id, for: forText }: ICard) => {
   const sizeClasses = {
     md: {
       list: 'gap-4',
@@ -174,13 +174,16 @@ const Card = ({ size, title, description, listTitle, list, link, for: forText }:
 
   const { list: listClass } = sizeClasses[size];
 
-  const cardSizeClasses = size === 'xl' ? '-mt-[38px]' : '';
+  const cardSizeClasses = size === 'xl' ? '2xl:-mt-[38px]' : '';
 
   return (
     <article
-      className={`relative w-full rounded-[20px] bg-brand-white px-6 md:px-7 pt-[89px] pb-[48px] flex flex-col ${cardSizeClasses}`}
+      className={`relative w-full rounded-[20px]  bg-brand-white px-6 md:px-7 pt-[89px] pb-[48px] flex flex-col ${cardSizeClasses}`}
     >
-      <h3 className='text-center font-canela font-normal text-brand-black text-[30px] leading-[120%]'>{title}</h3>
+      <h5 className='block 2xl:hidden text-[72px]/[71px] absolute top-0 left-[50%] -translate-x-[50%] -translate-y-[50%] text-brand-primary font-canela font-light'>
+        {id}.
+      </h5>
+      <h3 className='text-center font-canela font-normal text-brand-black text-[32px]/[120%]'>{title}</h3>
 
       <p className='mt-3 text-center font-normal font-lato text-[#5A5757] text-body leading-[18px] mx-auto'>
         {description}
@@ -230,6 +233,7 @@ const Card = ({ size, title, description, listTitle, list, link, for: forText }:
 export default function ChooseYourPathSection() {
   return (
     <section
+      id='pricing'
       className='pt-0 pb-[122px] '
       style={{
         background: "url('/images/programs/choose_your_path_bg.png') no-repeat center center / cover",
@@ -266,7 +270,7 @@ export default function ChooseYourPathSection() {
           CHOOSE YOUR PATH
         </h2>
 
-        <div className='mt-10 mb-[60px] lg:mb-[130px] lg:mt-[178px] grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-6 items-start'>
+        <div className='mt-10 mb-[60px] lg:mb-[130px] lg:mt-[178px] grid grid-cols-1 2xl:grid-cols-3 gap-12 2xl:gap-6 items-start'>
           {CARDS.map((card) => (
             <Card key={card.id} {...card} />
           ))}
@@ -274,7 +278,7 @@ export default function ChooseYourPathSection() {
 
         <div>
           <div className='mb-[80px]'>
-            <h2 className='text-[80px]/[126%] text-center font-canela font-thin mb-4'>
+            <h2 className='text-[60px]/[126%] lg:text-[80px] text-center font-canela font-thin mb-4'>
               <span className='text-brand-primary'>Relationship Protocol</span> Tiers{' '}
             </h2>
             <p className='font-lato text-[24px]/[150%] text-center'>
@@ -306,7 +310,7 @@ export default function ChooseYourPathSection() {
                     </span>
                   )}
 
-                  <h3 className='mx-auto  3xl:max-w-[200px] text-center font-canela font-thin text-[36px]/[126%] text-brand-black'>
+                  <h3 className='mx-[30px] text-[42px]/[126%] mb-[10px] max-w-[200px] lg:mx-auto font-canela font-thin lg:text-[36px] text-brand-black'>
                     {tier.title}
                   </h3>
 
@@ -334,8 +338,10 @@ export default function ChooseYourPathSection() {
                     })}
                   </ul>
 
-                  <div className='mt-10 text-center px-4'>
-                    <p className='font-canela font-light mb-5 text-[32px]/[126%] text-[#3C1212]'>{tier.price}</p>
+                  <div className='mt-10 text-left lg:text-center px-4'>
+                    <p className='font-canela lg:font-light mb-5 text-[48px]/[126%] lg:text-[32px] text-[#3C1212]'>
+                      {tier.price}
+                    </p>
                     <Button
                       className='w-full max-w-[450px] px-0'
                       variant='dark'

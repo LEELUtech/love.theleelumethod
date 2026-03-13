@@ -38,7 +38,9 @@ export const CantFix = ({ href, linkLabel, buttonVariant = 'primary' }: Props) =
             />
 
             <div>
-              <div className='font-canela font-light text-[32px]/[130%] text-brand-gray'>Lisa B. Gold, M.A., CH</div>
+              <div className='font-canela font-light text-[24px]/[130%] lg:text-[32px] text-brand-gray'>
+                Lisa B. Gold, M.A., CH
+              </div>
 
               <div className='font-lato italic font-normal lg:text-[22px] leading-[26px] text-[#6F4C40] text-[18px]'>
                 Applied Behavior Analyst

@@ -261,6 +261,7 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
       backgroundImage='/images/bg/checkout_bg.png'
       sectionClasses='bg-white py-[37px] md:py-[56px] lg:py-[37px]'
       wrapperClasses='lg:top-[-200px] !pb-0'
+      id='checkout'
     >
       <div className=''>
         <div className='relative mx-auto rounded-[32px] bg-white px-6 py-8 md:px-10 md:py-10 lg:px-[104px] lg:py-[51px] shadow-[0px_4px_20px_0px_rgba(0,0,0,0.1)]'>

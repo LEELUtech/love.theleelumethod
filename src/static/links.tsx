@@ -97,7 +97,7 @@ export const ABOUT_LINKS: RecordLink = {
 export const PROGRAMS_LINKS: RecordLink = {
   HERO_LINK: {
     label: 'ENROLL NOW',
-    href: '#checkout',
+    href: '#pricing',
   },
   BLIND_LINK: {
     label: 'READ MORE STORIES',
@@ -105,7 +105,7 @@ export const PROGRAMS_LINKS: RecordLink = {
   },
   PROTOCOL_LINK: {
     label: 'INITIATE THE PROTOCOL',
-    href: '#checkout',
+    href: '/programs/self-guided-transformation',
   },
   SELF_GUIDED_LINK: {
     label: 'BEGIN THE PROTOCOL',
@@ -133,7 +133,7 @@ export const PROGRAMS_LINKS: RecordLink = {
   },
   FOOTER_PROMO_LINK: {
     label: 'ACCESS THE PROTOCOL',
-    href: '#',
+    href: '/programs/self-guided-transformation',
   },
 };
 
