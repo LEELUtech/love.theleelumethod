@@ -11,14 +11,16 @@ import { markSessionPurchased, markSessionCanceled, markTrustTempleBooked, type 
 const GCP_PROJECT = "leelu-tech";
 const GCP_LOCATION = "us-central1";
 const TASK_QUEUE = "trust-temple-complete";
-// Session duration in minutes — task fires after this delay from start_time
-const SESSION_DURATION_MIN = 20;
+const DIAG_TASK_QUEUE = "diagnostic-session-complete";
+// Duration in minutes — task fires after this delay from start_time
+const TRUST_TEMPLE_DURATION_MIN = 20;
+const DIAG_SESSION_DURATION_MIN = 60;
 
 const tasksClient = new CloudTasksClient();
 
 async function scheduleCompleteTask(email: string, startTimeISO: string): Promise<void> {
   const startMs = new Date(startTimeISO).getTime();
-  const scheduleMs = startMs + SESSION_DURATION_MIN * 60 * 1000;
+  const scheduleMs = startMs + TRUST_TEMPLE_DURATION_MIN * 60 * 1000;
   const scheduleSeconds = Math.floor(scheduleMs / 1000);
 
   const functionUrl = `https://${GCP_LOCATION}-${GCP_PROJECT}.cloudfunctions.net/completeTrustTemple`;
@@ -46,6 +48,57 @@ async function scheduleCompleteTask(email: string, startTimeISO: string): Promis
   });
 
   console.log("calendlyWebhook: cloud task scheduled", { email, taskName, scheduleAt: new Date(scheduleMs).toISOString() });
+}
+
+async function scheduleDiagnosticTask(email: string, startTimeISO: string): Promise<void> {
+  const startMs = new Date(startTimeISO).getTime();
+  const scheduleMs = startMs + DIAG_SESSION_DURATION_MIN * 60 * 1000;
+  const scheduleSeconds = Math.floor(scheduleMs / 1000);
+
+  const functionUrl = `https://${GCP_LOCATION}-${GCP_PROJECT}.cloudfunctions.net/completeDiagnosticSession`;
+  const parent = tasksClient.queuePath(GCP_PROJECT, GCP_LOCATION, DIAG_TASK_QUEUE);
+
+  const [task] = await tasksClient.createTask({
+    parent,
+    task: {
+      scheduleTime: { seconds: scheduleSeconds },
+      httpRequest: {
+        httpMethod: "POST" as const,
+        url: functionUrl,
+        headers: { "Content-Type": "application/json" },
+        body: Buffer.from(JSON.stringify({ email })).toString("base64"),
+      },
+    },
+  });
+
+  const taskName = task.name ?? "";
+  await db.collection("diagnostic_session_tasks").doc(email.replace(/[^a-z0-9]/g, "_")).set({
+    email,
+    taskName,
+    scheduledAt: new Date(),
+    startTime: startTimeISO,
+  });
+
+  console.log("calendlyWebhook: diagnostic task scheduled", { email, taskName, scheduleAt: new Date(scheduleMs).toISOString() });
+}
+
+async function cancelDiagnosticTask(email: string): Promise<void> {
+  const docId = email.replace(/[^a-z0-9]/g, "_");
+  const doc = await db.collection("diagnostic_session_tasks").doc(docId).get();
+  if (!doc.exists) {
+    console.log("calendlyWebhook: no diagnostic task found to cancel", { email });
+    return;
+  }
+
+  const { taskName } = doc.data() as { taskName: string };
+  try {
+    await tasksClient.deleteTask({ name: taskName });
+    console.log("calendlyWebhook: diagnostic task deleted", { email, taskName });
+  } catch (e: unknown) {
+    console.warn("calendlyWebhook: deleteDiagnosticTask failed (may already be done)", { email, taskName, error: e instanceof Error ? e.message : String(e) });
+  }
+
+  await db.collection("diagnostic_session_tasks").doc(docId).delete();
 }
 
 async function cancelCompleteTask(email: string): Promise<void> {
@@ -218,6 +271,11 @@ export const calendlyWebhook = onRequest(
           } catch (e) {
             console.error("calendlyWebhook: markSessionCanceled failed (non-critical)", { email, error: e });
           }
+          try {
+            await cancelDiagnosticTask(email);
+          } catch (e) {
+            console.error("calendlyWebhook: cancelDiagnosticTask failed (non-critical)", { email, error: e });
+          }
         }
 
         res.json({ ok: true, event: eventType, email, add: cancelAdd, remove: cancelRemove });
@@ -276,6 +334,13 @@ export const calendlyWebhook = onRequest(
           await markSessionPurchased(email, kind, undefined, inviteeMeta);
         } catch (e) {
           console.error("calendlyWebhook: markSessionPurchased failed (non-critical)", { email, kind, error: e });
+        }
+        if (payload.scheduled_event?.start_time) {
+          try {
+            await scheduleDiagnosticTask(email, String(payload.scheduled_event.start_time));
+          } catch (e) {
+            console.error("calendlyWebhook: scheduleDiagnosticTask failed (non-critical)", { email, error: e });
+          }
         }
       }
 

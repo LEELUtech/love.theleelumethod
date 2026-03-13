@@ -198,11 +198,11 @@ function mapTagDelta(body: EwebinarPayload, action: EwebinarAction): { add: stri
       return isReplay
         ? {
           add: ["wb_replay"],
-          remove: ["wb_live", "wb_partial", "wb_noshow"],
+          remove: ["wb_noshow"],
         }
         : {
           add: ["wb_live"],
-          remove: ["wb_replay", "wb_partial", "wb_noshow"],
+          remove: ["wb_noshow"],
         };
     }
 
