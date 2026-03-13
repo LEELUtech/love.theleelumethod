@@ -44,7 +44,6 @@ export const completeDiagnosticSession = onRequest(
     console.log("completeDiagnosticSession: processing", { email: normalizedEmail });
 
     try {
-      // Increment first so the CRM value is up-to-date before the workflow condition checks it
       let newCount = 0;
       try {
         newCount = await incrementDiagnosticSessions(normalizedEmail);
@@ -52,7 +51,6 @@ export const completeDiagnosticSession = onRequest(
         console.error("completeDiagnosticSession: increment failed (non-critical)", { email: normalizedEmail, error: e });
       }
 
-      // Add tag + sync updated count to Campaigns contact field
       await upsertContactAndUpdateTags(
         normalizedEmail,
         { add: ["diagnostic_session_completed"], remove: [] },
