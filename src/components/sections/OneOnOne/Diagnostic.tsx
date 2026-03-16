@@ -19,13 +19,56 @@ const content = {
   ],
 };
 
+const DiagnosticImg = () => (
+  <div className='flex-1 relative flex justify-center mt-[40px]'>
+    <div className='relative w-full max-w-[490px] max-h-[529px] aspect-[360/348] lg:aspect-[490/529] lg:min-w-[440px]'>
+      <Image
+        src='/images/lily/lily_3.png'
+        alt='I am Lily Chystofat'
+        fill
+        priority
+        quality={100}
+        className='       
+                [mask-image:linear-gradient(to_bottom,black_55%,transparent_75%)]
+                [-webkit-mask-image:linear-gradient(to_bottom,black_55%,transparent_75%)]
+                lg:[mask-image:none]
+                lg:[-webkit-mask-image:none]
+    '
+      />
+      <RotateOnView
+        className='absolute bottom-[-80px] left-[140px] hidden lg:block pointer-events-none'
+        duration={5}
+        ease='easeOut'
+      >
+        <Image src='/icons/ornament_13.svg' alt='' width={209} height={215} priority quality={100} className='' />
+      </RotateOnView>
+      <ArcAutoOnce
+        className='absolute inset-0 -z-0 -translate-y-[13%] pointer-events-none -translate-x-[-7%]'
+        // endAt={0.9}
+        flightStart={0.2}
+        durMs={1500}
+        arrowRotateDeg={254}
+        arrowScale={0.8}
+        arrowCenterX={6.5}
+        arrowCenterY={-6}
+        arrowOffsetY={3}
+        endAtByDevice={{ mobile: 0.87, desktop: 0.95 }}
+        arcEnd={{ x: -60, y: 219 }}
+        arcRx={260}
+        arcRy={260}
+        strokeWidth={2}
+      />
+    </div>
+  </div>
+);
+
 export const Diagnostic = () => {
   return (
-    <Section>
-      <>
+    <Section wrapperClasses='!pb-0'>
+      <div className='flex flex-col-reverse lg:flex-row  gap-[76px]'>
         <div>
           <div className='text-brand-deep flex-1 lg:max-w-[610px] flex flex-col items-center text-center lg:items-start lg:text-left'>
-            <h2 className='text-[48px]/[120%] order-1 w-[300px] -mt-[140px] mb-6 font-canela font-thin md:w-full md:text-[60px]/[120%] md:-mt-0'>
+            <h2 className='text-[48px]/[120%] order-1 w-[300px] -mt-[200px] lg:mt-0 mb-6 font-canela font-thin md:w-full md:text-[60px]/[120%] md:-mt-0'>
               {content.title}
             </h2>
 
@@ -48,8 +91,7 @@ export const Diagnostic = () => {
 
             <Button
               variant='primary'
-              size='md'
-              className='mb-8 w-full bs:w-[52%] py-[16px] order-3 md:order-5 md:mb-0'
+              className='mb-8 w-full max-w-[316px] py-[16px] order-3 md:order-5 md:mb-0'
               href={ONE_ON_ONE_LINKS.HERO_LINK.href}
               trackingData={{
                 cta_name: 'one_on_one_diagnostic_cta',
@@ -61,51 +103,8 @@ export const Diagnostic = () => {
             </Button>
           </div>
         </div>{' '}
-        <div className='flex-1 relative flex justify-center order-1 lg:order-2 lg:mt-[40px]'>
-          <div className='relative lg:w-[500px] lg:h-[549px] w-[360px] h-[380px] lg:pt-0'>
-            <Image
-              src='/images/lily/lily_3.png'
-              alt='I am Lily Chystofat'
-              fill
-              priority
-              quality={100}
-              className='
-  
-                /* MOBILE: fade bottom */
-                [mask-image:linear-gradient(to_bottom,black_55%,transparent_75%)]
-                [-webkit-mask-image:linear-gradient(to_bottom,black_55%,transparent_75%)]
-  
-                /* DESKTOP: no mask */
-                lg:[mask-image:none]
-                lg:[-webkit-mask-image:none]
-    '
-            />
-            <RotateOnView
-              className='absolute bottom-[-80px] left-[140px] hidden lg:block pointer-events-none'
-              duration={5}
-              ease='easeOut'
-            >
-              <Image src='/icons/ornament_13.svg' alt='' width={209} height={215} priority quality={100} className='' />
-            </RotateOnView>
-            <ArcAutoOnce
-              className='absolute inset-0 -z-0 -translate-y-[13%] pointer-events-none -translate-x-[-7%]'
-              // endAt={0.9}
-              flightStart={0.2}
-              durMs={1500}
-              arrowRotateDeg={254}
-              arrowScale={0.8}
-              arrowCenterX={6.5}
-              arrowCenterY={-6}
-              arrowOffsetY={3}
-              endAtByDevice={{ mobile: 0.87, desktop: 0.95 }}
-              arcEnd={{ x: -60, y: 219 }}
-              arcRx={260}
-              arcRy={260}
-              strokeWidth={2}
-            />
-          </div>
-        </div>
-      </>
+        <DiagnosticImg />
+      </div>
     </Section>
   );
 };
