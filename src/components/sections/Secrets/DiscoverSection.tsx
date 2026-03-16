@@ -130,7 +130,6 @@ export default function DiscoverSection() {
           </p>
           <Button
             variant='primary'
-            size='md'
             href={SECRETS_LINKS.ACCESS_LINK.href}
             className='w-full mt-[16px] md:w-[45%] md:mt-[66px]'
             trackingData={{

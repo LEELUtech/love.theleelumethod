@@ -68,7 +68,6 @@ const WebinarSection = () => {
             <div className='order-1 md:order-2 flex justify-center lg:justify-start'>
               <Button
                 variant='primary'
-                size='md'
                 className='w-full md:w-[65%] py-[12px]'
                 href={DESCODE_LINKS.HERO_LINK.href}
                 trackingData={{

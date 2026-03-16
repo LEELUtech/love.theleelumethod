@@ -456,8 +456,7 @@ export default function ModulesSection() {
               </h3>
               <Button
                 variant='primary'
-                size='md'
-                className='w-full lg:w-[38%] xs:text-[12px] mt-[32px]'
+                className='w-full lg:w-[38%] mt-[32px]'
                 href={PROGRAMS_LINKS.PROTOCOL_LINK.href}
                 trackingData={{
                   cta_name: 'programs_modules_protocol_cta',

@@ -57,7 +57,7 @@ const FixSection = () => {
             </p>
 
             <Button
-              className='mt-[28px] md:mt-[36px] px-10 md:px-12 text-[11px] md:text-[12px] tracking-[0.18em] uppercase'
+              className='mt-[28px] md:mt-[36px] px-10 md:px-12 tracking-[0.18em] uppercase'
               trackingData={{
                 cta_name: 'secure_seat',
                 cta_text: 'SECURE YOUR SEAT TO RESET THE DYNAMIC',

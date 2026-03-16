@@ -53,7 +53,6 @@ const TheFractureAndLaboratorySection = () => {
             </p>
             <Button
               variant='dark'
-              size='md'
               className='w-full lg:w-[60%]'
               href={ABOUT_LINKS.FRACTURE_LINK.href}
               trackingData={{

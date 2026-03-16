@@ -112,8 +112,7 @@ export default function CostOfWaitingSection() {
 
           <Button
             variant='primary'
-            size='md'
-            className='w-full lg:w-[30%] py-4 px-[60px] xs:text-[12px] mt-[32px]'
+            className='w-full lg:w-[30%] py-4 px-[60px] mt-[32px]'
             trackingData={{
               cta_name: 'sgt_cost_of_waiting_cta',
               cta_text: 'DECODE MY RELATIONSHIP',

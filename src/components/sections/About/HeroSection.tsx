@@ -41,7 +41,6 @@ const HeroSection = () => {
 
           <Button
             variant='dark'
-            size='md'
             className='w-full lg:w-[55%] mb-8 lg:mb-0 order-2 lg:order-4 mt-2'
             href={link.href}
             trackingData={{

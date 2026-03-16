@@ -85,7 +85,6 @@ const TheSynthesisSection = () => {
 
         <Button
           variant='primary'
-          size='md'
           className='w-full lg:w-[40%]'
           href={ABOUT_LINKS.HERO_LINK.href}
           trackingData={{

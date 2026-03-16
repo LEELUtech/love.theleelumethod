@@ -110,8 +110,7 @@ const HeroSection = () => {
             <div className='mt-6 md:mt-7 lg:mt-[32px] order-2 lg:order-4'>
               <Button
                 variant='primary'
-                size='md'
-                className='w-full lg:w-[75%] xs:text-[12px]'
+                className='w-full lg:w-[75%] '
                 href={COMPABILITY_REPORT_LINKS.HERO_LINK.href}
                 trackingData={{
                   cta_name: 'compatibility_hero_cta',

@@ -97,8 +97,7 @@ const HeroSection = () => {
           <div className='order-5 w-full flex justify-center'>
             <Button
               variant='primary'
-              size='md'
-              className='w-full lg:w-[32%] xs:text-[12px] mt-[32px]'
+              className='w-full lg:w-[32%] mt-[32px]'
               href={PROGRAMS_LINKS.HERO_LINK.href}
               trackingData={{
                 cta_name: 'programs_hero_cta',
