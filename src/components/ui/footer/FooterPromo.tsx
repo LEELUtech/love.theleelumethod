@@ -72,7 +72,7 @@ export const FooterPromo = (props: Props) => {
               ))}
 
               {subtitle && (
-                <p className='font-canela font-thin text-brand-deep  text-[32px]/[130%] tracking-normal'>{subtitle}</p>
+                <p className='font-canela font-light text-brand-deep  text-[32px]/[130%] tracking-normal'>{subtitle}</p>
               )}
             </div>
 

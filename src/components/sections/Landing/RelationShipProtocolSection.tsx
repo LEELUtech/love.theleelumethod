@@ -37,15 +37,15 @@ const Card = ({ title, description, id }: CardProps) => {
   return (
     <div
       className={`rounded-[16px] w-full bg-[#FFF8F8] backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.1)]
-              px-[56px] py-[48px]
+              px-6 py-[48px]
               md:px-8 md:py-8 text-left
               max-w-[500px] mx-auto lg:mx-0 ${mt}
               `}
     >
-      <h3 className='font-canela font-light text-[32px] md:text-[28px] lg:text-[32px] leading-[120%] text-brand-deep mb-4 text-center lg:text-left'>
+      <h3 className='font-canela font-light text-[32px] md:text-[28px] lg:text-[32px] leading-[120%] text-[#3C1212] mb-4 text-center lg:text-left'>
         {title}
       </h3>
-      <p className='font-lato font-medium text-[#757986] text-body md:text-[14px] lg:text-body leading-[26px] md:leading-[24px] text-center lg:text-left'>
+      <p className='font-lato font-medium text-[#757986] text-body leading-[26px] md:leading-[24px] text-center lg:text-left'>
         {description}
       </p>
     </div>
@@ -73,17 +73,17 @@ const RelationShipProtocolSection = () => {
       <div className='container px-4'>
         <div className='text-center'>
           {/* Heading */}
-          <h2 className='font-thin text-[48px]/[126%] lg:text-[80px] font-canela text-brand-deep mb-5'>
-            The Relationship Protocol
+          <h2 className='font-thin text-[48px]/[126%] pt-[40px] lg:pt-0 lg:text-[80px] font-canela text-brand-deep mb-5'>
+            THE RELATIONSHIP PROTOCOL
           </h2>
 
           {/* Subheading */}
-          <p className='font-light font-canela text-[32px] lg:text-[32px] leading-[130%] text-brand-primary mb-6 lg:mb-5 text-center'>
+          <p className='font-light font-canela text-[32px]/[130%] text-black-10 lg:text-brand-primary mb-6 lg:mb-5 text-center'>
             The Operating Manual for Human Connection
           </p>
 
           {/* Text (tablet only smaller) */}
-          <p className='font-normal font-lato text-[22px] md:text-[18px] lg:text-[22px] leading-[130%] text-[#41444E] lg:text-brand-black mb-6 lg:mb-12 mx-auto text-center'>
+          <p className='font-normal font-lato text-[22px]/[150%] text-[#41444E] lg:text-brand-black mb-6 lg:mb-12 mx-auto text-center'>
             Most relationship advice is guesswork. &quot;Just be yourself.&quot; &quot;Wait for the right one.&quot;
             <br />
             That is bad advice. It leaves you powerless. The Relationship Protocol is a forensic audit of your love
