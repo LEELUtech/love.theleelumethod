@@ -79,10 +79,10 @@ export const ProgramsReceive = (props: Props) => {
       {additionalModule && (
         <Flex
           component='article'
-          className='flex-col-reverse md:flex-row lg:space-between gap-10 lg:gap-[90px] xl:gap-[110px] 2xl:gap-[130px]'
+          className='flex-col-reverse pt-[140px] md:flex-row lg:space-between gap-10 lg:gap-[90px] xl:gap-[110px] 2xl:gap-[130px]'
         >
-          <div className='flex-1 flex w-full max-w-full lg:max-w-[496px] flex-col items-center justify-center'>
-            <div className='relative w-full max-w-[496px] aspect-[496/535] overflow-hidden rounded-t-[999px]'>
+          <div className='flex-1 flex w-full max-w-full lg:max-w-[494px] flex-col items-center justify-center'>
+            <div className='relative w-full max-w-[494px] aspect-[494/670] overflow-hidden rounded-t-[999px]'>
               <Image src={additionalModule.imgSrc} alt={additionalModule.title} fill quality={100} />
             </div>
           </div>

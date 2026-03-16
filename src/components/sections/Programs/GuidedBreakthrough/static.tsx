@@ -100,6 +100,7 @@ export const guidedBreakthroughOverviewData: IProgramOverview = {
       id: 1,
       title: 'Relationship Development Over Time',
       iconColor: 'text-brand-primary',
+      size: 'lg',
       list: [
         'First meeting & attraction',
         'Dating stage',
@@ -115,6 +116,7 @@ export const guidedBreakthroughOverviewData: IProgramOverview = {
       title: `Conflict Navigation & Behavioral Strategy`,
       description: 'For both partners:',
       iconColor: 'text-brand-primary',
+      size: 'lg',
       list: [
         'Core reasons conflicts arise',
         'What dissatisfaction accumulates from',
@@ -132,6 +134,7 @@ export const guidedBreakthroughOverviewData: IProgramOverview = {
       id: 3,
       title: 'Life Strategy as a Couple',
       iconColor: 'text-brand-primary',
+      size: 'lg',
       list: [
         'How joint goals evolve',
         `Whether it's favorable to build a business together`,
@@ -146,6 +149,7 @@ export const guidedBreakthroughOverviewData: IProgramOverview = {
       id: 4,
       title: 'Separation / Breakup Scenario (If Relevant) ',
       iconColor: 'text-brand-primary',
+      size: 'md',
       list: [
         'Who gains and who loses from separation',
         `How each partner experiences the breakup`,
@@ -156,6 +160,7 @@ export const guidedBreakthroughOverviewData: IProgramOverview = {
       id: 5,
       title: 'Red Flags & Maximum Potential',
       iconColor: 'text-brand-primary',
+      size: 'md',
       list: [
         'Red flags the couple must avoid',
         `Areas of maximum growth`,
