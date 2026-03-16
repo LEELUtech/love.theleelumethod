@@ -103,8 +103,12 @@ const VideoContent = () => (
 
 export default function MechanicsDeliverablesSection() {
   const { phase, workbook } = content;
+
   return (
-    <Section backgroundImage='/images/programs/self-guided-transformation/mechanics_section_bg.png'>
+    <Section
+      backgroundImage='/images/programs/self-guided-transformation/mechanics_section_bg.png'
+      wrapperClasses='py-[80px] lg:py-[120px]'
+    >
       <div>
         <div className='text-center mb-[90px] md:mb-[150px]'>
           <ProgramsReceive {...selfGuidedModuleData} />

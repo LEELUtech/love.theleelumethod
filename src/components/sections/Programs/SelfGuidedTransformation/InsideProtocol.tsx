@@ -2,6 +2,7 @@ import Button from '@/components/ui/Button';
 import { ImageContainer } from '@/components/ui/containers/ImageContainer';
 import { Section } from '@/components/ui/containers/section';
 import { ArrowList } from '@/components/ui/lists';
+import { ESSENTIALS_LINKS } from '@/static/links';
 
 const content = {
   title_top: 'Inside The Protocol',
@@ -26,8 +27,8 @@ const content = {
   ],
   highlight: 'It starts feeling safe, alive, and fulfilling.',
   link: {
-    href: '#',
-    label: 'SECURE YOUR SPOT',
+    href: ESSENTIALS_LINKS.INSIDE_LINK.href,
+    label: ESSENTIALS_LINKS.INSIDE_LINK.label,
   },
 };
 
@@ -35,7 +36,7 @@ export const InsideProtocol = () => {
   const { title_top, title_bottom, list, descriptions, highlight, link } = content;
 
   return (
-    <Section>
+    <Section wrapperClasses='py-[64px]'>
       <div>
         <ImageContainer src='/images/lily/lily_2.png' alt='Lily' height={832}>
           <div className='flex flex-col'>
@@ -54,7 +55,16 @@ export const InsideProtocol = () => {
             <p className='text-center md:text-left text-[24px]/[126%] md:text-[32px] font-light font-canela text-brand-primary mb-[60px]'>
               {highlight}
             </p>
-            <Button href={link.href} className='self-center md:self-start md:px-[80px] xl:px-[98px] px-[98px]' trackingData={{ cta_name: 'sgt_inside_protocol_cta', cta_text: link.label, cta_target_url: link.href, cta_location: 'inside_protocol' }}>
+            <Button
+              href={link.href}
+              className='self-center md:self-start md:px-[80px] xl:px-[98px] px-[98px]'
+              trackingData={{
+                cta_name: 'sgt_inside_protocol_cta',
+                cta_text: link.label,
+                cta_target_url: link.href,
+                cta_location: 'inside_protocol',
+              }}
+            >
               {link.label}
             </Button>
           </div>

@@ -25,7 +25,6 @@ export const Primary = () => {
           <p className='text-body text-deep mb-[44px] font-lato'>{content.description}</p>
           <Button
             variant='primary'
-            size='md'
             className='w-full px-[8px] md:w-[70%] lg:py-[16px]'
             href={ONE_ON_ONE_LINKS.PRIMARY_LINK.href}
             trackingData={{

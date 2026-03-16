@@ -1,18 +1,21 @@
-import Button from '@/components/ui/Button';
+import Button, { ButtonVariant } from '@/components/ui/Button';
 import RotateOnView from '@/components/ui/RotateOnView';
 import Image from 'next/image';
 
 export interface IFooterPromo {
-  title: string;
   description: string[];
   subtitle?: string;
   link?: {
     href: string;
     label: string;
+    variant?: ButtonVariant;
   };
   button?: {
     label: string;
   };
+
+  title_top?: string;
+  title_bottom?: string;
 }
 
 interface Props extends IFooterPromo {
@@ -20,7 +23,16 @@ interface Props extends IFooterPromo {
 }
 
 export const FooterPromo = (props: Props) => {
-  const { title, description, subtitle, link, buttonClassName, button } = props;
+  const {
+    description,
+    subtitle,
+    link,
+    buttonClassName,
+    button,
+    title_top = 'I don’t guess.',
+    title_bottom = 'I calculate.',
+  } = props;
+
   return (
     <section className='bg-brand-white' id='footer-promo'>
       <div className='max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-[60px] 4xl:px-[180px] relative py-[80px] lg:py-[110px]'>
@@ -43,9 +55,10 @@ export const FooterPromo = (props: Props) => {
             </div>
           </div>
 
-          <div className='flex flex-col items-center lg:items-start text-center lg:text-left'>
-            <h1 className='font-canela font-light mb-8 md:mb-8 lg:mb-8 leading-[130%] text-brand-black text-[60px] md:text-[60px] lg:text-[60px]'>
-              {title}
+          <div className='flex flex-col  lg:items-start text-left'>
+            <h1 className='font-canela flex flex-col 3xl:flex-row  font-light mb-8 md:mb-8 lg:mb-8 leading-[130%] text-brand-black text-[60px] md:text-[60px] lg:text-[60px]'>
+              <span>{title_top}</span>
+              <span>{title_bottom}</span>
             </h1>
 
             <div className='space-y-8 md:space-y-8 lg:space-y-8 mb-8 md:mb-8 lg:mb-10'>
@@ -59,14 +72,14 @@ export const FooterPromo = (props: Props) => {
               ))}
 
               {subtitle && (
-                <p className='font-canela font-thin text-brand-deep  text-[32px]/[130%] tracking-normal'>{subtitle}</p>
+                <p className='font-canela font-light text-brand-deep  text-[32px]/[130%] tracking-normal'>{subtitle}</p>
               )}
             </div>
+
             {link && (
               <Button
-                variant='primary'
-                size='md'
-                className={`w-full md:w-[55%] ${buttonClassName}`}
+                variant={link.variant}
+                className={`!w-full !max-w-[380px] ${buttonClassName}`}
                 href={link.href}
                 trackingData={{
                   cta_name: 'footer_promo_link_cta',
@@ -82,8 +95,7 @@ export const FooterPromo = (props: Props) => {
             {button && (
               <Button
                 variant='dark'
-                size='md'
-                className={`w-full lg:w-[55%] xs:text-[12px] ${buttonClassName}`}
+                className={`!w-full !max-w-[380px] ${buttonClassName}`}
                 trackingData={{
                   cta_name: 'footer_promo_button_cta',
                   cta_text: button.label,

@@ -30,7 +30,7 @@ export default function CostOfWaitingSection() {
       : '...';
 
   return (
-    <section className='relative lg:pb-[116px] pb-[180px]'>
+    <section className='relative lg:pb-[116px] pb-[140px]'>
       <div className='max-w-[1600px] mx-auto sm:px-6 lg:px-[112px] 2xl:px-[180px] relative py-[80px] lg:py-[110px] px-4'>
         <div className='text-center'>
           {/* Top Image */}
@@ -110,7 +110,15 @@ export default function CostOfWaitingSection() {
             Investment: {priceLabel}
           </p>
 
-          <Button variant='primary' size='md' className='w-full lg:w-[30%] py-4 px-[60px] xs:text-[12px] mt-[32px]' trackingData={{ cta_name: 'sgt_cost_of_waiting_cta', cta_text: 'DECODE MY RELATIONSHIP', cta_location: 'cost_of_waiting' }}>
+          <Button
+            variant='primary'
+            className='w-full lg:w-[30%] py-4 px-[60px] mt-[32px]'
+            trackingData={{
+              cta_name: 'sgt_cost_of_waiting_cta',
+              cta_text: 'DECODE MY RELATIONSHIP',
+              cta_location: 'cost_of_waiting',
+            }}
+          >
             DECODE MY RELATIONSHIP
           </Button>
         </div>

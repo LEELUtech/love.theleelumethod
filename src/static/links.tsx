@@ -40,7 +40,7 @@ export const SECRETS_LINKS: RecordLink = {
 export const DESCODE_LINKS: RecordLink = {
   HERO_LINK: {
     label: 'Save My Seat',
-    href: '/resources/secrets',
+    href: WEBINAR_URL,
   },
   RESERVE_LINK: {
     label: 'Reserve My Spot',
@@ -52,18 +52,18 @@ export const DESCODE_LINKS: RecordLink = {
   },
   FOOTER_PROMO_LINK: {
     label: 'Save My Seat',
-    href: '/resources/secrets',
+    href: WEBINAR_URL,
   },
 };
 
 export const COMPABILITY_REPORT_LINKS: RecordLink = {
   HERO_LINK: {
     label: 'GIVE ME MY COMPATIBILITY CODE REPORT',
-    href: '#checkout',
+    href: '#checkout_form',
   },
   PROBLEM_LINK: {
     label: 'GIVE ME MY COMPATIBILITY CODE REPORT',
-    href: '#checkout',
+    href: '#checkout_form',
   },
   UNLOCK_LINK: {
     label: 'UNLOCK MY COMPATIBILITY CODE - $3.33',
@@ -71,22 +71,22 @@ export const COMPABILITY_REPORT_LINKS: RecordLink = {
   },
   FOOTER_PROMO_LINK: {
     label: 'GIVE ME MY COMPATIBILITY CODE REPORT',
-    href: '#checkout',
+    href: '#checkout_form',
   },
 };
 
 export const ABOUT_LINKS: RecordLink = {
   HERO_LINK: {
     label: 'START THE DECODE',
-    href: '#checkout',
+    href: '/decode',
   },
   FRACTURE_LINK: {
     label: 'START THE DECODE',
-    href: '#',
+    href: '/decode',
   },
   SYNTHESIS_LINK: {
     label: 'START THE DECODE',
-    href: '#',
+    href: '/decode',
   },
   STOP_GUESSING_LINK: {
     label: 'Access your Operating Manual',
@@ -97,7 +97,7 @@ export const ABOUT_LINKS: RecordLink = {
 export const PROGRAMS_LINKS: RecordLink = {
   HERO_LINK: {
     label: 'ENROLL NOW',
-    href: '#checkout',
+    href: '#pricing',
   },
   BLIND_LINK: {
     label: 'READ MORE STORIES',
@@ -105,7 +105,7 @@ export const PROGRAMS_LINKS: RecordLink = {
   },
   PROTOCOL_LINK: {
     label: 'INITIATE THE PROTOCOL',
-    href: '#checkout',
+    href: '/programs/self-guided-transformation',
   },
   SELF_GUIDED_LINK: {
     label: 'BEGIN THE PROTOCOL',
@@ -133,14 +133,14 @@ export const PROGRAMS_LINKS: RecordLink = {
   },
   FOOTER_PROMO_LINK: {
     label: 'ACCESS THE PROTOCOL',
-    href: '#',
+    href: '/programs/self-guided-transformation',
   },
 };
 
 export const HOME_LINKS: RecordLink = {
   HERO_LINK: {
     label: 'START THE DECODE',
-    href: '#',
+    href: '/decode',
   },
   READ_LINK: {
     label: 'READ MORE STORIES',
@@ -160,11 +160,11 @@ export const HOME_LINKS: RecordLink = {
   },
   DECODED_LINK: {
     label: 'Save My Seat',
-    href: '#',
+    href: WEBINAR_URL,
   },
   DECODED_LOVE_LINK: {
     label: 'Save My Seat',
-    href: '#',
+    href: WEBINAR_URL,
   },
   RELATIONSHIP_LINK: {
     label: 'VIEW THE CURRICULUM',
@@ -183,19 +183,19 @@ export const HOME_LINKS: RecordLink = {
 export const ESSENTIALS_LINKS: RecordLink = {
   HERO_LINK: {
     label: 'ENROLL NOW',
-    href: '#',
+    href: '#checkout',
   },
   INSIDE_LINK: {
     label: 'SECURE YOUR SPOT',
-    href: '#',
+    href: '#checkout',
   },
   RESULT_LINK: {
     label: 'BEGIN THE PROTOCOL',
-    href: '#',
+    href: '#checkout',
   },
   WORKED_LINK: {
     label: 'BEGIN THE PROTOCOL',
-    href: '#',
+    href: '#checkout',
   },
   COST_LINK: {
     label: 'DECODE MY RELATIONSHIP',

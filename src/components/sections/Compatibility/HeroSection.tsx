@@ -110,8 +110,7 @@ const HeroSection = () => {
             <div className='mt-6 md:mt-7 lg:mt-[32px] order-2 lg:order-4'>
               <Button
                 variant='primary'
-                size='md'
-                className='w-full lg:w-[75%] xs:text-[12px]'
+                className='w-full lg:w-[75%] '
                 href={COMPABILITY_REPORT_LINKS.HERO_LINK.href}
                 trackingData={{
                   cta_name: 'compatibility_hero_cta',
@@ -124,32 +123,12 @@ const HeroSection = () => {
             </div>
 
             {/* Subtitle */}
-            <p
-              className='
-								mt-6 md:mt-7
-								order-3 lg:order-2
-								font-canela font-thin text-brand-deep
-								leading-[1.25]
-								text-center lg:text-left
-								text-[28px]
-								md:text-[32px]
-								lg:text-[32px]
-							'
-            >
+            <p className='mt-6 md:mt-7 order-3 lg:order-2 font-canela font-thin text-brand-deep leading-[1.25] text-center lg:text-left text-[28px] md:text-[32px]'>
               Your Relationship Has a Code. Most People Never Crack It.
             </p>
 
             {/* Body */}
-            <div
-              className='
-								mt-[32px] md:mt-6
-								lg:mt-6
-								order-4 lg:order-3
-								text-center lg:text-left
-								max-w-[680px] lg:max-w-none
-								mx-auto lg:mx-0
-							'
-            >
+            <div className='mt-[32px] md:mt-6 order-4 lg:order-3 text-center lg:text-left max-w-[680px] lg:max-w-none mx-auto lg:mx-0							'>
               <p className='font-lato font-normal text-[#5A5757] leading-[150%] text-body md:text-body'>
                 Every coupling contains an algorithm that dictates how you connect, where you clash, and whether
                 you&apos;re destined to grow together or quietly unravel. Most people stumble through relationships
@@ -157,12 +136,7 @@ const HeroSection = () => {
                 the real problem was written in their numbers from day one.
               </p>
 
-              <p
-                className='mt-5 font-canela font-thin text-brand-deep leading-[120%] text-[28px]
-								text-center lg:text-left
-								md:text-[32px]
-								lg:text-[32px]'
-              >
+              <p className='mt-5 font-canela font-thin text-brand-deep leading-[120%] text-[28px] text-center lg:text-left md:text-[32px]'>
                 The question isn&apos;t whether you love each other. <br className='lg:hidden' /> It&apos;s whether you
                 are coded to build together—or collide.
               </p>

@@ -4,6 +4,7 @@ import ArcAutoOnce from '@/components/ui/ArcFlyOnce';
 import Button from '@/components/ui/Button';
 import { Section } from '@/components/ui/containers/section';
 import { formatPriceFromCents } from '@/helpers';
+import { GUIDED_BREAKTHROUGH_LINKS } from '@/static/links';
 import useProductStore from '@/store/useProductStore';
 import { GUIDED_BREAKTHROUGH } from '@/utils/constants';
 import Image from 'next/image';
@@ -98,11 +99,20 @@ export default function CostOfWaitingSection() {
           Investment: {priceLabel}
         </p>
 
-        <Button variant='primary' size='md' className='w-full lg:w-[30%] xs:text-[12px] mt-[32px]' trackingData={{ cta_name: 'gb_cost_of_waiting_cta', cta_text: 'GET PERSONALIZED SUPPORT', cta_location: 'cost_of_waiting' }}>
-          GET PERSONALIZED SUPPORT
+        <Button
+          variant='primary'
+          className='w-full max-w-[350px] mt-[32px]'
+          href={GUIDED_BREAKTHROUGH_LINKS.COST_LINK.href}
+          trackingData={{
+            cta_name: 'gb_cost_of_waiting_cta',
+            cta_text: 'GET PERSONALIZED SUPPORT',
+            cta_location: 'cost_of_waiting',
+          }}
+        >
+          {GUIDED_BREAKTHROUGH_LINKS.COST_LINK.label}
         </Button>
 
-        <p className='text-brand-primary font-lato font-normal text-[24px] leading-[150%] mt-[33px]'>
+        <p className='text-brand-primary font-lato font-normal text-[24px] leading-[150%] mt-[33px] mb-[112px]'>
           <span className='text-brand-deep'>Next cohort starts</span> March 18
         </p>
       </div>

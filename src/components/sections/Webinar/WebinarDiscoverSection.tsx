@@ -59,11 +59,7 @@ const WebinarDiscoverSection = () => {
             {/* Card 1 */}
             <motion.div
               variants={cardFade}
-              className='
-                  bg-white rounded-[32px] flex flex-col items-center
-                  p-6 md:p-7 md:text-left
-                  lg:p-8 lg:text-left
-                '
+              className='bg-white rounded-[32px] flex flex-col items-center p-6 md:p-7 lg:p-8 lg:text-left'
             >
               <div className='w-full flex justify-center md:justify-start'>
                 <div className='relative mb-5 md:mb-6 w-[140px] md:w-[160px] lg:w-[177px] aspect-[177/251]'>
@@ -77,7 +73,7 @@ const WebinarDiscoverSection = () => {
                     className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[60px] pointer-events-none'
                   />
 
-                  <div className='font-canela font-light text-[#C89F26] absolute bottom-0 left-0 text-[60px]'>1.</div>
+                  <div className='font-canela font-light text-black absolute bottom-0 left-0 text-[60px]'>1.</div>
                 </div>
               </div>
 
@@ -102,11 +98,7 @@ const WebinarDiscoverSection = () => {
             {/* Card 2 */}
             <motion.div
               variants={cardFade}
-              className='
-                  bg-white rounded-[32px] flex flex-col items-center
-                  p-6 md:p-7 md:text-left
-                  lg:p-8 lg:text-left
-                '
+              className='bg-white rounded-[32px] flex flex-col items-center p-6 md:p-7 lg:p-8 lg:text-left'
             >
               <div className='w-full flex justify-center md:justify-start'>
                 <div className='relative mb-5 md:mb-6 w-[140px] md:w-[160px] lg:w-[177px] aspect-[177/251]'>
@@ -120,7 +112,7 @@ const WebinarDiscoverSection = () => {
                     className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[60px] pointer-events-none'
                   />
 
-                  <div className='font-canela font-light text-[#C89F26] absolute bottom-0 left-0 text-[60px]'>2.</div>
+                  <div className='font-canela font-light text-black absolute bottom-0 left-0 text-[60px]'>2.</div>
                 </div>
               </div>
 
@@ -145,11 +137,7 @@ const WebinarDiscoverSection = () => {
             {/* Card 3 */}
             <motion.div
               variants={cardFade}
-              className='
-                  bg-white rounded-[32px] flex flex-col items-center
-                  p-6 md:p-7 md:text-left
-                  lg:p-8 lg:text-left
-                '
+              className='bg-white rounded-[32px] flex flex-col items-center p-6 md:p-7 lg:p-8 lg:text-left'
             >
               <div className='w-full flex justify-center md:justify-start'>
                 <div className='relative mb-5 md:mb-6 w-[140px] md:w-[160px] lg:w-[177px] aspect-[177/251]'>
@@ -163,7 +151,7 @@ const WebinarDiscoverSection = () => {
                     className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[60px] pointer-events-none'
                   />
 
-                  <div className='font-canela font-light text-[#C89F26] absolute bottom-0 left-0 text-[60px]'>3.</div>
+                  <div className='font-canela font-light text-black absolute bottom-0 left-0 text-[60px]'>3.</div>
                 </div>
               </div>
 

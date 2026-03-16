@@ -177,7 +177,7 @@ export const Pricing = () => {
           PRICING STRUCTURE
         </h2>
 
-        <ul className='flex flex-col gap-[100px] justify-center lg:flex-row lg:gap-[24px] pb-[110px]'>
+        <ul className='flex flex-col gap-[55px] justify-center lg:flex-row lg:gap-[24px] pb-[110px]'>
           {content.map((item, i) => {
             const { id, title, subtitle, description, features, whyList, link, note, investment, perSession, save } =
               item;

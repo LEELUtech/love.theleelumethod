@@ -260,7 +260,8 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
     <Section
       backgroundImage='/images/bg/checkout_bg.png'
       sectionClasses='bg-white py-[37px] md:py-[56px] lg:py-[37px]'
-      wrapperClasses='lg:top-[-200px] !pb-0'
+      wrapperClasses='lg:top-[-200px] !pb-0 lg:pt-[70px]'
+      id='checkout'
     >
       <div className=''>
         <div className='relative mx-auto rounded-[32px] bg-white px-6 py-8 md:px-10 md:py-10 lg:px-[104px] lg:py-[51px] shadow-[0px_4px_20px_0px_rgba(0,0,0,0.1)]'>
@@ -276,11 +277,11 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
                 Order now
               </p>
 
-              <h2 className='mt-[23px] font-canela font-thin text-brand-black text-[32px] md:text-[52px] lg:text-[54px] leading-[105%] text-center md:text-left'>
+              <h2 className='mt-[23px] font-canela font-thin text-brand-black-100 text-[48px] lg:text-[60px] leading-[105%] text-center md:text-left'>
                 {productLoading ? 'Loading...' : product?.title}
               </h2>
 
-              <p className='mt-4 font-lato text-body leading-[1.55] text-[#41444E] text-center md:text-left'>
+              <p className='mt-4 px-4 md:px-0 font-lato text-body leading-[1.55] text-[#41444E] text-center md:text-left'>
                 {productLoading ? 'Loading...' : product?.description}
               </p>
             </div>

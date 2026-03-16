@@ -2,8 +2,8 @@ import React from 'react';
 import Image from 'next/image';
 import ArcAutoOnce from '@/components/ui/ArcFlyOnce';
 import Button from '@/components/ui/Button';
-import { WEBINAR_URL } from '@/utils/constants';
 import RotateOnView from '@/components/ui/RotateOnView';
+import { HOME_LINKS } from '@/static/links';
 
 export function MasterclassSection() {
   return (
@@ -49,8 +49,8 @@ export function MasterclassSection() {
               </li>
             </ul>
           </div>
-          <Button variant='dark' size='md' className='w-full lg:w-[60%] xs:text-[12px]' href={WEBINAR_URL}>
-            Save My Seat
+          <Button variant='dark' className='w-full max-w-[340px]' href={HOME_LINKS.DECODED_LINK.href}>
+            {HOME_LINKS.DECODED_LINK.label}
           </Button>
         </div>
         <div className='order-2 md:order-2 flex pt-4 md:pt-0 lg:pt-0 justify-center w-full'>

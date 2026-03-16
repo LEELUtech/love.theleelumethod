@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 const ThePivotAndAccelerantSection = () => {
   return (
-    <Section>
+    <Section wrapperClasses='py-[64px]'>
       <div>
         {/* The Pivot Section */}
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-[120px] md:gap-[80px] lg:gap-40 items-center mb-[121px] lg:mb-[200px]'>

@@ -55,7 +55,6 @@ export function MasterclassSection() {
           </div>
           <Button
             variant='primary'
-            size='md'
             className='w-full md:w-[60%]'
             href={WEBINAR_URL}
             trackingData={{

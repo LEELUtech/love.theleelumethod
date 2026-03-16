@@ -10,6 +10,7 @@ const mechanics = [
     id: 1,
     title: 'Root Cause Extraction',
     icon: '/icons/ornament_12.svg',
+    size: 'lg',
     description:
       'I bring him into the room—with you, separately, or both. We decode the dynamic from both sides to accelerate alignment.',
   },
@@ -17,22 +18,25 @@ const mechanics = [
     id: 2,
     title: 'Joint Session Capability',
     icon: '/icons/ornament_7.svg',
+    size: 'lg',
     description:
       'I bring him into the room—with you, separately, or both. We decode the dynamic from both sides to accelerate alignment.',
   },
   {
     id: 3,
     title: 'Real-Time Private Access',
+    size: 'lg',
     icon: '/icons/ornament_8.svg',
     description: `You don't wait for scheduled calls. You have direct access via Voxer/WhatsApp for 30 days. This means I review the exact message you’re about to send—or the one he just sent—and tell you precisely what to say next and why.`,
   },
   {
     id: 4,
     title: 'Four Private Sessions in 30 Days',
+    size: 'lg',
     icon: '/icons/ornament_18.svg',
     description: `One 90-minute diagnostic plus three 60-minute course corrections. Use them for crisis intervention, rebuilding strategy, or separation navigation—whatever your situation demands.`,
   },
-];
+] as const;
 
 export default function MechanicsDeliverablesSection() {
   return (
@@ -58,7 +62,16 @@ export default function MechanicsDeliverablesSection() {
             ))}
           </div>
 
-          <Button className='mt-[90px] w-full max-w-[392px]' href={VIP_LINKS.MECHANICS_LINK.href} trackingData={{ cta_name: 'vip_mechanics_cta', cta_text: VIP_LINKS.MECHANICS_LINK.label, cta_target_url: VIP_LINKS.MECHANICS_LINK.href, cta_location: 'mechanics' }}>
+          <Button
+            className='mt-[90px] w-full max-w-[392px]'
+            href={VIP_LINKS.MECHANICS_LINK.href}
+            trackingData={{
+              cta_name: 'vip_mechanics_cta',
+              cta_text: VIP_LINKS.MECHANICS_LINK.label,
+              cta_target_url: VIP_LINKS.MECHANICS_LINK.href,
+              cta_location: 'mechanics',
+            }}
+          >
             {VIP_LINKS.MECHANICS_LINK.label}
           </Button>
         </div>
