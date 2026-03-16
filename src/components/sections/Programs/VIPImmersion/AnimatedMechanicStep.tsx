@@ -9,9 +9,15 @@ interface Props {
   title: string;
   icon: string;
   description: string;
+  size?: 'md' | 'lg';
 }
 
-export default function AnimatedMechanicStep({ id, icon, title, description }: Props) {
+export default function AnimatedMechanicStep({ id, icon, title, description, size = 'md' }: Props) {
+  const imgClass = size === 'md' ? 'w-[64px] h-[64px]' : 'w-[87px] h-[87px]';
+  const imgSize = size === 'md' ? 64 : 87;
+  const imgWrapperClass = size === 'md' ? 'w-[90px] h-[90px] -top-10' : 'w-[177px] h-[210px] -top-[105px]';
+  const titleClass = size === 'md' ? 'mt-[46px]' : 'mt-[70px]';
+
   return (
     <motion.div
       className={`flex flex-col items-center h-full`}
@@ -26,7 +32,7 @@ export default function AnimatedMechanicStep({ id, icon, title, description }: P
     >
       <div className='relative h-full rounded-[20px] px-[20px] pb-6 bg-white box-shadow-[0px 10px 20px rgba(0, 0, 0, 0.05)]'>
         <div
-          className='w-[90px] h-[90px] rounded-full flex items-center justify-center absolute -top-10 right-1/2 translate-x-1/2'
+          className={`${imgWrapperClass} rounded-full flex items-center justify-center absolute -top-10 right-1/2 translate-x-1/2`}
           style={{
             backgroundImage: "url('/images/programs/self-guided-transformation/mechanic_icon.png')",
             backgroundSize: 'cover',
@@ -34,12 +40,14 @@ export default function AnimatedMechanicStep({ id, icon, title, description }: P
             backgroundPosition: 'center',
           }}
         >
-          <div className='w-[64px] h-[64px]'>
-            <Image src={icon} alt={title} width={64} height={64} className='object-cover w-full h-full' />
+          <div className={imgClass}>
+            <Image src={icon} alt={title} width={imgSize} height={imgSize} className='object-cover w-full h-full' />
           </div>
         </div>
 
-        <h2 className='mt-[46px] font-canela text-[60px]/[71px] mb-7 font-light text-[#C89F26]'>{id}.</h2>
+        <h2 className={`relative z-50 font-canela text-[60px]/[71px] mb-7 font-light text-[#C89F26] ${titleClass}`}>
+          {id}.
+        </h2>
         <h3 className='font-canela text-[32px]/[126%] mb-4 font-light text-brand-deep'>{title}</h3>
 
         <p className='font-lato font-medium text-[17px]/[26px] tracking-[3%] text-[#5A5757]'>{description}</p>

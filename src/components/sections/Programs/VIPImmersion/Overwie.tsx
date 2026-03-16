@@ -32,7 +32,7 @@ const Card = (props: CardProps) => {
       </div>
 
       <Flex vertical className='flex-1'>
-        <h4 className='text-[32px]/[120%] text-left font-canela font-light mb-7 text-brand-deep'>{title}</h4>
+        <h4 className='text-[48px]/[120%] text-left font-canela font-light mb-7 text-brand-deep'>{title}</h4>
 
         {subtitle && (
           <h5 className='text-[32px]/[120%] text-left font-canela font-light mb-6 text-brand-deep'>{subtitle}</h5>
