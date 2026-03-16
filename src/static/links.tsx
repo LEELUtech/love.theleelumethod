@@ -183,19 +183,19 @@ export const HOME_LINKS: RecordLink = {
 export const ESSENTIALS_LINKS: RecordLink = {
   HERO_LINK: {
     label: 'ENROLL NOW',
-    href: '#',
+    href: '#checkout',
   },
   INSIDE_LINK: {
     label: 'SECURE YOUR SPOT',
-    href: '#',
+    href: '#checkout',
   },
   RESULT_LINK: {
     label: 'BEGIN THE PROTOCOL',
-    href: '#',
+    href: '#checkout',
   },
   WORKED_LINK: {
     label: 'BEGIN THE PROTOCOL',
-    href: '#',
+    href: '#checkout',
   },
   COST_LINK: {
     label: 'DECODE MY RELATIONSHIP',
