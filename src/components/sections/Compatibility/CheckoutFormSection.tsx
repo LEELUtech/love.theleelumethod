@@ -126,44 +126,23 @@ export default function CheckoutFormSection() {
 
   const buttonDisabled = !clientSecret || isStripeInitializing || !payState.canPay || payState.paying;
 
-<<<<<<< HEAD
-	React.useEffect(() => {
-		setCtx(getClientContext());
-	}, []);
-
-=======
-  // Initialize client context once after mount
   React.useEffect(() => {
     setCtx(getClientContext());
   }, []);
 
-  // Track if we've had a clientSecret (for UI state)
->>>>>>> 247310c (fix:decode page)
   React.useEffect(() => {
     if (clientSecret) setHadSecretOnce(true);
   }, [clientSecret]);
 
-<<<<<<< HEAD
-=======
-  // Reset if product type changed
->>>>>>> 247310c (fix:decode page)
   React.useEffect(() => {
     const expectedKey = `create:${productId}`;
     if (intentKey && intentKey !== expectedKey) reset();
   }, [intentKey, productId, reset]);
 
-<<<<<<< HEAD
-=======
-  // Fetch product data on mount
->>>>>>> 247310c (fix:decode page)
   React.useEffect(() => {
     if (!product && !productLoading) fetchProduct(productId);
   }, [product, productLoading, fetchProduct, productId]);
 
-<<<<<<< HEAD
-=======
-  // Auto-create PaymentIntent when ready
->>>>>>> 247310c (fix:decode page)
   React.useEffect(() => {
     if (!product || productLoading) return;
 
@@ -188,29 +167,17 @@ export default function CheckoutFormSection() {
     }).catch(() => {});
   }, [product, productLoading, productId, intentKey, clientSecret, status, createIntent, reset, ctx]);
 
-<<<<<<< HEAD
-=======
-  // Sync checkout errors to payment state
->>>>>>> 247310c (fix:decode page)
   React.useEffect(() => {
     if (!checkoutError) return;
     setPayState((prev) => ({ ...prev, error: checkoutError }));
   }, [checkoutError]);
 
-<<<<<<< HEAD
-=======
-  // Cleanup on unmount
->>>>>>> 247310c (fix:decode page)
   React.useEffect(() => {
     return () => {
       reset();
     };
   }, [reset]);
 
-<<<<<<< HEAD
-=======
-  // Lead capture
->>>>>>> 247310c (fix:decode page)
   const captureLeadInternal = React.useCallback(
     async (opts?: { force?: boolean }) => {
       const email = (form.email || '').trim().toLowerCase();
@@ -258,10 +225,6 @@ export default function CheckoutFormSection() {
     [form.email, intentId, intentToken, ctx],
   );
 
-<<<<<<< HEAD
-=======
-  // Catch-up: if PI/token appeared later - send again (once) with PI/token
->>>>>>> 247310c (fix:decode page)
   React.useEffect(() => {
     const email = (form.email || '').trim().toLowerCase();
     if (!email) return;
@@ -270,10 +233,6 @@ export default function CheckoutFormSection() {
     captureLeadInternal({ force: true }).catch(() => {});
   }, [intentId, intentToken, form.email, captureLeadInternal]);
 
-<<<<<<< HEAD
-=======
-  // Form field updater
->>>>>>> 247310c (fix:decode page)
   const setField = React.useCallback(<K extends keyof CompatibilityCheckoutForm>(key: K, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   }, []);
@@ -302,10 +261,6 @@ export default function CheckoutFormSection() {
     router.push('/success');
   }, [router, markSuccess]);
 
-<<<<<<< HEAD
-=======
-  // Validates form before payment
->>>>>>> 247310c (fix:decode page)
   const validateOnSubmit = React.useCallback((data: CompatibilityCheckoutForm) => {
     const next: FormErrors = {};
 
@@ -318,10 +273,6 @@ export default function CheckoutFormSection() {
     return next;
   }, []);
 
-<<<<<<< HEAD
-=======
-  // Handles payment button click
->>>>>>> 247310c (fix:decode page)
   const onPayClick = React.useCallback(async () => {
     setSubmitAttempted(true);
 
@@ -350,12 +301,12 @@ export default function CheckoutFormSection() {
   );
 
   return (
-    <section id='checkout' className='relative bg-white overflow-visible lg:h-[742px] lg:mb-[200px] py-[80px] lg:py-0'>
+    <section id='checkout' className='relative bg-white overflow-visible lg:h-[742px] py-[80px] lg:py-0'>
       <div className='absolute inset-0 z-0'>
         <Image src='/images/bg/checkout_bg.png' alt='Checkout bg' fill quality={100} />
       </div>
 
-      <div id='checkout_form' className='container relative z-10 lg:top-[-100px]'>
+      <div className='container relative z-10 lg:top-[-100px]'>
         <div className='relative mx-auto rounded-[32px] bg-white px-6 py-8 md:px-10 md:py-10 lg:px-[104px] lg:py-[51px] shadow-[0px_4px_20px_0px_rgba(0,0,0,0.1)]'>
           {isStripeInitializing ? <CheckoutSectionLoader text='Initializing payment...' /> : null}
 
@@ -487,7 +438,7 @@ export default function CheckoutFormSection() {
                 disabled={buttonDisabled}
                 loading={payState.paying}
                 fullWidth
-                className='mt-[24px] md:mt-10 lg:mt-[80px] xs:px-0 md:px-6'
+                className='mt-[24px] md:mt-10 lg:mt-[80px] xs:px-0 xs:text-[12px] md:px-6 md:text-[15px]'
                 trackingData={{
                   cta_name: 'complete_purchase',
                   cta_text: 'UNLOCK MY COMPATIBILITY CODE',

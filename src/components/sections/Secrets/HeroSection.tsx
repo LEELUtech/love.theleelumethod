@@ -145,14 +145,6 @@ export default function SecretsHeroSection() {
               spellCheck={false}
               className='w-full mt-4 rounded-md border border-[#E3D6CF] bg-white px-4 py-3 text-base text-[#1A0F0A] placeholder:text-[#5A5757] placeholder:text-lg outline-none'
             />
-            <input
-              type='email'
-              name='email'
-              placeholder='Email Address'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className='w-full mt-4 rounded-md border border-[#E3D6CF] bg-white px-4 py-3 text-base text-[#1A0F0A] placeholder:text-[#5A5757] placeholder:text-lg outline-none'
-            />
 
             <Button
               variant='primary'
