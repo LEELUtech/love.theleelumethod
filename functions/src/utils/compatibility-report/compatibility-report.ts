@@ -51,7 +51,6 @@ export async function handleCompatibilityReport(pi: Stripe.PaymentIntent) {
 
   console.log("Processing compatibility report for:", email);
 
-  // Вычисляем совместимость
   const compatibility = calculateCompatibility(birthDate1, birthDate2);
 
   console.log("Compatibility calculated:", {

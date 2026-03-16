@@ -183,7 +183,7 @@ function purchasedTagDelta(kind: CalendlyEventKind): { add: string[]; remove: st
   const otherTierTags = Object.values(tierTag).filter((t) => t !== tierTag[kind]);
 
   return {
-    add: ["session_purchased", tierTag[kind]],
+    add: ["session_purchased", tierTag[kind], "p_done"],
     remove: otherTierTags,
   };
 }
