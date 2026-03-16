@@ -27,7 +27,12 @@ const CompatibilityReport = () => {
       <ProblemSolutionSection />
       <CoreValueSection />
       <CheckoutFormSectionLazy />
-      <FooterPromo {...footerPromoContent} buttonClassName='!px-2 md:w-[70%]' />
+
+      <FooterPromo
+        {...footerPromoContent}
+        wrapperClassName='mt-[100px] lg:mt-[220px]'
+        buttonClassName='!px-2 md:w-[70%]'
+      />
 
       <FooterLayout className='pb-[140px]' />
     </main>

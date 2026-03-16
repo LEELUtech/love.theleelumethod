@@ -214,8 +214,7 @@ const Card = ({ size, title, description, listTitle, list, link, id, for: forTex
       <div>
         <Button
           variant='primary'
-          size='md'
-          className='w-full xs:text-[12px]'
+          className='w-full'
           href={link.href}
           trackingData={{
             cta_name: 'programs_choose_path_cta',

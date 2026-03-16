@@ -76,6 +76,7 @@ export default function SecretsHeroSection() {
     <section
       className='relative bg-cover bg-center bg-no-repeat'
       style={{ backgroundImage: 'url(/images/bg/sand-bg.jpg)' }}
+      id='hero'
     >
       <Header />
 
