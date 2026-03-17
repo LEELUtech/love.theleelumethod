@@ -6,6 +6,9 @@ import {
   markWebinarAttendedLive,
   markWebinarAttendedReplay,
 } from "../lib/zoho-scoring";
+import { db } from "../configs/firebase";
+
+const WEBINAR_DISCOUNT_HOURS = 48;
 
 const ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT");
 const ZOHO_CLIENT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_ID_LILYCHYSTOFAT");
@@ -240,6 +243,11 @@ export const ewebinarWebhook = onRequest(
           const pct = isReplay ? (replayPct ?? totalPct) : totalPct;
 
           if (pct !== null && pct >= 80) {
+            const expiresAt = new Date(Date.now() + WEBINAR_DISCOUNT_HOURS * 60 * 60 * 1000);
+            const docId = email.replace(/[^a-z0-9]/g, "_");
+            await db.collection("webinar_discounts").doc(docId).set({ email, expires_at: expiresAt });
+            console.log("ewebinarWebhook: webinar discount set", { email, expiresAt });
+
             if (isReplay) {
               await markWebinarAttendedReplay(email);
             } else {

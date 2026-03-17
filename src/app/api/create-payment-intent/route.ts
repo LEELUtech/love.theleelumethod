@@ -17,6 +17,7 @@ const ALLOWED_PRODUCT_TYPES = new Set([
   'compatibility_report',
   'guided_breakthrough',
   'protocol_essentials',
+  'protocol_essentials_webinar',
   'vip_immersion',
 ]);
 
