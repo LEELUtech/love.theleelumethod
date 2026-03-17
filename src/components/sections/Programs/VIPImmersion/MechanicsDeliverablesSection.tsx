@@ -56,7 +56,7 @@ export default function MechanicsDeliverablesSection() {
             This is the ER. We stop the bleeding immediately.
           </p>
 
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[80px] lg:gap-5 items-stretch'>
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[120px] lg:gap-5 items-stretch'>
             {mechanics.map((item) => (
               <AnimatedMechanicStep key={item.id} {...item} />
             ))}

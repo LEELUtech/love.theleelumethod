@@ -95,7 +95,7 @@ const VideoContent = () => (
           <Image src='/leelu_logo.svg' alt='' fill className='object-contain p-3 filter brightness-0 invert' />
         </div>
 
-        <p className='text-center text-[18px] font-light'>The Relationship Protocol Workbook</p>
+        <p className='text-center font-canela text-[18px] font-light'>The Relationship Protocol Workbook</p>
       </div>
     </div>
   </div>

@@ -89,7 +89,7 @@ const TriageSection = () => {
       <div className='absolute inset-0 -z-10'>
         <Image src='/images/landing/triage_section_bg.png' alt='' fill priority quality={100} sizes='100vw' />
       </div>
-      <div className='container w-full px-4'>
+      <div className='container w-full px-1'>
         <p className='font-canela text-[42px]/[126%] lg:text-[60px] font-thin text-brand-deep text-center mb-[200px] md:mb-[300px] lg:mb-[400px]'>
           We fought for years and tried everything. A friend referred us to Lily. She ran our codes, showing us exactly
           where we clash, where we naturally align, and how to navigate our differences. Words cannot describe the
@@ -224,41 +224,45 @@ const TriageSection = () => {
             The Relationship TRIAGE
           </h2>
 
-          <div className='mt-12 lg:mt-[100px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch justify-items-center'>
-            {cards.map((card, i) => (
-              <div
-                key={i}
-                className={`
-                  max-w-[392px] w-full rounded-[24px] bg-brand-white backdrop-blur-md
-                  px-[22.5px] py-[47px] shadow-[0_4px_20px_rgba(0,0,0,0.05)]
+          <div className='mt-12 lg:mt-[100px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-2 xl:gap-6 items-stretch justify-items-center'>
+            {cards.map((card, i) => {
+              const containerClass = i === 1 ? 'lg:h-[672px]' : 'lg:h-[658px]';
+
+              return (
+                <div
+                  key={i}
+                  className={`
+                  max-w-[392px] w-full rounded-[24px] bg-brand-white backdrop-blur-md px-[22.5px] lg:px-2
+                  xl:px-[22.5px] py-[47px] shadow-[0_4px_20px_rgba(0,0,0,0.05)]
                   flex flex-col
-                  ${card.raised ? 'lg:-translate-y-10' : ''}
+                  ${card.raised ? 'lg:-translate-y-10' : ''} ${containerClass}
                   ${i === 2 ? 'md:col-span-2 md:max-w-[820px] lg:col-span-1 lg:max-w-[392px]' : ''}
                 `}
-              >
-                <h2 className='text-center text-[38px] lg:text-[40px] font-thin text-brand-deep mb-[34px]'>
-                  {card.title} <span className='font-light'>{card.highlight}</span>
-                </h2>
+                >
+                  <h2 className='text-center text-[38px] lg:text-[40px] font-thin text-brand-deep mb-8 lg:mb-[47px]'>
+                    {card.title} <span className='font-light'>{card.highlight}</span>
+                  </h2>
 
-                <p className='text-[20px] font-normal font-canela mb-[20px]'>{card.subtitle}</p>
+                  <p className='text-[20px] font-normal font-canela mb-[20px]'>{card.subtitle}</p>
 
-                {card.paragraphs.map((p, idx) =>
-                  typeof p === 'string' ? (
-                    <p key={idx} className='font-lato font-normal text-[15px] text-[#41444E] mb-[20px]'>
-                      {p}
-                    </p>
-                  ) : (
-                    <p key={idx} className='font-lato font-normal text-[15px] text-[#41444E] mb-[20px]'>
-                      {p.bold && <span className='font-semibold'>{p.bold}</span>} {p.text}
-                    </p>
-                  ),
-                )}
+                  {card.paragraphs.map((p, idx) =>
+                    typeof p === 'string' ? (
+                      <p key={idx} className='font-lato font-normal text-[15px] text-[#41444E] mb-6'>
+                        {p}
+                      </p>
+                    ) : (
+                      <p key={idx} className='font-lato font-normal text-[15px] text-[#41444E] mb-6'>
+                        {p.bold && <span className='font-semibold'>{p.bold}</span>} {p.text}
+                      </p>
+                    ),
+                  )}
 
-                <Button variant='dark' className='w-full mt-auto' href={card.button.href}>
-                  {card.button.label}
-                </Button>
-              </div>
-            ))}
+                  <Button variant='dark' className='w-full mt-auto px-4' href={card.button.href}>
+                    {card.button.label}
+                  </Button>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

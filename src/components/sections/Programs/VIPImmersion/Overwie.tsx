@@ -20,6 +20,8 @@ interface CardProps extends IVIPImmersionOverview {} // eslint-disable-line @typ
 const Card = (props: CardProps) => {
   const { id, title, subtitle, description, list, isReversed, imgSrc, additional_list, subtitle_bottom } = props;
 
+  const titleClasses = id === 1 ? 'md:mt-[60px] lg:mt-[148px]' : 'md:mt-[50px] lg:mt-[106px]';
+
   return (
     <article
       key={id}
@@ -31,7 +33,7 @@ const Card = (props: CardProps) => {
         </div>
       </div>
 
-      <Flex vertical className='flex-1'>
+      <div className={`col flex-1 ${titleClasses}`}>
         <h4 className='text-[48px]/[120%] text-left font-canela font-light mb-7 text-brand-deep'>{title}</h4>
 
         {subtitle && (
@@ -49,7 +51,7 @@ const Card = (props: CardProps) => {
             {subtitle_bottom}
           </h4>
         )}
-      </Flex>
+      </div>
     </article>
   );
 };
@@ -62,7 +64,7 @@ export const VIPImmersionOverview = ({ overviews }: Props) => {
   return (
     <Section
       backgroundImage='/images/programs/self-guided-transformation/mechanics_section_bg.png'
-      wrapperClasses='py-8 lg:py-0'
+      wrapperClasses='py-[80px]'
     >
       <Flex vertical gap={120}>
         {overviews.map((overview) => (

@@ -11,7 +11,7 @@ const testimonials = [
 
 export default function TestimonialsSection() {
   return (
-    <section id='stories' className='relative bg-[#1A1A1A] py-16 md:py-[51px] overflow-hidden md:pb-[180px]'>
+    <section id='stories' className='relative bg-[#1A1A1A] pb-[100px] py-16 md:py-[51px] overflow-hidden md:pb-[180px]'>
       <div className='container px-4'>
         {/* Masonry */}
         <div className='columns-1 md:columns-2 lg:columns-3 gap-6 md:gap-8'>
