@@ -36,8 +36,8 @@ const HeroSection = ({ title }: HeroSectionProps) => {
             <Image src='/leelu_logo.svg' alt='Lily Chystofat Logo' fill className='object-contain' priority />
           </span>
           <div className='whitespace-nowrap'>
-            <span className='font-medium tracking-tight mr-1'>LILY</span>
-            <span className='font-light'>CHYSTOFAT</span>
+            <span className='font-medium tracking-tight mr-1'>THE LEELU</span>
+            <span className='font-light'>METHOD</span>
           </div>
         </div>
       </div>
@@ -56,7 +56,7 @@ const HeroSection = ({ title }: HeroSectionProps) => {
           </p>
 
           <Button
-            className='mt-[24px] md:mt-[28px] xs:px-8 xs:text-[11px] md:px-12 md:text-[13px]'
+            className='mt-[24px] md:mt-[28px] xs:px-8 md:px-12'
             trackingData={{
               cta_name: 'quiz_result_secure_seat_cta',
               cta_text: 'SECURE YOUR SEAT TO RESET THE DYNAMIC',

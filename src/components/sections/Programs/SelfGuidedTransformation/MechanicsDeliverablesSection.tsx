@@ -9,7 +9,7 @@ import { Flex } from 'antd';
 import { ProgramsReceive } from '../components/receive';
 import { selfGuidedModuleData, selfGuidedOverviewData } from './static';
 import { ProgramOverview } from '../components/overview';
-import { OpacityTitleOrnamentIC } from '@/components/icons';
+import { LeftTitleOrnamentIC, OpacityTitleOrnamentIC } from '@/components/icons';
 import { Section } from '@/components/ui/containers/section';
 
 const content = {
@@ -86,7 +86,7 @@ const VideoContent = () => (
     />
 
     <div className='absolute -bottom-[50%] left-1/2 -translate-x-1/2 w-full flex justify-center'>
-      <OpacityTitleOrnamentIC stopColor='#ffffff' />
+      <LeftTitleOrnamentIC stopColor='#ffffff' />
     </div>
 
     <div className='absolute top-[62%] left-1/2 -translate-x-1/2 translate-y-1/2 z-20'>
@@ -103,8 +103,12 @@ const VideoContent = () => (
 
 export default function MechanicsDeliverablesSection() {
   const { phase, workbook } = content;
+
   return (
-    <Section backgroundImage='/images/programs/self-guided-transformation/mechanics_section_bg.png'>
+    <Section
+      backgroundImage='/images/programs/self-guided-transformation/mechanics_section_bg.png'
+      wrapperClasses='py-[80px] lg:py-[120px]'
+    >
       <div>
         <div className='text-center mb-[90px] md:mb-[150px]'>
           <ProgramsReceive {...selfGuidedModuleData} />

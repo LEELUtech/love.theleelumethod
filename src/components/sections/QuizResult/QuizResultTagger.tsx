@@ -1,17 +1,17 @@
-"use client";
-import { useEffect } from "react";
-import { getEmailFromLS } from "@/lib/tracking/localEmail";
-import { updateCampaignTags } from "@/lib/campaigns";
+'use client';
+import { useEffect } from 'react';
+import { getEmailFromLS } from '@/lib/tracking/localEmail';
+import { updateCampaignTags } from '@/lib/campaigns';
 
 const typeToProfileTag: Record<string, string> = {
-  brokenHeartStorm: "q_pf_over",
-  lonelyHopeLoop: "q_pf_drift",
-  silentBreakupRelationship: "q_pf_karmic",
-  endlessWaitingRoom: "q_pf_proj",
+  brokenHeartStorm: 'q_pf_over',
+  lonelyHopeLoop: 'q_pf_drift',
+  silentBreakupRelationship: 'q_pf_karmic',
+  endlessWaitingRoom: 'q_pf_proj',
 };
 
 const ALL_PROFILE_TAGS = Object.values(typeToProfileTag);
-const Q_EMAIL3_TRIGGER = "q_email3_trigger";
+const Q_EMAIL3_TRIGGER = 'q_email3_trigger';
 
 export default function QuizResultTagger({ type }: { type: string }) {
   useEffect(() => {
@@ -27,11 +27,11 @@ export default function QuizResultTagger({ type }: { type: string }) {
       await Promise.all([
         updateCampaignTags(email, {
           remove: otherProfileTags,
-          add: ["q_done", profileTag, Q_EMAIL3_TRIGGER],
+          add: ['q_done', profileTag, Q_EMAIL3_TRIGGER],
         }),
-        fetch("/api/quiz-completed", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+        fetch('/api/quiz-completed', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email }),
         }),
       ]);

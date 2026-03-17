@@ -140,8 +140,7 @@ export default function RelationshipProtocolTiers() {
 
               <Button
                 variant='dark'
-                size='md'
-                className='w-full xs:text-[12px] mt-auto'
+                className='w-full mt-auto'
                 trackingData={{
                   cta_name: 'landing_tiers_begin_protocol_cta',
                   cta_text: 'BEGIN PROTOCOL',
@@ -199,8 +198,7 @@ export default function RelationshipProtocolTiers() {
 
               <Button
                 variant='dark'
-                size='md'
-                className='w-full xs:text-[12px] mt-auto'
+                className='w-full mt-auto'
                 trackingData={{
                   cta_name: 'landing_tiers_get_diagnosed_cta',
                   cta_text: 'GET DIAGNOSED',
@@ -233,8 +231,7 @@ export default function RelationshipProtocolTiers() {
 
               <Button
                 variant='dark'
-                size='md'
-                className='w-full xs:text-[12px] mt-auto'
+                className='w-full mt-auto'
                 trackingData={{
                   cta_name: 'landing_tiers_apply_vip_cta',
                   cta_text: 'APPLY FOR VIP',
@@ -301,8 +298,7 @@ function MobileTierCard({
 
       <Button
         variant='dark'
-        size='md'
-        className='w-full xs:text-[12px] mt-[22px]'
+        className='w-full mt-[22px]'
         trackingData={{
           cta_name: 'landing_tiers_mobile_cta',
           cta_text: buttonText,

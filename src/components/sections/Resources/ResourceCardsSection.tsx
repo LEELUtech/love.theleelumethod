@@ -81,7 +81,6 @@ export function ResourceCardsSection() {
                 {item.ctaType === 'secrets' ? (
                   <Button
                     variant='primary'
-                    size='md'
                     className='w-full py-[12px]'
                     href={item.href}
                     trackingData={{
@@ -96,7 +95,6 @@ export function ResourceCardsSection() {
                 ) : item.ctaType === 'compatibility' ? (
                   <Button
                     variant='primary'
-                    size='md'
                     className='w-full py-[12px]'
                     href={item.href}
                     trackingData={{
@@ -111,7 +109,6 @@ export function ResourceCardsSection() {
                 ) : item.ctaType === 'quiz' ? (
                   <Button
                     variant='primary'
-                    size='md'
                     className='w-full py-[12px]'
                     href={item.href}
                     target='_blank'

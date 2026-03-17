@@ -15,7 +15,7 @@ const AboutPage = () => {
       <TheSynthesisSection />
       <CredentialsSection />
       <StopGuessingSection />
-      <FooterLayout />
+      <FooterLayout className='pt-[64px] py-[122px]' />
     </main>
   );
 };

@@ -36,13 +36,7 @@ const WebinarContentSection = () => {
         <div className='flex flex-col md:flex-row items-center justify-between mb-[300px] gap-12 md:gap-10 lg:gap-20'>
           {/* IMAGE */}
           <div className='w-full md:w-1/2 flex justify-center'>
-            <div
-              className='
-				relative overflow-hidden rounded-[60px]
-				w-full max-w-[360px] h-[459px]
-				lg:max-w-none lg:w-[496px] lg:h-[833px]
-			'
-            >
+            <div className='relative overflow-hidden rounded-[60px] w-full max-w-[360px] h-[459px] lg:max-w-none lg:w-[496px] lg:h-[833px]'>
               <Image
                 src='/images/beautiful-asian-woman-wrapped-blanket.png'
                 alt=''
@@ -63,21 +57,7 @@ const WebinarContentSection = () => {
               &quot;What&apos;s wrong with me?&quot;
             </h2>
 
-            <div
-              className='
-				font-lato font-medium text-[#5A5757] tracking-[0.02em]
-
-				/* MOBILE */
-				text-[17px]/[22px]
-
-				/* TABLET */
-				md:leading-[24px]
-
-				/* DESKTOP */
-				lg:leading-[26px]
-				lg:tracking-[0.03em]
-			'
-            >
+            <div className='font-lato font-medium text-[#5A5757] tracking-[0.02em] text-[17px]/[22px] md:leading-[26px] lg:tracking-[0.03em]'>
               <p>
                 You&apos;ve done the work. You&apos;ve tried communication, compromise, patience. And you still ended up
                 alone or in a relationship that slowly eroded your sense of self.
@@ -100,23 +80,7 @@ const WebinarContentSection = () => {
 
               <p className='mt-4 md:mt-5 lg:mt-6'>If any of this resonates, this masterclass is for you.</p>
 
-              <p
-                className='
-					font-thin font-canela text-brand-deep leading-[110%]
-
-					/* MOBILE */
-					text-[32px]
-					mt-10
-
-					/* TABLET */
-					md:text-[24px]
-					md:mt-10
-
-					/* DESKTOP */
-					lg:text-[32px]
-					lg:mt-[60px]
-				'
-              >
+              <p className=' font-thin font-canela text-brand-deep leading-[110%] text-[32px] mt-10 md:text-[24px] lg:text-[32px] lg:mt-[60px]'>
                 If this is you, you&apos;re exactly who this masterclass was created for.
               </p>
             </div>
@@ -128,7 +92,8 @@ const WebinarContentSection = () => {
         <div className='flex justify-center w-full'>
           <Button
             variant='primary'
-            size='md'
+            rel='noreferrer'
+            target='blank'
             className='w-full md:w-[76%] py-[12px]'
             href={DESCODE_LINKS.RESERVE_LINK.href}
             trackingData={{

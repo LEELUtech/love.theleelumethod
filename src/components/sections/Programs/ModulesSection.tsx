@@ -1,3 +1,4 @@
+import { OpacityTitleOrnamentIC } from '@/components/icons';
 import Button from '@/components/ui/Button';
 import Phase3Orb from '@/components/ui/Phase3Orb';
 import RotateOnView from '@/components/ui/RotateOnView';
@@ -117,7 +118,7 @@ const GOAL_CONTENT = {
 function MiniWhyCard({ title, text }: MiniCard) {
   return (
     <div className='rounded-[16px] bg-[#FFF8F8] px-6 py-10 md:px-[26px] md:py-[57px] text-center'>
-      <div className='font-canela font-thin text-brand-deep text-[32px]/[126%]'>{title}</div>
+      <div className='font-canela font-thin text-brand-black-100 text-[60px]/[126%]'>{title}</div>
       <p className='mt-3 whitespace-pre-line font-lato text-[#757986] text-[22px]/[150%]'>{text}</p>
     </div>
   );
@@ -283,7 +284,7 @@ export default function ModulesSection() {
             circles for years:
           </h2>
 
-          <div className='mt-10 lg:mt-[80px] mb-[42px] lg:mb-0 grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6mx-auto'>
+          <div className='mt-10 lg:mt-[80px] mb-[42px] lg:mb-5 grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6mx-auto'>
             {MINI_CARDS.map((c, idx) => (
               <div key={c.title} className={idx === 1 ? 'md:-translate-y-6 lg:-translate-y-8' : ''}>
                 <MiniWhyCard {...c} />
@@ -293,16 +294,15 @@ export default function ModulesSection() {
 
           <Button
             variant='primary'
-            size='md'
-            className='w-full lg:w-[28%] xs:text-[12px]'
-            href='#checkout'
+            className='w-full max-w-[392px]'
+            href={PROGRAMS_LINKS.PROTOCOL_LINK.href}
             trackingData={{
               cta_name: 'programs_modules_initiate_protocol_cta',
               cta_text: 'INITIATE THE PROTOCOL',
               cta_location: 'modules',
             }}
           >
-            INITIATE THE PROTOCOL
+            {PROGRAMS_LINKS.PROTOCOL_LINK.label}
           </Button>
         </div>
 
@@ -362,19 +362,16 @@ export default function ModulesSection() {
             </div>
           </div>
 
-          {/* divider (fix: mt-22 is not valid Tailwind by default) */}
           <div className='mt-[88px] hidden lg:block lg:mt-24 h-px w-full bg-brand-deep/20' />
 
           {/* ================= PHASE 2 ================= */}
           <div className='mt-14 lg:mt-24 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-start'>
-            {/* left modules */}
             <div className='lg:order-1 order-2 grid gap-4'>
               {PHASE_2.map((m) => (
                 <ModuleCard key={m.title} {...m} />
               ))}
             </div>
 
-            {/* right title + image */}
             <div className='lg:order-2 order-1 text-left'>
               <GoalContent {...GOAL_CONTENT.phase_2} />
 
@@ -425,25 +422,51 @@ export default function ModulesSection() {
             </div>
           </div>
 
-          {/* ================= FINAL CTA ================= */}
-          <div className='text-center relative mt-12 lg:mt-[100px]'>
-            <h3 className='font-canela font-light text-brand-deep text-[28px] md:text-[32px] leading-[120%]'>
-              Reconfigure your relationship architecture.
-            </h3>
+          <div className='text-center relative mt-[200px] lg:mt-[100px]'>
+            <div className='lg:hidden absolute z-0 left-1/2 -translate-x-1/2 top-[-150px] md:top-[-180px] lg:top-[-300px] flex flex-row items-center justify-center gap-[130px]'>
+              <div
+                className='relative overflow-hidden w-[340px] h-[340px] sm:w-[418px] sm:h-[418px] md:translate-y-[50px] lg:translate-y-[60px]   '
+                style={{
+                  WebkitMaskImage:
+                    'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 15%, rgba(0,0,0,0) 100%)',
+                  maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 15%, rgba(0,0,0,0) 100%)',
+                  WebkitMaskSize: '100% 100%',
+                  maskSize: '100% 100%',
+                  WebkitMaskRepeat: 'no-repeat',
+                  maskRepeat: 'no-repeat',
+                  WebkitMaskPosition: 'center',
+                  maskPosition: 'center',
+                }}
+              >
+                <RotateOnView
+                  duration={10}
+                  amount={0.2}
+                  ease='easeOut'
+                  className='absolute inset-0'
+                  style={{ willChange: 'transform', transform: 'translateZ(0)' }}
+                >
+                  <OpacityTitleOrnamentIC stopColor={'#FFFFFF'} />
+                </RotateOnView>
+              </div>
+            </div>
 
-            <Button
-              variant='primary'
-              size='md'
-              className='w-full lg:w-[38%] xs:text-[12px] mt-[32px]'
-              href={PROGRAMS_LINKS.PROTOCOL_LINK.href}
-              trackingData={{
-                cta_name: 'programs_modules_protocol_cta',
-                cta_text: PROGRAMS_LINKS.PROTOCOL_LINK.label,
-                cta_location: 'modules',
-              }}
-            >
-              {PROGRAMS_LINKS.PROTOCOL_LINK.label}
-            </Button>
+            <div className='pt-[170px] lg:pt-0'>
+              <h3 className='font-canela font-light text-brand-deep text-[28px] md:text-[32px] leading-[120%]'>
+                Reconfigure your relationship architecture.
+              </h3>
+              <Button
+                variant='primary'
+                className='w-full lg:w-[38%] mt-[32px]'
+                href={PROGRAMS_LINKS.PROTOCOL_LINK.href}
+                trackingData={{
+                  cta_name: 'programs_modules_protocol_cta',
+                  cta_text: PROGRAMS_LINKS.PROTOCOL_LINK.label,
+                  cta_location: 'modules',
+                }}
+              >
+                {PROGRAMS_LINKS.PROTOCOL_LINK.label}
+              </Button>
+            </div>
           </div>
         </div>
       </div>

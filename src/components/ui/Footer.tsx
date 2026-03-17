@@ -107,7 +107,7 @@ export default function Footer({ className }: { className?: string }) {
               </div>
 
               {/* Learn more */}
-              <div className='min-w-[130px]'>
+              <div className='min-w-[150px]'>
                 <h4 className='text-[32px] md:text-[32px] font-canela font-thin text-black mb-4 md:mb-6 leading-[130%]'>
                   Learn more
                 </h4>

@@ -7,27 +7,12 @@ import { Section } from '@/components/ui/containers/section';
 
 const WebinarWhatIfSection = () => {
   return (
-    <Section backgroundImage='/images/bg/whatif-bg.jpg' wrapperClasses='xs:!pb-[300px] lg:!pb-[650px]'>
+    <Section backgroundImage='/images/bg/whatif-bg.jpg' wrapperClasses='xs:!pb-[120px] lg:!pb-[650px] !z-[9999]'>
       <div>
         {/* TOP SECTION */}
-        <div className='flex flex-col items-center gap-[107px] mb-12	md:flex-row md:gap-12 md:mb-20'>
+        <div className='flex mt-[100px] mb:mt-0 flex-col items-center gap-[107px] mb-12	md:flex-row md:gap-12 md:mb-20'>
           {/* Image */}
-          <div
-            className='
-							relative flex justify-center
-
-							/* MOBILE */
-						 w-[361px] h-[489px]
-
-							/* TABLET */
-							md:max-w-[380px]
-
-							/* DESKTOP */
-							lg:max-w-none
-							lg:w-[500px] lg:h-[700px]
-							lg:aspect-auto
-						'
-          >
+          <div className='relative flex justify-center w-full h-[489px] max-w-[380px] lg:max-w-[500px] lg:h-[700px] lg:aspect-auto'>
             <Image
               src='/images/smile-relax-portrait.jpg'
               alt=''
@@ -108,7 +93,7 @@ const WebinarWhatIfSection = () => {
         {/* WHITE BOX */}
         <div
           className='
-							bg-white rounded-[32px] shadow-[0_4px_12px_0_#00000014] z-10
+							bg-white rounded-[32px] shadow-[0_4px_12px_0_#00000014]
 
 							/* MOBILE */
 							absolute pt-[50px] px-[24px] pb-[50px]
@@ -202,8 +187,9 @@ const WebinarWhatIfSection = () => {
           <div className='flex justify-center'>
             <Button
               variant='primary'
-              size='md'
-              className='w-full md:w-[30%]'
+              rel='noreferrer'
+              target='blank'
+              className='w-full max-w-[340px]'
               href={DESCODE_LINKS.REGISTER_LINK.href}
               trackingData={{
                 cta_name: 'webinar_whatif_register_cta',

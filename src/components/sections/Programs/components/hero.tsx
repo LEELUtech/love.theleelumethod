@@ -21,7 +21,7 @@ interface Props extends IProgramsHero {} // eslint-disable-line @typescript-esli
 export const ProgramsHero = (props: Props) => {
   const { title, description, subtitle, content, contentBottom, link, imgSrc } = props;
   return (
-    <Section sectionClasses='bg-brand-white'>
+    <Section sectionClasses='bg-brand-white' wrapperClasses='pt-[80px]'>
       <div className='flex flex-col items-center'>
         <div className='relative'>
           <div className='w-[359px] h-[305px] md:w-[520px] md:h-[420px] lg:w-[356px] lg:h-[322px] overflow-hidden'>
@@ -81,15 +81,11 @@ export const ProgramsHero = (props: Props) => {
           </div>
         </div>
 
-        <div className='font-light transition text-[24px]/[126%] md:text-[22px]/[126%] lg:text-[24px]/[126%] font-canela flex items-center gap-2 md:gap-2.5 lg:gap-3 text-brand-black  justify-center md:justify-start mt-[63px]'>
+        <div className='font-light transition text-[24px]/[126%] font-canela flex items-center gap-2 md:gap-2.5 lg:gap-3 text-brand-black  justify-center md:justify-start mt-[63px]'>
           <Logo />
         </div>
 
-        <h1
-          className='my-4 font-canela font-thin uppercase text-brand-black text-center
-                     text-[46px] leading-[110%] md:text-[56px] lg:text-[60px]
-                    '
-        >
+        <h1 className='my-4 font-canela font-thin uppercase text-brand-black text-center text-[46px] leading-[110%] md:text-[56px] lg:text-[60px]'>
           {title}{' '}
         </h1>
 
@@ -112,8 +108,7 @@ export const ProgramsHero = (props: Props) => {
 
         <Button
           variant='primary'
-          size='md'
-          className='w-full lg:w-[30%] xs:text-[12px] mt-[32px] lg:order-3'
+          className='w-full max-w-[392px] mt-[32px] lg:order-3'
           href={link.href}
           trackingData={{
             cta_name: 'program_hero_cta',

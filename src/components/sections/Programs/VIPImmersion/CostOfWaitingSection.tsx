@@ -47,15 +47,7 @@ export default function CostOfWaitingSection() {
       <article className='relative'>
         <div className='relative max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-[112px] 2xl:px-[180px] pb-[110px]'>
           <div className='flex justify-center mb-12 relative pt-[230px] md:pt-[300px] lg:pt-[300px]'>
-            <div
-              className='
-                absolute
-                w-[268px] h-[290px]
-                sm:w-[358px] sm:h-[376px]
-                top-[-100px]
-                overflow-visible
-              '
-            >
+            <div className='absolute w-[268px] h-[290px] sm:w-[358px] sm:h-[376px] top-[-100px] overflow-visible'>
               <Image
                 src='/images/programs/vip-immersion/man-holding-rose-flower-back_1.png'
                 alt='Stop Guessing'
@@ -92,8 +84,8 @@ export default function CostOfWaitingSection() {
                 arrowCenterX={6.5}
                 arrowCenterY={-6}
                 arrowOffsetY={3}
-                arcRx={220}
-                arcRy={208}
+                arcRx={200}
+                arcRy={188}
                 strokeWidth={3}
               />
             </div>
@@ -176,8 +168,7 @@ export default function CostOfWaitingSection() {
 
           <Button
             variant='primary'
-            size='md'
-            className='w-full lg:w-[30%] xs:text-[12px] mt-[32px]'
+            className='w-full max-w-[347px] mt-[32px]'
             href={VIP_LINKS.WHO_LINK.href}
             trackingData={{
               cta_name: 'vip_cost_of_waiting_cta',
@@ -198,7 +189,7 @@ export default function CostOfWaitingSection() {
             initial diagnostic session.
           </p>
 
-          <p className='text-brand-primary font-lato font-normal text-[24px] leading-[150%] mt-[33px]'>
+          <p className='text-brand-primary font-lato font-normal text-[24px] mb-[70px] leading-[150%] mt-[33px]'>
             <span className='text-brand-deep'>Next cohort starts</span> March 18
           </p>
         </div>

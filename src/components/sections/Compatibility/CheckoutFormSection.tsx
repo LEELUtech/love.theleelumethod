@@ -20,12 +20,9 @@ import { getStoredFirstUTM } from '@/utils/utm-tracker';
 import { salesiqIdentify } from '@/lib/tracking/salesiqIdentify';
 import { saveEmailToLS } from '@/lib/tracking/localEmail';
 
-import {
-	StripeCardPart,
-	type StripePayState,
-} from "@/components/sections/Compatibility/StripeCardPart";
-import CheckoutSectionLoader from "@/components/sections/Checkout/CheckoutSectionLoader";
-import Button from "@/components/ui/Button";
+import { StripeCardPart, type StripePayState } from '@/components/sections/Compatibility/StripeCardPart';
+import CheckoutSectionLoader from '@/components/sections/Checkout/CheckoutSectionLoader';
+import Button from '@/components/ui/Button';
 
 const pk = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!;
 const stripePromise = loadStripe(pk);
@@ -127,15 +124,11 @@ export default function CheckoutFormSection() {
     return !!v && emailRegex.test(v);
   }, [form.email]);
 
-	const buttonDisabled =
-		!clientSecret ||
-		isStripeInitializing ||
-		!payState.canPay ||
-		payState.paying;
+  const buttonDisabled = !clientSecret || isStripeInitializing || !payState.canPay || payState.paying;
 
-	React.useEffect(() => {
-		setCtx(getClientContext());
-	}, []);
+  React.useEffect(() => {
+    setCtx(getClientContext());
+  }, []);
 
   React.useEffect(() => {
     if (clientSecret) setHadSecretOnce(true);
@@ -206,15 +199,14 @@ export default function CheckoutFormSection() {
       leadAbortRef.current = controller;
 
       salesiqIdentify({ email });
-			saveEmailToLS(email)
+      saveEmailToLS(email);
 
       const payload = {
         paymentIntentId: intentId || undefined,
         intentToken: intentToken || undefined,
         email,
         sessionId: localStorage.getItem('ff_session_id') || undefined,
-        salesiqVisitorId:
-					localStorage.getItem('ff_salesiq_visitor_id') || undefined,
+        salesiqVisitorId: localStorage.getItem('ff_salesiq_visitor_id') || undefined,
         ...(ctx || {}),
       };
 
@@ -440,22 +432,22 @@ export default function CheckoutFormSection() {
                 </div>
               </div>
 
-							<Button
-								type="button"
-								onClick={onPayClick}
-								disabled={buttonDisabled}
-								loading={payState.paying}
-								fullWidth
-								className="mt-[24px] md:mt-10 lg:mt-[80px] xs:px-0 xs:text-[12px] md:px-6 md:text-[15px]"
-								trackingData={{
-									cta_name: "complete_purchase",
-									cta_text: "UNLOCK MY COMPATIBILITY CODE",
-									cta_target_url: null,
-									cta_location: "checkout_compatibility",
-								}}
-							>
-								UNLOCK MY COMPATIBILITY CODE
-							</Button>
+              <Button
+                type='button'
+                onClick={onPayClick}
+                disabled={buttonDisabled}
+                loading={payState.paying}
+                fullWidth
+                className='mt-[24px] md:mt-10 lg:mt-[80px] xs:px-0 xs:text-[12px] md:px-6 md:text-[15px]'
+                trackingData={{
+                  cta_name: 'complete_purchase',
+                  cta_text: 'UNLOCK MY COMPATIBILITY CODE',
+                  cta_target_url: null,
+                  cta_location: 'checkout_compatibility',
+                }}
+              >
+                UNLOCK MY COMPATIBILITY CODE
+              </Button>
 
               {payState.error ? <p className='mt-3 text-sm font-lato text-red-600'>{payState.error}</p> : null}
               {payState.cardError ? <p className='mt-2 text-sm font-lato text-red-600'>{payState.cardError}</p> : null}

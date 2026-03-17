@@ -1,3 +1,4 @@
+import { ESSENTIALS_LINKS } from '@/static/links';
 import { IProgramsHero } from '../components/hero';
 import { IProgramItWorks } from '../components/it-works';
 import { IProgramOverview } from '../components/overview';
@@ -12,8 +13,8 @@ export const selfGuidedHeroData: IProgramsHero = {
   subtitle: `YOUR RELATIONSHIP ISN'T BROKEN. YOU'RE RUNNING THE WRONG CODE.`,
   content: `You don’t need another conversation about "feelings." You need a structural audit of why your relationships keep hitting the same wall.`,
   link: {
-    href: '/enroll',
-    label: 'ENROLL NOW',
+    href: ESSENTIALS_LINKS.HERO_LINK.href,
+    label: ESSENTIALS_LINKS.HERO_LINK.label,
   },
 };
 
@@ -73,6 +74,7 @@ export const selfGuidedOverviewData: IProgramOverview = {
   cards: [
     {
       id: 1,
+      size: 'md',
       title: 'Energy Activation Report',
       subtitle: 'Your personal energy & magnetism code.',
       description: 'Inside:',
@@ -88,6 +90,7 @@ export const selfGuidedOverviewData: IProgramOverview = {
     },
     {
       id: 2,
+      size: 'md',
       title: `“His Secret Desires” Report`,
       subtitle: 'Calculated for your partner or desired partner.',
       description: 'Inside:',
@@ -102,6 +105,7 @@ export const selfGuidedOverviewData: IProgramOverview = {
     },
     {
       id: 3,
+      size: 'md',
       title: 'Compatibility & Couple Dynamics Report',
       subtitle: 'If you are in a relationship',
       description: 'Inside:',
@@ -148,8 +152,8 @@ export const selfGuidedResultData: IProgramResult = {
     'You stop operating on instinct (which is traumatized) and start operating on intelligence. You will know exactly why your past relationships failed and have the specific behavioral blueprint to build the next one on solid ground.',
   investment: 697,
   link: {
-    label: 'BEGIN THE PROTOCOL',
-    href: '#',
+    label: ESSENTIALS_LINKS.RESULT_LINK.label,
+    href: ESSENTIALS_LINKS.RESULT_LINK.href,
   },
 };
 
@@ -159,8 +163,8 @@ export const selfGuidedItWorksData: IProgramItWorks = {
   ],
   subtitle: [`I didn't waste a decade finding the right one—I engineered it.`],
   link: {
-    label: 'BEGIN THE PROTOCOL',
-    href: '#',
+    label: ESSENTIALS_LINKS.WORKED_LINK.label,
+    href: ESSENTIALS_LINKS.WORKED_LINK.href,
   },
   imgSrc: '/images/programs/self-guided-transformation/it_worked_for_me.png',
 };

@@ -9,7 +9,15 @@ export interface IProgramOverview {
   title: ReactNode;
   subtitle: string;
   description?: string;
-  cards: { id: number; title: string; subtitle?: string; description?: string; list: string[]; iconColor: string }[];
+  cards: {
+    id: number;
+    size: 'md' | 'lg';
+    title: string;
+    subtitle?: string;
+    description?: string;
+    list: string[];
+    iconColor: string;
+  }[];
   overviews: {
     id: number;
     title: {
@@ -53,10 +61,12 @@ export const ProgramOverview = ({ title, subtitle, description, overviews, cards
         {cards.map((card, idx) => {
           const bgColor = idx === 1 ? 'bg-[#FFF3F0]' : 'bg-[#FFFFFF]';
 
+          const pb = card.size === 'lg' ? 'pb-[48px]' : 'pb-[58px]';
+
           return (
             <li
               key={card.id}
-              className={`w-full min-[824px]:col-span-2 min-[948px]:max-w-[392px] rounded-[20px] pl-[30px] pr-4 bs:px-[30px] pt-[38px] pb-[48px] ${bgColor} box-shadow-[0px 10px 20px rgba(0, 0, 0, 0.05)]`}
+              className={`w-full min-[824px]:col-span-2 min-[948px]:max-w-[392px] rounded-[20px] pl-[30px] pr-4 bs:px-[30px] pt-[38px] ${pb} ${bgColor} box-shadow-[0px 10px 20px rgba(0, 0, 0, 0.05)]`}
             >
               <StarIC className={`mb-[26px] ${card.iconColor}`} width={27} height={33} />
 
@@ -115,7 +125,16 @@ export const ProgramOverview = ({ title, subtitle, description, overviews, cards
       </div>
 
       {link && (
-        <Button className='mt-[145px] px-[140px]' href={link.href} trackingData={{ cta_name: 'program_overview_cta', cta_text: link.label, cta_target_url: link.href, cta_location: 'overview' }}>
+        <Button
+          className='mt-[145px] w-full max-w-[392px]'
+          href={link.href}
+          trackingData={{
+            cta_name: 'program_overview_cta',
+            cta_text: link.label,
+            cta_target_url: link.href,
+            cta_location: 'overview',
+          }}
+        >
           {link.label}
         </Button>
       )}

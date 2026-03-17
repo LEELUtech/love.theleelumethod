@@ -133,7 +133,6 @@ const ProblemSolutionSection = () => {
 
             <Button
               variant='primary'
-              size='md'
               className='w-full'
               href={COMPABILITY_REPORT_LINKS.PROBLEM_LINK.href}
               trackingData={{
@@ -156,9 +155,7 @@ const ProblemSolutionSection = () => {
 											top-[-150px]
 											md:top-[-180px]
 											lg:top-[-320px]
-									
 											flex flex-row items-center justify-center gap-[130px]
-											pointer-events-none
 										'
           >
             {/* LEFT ornament */}

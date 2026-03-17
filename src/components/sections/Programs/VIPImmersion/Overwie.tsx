@@ -32,7 +32,7 @@ const Card = (props: CardProps) => {
       </div>
 
       <Flex vertical className='flex-1'>
-        <h4 className='text-[32px]/[120%] text-left font-canela font-light mb-7 text-brand-deep'>{title}</h4>
+        <h4 className='text-[48px]/[120%] text-left font-canela font-light mb-7 text-brand-deep'>{title}</h4>
 
         {subtitle && (
           <h5 className='text-[32px]/[120%] text-left font-canela font-light mb-6 text-brand-deep'>{subtitle}</h5>
@@ -60,7 +60,10 @@ interface Props {
 
 export const VIPImmersionOverview = ({ overviews }: Props) => {
   return (
-    <Section backgroundImage='/images/programs/self-guided-transformation/mechanics_section_bg.png'>
+    <Section
+      backgroundImage='/images/programs/self-guided-transformation/mechanics_section_bg.png'
+      wrapperClasses='py-8 lg:py-0'
+    >
       <Flex vertical gap={120}>
         {overviews.map((overview) => (
           <Card key={overview.id} {...overview} />
