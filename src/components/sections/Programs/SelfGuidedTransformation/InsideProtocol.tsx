@@ -36,7 +36,7 @@ export const InsideProtocol = () => {
   const { title_top, title_bottom, list, descriptions, highlight, link } = content;
 
   return (
-    <Section wrapperClasses='py-[64px]'>
+    <Section wrapperClasses='py-[64px] px-3'>
       <div>
         <ImageContainer src='/images/lily/lily_2.png' alt='Lily' height={832}>
           <div className='flex flex-col'>

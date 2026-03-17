@@ -155,9 +155,7 @@ const ProblemSolutionSection = () => {
 											top-[-150px]
 											md:top-[-180px]
 											lg:top-[-320px]
-									
 											flex flex-row items-center justify-center gap-[130px]
-											pointer-events-none
 										'
           >
             {/* LEFT ornament */}

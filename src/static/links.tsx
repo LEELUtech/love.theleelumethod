@@ -29,11 +29,11 @@ export const RESOURCES_LINKS: RecordLink = {
 export const SECRETS_LINKS: RecordLink = {
   ACCESS_LINK: {
     label: 'ACCESS THE FREE GUIDE',
-    href: '#footer-promo',
+    href: '#hero',
   },
   CLAIM_LINK: {
     label: 'CLAIM YOUR FREE GUIDE',
-    href: '#',
+    href: '#hero',
   },
 };
 
@@ -59,11 +59,11 @@ export const DESCODE_LINKS: RecordLink = {
 export const COMPABILITY_REPORT_LINKS: RecordLink = {
   HERO_LINK: {
     label: 'GIVE ME MY COMPATIBILITY CODE REPORT',
-    href: '#checkout_form',
+    href: '#checkout',
   },
   PROBLEM_LINK: {
     label: 'GIVE ME MY COMPATIBILITY CODE REPORT',
-    href: '#checkout_form',
+    href: '#checkout',
   },
   UNLOCK_LINK: {
     label: 'UNLOCK MY COMPATIBILITY CODE - $3.33',
@@ -71,7 +71,7 @@ export const COMPABILITY_REPORT_LINKS: RecordLink = {
   },
   FOOTER_PROMO_LINK: {
     label: 'GIVE ME MY COMPATIBILITY CODE REPORT',
-    href: '#checkout_form',
+    href: '#checkout',
   },
 };
 
@@ -199,11 +199,11 @@ export const ESSENTIALS_LINKS: RecordLink = {
   },
   COST_LINK: {
     label: 'DECODE MY RELATIONSHIP',
-    href: '#',
+    href: '#checkout',
   },
   CHECKOUT_LINK: {
     label: 'DECODE MY RELATIONSHIP',
-    href: '#',
+    href: '#checkout',
   },
 };
 
@@ -226,7 +226,7 @@ export const GUIDED_BREAKTHROUGH_LINKS: RecordLink = {
   },
   CHECKOUT_LINK: {
     label: 'SIGN UP & GET PERSONALIZED SUPPORT',
-    href: '#',
+    href: '#checkout',
   },
 };
 

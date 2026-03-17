@@ -8,6 +8,7 @@ import useProductStore from '@/store/useProductStore';
 import { PROTOCOL_ESSENTIALS } from '@/utils/constants';
 import { formatPriceFromCents } from '@/helpers';
 import Button from '@/components/ui/Button';
+import { ESSENTIALS_LINKS } from '@/static/links';
 
 export default function CostOfWaitingSection() {
   const productId = PROTOCOL_ESSENTIALS;
@@ -30,7 +31,7 @@ export default function CostOfWaitingSection() {
       : '...';
 
   return (
-    <section className='relative lg:pb-[116px] pb-[140px]'>
+    <section className='relative lg:pb-[116px]'>
       <div className='max-w-[1600px] mx-auto sm:px-6 lg:px-[112px] 2xl:px-[180px] relative py-[80px] lg:py-[110px] px-4'>
         <div className='text-center'>
           {/* Top Image */}
@@ -112,14 +113,15 @@ export default function CostOfWaitingSection() {
 
           <Button
             variant='primary'
-            className='w-full lg:w-[30%] py-4 px-[60px] mt-[32px]'
+            className='w-full max-w-[360px] py-4 px-[60px] mt-[32px]'
+            href={ESSENTIALS_LINKS.COST_LINK.href}
             trackingData={{
               cta_name: 'sgt_cost_of_waiting_cta',
               cta_text: 'DECODE MY RELATIONSHIP',
               cta_location: 'cost_of_waiting',
             }}
           >
-            DECODE MY RELATIONSHIP
+            {ESSENTIALS_LINKS.COST_LINK.label}
           </Button>
         </div>
       </div>

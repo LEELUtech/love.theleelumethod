@@ -187,6 +187,8 @@ const WebinarWhatIfSection = () => {
           <div className='flex justify-center'>
             <Button
               variant='primary'
+              rel='noreferrer'
+              target='blank'
               className='w-full max-w-[340px]'
               href={DESCODE_LINKS.REGISTER_LINK.href}
               trackingData={{

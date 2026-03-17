@@ -19,7 +19,6 @@ const WebinarSection = () => {
           </div>
 
           <div className='text-center lg:text-left relative z-[100] -mt-[110px] lg:mt-0'>
-            {' '}
             <p className='text-[28px]/[126%] font-canela font-light text-black'>Free Masterclass</p>
             <h1 className='lg:text-[60px] leading-tight font-thin md:text-[48px] font-canela text-brand-deep mb-6 text-[48px]'>
               Decoded Love
@@ -68,6 +67,8 @@ const WebinarSection = () => {
             <div className='order-1 md:order-2 flex justify-center lg:justify-start'>
               <Button
                 variant='primary'
+                rel='noreferrer'
+                target='blank'
                 className='w-full md:w-[65%] py-[12px]'
                 href={DESCODE_LINKS.HERO_LINK.href}
                 trackingData={{

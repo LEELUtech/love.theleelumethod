@@ -15,7 +15,7 @@ const footerPromoContent = {
     `I’ve enabled over a thousand women to stop improvising their love lives and start engineering them.`,
   ],
   subtitle: 'Are you next?',
-  link: DESCODE_LINKS.FOOTER_PROMO_LINK,
+  link: { ...DESCODE_LINKS.FOOTER_PROMO_LINK, isBlank: true },
 };
 
 const WebinarPage = () => {
