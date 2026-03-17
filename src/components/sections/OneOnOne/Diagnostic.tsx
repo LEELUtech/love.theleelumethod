@@ -19,49 +19,50 @@ const content = {
   ],
 };
 
-const DiagnosticImg = () => (
-  <div className='flex-1 relative flex justify-center mt-[40px]'>
-    <div className='relative w-full max-w-[490px] max-h-[529px] aspect-[360/348] lg:aspect-[490/529] lg:min-w-[440px]'>
-      <Image
-        src='/images/lily/lily_3.png'
-        alt='I am Lily Chystofat'
-        fill
-        priority
-        quality={100}
-        className='       
+const DiagnosticImg = () => {
+  return (
+    <div className='flex-1 relative flex justify-center mt-[40px]'>
+      <div className='relative w-full max-w-[490px] max-h-[529px] aspect-[360/348] lg:aspect-[490/529] lg:min-w-[440px]'>
+        <Image
+          src='/images/lily/lily_3.png'
+          alt='I am Lily Chystofat'
+          fill
+          priority
+          quality={100}
+          className='       
                 [mask-image:linear-gradient(to_bottom,black_55%,transparent_75%)]
                 [-webkit-mask-image:linear-gradient(to_bottom,black_55%,transparent_75%)]
                 lg:[mask-image:none]
                 lg:[-webkit-mask-image:none]
     '
-      />
-      <RotateOnView
-        className='absolute bottom-[-80px] left-[140px] hidden lg:block pointer-events-none'
-        duration={5}
-        ease='easeOut'
-      >
-        <Image src='/icons/ornament_13.svg' alt='' width={209} height={215} priority quality={100} className='' />
-      </RotateOnView>
-      <ArcAutoOnce
-        className='absolute inset-0 -z-0 -translate-y-[13%] pointer-events-none -translate-x-[-7%]'
-        // endAt={0.9}
-        flightStart={0.2}
-        durMs={1500}
-        arrowRotateDeg={254}
-        arrowScale={0.8}
-        arrowCenterX={6.5}
-        arrowCenterY={-6}
-        arrowOffsetY={3}
-        endAtByDevice={{ mobile: 0.87, desktop: 0.95 }}
-        arcEnd={{ x: -60, y: 219 }}
-        arcRx={260}
-        arcRy={260}
-        strokeWidth={2}
-      />
+        />
+        <RotateOnView
+          className='absolute bottom-[-80px] left-[140px] hidden lg:block pointer-events-none'
+          duration={5}
+          ease='easeOut'
+        >
+          <Image src='/icons/ornament_13.svg' alt='' width={209} height={215} priority quality={100} className='' />
+        </RotateOnView>
+        <ArcAutoOnce
+          className='absolute hidden bs:block inset-0 -z-0 -translate-y-[13%] pointer-events-none -translate-x-[-7%]'
+          // endAt={0.9}
+          flightStart={0.2}
+          durMs={1500}
+          arrowRotateDeg={254}
+          arrowScale={0.8}
+          arrowCenterX={6.5}
+          arrowCenterY={-6}
+          arrowOffsetY={3}
+          endAtByDevice={{ mobile: 0.87, desktop: 0.95 }}
+          arcEnd={{ x: -60, y: 219 }}
+          arcRx={260}
+          arcRy={260}
+          strokeWidth={2}
+        />
+      </div>
     </div>
-  </div>
-);
-
+  );
+};
 export const Diagnostic = () => {
   return (
     <Section wrapperClasses='!pb-0'>
