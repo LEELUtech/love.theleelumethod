@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { loadStripe, StripeElementsOptions } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
@@ -27,6 +27,9 @@ import { getStoredFirstUTM } from '@/utils/utm-tracker';
 import { salesiqIdentify } from '@/lib/tracking/salesiqIdentify';
 import { saveEmailToLS } from '@/lib/tracking/localEmail';
 import { Section } from '@/components/ui/containers/section';
+import { checkWebinarDiscount } from '@/lib/webinarDiscount';
+
+const WEBINAR_DISCOUNT_PRODUCT = 'protocol_essentials_webinar';
 
 const pk = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!;
 const stripePromise = loadStripe(pk);
@@ -83,9 +86,12 @@ type ClientCtx = ReturnType<typeof getClientContext>;
 export default function CheckoutFormSection({ productId }: CheckoutFormSectionProps) {
   const selectId = React.useId();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const product = useProductStore((s) => s.getProduct(productId));
-  const productLoading = useProductStore((s) => s.isLoading(productId));
+  const [effectiveProductId, setEffectiveProductId] = React.useState(productId);
+
+  const product = useProductStore((s) => s.getProduct(effectiveProductId));
+  const productLoading = useProductStore((s) => s.isLoading(effectiveProductId));
   const fetchProduct = useProductStore((s) => s.fetchProduct);
 
   const {
@@ -111,6 +117,20 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
     setCtx(getClientContext());
   }, []);
 
+  React.useEffect(() => {
+    if (productId !== 'protocol_essentials') return;
+    const emailFromUrl = searchParams.get('email')?.trim().toLowerCase();
+    if (!emailFromUrl) return;
+
+    setBilling((prev) => ({ ...prev, email: emailFromUrl }));
+
+    checkWebinarDiscount(emailFromUrl).then((hasDiscount) => {
+      if (hasDiscount) {
+        setEffectiveProductId(WEBINAR_DISCOUNT_PRODUCT);
+      }
+    }).catch(() => {});
+  }, [productId, searchParams]);
+
   const priceLabel =
     !productLoading && product
       ? formatPriceFromCents(product.price, {
@@ -129,22 +149,22 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
   }, [clientSecret]);
 
   React.useEffect(() => {
-    const expectedKey = `create:${productId}`;
+    const expectedKey = `create:${effectiveProductId}`;
     if (intentKey && intentKey !== expectedKey) reset();
-  }, [intentKey, productId, reset]);
+  }, [intentKey, effectiveProductId, reset]);
 
   React.useEffect(() => {
     if (clientSecret) setHadSecretOnce(true);
   }, [clientSecret]);
 
   React.useEffect(() => {
-    if (!product && !productLoading) fetchProduct(productId);
-  }, [product, productLoading, fetchProduct, productId]);
+    if (!product && !productLoading) fetchProduct(effectiveProductId);
+  }, [product, productLoading, fetchProduct, effectiveProductId]);
 
   React.useEffect(() => {
     if (!product || productLoading) return;
 
-    const expectedKey = `create:${productId}`;
+    const expectedKey = `create:${effectiveProductId}`;
 
     if (intentKey && intentKey !== expectedKey) {
       reset();
@@ -157,7 +177,7 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
     if (!ctx?.site) return;
 
     createIntent({
-      productType: productId,
+      productType: effectiveProductId,
       sessionId: localStorage.getItem('ff_session_id') || undefined,
       salesiqVisitorId: localStorage.getItem('ff_salesiq_visitor_id') || undefined,
       ...(ctx || {}),

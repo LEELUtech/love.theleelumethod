@@ -63,7 +63,6 @@ export const syncCohortDate = onDocumentWritten(
       return;
     }
 
-    // Skip if nothing actually changed
     const oldData = event.data?.before?.data();
     const oldDate = oldData ? parseCohortDate(oldData.cohort_date) : null;
     const oldLabel = oldData && typeof oldData.cohort_date_label === "string"

@@ -25,11 +25,9 @@ const ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT = defineSecret(
 );
 const ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT = defineSecret("ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT");
 
-const ABANDONED_TIMEOUT_MIN = 60;
+const ABANDONED_TIMEOUT_MIN = 5;
 const SCAN_LIMIT = 500;
 const ABANDONED_CAMPAIGNS_TAG = "ca_sp";
-
-//1hr
 
 type FunnelStep =
   | "unknown"
@@ -378,7 +376,6 @@ export const markAbandonedCheckouts = onSchedule(
       updatedCount: updated.length,
     });
 
-    // 0) Zoho Campaigns tag
     const campaignsResults = await Promise.allSettled(
       updated.map(async (p) => {
         if (!p.email) return;
@@ -408,7 +405,6 @@ export const markAbandonedCheckouts = onSchedule(
       }),
     );
 
-    // 1) Zoho CRM
     const zohoResults = await Promise.allSettled(
       updated.map(async (p) => {
         if (!p.email) return;
@@ -432,7 +428,6 @@ export const markAbandonedCheckouts = onSchedule(
       }),
     );
 
-    // 2) Zoho Analytics
     const analyticsResults = await Promise.allSettled(
       updated.map(async (p) => {
         logger.info("markAbandonedCheckouts: emitting analytics", { id: p.id, email: p.email });

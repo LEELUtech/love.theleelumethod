@@ -3,15 +3,15 @@ import { upsertContactAndUpdateTags } from "./zoho-campaigns";
 
 const TAG_LOGIC: Record<string, { add: string[]; remove: string[] }> = {
   protocol_essentials: {
-    add: ["p_done", "tier_low"],
+    add: ["p_done", "tier_low", "cohort_registered"],
     remove: ["tier_mid", "tier_high", "ca_sp"],
   },
   guided_breakthrough: {
-    add: ["p_done", "tier_mid"],
+    add: ["p_done", "tier_mid", "cohort_registered"],
     remove: ["tier_low", "tier_high", "ca_sp"],
   },
   vip_immersion: {
-    add: ["p_done", "tier_high"],
+    add: ["p_done", "tier_high", "cohort_registered"],
     remove: ["tier_low", "tier_mid", "ca_sp"],
   },
 };

@@ -1,7 +1,7 @@
 import { onRequest } from "firebase-functions/v2/https";
 import { defineSecret } from "firebase-functions/params";
 import { upsertContactAndUpdateTags } from "../lib/zoho-campaigns";
-import { incrementDiagnosticSessions } from "../lib/zoho-sessions";
+import { updateLastModuleSubmission } from "../lib/zoho-circle";
 
 const ZOHO_CLIENT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_ID_LILYCHYSTOFAT");
 const ZOHO_CLIENT_SECRET_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_SECRET_LILYCHYSTOFAT");
@@ -13,7 +13,15 @@ const ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_CR
 const ZOHO_CONTACT_LAYOUT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_CONTACT_LAYOUT_ID_LILYCHYSTOFAT");
 const ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT");
 
-export const completeDiagnosticSession = onRequest(
+type CircleEvent = "module_submission" | "module_3_completed" | "module_6_completed" | "course_completed";
+
+const TAG_MAP: Partial<Record<CircleEvent, string[]>> = {
+  module_3_completed: ["module_3_completed"],
+  module_6_completed: ["module_6_completed"],
+  course_completed: ["course_completed"],
+};
+
+export const circleWebhook = onRequest(
   {
     region: "us-central1",
     secrets: [
@@ -34,33 +42,34 @@ export const completeDiagnosticSession = onRequest(
       return;
     }
 
-    const { email } = (req.body ?? {}) as { email?: unknown };
-    if (!email || typeof email !== "string") {
+    const body = (req.body ?? {}) as { event?: unknown; email?: unknown };
+    const event = typeof body.event === "string" ? (body.event as CircleEvent) : null;
+    const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : null;
+
+    if (!email) {
       res.status(400).json({ ok: false, error: "missing email" });
       return;
     }
 
-    const normalizedEmail = email.trim().toLowerCase();
-    console.log("completeDiagnosticSession: processing", { email: normalizedEmail });
+    if (!event) {
+      res.status(400).json({ ok: false, error: "missing event" });
+      return;
+    }
+
+    console.log("circleWebhook: processing", { event, email });
 
     try {
-      let newCount = 0;
-      try {
-        newCount = await incrementDiagnosticSessions(normalizedEmail);
-      } catch (e) {
-        console.error("completeDiagnosticSession: increment failed (non-critical)", { email: normalizedEmail, error: e });
-      }
+      const addTags = TAG_MAP[event] ?? [];
 
-      await upsertContactAndUpdateTags(
-        normalizedEmail,
-        { add: ["diagnostic_session_completed"], remove: [] },
-        newCount > 0 ? { Diagnostic_Sessions_Completed: String(newCount) } : undefined,
-      );
+      await Promise.allSettled([
+        upsertContactAndUpdateTags(email, { add: addTags, remove: ["course_inactive"] }),
+        updateLastModuleSubmission(email),
+      ]);
 
-      console.log("completeDiagnosticSession: done", { email: normalizedEmail, newCount });
-      res.json({ ok: true, email: normalizedEmail, count: newCount });
+      console.log("circleWebhook: done", { event, email, addTags });
+      res.json({ ok: true, event, email, addTags });
     } catch (err: unknown) {
-      console.error("completeDiagnosticSession error:", err);
+      console.error("circleWebhook error:", err);
       res.status(500).json({ ok: false, error: err instanceof Error ? err.message : "server_error" });
     }
   },

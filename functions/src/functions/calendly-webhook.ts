@@ -1,4 +1,3 @@
-// functions/src/functions/calendly-webhook.ts
 import { onRequest } from "firebase-functions/v2/https";
 import { defineSecret } from "firebase-functions/params";
 import { CloudTasksClient } from "@google-cloud/tasks";
@@ -7,12 +6,10 @@ import { db } from "../configs/firebase";
 import { upsertContactAndUpdateTags } from "../lib/zoho-campaigns";
 import { markSessionPurchased, markSessionCanceled, markTrustTempleBooked, type SessionPackageTier } from "../lib/zoho-sessions";
 
-// ─── Cloud Tasks config ────────────────────────────────────────────────────────
 const GCP_PROJECT = "leelu-tech";
 const GCP_LOCATION = "us-central1";
 const TASK_QUEUE = "trust-temple-complete";
 const DIAG_TASK_QUEUE = "diagnostic-session-complete";
-// Duration in minutes — task fires after this delay from start_time
 const TRUST_TEMPLE_DURATION_MIN = 20;
 const DIAG_SESSION_DURATION_MIN = 60;
 
@@ -47,7 +44,7 @@ async function scheduleCompleteTask(email: string, startTimeISO: string): Promis
     startTime: startTimeISO,
   });
 
-  console.log("calendlyWebhook: cloud task scheduled", { email, taskName, scheduleAt: new Date(scheduleMs).toISOString() });
+  console.log("calendlyWebhook: trust temple task scheduled", { email, taskName, scheduleAt: new Date(scheduleMs).toISOString() });
 }
 
 async function scheduleDiagnosticTask(email: string, startTimeISO: string): Promise<void> {
@@ -105,16 +102,15 @@ async function cancelCompleteTask(email: string): Promise<void> {
   const docId = email.replace(/[^a-z0-9]/g, "_");
   const doc = await db.collection("trust_temple_tasks").doc(docId).get();
   if (!doc.exists) {
-    console.log("calendlyWebhook: no task found to cancel", { email });
+    console.log("calendlyWebhook: no trust temple task found to cancel", { email });
     return;
   }
 
   const { taskName } = doc.data() as { taskName: string };
   try {
     await tasksClient.deleteTask({ name: taskName });
-    console.log("calendlyWebhook: cloud task deleted", { email, taskName });
+    console.log("calendlyWebhook: trust temple task deleted", { email, taskName });
   } catch (e: unknown) {
-    // Task may have already executed — not critical
     console.warn("calendlyWebhook: deleteTask failed (may already be done)", { email, taskName, error: e instanceof Error ? e.message : String(e) });
   }
 
@@ -130,8 +126,6 @@ const ZOHO_API_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_API_DOMAIN_LILYCHYSTOFA
 const ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT");
 const ZOHO_CONTACT_LAYOUT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_CONTACT_LAYOUT_ID_LILYCHYSTOFAT");
 const ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT");
-
-// ─── Types ─────────────────────────────────────────────────────────────────────
 
 type CalendlyEventKind = SessionPackageTier | "trust_temple";
 
@@ -149,12 +143,10 @@ type CalendlyInvitee = {
 };
 
 type CalendlyWebhookBody = {
-  event?: string;          // "invitee.created" | "invitee.canceled"
+  event?: string;
   payload?: CalendlyInvitee;
   created_at?: string;
 };
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function normEmail(v?: unknown): string | null {
   if (!v) return null;
@@ -169,7 +161,7 @@ function detectEventKind(eventName?: string): CalendlyEventKind | null {
   if (name.includes("9-session package")) return "nine_session";
   if (name.includes("3-session package")) return "three_session";
   if (name.includes("single session")) return "single";
-  if (name.includes("test session")) return "single"; // test event
+  if (name.includes("test session")) return "single";
 
   return null;
 }
@@ -183,7 +175,7 @@ function purchasedTagDelta(kind: CalendlyEventKind): { add: string[]; remove: st
 
   if (kind === "trust_temple") {
     return {
-      add: ["session_purchased", "trust_temple_session"],
+      add: ["trust_temple_session"],
       remove: Object.values(tierTag),
     };
   }
@@ -191,25 +183,15 @@ function purchasedTagDelta(kind: CalendlyEventKind): { add: string[]; remove: st
   const otherTierTags = Object.values(tierTag).filter((t) => t !== tierTag[kind]);
 
   return {
-    add: ["session_purchased", tierTag[kind]],
+    add: ["session_purchased", tierTag[kind], "p_done"],
     remove: otherTierTags,
   };
 }
-
-function canceledTagDelta(): { add: string[]; remove: string[] } {
-  return {
-    add: [],
-    remove: ["session_purchased", "trust_temple_session", "sess_single", "sess_3pack", "sess_9pack"],
-  };
-}
-
-// ─── Cloud Function ───────────────────────────────────────────────────────────
 
 export const calendlyWebhook = onRequest(
   {
     region: "us-central1",
     secrets: [
-      // CALENDLY_WEBHOOK_SIGNING_KEY,
       ZOHO_CLIENT_ID_LILYCHYSTOFAT,
       ZOHO_CLIENT_SECRET_LILYCHYSTOFAT,
       ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT,
@@ -232,7 +214,7 @@ export const calendlyWebhook = onRequest(
 
       console.log("calendlyWebhook RAW PAYLOAD", JSON.stringify(body));
 
-      const eventType = body.event; // "invitee.created" | "invitee.canceled"
+      const eventType = body.event;
       const payload = body.payload ?? {};
 
       const email = normEmail(payload.email);
@@ -249,11 +231,7 @@ export const calendlyWebhook = onRequest(
       const eventName = payload.scheduled_event?.name ?? "";
       const kind = detectEventKind(eventName);
 
-      // ── invitee.canceled ────────────────────────────────────────────────────
       if (eventType === "invitee.canceled") {
-        const { add: cancelAdd, remove: cancelRemove } = canceledTagDelta();
-        await upsertContactAndUpdateTags(email, { add: cancelAdd, remove: cancelRemove });
-
         if (kind === "trust_temple") {
           try {
             await markTrustTempleBooked(email, false);
@@ -278,12 +256,10 @@ export const calendlyWebhook = onRequest(
           }
         }
 
-        res.json({ ok: true, event: eventType, email, add: cancelAdd, remove: cancelRemove });
+        res.json({ ok: true, event: eventType, email });
         return;
       }
 
-      // ── invitee.created ─────────────────────────────────────────────────────
-      // Calendly sometimes sends first_name/last_name as null — fall back to splitting name
       const fullNameParts = payload.name ? String(payload.name).trim().split(/\s+/) : [];
       const derivedFirst = payload.first_name
         ? String(payload.first_name).trim()
