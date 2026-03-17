@@ -74,6 +74,7 @@ export const selfGuidedOverviewData: IProgramOverview = {
   cards: [
     {
       id: 1,
+      size: 'md',
       title: 'Energy Activation Report',
       subtitle: 'Your personal energy & magnetism code.',
       description: 'Inside:',
@@ -89,6 +90,8 @@ export const selfGuidedOverviewData: IProgramOverview = {
     },
     {
       id: 2,
+      size: 'md',
+
       title: `“His Secret Desires” Report`,
       subtitle: 'Calculated for your partner or desired partner.',
       description: 'Inside:',
@@ -103,6 +106,7 @@ export const selfGuidedOverviewData: IProgramOverview = {
     },
     {
       id: 3,
+      size: 'md',
       title: 'Compatibility & Couple Dynamics Report',
       subtitle: 'If you are in a relationship',
       description: 'Inside:',

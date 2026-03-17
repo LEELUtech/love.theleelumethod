@@ -27,7 +27,7 @@ export default function AnimatedMechanicStep({ id, icon, module_start, module_en
         ease: 'easeOut',
       }}
     >
-      <div className='relative h-full rounded-[20px] px-[30px] w-[392px] bg-white box-shadow-[0px 10px 20px rgba(0, 0, 0, 0.05)]'>
+      <div className='relative h-full rounded-[20px] px-[30px] w-full max-w-[392px] bg-white box-shadow-[0px 10px 20px rgba(0, 0, 0, 0.05)]'>
         <div
           className='w-[90px] h-[90px] rounded-full flex items-center justify-center absolute -top-10 right-1/2 translate-x-1/2'
           style={{

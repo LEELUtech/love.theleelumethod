@@ -9,7 +9,7 @@ import { Flex } from 'antd';
 import { ProgramsReceive } from '../components/receive';
 import { selfGuidedModuleData, selfGuidedOverviewData } from './static';
 import { ProgramOverview } from '../components/overview';
-import { OpacityTitleOrnamentIC } from '@/components/icons';
+import { LeftTitleOrnamentIC, OpacityTitleOrnamentIC } from '@/components/icons';
 import { Section } from '@/components/ui/containers/section';
 
 const content = {
@@ -86,7 +86,7 @@ const VideoContent = () => (
     />
 
     <div className='absolute -bottom-[50%] left-1/2 -translate-x-1/2 w-full flex justify-center'>
-      <OpacityTitleOrnamentIC stopColor='#ffffff' />
+      <LeftTitleOrnamentIC stopColor='#ffffff' />
     </div>
 
     <div className='absolute top-[62%] left-1/2 -translate-x-1/2 translate-y-1/2 z-20'>

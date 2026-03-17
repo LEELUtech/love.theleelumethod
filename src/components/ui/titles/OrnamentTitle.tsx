@@ -2,16 +2,20 @@ import { OpacityTitleOrnamentIC } from '@/components/icons';
 import RotateOnView from '../RotateOnView';
 
 interface Props {
-  mt: number;
   color: string;
   title: string;
   titleHightlight?: string;
   subtitle?: string;
+  classNames?: string;
 }
 
-export const OrnamentTitle = ({ mt, color, title, titleHightlight, subtitle }: Props) => (
-  <div className='relative' style={{ marginTop: mt }}>
-    <div className='absolute z-0 left-1/2 -translate-x-1/2 top-[-150px] md:top-[-180px] lg:top-[-300px] flex flex-row items-center justify-center gap-[130px]'>
+export const OrnamentTitle = ({ color, title, titleHightlight, subtitle, classNames = '' }: Props) => (
+  <div className={`relative ${classNames}`}>
+    <div
+      className={`absolute z-0 left-1/2 -translate-x-1/2 
+                  top-[-150px] md:top-[-180px] lg:top-[-300px]
+                  flex flex-row items-center justify-center gap-[130px] `}
+    >
       <div
         className='relative overflow-hidden w-[340px] h-[340px] sm:w-[418px] sm:h-[418px] md:translate-y-[50px] lg:translate-y-[60px]   '
         style={{

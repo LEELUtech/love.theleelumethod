@@ -61,7 +61,7 @@ export const HowItWorks = () => {
         <OrnamentTitle
           color='#E5B8B8'
           title='HOW IT WORKS:'
-          mt={300}
+          classNames='mt-[300px]'
           subtitle='The value of our session begins before we speak.'
         />
 

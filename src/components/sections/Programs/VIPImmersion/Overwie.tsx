@@ -60,7 +60,10 @@ interface Props {
 
 export const VIPImmersionOverview = ({ overviews }: Props) => {
   return (
-    <Section backgroundImage='/images/programs/self-guided-transformation/mechanics_section_bg.png'>
+    <Section
+      backgroundImage='/images/programs/self-guided-transformation/mechanics_section_bg.png'
+      wrapperClasses='py-8 lg:py-0'
+    >
       <Flex vertical gap={120}>
         {overviews.map((overview) => (
           <Card key={overview.id} {...overview} />

@@ -88,7 +88,7 @@ export const guidedBreakthroughModuleData: IProgramsReceive = {
 export const guidedBreakthroughOverviewData: IProgramOverview = {
   title: (
     <OrnamentTitle
-      mt={300}
+      classNames='mt-[200px] lg:mt-[300px]'
       title='The Extended Leelu Method'
       titleHightlight='Compatibility Blueprint'
       color='#ffffff'

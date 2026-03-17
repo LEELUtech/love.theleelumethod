@@ -31,7 +31,7 @@ export default function CostOfWaitingSection() {
       : '...';
 
   return (
-    <section className='relative lg:pb-[116px] pb-[140px]'>
+    <section className='relative lg:pb-[116px]'>
       <div className='max-w-[1600px] mx-auto sm:px-6 lg:px-[112px] 2xl:px-[180px] relative py-[80px] lg:py-[110px] px-4'>
         <div className='text-center'>
           {/* Top Image */}
