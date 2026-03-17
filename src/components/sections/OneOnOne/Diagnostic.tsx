@@ -22,7 +22,7 @@ const content = {
 const DiagnosticImg = () => {
   return (
     <div className='flex-1 relative flex justify-center mt-[40px]'>
-      <div className='relative w-full max-w-[490px] max-h-[529px] aspect-[360/348] lg:aspect-[490/529] lg:min-w-[440px]'>
+      <div className='relative w-full max-w-[490px] max-h-[529px] aspect-[379/410] lg:aspect-[490/529] lg:min-w-[440px]'>
         <Image
           src='/images/lily/lily_3.png'
           alt='I am Lily Chystofat'
