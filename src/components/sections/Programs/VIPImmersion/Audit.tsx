@@ -28,7 +28,7 @@ export const VIPImmersionAudit = () => {
   const { title, subtitle, description, list, description_bottom, highlight } = content;
 
   return (
-    <Section backgroundImage='/images/bg/whatif-bg.jpg' wrapperClasses='py-8 lg:py-0'>
+    <Section backgroundImage='/images/bg/whatif-bg.jpg' wrapperClasses='py-[80px]'>
       <Flex className='flex-col-reverse lg:flex-row lg:space-between lg:mt-[175px] lg:gap-[90px] xl:gap-[110px] 2xl:gap-[130px]'>
         <Flex className='flex-1' vertical gap={24}>
           <h3 className='text-[48px]/[120%] font-canela font-light text-brand-deep'>{title}</h3>

@@ -97,7 +97,7 @@ const CoreValueSection = () => {
           </div>
 
           {/* Heading */}
-          <h2 className='max-w-[1000px] mx-auto font-thin text-[32px]/[44px] lg:text-[28px]/[40px] font-canela text-brand-deep mb-6 mt-[80px] md:mt-[180px]'>
+          <h2 className='max-w-[1000px] mx-auto font-thin text-[32px]/[44px] font-canela text-brand-deep mb-6 mt-[80px] md:mt-[180px]'>
             This is the foundational intelligence most couples pay thousands in therapy to maybe, eventually uncover.{' '}
             <span className='font-normal'>You&apos;re getting it in 60 seconds for {priceLabel}</span>
             —the price of a small coffee.

@@ -242,7 +242,7 @@ export default function ChooseYourPathSection() {
         <div className='relative flex justify-center'>
           <div
             className="
-											absolute left-1/2 lg:top-[-220px] top-[-200px] -translate-x-1/2
+											absolute left-1/2 lg:top-[-210px] top-[-160px] -translate-x-1/2
 											flex items-center justify-center overflow-hidden
 											bg-[#EB4F68]
 											before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay

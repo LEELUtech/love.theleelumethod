@@ -10,7 +10,7 @@ import { Primary } from './Primary';
 export const OneOnOneSection = () => {
   return (
     <>
-      <Diagnostic />
+      {/* <Diagnostic /> */}
       <HowItWorks />
       <WhoThis />
       <Pricing />

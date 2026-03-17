@@ -7,8 +7,8 @@ const CredentialsSection = () => {
       <div>
         {/* === MOBILE + TABLET IMAGE (TOP) === */}
         <div className='flex justify-center mb-[128px] lg:hidden'>
-          <div className='relative w-[361px] h-[500px] md:w-[461px] md:h-[600px]'>
-            <Image src='/images/lily/lily_8.png' alt='Credentials' fill quality={100} className='rounded-[113px]' />
+          <div className='relative w-full max-w-[595px] aspect-[361/459] lg:aspect-[595/913]'>
+            <Image src='/images/lily/lily_8.png' alt='Credentials' fill quality={100} className='rounded-[60px]' />
 
             {/* Logo Badge */}
             <div
@@ -82,7 +82,7 @@ const CredentialsSection = () => {
 
           {/* RIGHT: IMAGE (DESKTOP ONLY) */}
           <div className='hidden lg:flex'>
-            <div className='relative w-[595px] h-[913px] shrink-0'>
+            <div className='relative w-full max-w-[595px]  aspect-[595/913] shrink-0'>
               <Image src='/images/lily/lily_8.png' alt='Credentials' fill quality={100} className='rounded-[113px]' />
 
               {/* Logo Badge */}

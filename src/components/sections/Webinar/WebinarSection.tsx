@@ -25,7 +25,7 @@ const WebinarSection = () => {
             </h1>
           </div>
 
-          <p className='text-body font-canela font-normal text-[#5A5757] mb-4 leading-[26px] text-center lg:text-left md:text-left'>
+          <p className='text-body relative z-[100] font-canela font-normal text-[#5A5757] mb-4 leading-[26px] text-center lg:text-left md:text-left'>
             Discover the <span className='text-brand-primary'>3 secrets</span> to choosing the right partner, creating
             healthy connection, and ending the cycle of disappointment forever.
           </p>

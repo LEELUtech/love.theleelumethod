@@ -2,6 +2,7 @@ import FixSection from '@/components/sections/QuizResult/FixSection';
 import HeroSection from '@/components/sections/QuizResult/HeroSection';
 import ProfileGlitchSection from '@/components/sections/QuizResult/ProfileGlitchSection';
 import QuizResultTagger from '@/components/sections/QuizResult/QuizResultTagger';
+import FooterLayout from '@/components/ui/footer/FooterLayout';
 import { quizResults } from '@/utils/quiz-results';
 import { redirect } from 'next/navigation';
 import React from 'react';
@@ -25,6 +26,7 @@ const QuizResultPage = ({ searchParams }: QuizResultPageProps) => {
       <HeroSection title={result.title} />
       <ProfileGlitchSection description={result.description} secondaryDescription={result.secondaryDescription} />
       <FixSection />
+      <FooterLayout withNavigation={false} />
     </main>
   );
 };

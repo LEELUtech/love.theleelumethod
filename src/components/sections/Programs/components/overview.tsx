@@ -126,7 +126,7 @@ export const ProgramOverview = ({ title, subtitle, description, overviews, cards
 
       {link && (
         <Button
-          className='mt-[145px] w-full max-w-[392px]'
+          className='mt-[50px] lg:mt-[145px] w-full max-w-[392px]'
           href={link.href}
           trackingData={{
             cta_name: 'program_overview_cta',

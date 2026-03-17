@@ -110,7 +110,7 @@ const GOAL_CONTENT = {
     phase: 3,
     title: 'THE STRATEGY',
     highlight: '(The Future)',
-    highlightColor: 'text-brand-gold',
+    highlightColor: 'text-brand-primary',
     description: `This is the Crown Jewel of the system. We move from relational competence into long-term mastery. You’ll leave with a customized roadmap for your specific union—ensuring you remain emotionally grounded and irresistibly present for years to come.`,
   },
 };

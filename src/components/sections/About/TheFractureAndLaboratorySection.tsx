@@ -7,7 +7,6 @@ import Image from 'next/image';
 const TheFractureAndLaboratorySection = () => {
   return (
     <Section backgroundImage='/images/about/fracture_section_bg.png' wrapperClasses='py-[80px]'>
-      {' '}
       <div>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-12 items-center'>
           {/* Left Column - Image */}
@@ -73,11 +72,12 @@ const TheFractureAndLaboratorySection = () => {
               className='
     relative overflow-hidden
     w-[180px] h-[180px]
-    lg:w-[238px] lg:h-[249px]
+    lg:w-[210px] lg:h-[220px]
+    3xl:w-[238px] 3xl:h-[249px]
 
     translate-x-[250px] translate-y-[80px]
     md:translate-x-[120px] md:translate-y-[50px]
-    lg:translate-x-[125px] lg:translate-y-[60px]
+    3xl:translate-x-[125px] 3xl:translate-y-[60px]
   '
               style={{
                 WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 15%, rgba(0,0,0,0) 100%)',
@@ -110,7 +110,8 @@ const TheFractureAndLaboratorySection = () => {
             <div
               className='relative overflow-hidden
     w-[261px] h-[266px]
-    lg:w-[512px] lg:h-[524px]
+    lg:w-[412px] lg:h-[422px]
+    3xl:w-[512px] 3xl:h-[524px]
   '
               style={{
                 WebkitMaskImage:
@@ -148,11 +149,12 @@ const TheFractureAndLaboratorySection = () => {
               className='
     relative overflow-hidden
     w-[180px] h-[180px]
-    lg:w-[259px] lg:h-[242px]
+    lg:w-[210px] lg:h-[220px]
+    3xl:w-[259px] 3xl:h-[242px]
 
     -translate-x-[250px] translate-y-[90px]
     md:-translate-x-[120px] md:translate-y-[50px]
-    lg:-translate-x-[120px] lg:translate-y-[60px]
+    3xl:-translate-x-[120px] 3xl:translate-y-[60px]
   '
               style={{
                 WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 15%, rgba(0,0,0,0) 100%)',
