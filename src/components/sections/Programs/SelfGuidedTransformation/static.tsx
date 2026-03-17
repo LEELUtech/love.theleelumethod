@@ -91,7 +91,6 @@ export const selfGuidedOverviewData: IProgramOverview = {
     {
       id: 2,
       size: 'md',
-
       title: `“His Secret Desires” Report`,
       subtitle: 'Calculated for your partner or desired partner.',
       description: 'Inside:',
