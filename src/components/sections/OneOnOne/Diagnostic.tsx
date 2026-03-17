@@ -65,7 +65,7 @@ const DiagnosticImg = () => {
 };
 export const Diagnostic = () => {
   return (
-    <Section wrapperClasses='!pb-0'>
+    <Section wrapperClasses='!pb-0 !px-2 sm:!px-6 lg:!px-[40px] 4xl:!px-[180px]'>
       <div className='flex flex-col-reverse lg:flex-row  gap-[76px]'>
         <div>
           <div className='text-brand-deep flex-1 lg:max-w-[610px] flex flex-col items-center text-center lg:items-start lg:text-left'>
