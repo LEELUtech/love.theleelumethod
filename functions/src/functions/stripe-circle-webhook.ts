@@ -1,4 +1,3 @@
-// functions/src/webhooks/stripeCircleWebhook.ts
 import { onRequest } from "firebase-functions/v2/https";
 import Stripe from "stripe";
 import { defineSecret } from "firebase-functions/params";
@@ -30,8 +29,10 @@ import {
 } from "../utils/stripeCircleWebhook.helpers";
 import { applyPurchaseCampaignTags } from "../lib/zoho-campaigns-purchase";
 import { markCompatibilityCodePurchased } from "../lib/zoho-scoring";
+import { db } from "../configs/firebase";
 
-// Secrets must be attached to this function (Firebase v2)
+const STRIPE_CIRCLE_WEBHOOK_SECRET = defineSecret("STRIPE_CIRCLE_WEBHOOK_SECRET");
+const STRIPE_SECRET_KEY_LILYCHYSTOFAT = defineSecret("STRIPE_SECRET_KEY_LILYCHYSTOFAT");
 const ZOHO_CLIENT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_ID_LILYCHYSTOFAT");
 const ZOHO_CLIENT_SECRET_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_SECRET_LILYCHYSTOFAT");
 const ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT");
@@ -41,13 +42,14 @@ const ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT = defineSecret(
   "ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT",
 );
 const ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT = defineSecret("ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT");
-// const ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT");
-const ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT = "6782764000008928434";
+const ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT");
 const ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT = defineSecret(
   "ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT",
 );
 
-// Zoho Analytics secrets
+const CIRCLE_API_KEY = defineSecret("CIRCLE_API_KEY");
+const CIRCLE_HEADLESS_KEY = defineSecret("CIRCLE_HEADLESS_KEY");
+
 const ZOHO_ANALYTICS_API_DOMAIN = defineSecret("ZOHO_ANALYTICS_API_DOMAIN_LILYCHYSTOFAT");
 const ZOHO_ANALYTICS_ORG_ID = defineSecret("ZOHO_ANALYTICS_ORG_ID_LILYCHYSTOFAT");
 const ZOHO_ANALYTICS_WORKSPACE_ID = defineSecret("ZOHO_ANALYTICS_WORKSPACE_ID_LILYCHYSTOFAT");
@@ -55,6 +57,41 @@ const ZOHO_ANALYTICS_VIEW_ID = defineSecret("ZOHO_ANALYTICS_VIEW_ID_LILYCHYSTOFA
 
 function safeId(id: string) {
   return id.length > 10 ? `${id.slice(0, 6)}…${id.slice(-4)}` : id;
+}
+
+async function cleanupInstallmentPlan(
+  email: string,
+  productType: string | null,
+  status: string,
+): Promise<void> {
+  const snap = await db.collection("installment_plans").where("email", "==", email).get();
+  for (const planDoc of snap.docs) {
+    const data = planDoc.data();
+    if (data.status === status && data.product_type === productType) {
+      await planDoc.ref.delete();
+    }
+  }
+}
+
+async function createInstallmentPlan(
+  piId: string,
+  email: string,
+  customerId: string,
+  amount: number | null,
+  productType: string | null,
+  paymentMethodId: string | null,
+): Promise<void> {
+  const dueDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+  await db.collection("installment_plans").doc(piId).set({
+    email,
+    stripe_customer_id: customerId,
+    amount,
+    due_date: dueDate,
+    attempt_count: 0,
+    status: "pending",
+    product_type: productType,
+    payment_method_id: paymentMethodId,
+  });
 }
 
 function buildLandingPage(site: string, pagePath?: string | null) {
@@ -84,7 +121,6 @@ function isoFromStripeEvent(event: Stripe.Event): string {
 }
 
 function makeAnalyticsEventId(piId: string, step: string, stripeEventId: string) {
-  // ✅ unique per step, stable per webhook event
   return `${piId}:${step}:${stripeEventId}`;
 }
 
@@ -93,12 +129,16 @@ export const stripeCircleWebhook = onRequest(
     cors: true,
     region: "us-central1",
     secrets: [
+      STRIPE_CIRCLE_WEBHOOK_SECRET,
+      STRIPE_SECRET_KEY_LILYCHYSTOFAT,
+      CIRCLE_API_KEY,
+      CIRCLE_HEADLESS_KEY,
       ZOHO_CLIENT_ID_LILYCHYSTOFAT,
       ZOHO_CLIENT_SECRET_LILYCHYSTOFAT,
       ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT,
       ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT,
       ZOHO_API_DOMAIN_LILYCHYSTOFAT,
-      // ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT,
+      ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT,
       ZOHO_ANALYTICS_API_DOMAIN,
       ZOHO_ANALYTICS_ORG_ID,
       ZOHO_ANALYTICS_WORKSPACE_ID,
@@ -112,8 +152,6 @@ export const stripeCircleWebhook = onRequest(
     const startedAt = Date.now();
     const leaseId = `wh_${Date.now()}_${Math.random().toString(16).slice(2)}`;
 
-    console.log("stripeCircleWebhook IniT");
-
     try {
       if (req.method !== "POST") {
         res.status(405).send("Method Not Allowed");
@@ -123,13 +161,7 @@ export const stripeCircleWebhook = onRequest(
       const sig = req.headers["stripe-signature"];
       const rawBody = (req as unknown as StripeRawBodyRequest).rawBody;
 
-      console.log({ rawBody });
-      console.log({ sig });
-      console.log(configs.stripeCircleWebhookSecret);
-
       if (!rawBody || !sig || !configs.stripeCircleWebhookSecret) {
-        console.log("stripeCircleWebhook Configs");
-
         res.status(400).send("Missing required webhook data");
         return;
       }
@@ -144,8 +176,6 @@ export const stripeCircleWebhook = onRequest(
           configs.stripeCircleWebhookSecret,
         );
       } catch (e) {
-        console.log("Event Error");
-
         console.error("Stripe signature verification failed", errToMessage(e));
         res.status(400).send("Webhook signature verification failed");
         return;
@@ -199,9 +229,6 @@ export const stripeCircleWebhook = onRequest(
 
       const leadSource = cleanStr(metadata.lead_source) || utmFirstSource || null;
 
-      // ---------------------------------------------------
-      // helper: unified Analytics emit
-      // ---------------------------------------------------
       const emit = async (args: {
         funnel_step:
           | "payment_failed"
@@ -227,7 +254,6 @@ export const stripeCircleWebhook = onRequest(
         zoho_contact_id?: string | null;
         zoho_deal_id?: string | null;
 
-        // if you want a custom timestamp
         event_time_override?: string;
       }) => {
         const existing: PaymentRecord | null = await getPaymentRecord(pi.id);
@@ -289,9 +315,6 @@ export const stripeCircleWebhook = onRequest(
         });
       };
 
-      // ---------------------------------------------------
-      // CANCELED
-      // ---------------------------------------------------
       if (event.type === "payment_intent.canceled") {
         const msg = "Payment canceled";
 
@@ -348,9 +371,6 @@ export const stripeCircleWebhook = onRequest(
         return;
       }
 
-      // ---------------------------------------------------
-      // FAILED
-      // ---------------------------------------------------
       if (event.type === "payment_intent.payment_failed") {
         const msg = "Payment failed";
 
@@ -404,7 +424,6 @@ export const stripeCircleWebhook = onRequest(
           });
         }
 
-        // Zoho best-effort (NO UTM)
         try {
           const email = cleanStr(metadata.email) || cleanStr(pi.receipt_email);
           const pt = cleanStr(metadata.product_type);
@@ -452,9 +471,6 @@ export const stripeCircleWebhook = onRequest(
         return;
       }
 
-      // ---------------------------------------------------
-      // SUCCEEDED gate
-      // ---------------------------------------------------
       if (pi.status !== "succeeded") {
         res.status(200).send("Payment not succeeded");
         return;
@@ -481,7 +497,6 @@ export const stripeCircleWebhook = onRequest(
           ? getProductName(productTypeFromMeta as ProductType)
           : null;
 
-      // Always upsert base doc early
       try {
         await upsertPaymentBaseFromIntent(pi, event.id);
       } catch (e) {
@@ -491,7 +506,6 @@ export const stripeCircleWebhook = onRequest(
         });
       }
 
-      // Idempotency / concurrency (lease)
       const lease = await acquirePaymentLease(pi, event.id, leaseId);
       if (lease.state === "already_completed") {
         console.log("Already completed", { pi: pi.id, event: safeId(event.id) });
@@ -513,7 +527,6 @@ export const stripeCircleWebhook = onRequest(
         leaseId,
       });
 
-      // Firestore: paid (advance-only)
       await markFunnelStepAdvanceOnly(pi.id, "paid");
 
       try {
@@ -522,7 +535,6 @@ export const stripeCircleWebhook = onRequest(
         // ignore
       }
 
-      // Analytics: paid
       try {
         await emit({
           funnel_step: "paid",
@@ -533,7 +545,6 @@ export const stripeCircleWebhook = onRequest(
           delivery_status: null,
           delivery_error: null,
           abandon_reason: null,
-          // для paid логично оставить event.created (Stripe)
           event_time_override: isoFromStripeEvent(event),
         });
       } catch (e) {
@@ -543,15 +554,9 @@ export const stripeCircleWebhook = onRequest(
         });
       }
 
-      // Zoho contact
       let contactId: string | undefined;
       try {
         const { firstName, lastName } = splitName(metadata.name);
-
-        console.log("Creating NEW Zoho contact", {
-          email: validation.email,
-          productType: String(validation.productType),
-        });
 
         const c = await createOrUpdateContact({
           email: validation.email,
@@ -586,15 +591,6 @@ export const stripeCircleWebhook = onRequest(
         });
       }
 
-      // Campaigns tags: applied right after paid (guaranteed, independent of delivery)
-      console.log("applyPurchaseCampaignTags: env check", {
-        refreshToken: process.env.ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT
-          ? process.env.ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT.slice(0, 6) + "…"
-          : "EMPTY",
-        listkey: process.env.ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT
-          ? process.env.ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT.slice(0, 6) + "…"
-          : "EMPTY",
-      });
       try {
         await applyPurchaseCampaignTags(pi);
       } catch (e) {
@@ -604,7 +600,6 @@ export const stripeCircleWebhook = onRequest(
         });
       }
 
-      // CRM scoring: mark compatibility_report purchase (best-effort)
       if (normalizedProductType === "compatibility_report" && validation.email) {
         try {
           await markCompatibilityCodePurchased(validation.email);
@@ -616,7 +611,6 @@ export const stripeCircleWebhook = onRequest(
         }
       }
 
-      // Delivery
       try {
         await processPayment(pi);
 
@@ -629,7 +623,37 @@ export const stripeCircleWebhook = onRequest(
           checkoutStatus: "Delivered",
         });
 
-        // Analytics: delivered
+        if (metadata.source === "installment_retry" && validation.email) {
+          try {
+            await cleanupInstallmentPlan(validation.email, normalizedProductType, "overdue");
+            console.log("Installment overdue plan cleaned up", { email: validation.email });
+          } catch (e) {
+            console.error("Overdue plan cleanup failed (non-critical)", { error: errToMessage(e) });
+          }
+        }
+
+        if (metadata.source === "installment_early" && validation.email) {
+          try {
+            await cleanupInstallmentPlan(validation.email, normalizedProductType, "pending");
+            console.log("Installment early plan cleaned up", { email: validation.email });
+          } catch (e) {
+            console.error("Early plan cleanup failed (non-critical)", { error: errToMessage(e) });
+          }
+        }
+
+        if (metadata.installment === "1" && customerId) {
+          try {
+            const paymentMethodId = typeof pi.payment_method === "string" ? pi.payment_method : null;
+            await createInstallmentPlan(pi.id, validation.email, customerId, piAmount, normalizedProductType, paymentMethodId);
+            console.log("Installment plan created", { payment_intent_id: pi.id });
+          } catch (e) {
+            console.error("Installment plan creation failed (non-critical)", {
+              payment_intent_id: pi.id,
+              error: errToMessage(e),
+            });
+          }
+        }
+
         try {
           await emit({
             funnel_step: "delivered",
@@ -696,7 +720,6 @@ export const stripeCircleWebhook = onRequest(
         return;
       }
 
-      // Deal only after delivery success
       try {
         const existing = await getPaymentRecord(pi.id);
 
@@ -712,10 +735,7 @@ export const stripeCircleWebhook = onRequest(
           if (!contactId) {
             console.warn("No Zoho contactId, skipping deal creation", { payment_intent_id: pi.id });
           } else {
-            //FIX!!!!
-            // const dealLayoutId = cleanStr(ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT.value());
-
-            const dealLayoutId = cleanStr(ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT);
+            const dealLayoutId = cleanStr(ZOHO_DEAL_LAYOUT_ID_LILYCHYSTOFAT.value());
             const dealName = `${productNameHuman ?? "Purchase"} - ${validation.email}`;
 
             const dealId = await createDeal({

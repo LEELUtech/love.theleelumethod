@@ -200,8 +200,6 @@ export const ewebinarWebhook = onRequest(
 
       const body = (req.body || {}) as EwebinarPayload;
 
-      console.log("ewebinarWebhook RAW PAYLOAD", JSON.stringify(body));
-
       const email = normEmail(body.email);
       const action = normAction(body.action);
 

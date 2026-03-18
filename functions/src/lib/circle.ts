@@ -342,6 +342,25 @@ export const createChat: CreateChat = async (memberId, token, tier) => {
   }
 };
 
+export const deactivateCircleMember = async (email: string): Promise<boolean> => {
+  const member = await findCircleMemberByEmail(email);
+  if (!member) {
+    console.warn("[Circle] deactivateCircleMember: member not found", { email });
+    return false;
+  }
+
+  try {
+    const response = await makeCircleRequest<{ success: boolean }>(
+      `/community_members/${member.id}`,
+      { method: "DELETE" },
+    );
+    return response.success;
+  } catch (err) {
+    console.error("[Circle] deactivateCircleMember failed", { email, err });
+    return false;
+  }
+};
+
 export const sendMessage = async (chatId: string, text: string, token: string): Promise<void> => {
   const payload = {
     rich_text_body: {

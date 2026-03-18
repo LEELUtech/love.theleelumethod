@@ -1,4 +1,4 @@
-import CheckoutFormSection from '@/components/sections/Checkout/CheckoutFormSection';
+import CheckoutFormSectionLazy from '@/components/sections/Checkout/CheckoutFormSectionLazy';
 import { ProgramsHero } from '@/components/sections/Programs/components/hero';
 import { ProgramItWorks } from '@/components/sections/Programs/components/it-works';
 import { ProgramResult } from '@/components/sections/Programs/components/result';
@@ -33,7 +33,7 @@ export default function VIPImmersionPage() {
         <ProgramItWorks {...vipImmersionItWorksData} />
 
         <CostOfWaitingSection />
-        <CheckoutFormSection productId={VIP_IMMERSION} />
+        <CheckoutFormSectionLazy productId={VIP_IMMERSION} />
         <SalesPageTagger />
       </main>
 

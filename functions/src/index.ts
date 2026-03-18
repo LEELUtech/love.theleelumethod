@@ -9,3 +9,4 @@ export { completeDiagnosticSession } from "./functions/completeDiagnosticSession
 export { typeformWebhook } from "./functions/typeform-webhook";
 export { circleWebhook } from "./functions/circleWebhook";
 export { markInactiveCourseUsers } from "./functions/markInactiveCourseUsers";
+export { processInstallments } from "./functions/processInstallments";

@@ -87,10 +87,10 @@ let stripe: Stripe | null = null;
 
 export function getStripeClient(): Stripe {
   if (!stripe) {
-    if (!configs.stripeSecretKeyTest) {
+    if (!configs.stripeSecretKeyLilychystofat) {
       throw new Error("Stripe secret key (test) is not configured");
     }
-    stripe = new Stripe(configs.stripeSecretKeyTest, {
+    stripe = new Stripe(configs.stripeSecretKeyLilychystofat, {
       apiVersion: "2025-04-30.basil",
     });
   }

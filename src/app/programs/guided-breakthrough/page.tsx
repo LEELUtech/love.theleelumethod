@@ -1,4 +1,4 @@
-import CheckoutFormSection from '@/components/sections/Checkout/CheckoutFormSection';
+import CheckoutFormSectionLazy from '@/components/sections/Checkout/CheckoutFormSectionLazy';
 import { ProgramsHero } from '@/components/sections/Programs/components/hero';
 import { ProgramItWorks } from '@/components/sections/Programs/components/it-works';
 import { ProgramResult } from '@/components/sections/Programs/components/result';
@@ -27,7 +27,7 @@ export default function GuidedBreakthroughPage() {
         <ProgramItWorks {...guidedBreakthroughItWorksData} />
 
         <CostOfWaitingSection />
-        <CheckoutFormSection productId={GUIDED_BREAKTHROUGH} />
+        <CheckoutFormSectionLazy productId={GUIDED_BREAKTHROUGH} />
         <SalesPageTagger />
       </main>{' '}
       <FooterLayout withNavigation={false} className='lg:mt-[-200px]' backgroundImage='/images/bg/checkout_bg.png' />

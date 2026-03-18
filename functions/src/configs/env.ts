@@ -6,8 +6,7 @@ export const configs = {
   email: process.env.SENDING_EMAIL || process.env.EMAIL,
   password: process.env.SENDING_PASSWORD || process.env.PASSWORD,
   stripeCircleWebhookSecret: process.env.STRIPE_CIRCLE_WEBHOOK_SECRET || "",
-  stripeSecretKey: process.env.STRIPE_SECRET_KEY_TEST,
-  stripeSecretKeyTest: process.env.STRIPE_SECRET_KEY_TEST,
+  stripeSecretKeyLilychystofat: process.env.STRIPE_SECRET_KEY_LILYCHYSTOFAT,
   baseUrl: process.env.NEXT_PUBLIC_BASE_URL || process.env.DOMAIN_URL || "http://localhost:3000",
   zohoWebsiteDomain: process.env.ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT || "",
   // Circle API configuration

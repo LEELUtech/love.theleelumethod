@@ -53,6 +53,7 @@ type Props = {
 
   productName?: string;
   priceLabel: string;
+  firstPaymentLabel?: string;
   loading: boolean;
   buttonText?: string;
 };
@@ -68,6 +69,7 @@ export function StripeCardPart({
 
   productName,
   priceLabel,
+  firstPaymentLabel,
   loading,
   buttonText = 'SIGN UP NOW',
 }: Props) {
@@ -142,12 +144,13 @@ export function StripeCardPart({
           postalCode: billing.postalCode,
           country: billing.country,
 
-          // last-touch UTM
           utmSource: utm?.utm_source,
           utmMedium: utm?.utm_medium,
           utmCampaign: utm?.utm_campaign,
           utmContent: utm?.utm_content,
           utmTerm: utm?.utm_term,
+
+          installment: firstPaymentLabel ? '1' : undefined,
         });
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : 'Failed to update payment info. Please try again.';
@@ -196,7 +199,6 @@ export function StripeCardPart({
 
   return (
     <>
-      {/* Card fields */}
       <div className='mt-4 space-y-3'>
         <div className={fieldClass}>
           <CardNumberElement
@@ -235,7 +237,6 @@ export function StripeCardPart({
         {error ? <p className='mt-1 text-xs text-red-600'>{error}</p> : null}
       </div>
 
-      {/* Order summary */}
       <div className='mt-[56px] md:mt-[56px] lg:mt-[94px]'>
         <h4 className='font-canela font-light text-brand-black text-[32px] md:text-[28px] lg:text-[32px]'>
           Order summary
@@ -258,12 +259,20 @@ export function StripeCardPart({
 
           <div className='flex items-baseline justify-between gap-4'>
             <p className='font-lato text-body font-normal uppercase tracking-[0.03em] text-brand-black'>DUE TODAY</p>
-            <p className='font-lato text-body font-normal text-brand-black'>{loading ? '...' : priceLabel}</p>
+            <p className='font-lato text-body font-normal text-brand-black'>
+              {loading ? '...' : (firstPaymentLabel ?? priceLabel)}
+            </p>
           </div>
+
+          {firstPaymentLabel ? (
+            <div className='flex items-baseline justify-between gap-4'>
+              <p className='font-lato text-body font-normal text-[#41444E]'>Due in 30 days</p>
+              <p className='font-lato text-body font-normal text-[#41444E]'>{loading ? '...' : firstPaymentLabel}</p>
+            </div>
+          ) : null}
         </div>
       </div>
 
-      {/* Button */}
       <Button
         type='button'
         onClick={onPay}
