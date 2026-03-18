@@ -83,7 +83,7 @@ export default function SecretsHeroSection() {
       <div className='container pt-8 pb-16 md:pt-12 md:pb-20 lg:pt-16 lg:pb-[112px] px-4'>
         <div className='relative flex flex-col items-center justify-center w-full text-center gap-4 md:gap-5 lg:gap-6'>
           <div className='relative flex flex-col items-center gap-3 md:gap-4 mt-4 md:mt-5 lg:mt-6'>
-            <div className='relative w-[278px] h-[290px] md:w-[220px] md:h-[240px] lg:w-[288px] lg:h-[290px]'>
+            <div className='relative w-[268px] h-[217px] md:h-[290px]'>
               <Image
                 src='/images/resources/resources-section-1.png'
                 alt='Woman smiling in a red sweater'
@@ -93,7 +93,7 @@ export default function SecretsHeroSection() {
               />
 
               <ArcAutoOnce
-                className='absolute inset-0 -z-0 -translate-y-[18%] pointer-events-none -translate-x-[4%]'
+                className='hidden md:block absolute inset-0 -z-0 -translate-y-[18%] pointer-events-none -translate-x-[4%]'
                 endAt={0.9}
                 flightStart={0.2}
                 durMs={1500}

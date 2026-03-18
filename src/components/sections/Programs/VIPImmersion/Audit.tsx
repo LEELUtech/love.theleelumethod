@@ -49,12 +49,12 @@ export const VIPImmersionAudit = () => {
         <div className=' flex-1 w-full'>
           <div className='relative mx-auto w-full max-w-[400px] mb-10 lg:mb-0 lg:mx-0 lg:max-w-[518px] aspect-[518/820]'>
             <div>
-              <div className='relative max-w-[518px] aspect-[518/408] '>
+              <div className='relative max-w-[493px] aspect-[493/367]'>
                 <Image src='/images/resources/resources-section-3.png' alt='Resources Section 3' fill priority />
               </div>
               <div className='w-full h-1 bg-white' />
 
-              <div className='relative max-w-[518px] aspect-[518/408] '>
+              <div className='relative max-w-[493px] aspect-[493/367] '>
                 <Image src='/images/programs/phase_2.png' alt='Resources Section 3' fill priority />
               </div>
             </div>

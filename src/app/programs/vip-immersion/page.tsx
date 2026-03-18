@@ -33,7 +33,7 @@ export default function VIPImmersionPage() {
         <ProgramItWorks {...vipImmersionItWorksData} />
 
         <CostOfWaitingSection />
-        <CheckoutFormSectionLazy productId={VIP_IMMERSION} />
+        {/* <CheckoutFormSectionLazy productId={VIP_IMMERSION} /> */}
         <SalesPageTagger />
       </main>
 
