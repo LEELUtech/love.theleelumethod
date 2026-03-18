@@ -115,7 +115,7 @@ export const FooterNavigation = () => {
               </li>
               <li>
                 <Link
-                  href='/leelu'
+                  href=''
                   className='text-[11px] font-lato font-medium leading-6 tracking-widest text-black uppercase'
                 >
                   Leelu
