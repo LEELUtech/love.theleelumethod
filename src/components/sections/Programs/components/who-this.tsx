@@ -70,7 +70,7 @@ export const ProgramsWhoThis = (props: Props) => {
           <div className='relative order-1 lg:order-2 flex justify-center lg:justify-end'>
             <div className='relative w-full max-w-[380px] md:max-w-[420px] lg:max-w-[520px]'>
               <div className='relative'>
-                <div className='relative w-full h-[520px] md:h-[620px] lg:w-[496px] lg:h-[834px] rounded-[100px] overflow-hidden'>
+                <div className='relative w-full h-[459px]  lg:w-[496px] lg:h-[834px] rounded-[100px] overflow-hidden'>
                   <Image src={imgSrc} alt='' fill priority quality={100} />
                 </div>
               </div>
