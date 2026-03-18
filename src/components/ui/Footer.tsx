@@ -168,9 +168,10 @@ export default function Footer({ className }: { className?: string }) {
           </div>
 
           <div className='order-1 lg:order-1'>
-            <div className=' text-[32px] md:text-[32px] leading-[130%]'>
-              <span className='font-medium font-canela tracking-tight mr-1'>THE LEELU</span>
-              <span className='font-canela font-light'>METHOD</span>
+            <div className=' text-[32px]/[130%] flex gap-1 font-canela text-brand-black-100'>
+              <span className='font-light'>THE</span>
+              <span className='font-medium '> LEELU</span>
+              <span className='font-light'>METHOD</span>
             </div>
 
             <p className='mt-2 text-gray-600 font-medium font-lato leading-6 text-[11px] uppercase max-w-xs'>
