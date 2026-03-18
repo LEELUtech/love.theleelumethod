@@ -4,12 +4,11 @@ import Image from 'next/image';
 import React from 'react';
 import AnimatedMechanicStep from './AnimatedMechanicStep';
 import SlowVideo from '@/components/ui/SlowVideo';
-import { Flex } from 'antd';
 
 import { ProgramsReceive } from '../components/receive';
 import { selfGuidedModuleData, selfGuidedOverviewData } from './static';
 import { ProgramOverview } from '../components/overview';
-import { LeftTitleOrnamentIC, OpacityTitleOrnamentIC } from '@/components/icons';
+import { LeftTitleOrnamentIC } from '@/components/icons';
 import { Section } from '@/components/ui/containers/section';
 
 const content = {
@@ -133,7 +132,7 @@ export default function MechanicsDeliverablesSection() {
             <VideoContent />
           </div>
 
-          <Flex vertical className='flex-1 mb-[78px] lg:mb-0'>
+          <div className='flex-1 col mb-[78px] lg:mb-0 lg:mt-[130px]'>
             <h2 className='text-[32px]/[126%] md:text-[48px]/[126%] font-canela font-light text-brand-deep mb-4'>
               {workbook.title}
             </h2>
@@ -141,7 +140,7 @@ export default function MechanicsDeliverablesSection() {
             <p className='text-[24px]/[126%] md:text-[32px]/[126%] font-canela font-light text-brand-deep'>
               {workbook.description}
             </p>
-          </Flex>
+          </div>
         </article>
 
         <ProgramOverview {...selfGuidedOverviewData} />

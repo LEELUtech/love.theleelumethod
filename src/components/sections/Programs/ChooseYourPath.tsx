@@ -191,9 +191,9 @@ const Card = ({ size, title, description, listTitle, list, link, id, for: forTex
 
       <div className='mt-6 space-y-[48px] mb-6'>
         <div>
-          <p className='font-lato font-bold text-brand-black text-[18px] mb-3'>{listTitle}</p>
+          <p className='font-lato font-bold text-brand-black text-[18px] mb-3 pl-5'>{listTitle}</p>
 
-          <ul className={`${listClass} flex flex-col`}>
+          <ul className={`${listClass} flex flex-col pl-8 gap-6`}>
             {list.map((item, index) => (
               <li key={index} className='font-lato list-disc text-brand-gray text-[15px]/[24px]'>
                 {item}
@@ -265,11 +265,11 @@ export default function ChooseYourPathSection() {
           </div>
         </div>
 
-        <h2 className='text-center font-canela font-thin text-brand-deep text-[60px] lg:text-[72px] leading-[110%]'>
+        <h2 className='text-center font-canela font-thin text-brand-deep text-[60px] mt-[30px] lg:mt-[60px] lg:text-[72px] leading-[110%]'>
           CHOOSE YOUR PATH
         </h2>
 
-        <div className='mt-10 mb-[60px] lg:mb-[130px] lg:mt-[178px] grid grid-cols-1 2xl:grid-cols-3 gap-12 2xl:gap-6 items-start'>
+        <div className='mt-[80px] mb-[60px] lg:mb-[130px] lg:mt-[178px] grid grid-cols-1 2xl:grid-cols-3 gap-12 2xl:gap-6 items-start'>
           {CARDS.map((card) => (
             <Card key={card.id} {...card} />
           ))}

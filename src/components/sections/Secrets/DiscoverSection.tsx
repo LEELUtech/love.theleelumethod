@@ -14,12 +14,10 @@ const Card = ({ title, description, withMarginTop = false }: ICard) => {
 
   return (
     <div
-      className={`bg-white rounded-[32px] w-[361px] p-8 md:py-8 lg:py-12 lg:px-[56px] bs:w-[392px] h-[233px] lg:h-[256px] flex flex-col ${marginTop}`}
+      className={`bg-white rounded-[32px] w-full p-8 md:py-8 lg:py-12 lg:px-[56px] min-h-[233px] lg:min-h-[256px] flex flex-col ${marginTop}`}
     >
       <h3 className='font-canela text-[32px] mb-4 text-brand-black-100 font-light leading-[126%]'>{title}</h3>
-      <p className='text-[#5A5757] font-medium text-body font-lato leading-[22px] md:leading-[24px] lg:leading-[26px]'>
-        {description}
-      </p>
+      <p className='text-[#5A5757] font-medium font-lato tracking-[3%] text-[17px]/[26px]'>{description}</p>
     </div>
   );
 };
@@ -33,7 +31,7 @@ export default function DiscoverSection() {
 
       <div className='container relative z-10 px-4'>
         <div className='flex flex-col items-center mb-8 md:mb-10 lg:mb-12'>
-          <div className='relative w-[361px] min-h-[379px] md:w-[361px] md:h-[379px] lg:w-[356px] lg:h-[384px] mb-8'>
+          <div className='relative w-full max-w-[361px] min-h-[379px] md:h-[379px] lg:w-[356px] lg:h-[384px] mb-8'>
             <Image
               src='/icons/ornament_4.svg'
               alt=''
