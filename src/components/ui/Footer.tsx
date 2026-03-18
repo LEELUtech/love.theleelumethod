@@ -122,7 +122,7 @@ export default function Footer({ className }: { className?: string }) {
                   </li>
                   <li>
                     <Link
-                      href='/leelu'
+                      href=''
                       className='text-[11px] font-lato font-medium leading-6 tracking-widest text-black uppercase'
                     >
                       Leelu
@@ -130,7 +130,7 @@ export default function Footer({ className }: { className?: string }) {
                   </li>
                   <li>
                     <Link
-                      href='/transformations'
+                      href='/programs#stories'
                       className='text-[11px] font-lato font-medium leading-6 tracking-widest text-black uppercase'
                     >
                       Client stories
@@ -154,7 +154,9 @@ export default function Footer({ className }: { className?: string }) {
                   </li>
                   <li>
                     <Link
-                      href='/legal'
+                      target='_blank'
+                      rel='norrefer'
+                      href='https://leelu.life/policies/legal-disclaimers?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAdGRleAQneRJleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA8xMjQwMjQ1NzQyODc0MTQAAaeduVepr3QRrs-bTvPWLKsoji8WJJoJbpOhLij7yAbVt_9pZ7DxxJ8aSyyN7Q_aem_U9pWInXlbWVzy9oC8dfXcQ'
                       className='text-[11px] font-lato font-medium leading-6 tracking-widest text-black uppercase'
                     >
                       Legal
