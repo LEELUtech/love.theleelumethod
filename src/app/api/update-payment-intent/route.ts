@@ -6,7 +6,7 @@ import { getStripe } from '@/lib/stripe';
 import { upsertContactCheckoutStarted } from '@/lib/zoho-functions';
 import { emitFunnelEvent } from '@/lib/emitFunnelEvent';
 import { db } from '@/lib/firebase';
-import { doc, runTransaction, serverTimestamp, getDoc, type DocumentData } from 'firebase/firestore';
+import { doc, runTransaction, serverTimestamp, getDoc, collection, query, where, getDocs, type DocumentData } from 'firebase/firestore';
 import type Stripe from 'stripe';
 
 const stripe = getStripe();
@@ -51,11 +51,29 @@ type Body = {
   leadSource?: string;
 
   salesiqVisitorId?: string;
+  installment?: string;
 };
 
 function clean(v?: string | null): string | undefined {
   const s = (v ?? '').trim();
   return s ? s : undefined;
+}
+
+async function findInstallmentPlan(
+  email: string,
+  productType: string
+): Promise<{ amount: number; status: string } | null> {
+  const snap = await getDocs(
+    query(collection(db, 'installment_plans'), where('email', '==', email))
+  );
+  const plan = snap.docs.find(d => {
+    const data = d.data();
+    return (data.status === 'overdue' || data.status === 'pending') && data.product_type === productType;
+  });
+  if (!plan) return null;
+  const data = plan.data();
+  const amount = data.amount;
+  return typeof amount === 'number' && amount > 0 ? { amount, status: data.status } : null;
 }
 
 function nonEmptyString(v: unknown): string | null {
@@ -250,10 +268,40 @@ export async function POST(req: NextRequest) {
     // lead_source (optional from FE)
     setMetaIfPresent(nextMeta, 'lead_source', body.leadSource);
 
+    // Installment amount (existing plan takes priority over toggle)
+    const installmentIn = clean(body.installment);
+    let installmentAmount: number | undefined;
+    let setupFutureUsage: 'off_session' | undefined;
+
+    let existingPlan: { amount: number; status: string } | null = null;
+    try {
+      existingPlan = await findInstallmentPlan(email, productTypeIn);
+    } catch (e) {
+      console.error('Installment plan check failed (non-critical)', { e });
+    }
+
+    if (existingPlan !== null) {
+      installmentAmount = existingPlan.amount;
+      nextMeta.source = existingPlan.status === 'overdue' ? 'installment_retry' : 'installment_early';
+    } else if (installmentIn === '1') {
+      nextMeta.installment = '1';
+      if (pi.metadata?.installment !== '1') {
+        installmentAmount = Math.ceil(pi.amount / 2);
+        nextMeta.original_amount = String(pi.amount);
+        setupFutureUsage = 'off_session';
+      }
+    } else if (pi.metadata?.installment === '1' && pi.metadata?.original_amount) {
+      const orig = parseInt(pi.metadata.original_amount, 10);
+      if (Number.isFinite(orig) && orig > 0) installmentAmount = orig;
+      nextMeta.installment = '';
+    }
+
     const piUpdated = await stripe.paymentIntents.update(intentId, {
       receipt_email: email,
       customer: customerId ?? undefined,
       metadata: nextMeta,
+      ...(installmentAmount !== undefined ? { amount: installmentAmount } : {}),
+      ...(setupFutureUsage ? { setup_future_usage: setupFutureUsage } : {}),
     });
 
     // Snapshot for analytics / firestore

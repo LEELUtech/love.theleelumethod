@@ -72,6 +72,7 @@ export type UpdateIntentPayload = {
 
 	// NEW
 	site?: string;
+	installment?: string;
 };
 
 export type CreateIntentResponse = {

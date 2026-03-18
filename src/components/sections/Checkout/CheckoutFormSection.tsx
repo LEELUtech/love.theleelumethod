@@ -107,6 +107,7 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
   } = useCheckoutStore();
 
   const [billing, setBilling] = React.useState<BillingForm>(initialBilling);
+  const [payInInstallments, setPayInInstallments] = React.useState(false);
   const [submitAttempted, setSubmitAttempted] = React.useState(false);
   const [hadSecretOnce, setHadSecretOnce] = React.useState(false);
   const [errors, setErrors] = React.useState(() => validateBilling(initialBilling));
@@ -138,6 +139,16 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
           showCents: false,
         })
       : '...';
+
+  const halfPriceLabel =
+    !productLoading && product
+      ? formatPriceFromCents(Math.ceil(product.price / 2), {
+          currency: product.currency ?? 'USD',
+          showCents: true,
+        })
+      : '...';
+
+  const firstPaymentLabel = payInInstallments && !productLoading && product ? halfPriceLabel : undefined;
 
   const showStripe = !!clientSecret;
 
@@ -433,6 +444,42 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
                 Payment Info
               </h3>
 
+              <div className='mt-8 flex gap-3'>
+                <button
+                  type='button'
+                  onClick={() => setPayInInstallments(false)}
+                  className={`flex-1 rounded-[8px] border px-4 py-3 text-left transition-colors ${
+                    !payInInstallments
+                      ? 'border-brand-primary bg-brand-primary/5'
+                      : 'border-[#C3C6D1] bg-white'
+                  }`}
+                >
+                  <p className='font-lato text-[13px] font-semibold uppercase tracking-[0.05em] text-brand-black'>
+                    Pay in full
+                  </p>
+                  <p className='mt-0.5 font-lato text-[15px] text-[#41444E]'>
+                    {productLoading ? '...' : priceLabel}
+                  </p>
+                </button>
+
+                <button
+                  type='button'
+                  onClick={() => setPayInInstallments(true)}
+                  className={`flex-1 rounded-[8px] border px-4 py-3 text-left transition-colors ${
+                    payInInstallments
+                      ? 'border-brand-primary bg-brand-primary/5'
+                      : 'border-[#C3C6D1] bg-white'
+                  }`}
+                >
+                  <p className='font-lato text-[13px] font-semibold uppercase tracking-[0.05em] text-brand-black'>
+                    2 payments
+                  </p>
+                  <p className='mt-0.5 font-lato text-[15px] text-[#41444E]'>
+                    {productLoading ? '...' : `${halfPriceLabel} × 2`}
+                  </p>
+                </button>
+              </div>
+
               <p className='mt-10 font-lato font-normal text-[15px] text-[#41444E] md:mt-8'>We accept</p>
 
               <div className='mt-2 flex flex-wrap items-center gap-3'>
@@ -454,6 +501,7 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
                     loading={productLoading}
                     productName={product?.name}
                     priceLabel={priceLabel}
+                    firstPaymentLabel={firstPaymentLabel}
                     buttonText={getButtonText(productId)}
                     onSuccess={() => {
                       markSuccess();

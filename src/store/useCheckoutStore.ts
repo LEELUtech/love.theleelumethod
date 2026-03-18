@@ -78,6 +78,7 @@ function buildUpdateKey(
 
 		// NEW: site is now considered in deduplication
 		norm(p.site),
+		norm(p.installment ?? ""),
 	].join("|");
 }
 

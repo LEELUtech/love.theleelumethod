@@ -212,8 +212,6 @@ export const calendlyWebhook = onRequest(
 
       const body = (req.body || {}) as CalendlyWebhookBody;
 
-      console.log("calendlyWebhook RAW PAYLOAD", JSON.stringify(body));
-
       const eventType = body.event;
       const payload = body.payload ?? {};
 
