@@ -20,7 +20,8 @@ export const FooterLabel = ({ mb = 12 }: Props) => {
       </span>
 
       <div className=' text-[32px] md:text-[32px] leading-[130%]'>
-        <span className='font-medium font-canela tracking-tight mr-1'>THE LEELU</span>
+        <span className='font-canela font-light'>THE</span>
+        <span className='font-medium font-canela tracking-tight mr-1'> LEELU</span>
         <span className='font-canela font-light'>METHOD</span>
       </div>
 

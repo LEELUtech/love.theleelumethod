@@ -1,4 +1,5 @@
 import Button from '@/components/ui/Button';
+import { Logo } from '@/components/ui/Logo';
 import Image from 'next/image';
 import React from 'react';
 
@@ -31,15 +32,7 @@ const HeroSection = ({ title }: HeroSectionProps) => {
 
       {/* LOGO */}
       <div className='absolute top-[43px] md:top-[36px] left-1/2 -translate-x-1/2 z-50'>
-        <div className='font-light text-[24px] font-canela flex items-center gap-3 text-brand-black'>
-          <span className='w-8 h-8 relative'>
-            <Image src='/leelu_logo.svg' alt='Lily Chystofat Logo' fill className='object-contain' priority />
-          </span>
-          <div className='whitespace-nowrap'>
-            <span className='font-medium tracking-tight mr-1'>THE LEELU</span>
-            <span className='font-light'>METHOD</span>
-          </div>
-        </div>
+        <Logo />
       </div>
 
       {/* CONTENT */}
