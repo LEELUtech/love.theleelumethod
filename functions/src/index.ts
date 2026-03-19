@@ -7,6 +7,6 @@ export { calendlyWebhook } from "./functions/calendly-webhook";
 export { completeTrustTemple } from "./functions/completeTrustTemple";
 export { completeDiagnosticSession } from "./functions/completeDiagnosticSession";
 export { typeformWebhook } from "./functions/typeform-webhook";
-export { circleWebhook } from "./functions/circleWebhook";
-export { markInactiveCourseUsers } from "./functions/markInactiveCourseUsers";
+
+export { syncCircleCourseProgress } from "./functions/syncCircleCourseProgress";
 export { processInstallments } from "./functions/processInstallments";

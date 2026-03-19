@@ -393,6 +393,92 @@ interface MemberTokenResponse {
 
 type GetMemberToken = (email: string) => Promise<MemberTokenResponse | null>;
 
+interface CircleSpaceListItem {
+  id: number;
+  name: string;
+  slug: string;
+}
+
+export interface CircleCourseMemberRecord {
+  community_member_id: number;
+  community_member?: {
+    email?: string;
+  };
+}
+
+interface CircleCourseMembersListResponse {
+  records: CircleCourseMemberRecord[];
+  has_next_page: boolean;
+}
+
+export interface CircleCommunityMemberRecord {
+  id: number;
+  email?: string;
+  last_seen_at?: string | null;
+}
+
+interface CircleCommunityMembersListResponse {
+  records: CircleCommunityMemberRecord[];
+  has_next_page: boolean;
+}
+
+export async function getCircleSpaceIdBySlug(slug: string): Promise<number | null> {
+  let page = 1;
+  let hasNext = true;
+  while (hasNext) {
+    try {
+      const resp = await makeCircleRequest<{
+        records?: CircleSpaceListItem[];
+        has_next_page?: boolean;
+      }>(`/spaces?per_page=100&page=${page}`, { method: "GET" });
+
+      const records = resp.records ?? [];
+      const match = records.find((s) => s.slug === slug);
+      if (match) return match.id;
+
+      hasNext = !!resp.has_next_page && records.length > 0;
+      page++;
+    } catch {
+      return null;
+    }
+  }
+  return null;
+}
+
+export async function getAllCircleCourseMembersForCourse(
+  spaceId: number,
+): Promise<CircleCourseMemberRecord[]> {
+  const all: CircleCourseMemberRecord[] = [];
+  let page = 1;
+  let hasNext = true;
+  while (hasNext) {
+    const resp = await makeCircleRequest<CircleCourseMembersListResponse>(
+      `/space_members?space_id=${spaceId}&per_page=100&page=${page}`,
+      { method: "GET" },
+    );
+    all.push(...(resp.records ?? []));
+    hasNext = resp.has_next_page;
+    page++;
+  }
+  return all;
+}
+
+export async function getAllCommunityMembers(): Promise<CircleCommunityMemberRecord[]> {
+  const all: CircleCommunityMemberRecord[] = [];
+  let page = 1;
+  let hasNext = true;
+  while (hasNext) {
+    const resp = await makeCircleRequest<CircleCommunityMembersListResponse>(
+      `/community_members?per_page=100&page=${page}`,
+      { method: "GET" },
+    );
+    all.push(...(resp.records ?? []));
+    hasNext = resp.has_next_page;
+    page++;
+  }
+  return all;
+}
+
 export const getMemberToken: GetMemberToken = async (email) => {
   const { headlessKey } = getCircleConfig();
 

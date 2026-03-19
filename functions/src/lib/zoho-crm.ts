@@ -562,8 +562,8 @@ export async function createOrUpdateContact(data: {
   // ---------- CREATE ----------
   const createData: Record<string, unknown> = {
     [CONTACT_FIELDS.Email]: email,
-    [CONTACT_FIELDS.First_Name]: safeFirstName || "Unknown",
-    [CONTACT_FIELDS.Last_Name]: safeLastName || "Customer",
+    [CONTACT_FIELDS.First_Name]: safeFirstName || "",
+    [CONTACT_FIELDS.Last_Name]: safeLastName || ".",
 
     [CONTACT_FIELDS.First_Product_Purchased]: cleanStr(data.productType),
     [CONTACT_FIELDS.Last_Product_Purchased]: cleanStr(data.productType),

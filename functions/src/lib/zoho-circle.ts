@@ -74,6 +74,32 @@ export async function updateLastModuleSubmission(email: string): Promise<void> {
   console.log("[zoho-circle] last module submission updated", { email });
 }
 
+export async function updateCircleCourseProgress(
+  email: string,
+  fields: {
+    circle_status?: "active" | "inactive";
+    last_module_submission?: string;
+    module_3_completed?: boolean;
+    module_6_completed?: boolean;
+    course_completed?: boolean;
+  },
+): Promise<void> {
+  const id = await findContactId(email);
+  if (!id) {
+    console.warn("[zoho-circle] contact not found for updateCircleCourseProgress", { email });
+    return;
+  }
+  const patch: Record<string, unknown> = {};
+  if (fields.circle_status !== undefined) patch.Circle_Status = fields.circle_status;
+  if (fields.last_module_submission !== undefined) patch.Last_Module_Submission = fields.last_module_submission;
+  if (fields.module_3_completed !== undefined) patch.Module_3_Completed = fields.module_3_completed;
+  if (fields.module_6_completed !== undefined) patch.Module_6_Completed = fields.module_6_completed;
+  if (fields.course_completed !== undefined) patch.Course_Completed = fields.course_completed;
+  if (Object.keys(patch).length === 0) return;
+  await patchContact(id, patch);
+  console.log("[zoho-circle] course progress updated", { email, ...fields });
+}
+
 const COURSE_PRODUCTS = ["protocol_essentials", "guided_breakthrough", "vip_immersion"];
 
 export async function findInactiveCourseContacts(cutoffDate: string): Promise<string[]> {
