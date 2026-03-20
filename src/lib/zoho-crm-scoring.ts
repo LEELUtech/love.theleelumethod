@@ -85,9 +85,11 @@ async function ensureContact(email: string, site?: string): Promise<string> {
   return newId;
 }
 
-export async function markQuizCompleted(email: string, site?: string): Promise<void> {
+export async function markQuizCompleted(email: string, site?: string, quizResult?: string): Promise<void> {
   const id = await ensureContact(email, site);
-  await patchContact(id, { Quiz_Completed: true }, "Quiz_Completed=true");
+  const fields: Record<string, unknown> = { Quiz_Completed: true };
+  if (quizResult) fields.Quiz_Result = quizResult;
+  await patchContact(id, fields, `Quiz_Completed=true Quiz_Result=${quizResult ?? "none"}`);
 }
 
 export async function markSalesPageVisited(email: string): Promise<void> {

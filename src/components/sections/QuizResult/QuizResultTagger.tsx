@@ -10,6 +10,13 @@ const typeToProfileTag: Record<string, string> = {
   endlessWaitingRoom: 'q_pf_proj',
 };
 
+const typeToTitle: Record<string, string> = {
+  brokenHeartStorm: 'The Broken Heart Storm',
+  lonelyHopeLoop: 'The Lonely Hope Loop',
+  silentBreakupRelationship: 'The Silent Breakup Relationship',
+  endlessWaitingRoom: 'The Endless Waiting Room',
+};
+
 const ALL_PROFILE_TAGS = Object.values(typeToProfileTag);
 const Q_EMAIL3_TRIGGER = 'q_email3_trigger';
 
@@ -32,7 +39,7 @@ export default function QuizResultTagger({ type }: { type: string }) {
         fetch('/api/quiz-completed', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email }),
+          body: JSON.stringify({ email, quizResult: typeToTitle[type] }),
         }),
       ]);
     })();
