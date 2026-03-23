@@ -59,6 +59,7 @@ export const processInstallments = onSchedule(
               installment: "2",
               product_type: product_type ?? "",
               source: "installment_cron",
+              email: email ?? "",
             },
           },
           { idempotencyKey: `installment_${doc.id}_${attempt_count ?? 0}` },
