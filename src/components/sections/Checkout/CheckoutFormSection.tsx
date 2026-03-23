@@ -490,7 +490,7 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
                 <Elements stripe={stripePromise} options={elementsOptions}>
                   <StripeCardPart
                     clientSecret={clientSecret}
-                    productType={productId}
+                    productType={effectiveProductId}
                     billing={billing}
                     ctx={ctx}
                     onSubmitAttempt={handleSubmitAttempt}

@@ -5,13 +5,14 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+    const quizResult = typeof body.quizResult === "string" ? body.quizResult.trim() : undefined;
 
     if (!email || !email.includes("@")) {
       return NextResponse.json({ ok: false, error: "Invalid email" }, { status: 400 });
     }
 
     const site = process.env.ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT || "unknown";
-    await markQuizCompleted(email, site);
+    await markQuizCompleted(email, site, quizResult);
 
     return NextResponse.json({ ok: true, email });
   } catch (e: unknown) {

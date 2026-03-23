@@ -161,7 +161,6 @@ function detectEventKind(eventName?: string): CalendlyEventKind | null {
   if (name.includes("9-session package")) return "nine_session";
   if (name.includes("3-session package")) return "three_session";
   if (name.includes("single session")) return "single";
-  if (name.includes("test session")) return "single";
 
   return null;
 }
