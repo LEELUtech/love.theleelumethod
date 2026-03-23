@@ -125,11 +125,13 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
 
     setBilling((prev) => ({ ...prev, email: emailFromUrl }));
 
-    checkWebinarDiscount(emailFromUrl).then((hasDiscount) => {
-      if (hasDiscount) {
-        setEffectiveProductId(WEBINAR_DISCOUNT_PRODUCT);
-      }
-    }).catch(() => {});
+    checkWebinarDiscount(emailFromUrl)
+      .then((hasDiscount) => {
+        if (hasDiscount) {
+          setEffectiveProductId(WEBINAR_DISCOUNT_PRODUCT);
+        }
+      })
+      .catch(() => {});
   }, [productId, searchParams]);
 
   const priceLabel =
@@ -308,7 +310,7 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
                 Order now
               </p>
 
-              <h2 className='mt-[23px] font-canela font-thin text-brand-black-100 text-[48px] lg:text-[60px] leading-[105%] text-center md:text-left'>
+              <h2 className='mt-[23px] font-canela font-thin text-brand-black-100 text-[42px] bg:text-[48px] lg:text-[60px] leading-[105%] text-center md:text-left'>
                 {productLoading ? 'Loading...' : product?.title}
               </h2>
 
@@ -449,26 +451,20 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
                   type='button'
                   onClick={() => setPayInInstallments(false)}
                   className={`flex-1 rounded-[8px] border px-4 py-3 text-left transition-colors ${
-                    !payInInstallments
-                      ? 'border-brand-primary bg-brand-primary/5'
-                      : 'border-[#C3C6D1] bg-white'
+                    !payInInstallments ? 'border-brand-primary bg-brand-primary/5' : 'border-[#C3C6D1] bg-white'
                   }`}
                 >
                   <p className='font-lato text-[13px] font-semibold uppercase tracking-[0.05em] text-brand-black'>
                     Pay in full
                   </p>
-                  <p className='mt-0.5 font-lato text-[15px] text-[#41444E]'>
-                    {productLoading ? '...' : priceLabel}
-                  </p>
+                  <p className='mt-0.5 font-lato text-[15px] text-[#41444E]'>{productLoading ? '...' : priceLabel}</p>
                 </button>
 
                 <button
                   type='button'
                   onClick={() => setPayInInstallments(true)}
                   className={`flex-1 rounded-[8px] border px-4 py-3 text-left transition-colors ${
-                    payInInstallments
-                      ? 'border-brand-primary bg-brand-primary/5'
-                      : 'border-[#C3C6D1] bg-white'
+                    payInInstallments ? 'border-brand-primary bg-brand-primary/5' : 'border-[#C3C6D1] bg-white'
                   }`}
                 >
                   <p className='font-lato text-[13px] font-semibold uppercase tracking-[0.05em] text-brand-black'>

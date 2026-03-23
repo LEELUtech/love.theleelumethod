@@ -122,7 +122,7 @@ export default function Footer({ className }: { className?: string }) {
                   </li>
                   <li>
                     <Link
-                      href='/leelu'
+                      href=''
                       className='text-[11px] font-lato font-medium leading-6 tracking-widest text-black uppercase'
                     >
                       Leelu
@@ -130,7 +130,7 @@ export default function Footer({ className }: { className?: string }) {
                   </li>
                   <li>
                     <Link
-                      href='/transformations'
+                      href='/programs#stories'
                       className='text-[11px] font-lato font-medium leading-6 tracking-widest text-black uppercase'
                     >
                       Client stories
@@ -154,7 +154,9 @@ export default function Footer({ className }: { className?: string }) {
                   </li>
                   <li>
                     <Link
-                      href='/legal'
+                      target='_blank'
+                      rel='norrefer'
+                      href='https://leelu.life/policies/legal-disclaimers?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAdGRleAQneRJleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA8xMjQwMjQ1NzQyODc0MTQAAaeduVepr3QRrs-bTvPWLKsoji8WJJoJbpOhLij7yAbVt_9pZ7DxxJ8aSyyN7Q_aem_U9pWInXlbWVzy9oC8dfXcQ'
                       className='text-[11px] font-lato font-medium leading-6 tracking-widest text-black uppercase'
                     >
                       Legal
@@ -166,9 +168,10 @@ export default function Footer({ className }: { className?: string }) {
           </div>
 
           <div className='order-1 lg:order-1'>
-            <div className=' text-[32px] md:text-[32px] leading-[130%]'>
-              <span className='font-medium font-canela tracking-tight mr-1'>THE LEELU</span>
-              <span className='font-canela font-light'>METHOD</span>
+            <div className=' text-[32px]/[130%] flex gap-1 font-canela text-brand-black-100'>
+              <span className='font-light'>THE</span>
+              <span className='font-medium '> LEELU</span>
+              <span className='font-light'>METHOD</span>
             </div>
 
             <p className='mt-2 text-gray-600 font-medium font-lato leading-6 text-[11px] uppercase max-w-xs'>

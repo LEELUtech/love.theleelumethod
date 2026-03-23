@@ -11,7 +11,10 @@ const ProgramFooter = () => {
       </div>
 
       <div className='font-canela text-[28px] md:text-[32px] leading-[1.2] tracking-tight'>
-        <span className='font-medium'>THE LEELU</span> <span className='font-light'>METHOD</span>
+        <span className='font-medium'>THE</span>
+
+        <span className='font-medium'>LEELU</span>
+        <span className='font-light'>METHOD</span>
       </div>
 
       <p className='mt-3 font-lato font-medium text-[11px] tracking-[0.05em] leading-[1.4] text-brand-black uppercase'>

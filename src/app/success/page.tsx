@@ -40,18 +40,20 @@ export default function SuccessPage() {
 
             {/* logo */}
             <div className='font-light transition text-[24px] md:text-[22px] lg:text-[24px] leading-[126%] font-canela flex items-center gap-2 md:gap-2.5 lg:gap-3 text-brand-black  justify-center md:justify-start mt-[47px]'>
-              <span className=' w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 relative flex-shrink-0'>
+              <span className='w-[29px] h-[29px] relative flex-shrink-0'>
                 <Image src='/leelu_logo.svg' alt='Lily Chystofat Logo' fill className='object-contain' priority />
               </span>
-              <div className='whitespace-nowrap lg:order-2'>
-                <span className='font-medium font-canela tracking-tight mr-1'>LILY</span>
-                <span className='font-canela font-light'>CHYSTOFAT</span>
+
+              <div className='whitespace-nowrap lg:order-2 font-canela flex gap-1'>
+                <span className='font-light'>THE</span>
+                <span className='font-medium'>LEELU</span>
+                <span className='font-canela'>METHOD</span>
               </div>
             </div>
           </div>
 
           {/* title */}
-          <h1 className='font-canela mt-4 lg:mt-0 text-[48px] leading-[1.12] text-brand-deep md:text-[56px] lg:text-[60px]'>
+          <h1 className='font-canela mt-4 text-[48px] text-brand-deep md:text-[56px] lg:text-[60px]'>
             <span className='font-normal'>Welcome.</span>{' '}
             <span className='font-thin'>You&apos;re exactly where you need to be.</span>
           </h1>

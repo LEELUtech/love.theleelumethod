@@ -67,11 +67,7 @@ const HeroSection = () => {
                 duration={5}
                 ease='easeOut'
                 className='absolute lg:left-[30%] left-[20%] pointer-events-none z-[1]
-			bottom-[-130px]
-			md:bottom-[-110px]
-			lg:bottom-[-100px]
-			hidden lg:block
-			'
+			bottom-[-130px] md:bottom-[-110px] lg:bottom-[-100px] hidden lg:block'
               >
                 <Image
                   src='/icons/ornament_13.svg'
@@ -110,7 +106,7 @@ const HeroSection = () => {
             <div className='mt-6 md:mt-7 lg:mt-[32px] order-2 lg:order-4'>
               <Button
                 variant='primary'
-                className='w-full lg:w-[75%] '
+                className='w-full max-w-[481px] lg:w-[75%] !px-0'
                 href={COMPABILITY_REPORT_LINKS.HERO_LINK.href}
                 trackingData={{
                   cta_name: 'compatibility_hero_cta',
