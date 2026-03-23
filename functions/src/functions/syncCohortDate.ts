@@ -3,7 +3,7 @@ import { logger } from "firebase-functions";
 import { defineSecret } from "firebase-functions/params";
 import * as admin from "firebase-admin";
 
-import { bulkUpdateCrmContactsBySite } from "../lib/zoho-crm";
+import { bulkUpdateAllCrmContacts } from "../lib/zoho-crm";
 import { bulkUpdateCampaignsContactField } from "../lib/zoho-campaigns";
 
 const ZOHO_CLIENT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_CLIENT_ID_LILYCHYSTOFAT");
@@ -14,7 +14,6 @@ const ZOHO_API_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_API_DOMAIN_LILYCHYSTOFA
 const ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT");
 const ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT = defineSecret("ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT");
 
-const COHORT_SITES = ["localhost", "leelu-v2.bndigital.dev"];
 
 function parseCohortDate(value: unknown): string | null {
   if (!value) return null;
@@ -69,8 +68,8 @@ export const syncCohortDate = onDocumentWritten(
       ? oldData.cohort_date_label.trim() || null
       : null;
 
-    if (cohortDate === oldDate && cohortLabel === oldLabel) {
-      logger.info("syncCohortDate: fields unchanged, skipping", { cohortDate, cohortLabel });
+    if (cohortLabel === oldLabel) {
+      logger.info("syncCohortDate: label unchanged, skipping", { cohortDate, cohortLabel });
       return;
     }
 
@@ -85,7 +84,7 @@ export const syncCohortDate = onDocumentWritten(
     if (cohortLabel) campaignsFields["Cohort Start Date Name"] = cohortLabel;
 
     const [crmResult, campaignsResult] = await Promise.allSettled([
-      bulkUpdateCrmContactsBySite(COHORT_SITES, crmFields),
+      bulkUpdateAllCrmContacts(crmFields),
       bulkUpdateCampaignsContactField(campaignsFields),
     ]);
 

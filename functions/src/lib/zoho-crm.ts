@@ -755,14 +755,11 @@ export async function updateContactFunnelStepByEmail(params: {
 }
 
 // ======================================================
-// BULK UPDATE BY SITE (cohort sync)
+// BULK UPDATE ALL CONTACTS (cohort sync)
 // ======================================================
-export async function bulkUpdateCrmContactsBySite(
-  sites: string[],
+export async function bulkUpdateAllCrmContacts(
   fields: Record<string, string>,
 ): Promise<{ updated: number; failed: number }> {
-  const criteriaInner = sites.map((s) => `(Site:equals:${s})`).join("OR");
-  const criteria = encodeURIComponent(`(${criteriaInner})`);
 
   let page = 1;
   let hasMore = true;
@@ -775,7 +772,7 @@ export async function bulkUpdateCrmContactsBySite(
     try {
       const data = await zohoRequest<any>({
         method: "GET",
-        url: `https://${configs.zohoApiCRMDomain}/crm/v2/Contacts/search?criteria=${criteria}&page=${page}&per_page=200`,
+        url: `https://${configs.zohoApiCRMDomain}/crm/v2/Contacts?page=${page}&per_page=200`,
       });
       contacts = data?.data ?? [];
       hasMore = data?.info?.more_records ?? false;
