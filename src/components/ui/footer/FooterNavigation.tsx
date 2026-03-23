@@ -139,7 +139,9 @@ export const FooterNavigation = () => {
             <ul className='space-y-2'>
               <li>
                 <Link
-                  href='/contact'
+                  href='https://mail.google.com/mail/?view=cm&to=hello@theleelumethod.com'
+                  target='_blank'
+                  rel='noopener noreferrer'
                   className='text-[11px] font-lato font-medium leading-6 tracking-widest text-black uppercase'
                 >
                   Contact
@@ -147,9 +149,7 @@ export const FooterNavigation = () => {
               </li>
               <li>
                 <Link
-                  target='_blank'
-                  rel='norrefer'
-                  href='https://leelu.life/policies/legal-disclaimers?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAdGRleAQneRJleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA8xMjQwMjQ1NzQyODc0MTQAAaeduVepr3QRrs-bTvPWLKsoji8WJJoJbpOhLij7yAbVt_9pZ7DxxJ8aSyyN7Q_aem_U9pWInXlbWVzy9oC8dfXcQ'
+                  href='/legal'
                   className='text-[11px] font-lato font-medium leading-6 tracking-widest text-black uppercase'
                 >
                   Legal
