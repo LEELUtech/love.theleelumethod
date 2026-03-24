@@ -10,3 +10,4 @@ export { typeformWebhook } from "./functions/typeform-webhook";
 
 export { syncCircleCourseProgress } from "./functions/syncCircleCourseProgress";
 export { processInstallments } from "./functions/processInstallments";
+export { flushFunnelEvents } from "./functions/flushFunnelEvents";
