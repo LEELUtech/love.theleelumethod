@@ -10,7 +10,7 @@ import { Section } from '@/components/ui/containers/section';
 export default function MechanicsDeliverablesSection() {
   return (
     <Section backgroundImage={'/images/programs/self-guided-transformation/mechanics_section_bg.png'}>
-      <div className='text-center mb-[60px] lg:mb-[150px]'>
+      <div className='text-center xs:mb-[60px]'>
         <ProgramsReceive {...guidedBreakthroughModuleData} />
         <ProgramOverview {...guidedBreakthroughOverviewData} />
       </div>

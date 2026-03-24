@@ -32,7 +32,7 @@ export default function CostOfWaitingSection() {
   return (
     <Section sectionClasses='relative' bottomBackgroundImage='/images/bg/noise_bottom_bg.jpg'>
       <div className='text-center'>
-        <div className='flex justify-center mb-12 relative pt-[230px] md:pt-[300px] lg:pt-[300px]'>
+        <div className='flex justify-center mb-12 relative pt-[150px] md:pt-[210px] lg:pt-[210px]'>
           <div className='absolute w-[268px] h-[290px] sm:w-[358px] sm:h-[376px] top-[-100px] md:top-[-200px] overflow-visible'>
             <Image
               src='/images/programs/guided-breakthrough/man-holding-rose-flower-back.png'

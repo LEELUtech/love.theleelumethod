@@ -93,6 +93,8 @@ export default function CheckoutFormSection() {
   const lastLeadEmailRef = React.useRef<string>('');
   const lastLeadEmailWithPIRef = React.useRef<string>('');
   const leadAbortRef = React.useRef<AbortController | null>(null);
+  const formRef = React.useRef(form);
+  formRef.current = form;
 
   const payFnRef = React.useRef<null | (() => Promise<void>)>(null);
   const [payState, setPayState] = React.useState<StripePayState>({
@@ -180,7 +182,7 @@ export default function CheckoutFormSection() {
 
   const captureLeadInternal = React.useCallback(
     async (opts?: { force?: boolean }) => {
-      const email = (form.email || '').trim().toLowerCase();
+      const email = (formRef.current.email || '').trim().toLowerCase();
       if (!email) return;
 
       if (!emailRegex.test(email)) return;
@@ -222,16 +224,9 @@ export default function CheckoutFormSection() {
         //
       }
     },
-    [form.email, intentId, intentToken, ctx],
+    [intentId, intentToken, ctx],
   );
 
-  React.useEffect(() => {
-    const email = (form.email || '').trim().toLowerCase();
-    if (!email) return;
-    if (!intentId || !intentToken) return;
-
-    captureLeadInternal({ force: true }).catch(() => {});
-  }, [intentId, intentToken, form.email, captureLeadInternal]);
 
   const setField = React.useCallback(<K extends keyof CompatibilityCheckoutForm>(key: K, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
