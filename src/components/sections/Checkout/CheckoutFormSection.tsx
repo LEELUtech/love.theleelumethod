@@ -222,10 +222,12 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
   const lastLeadEmailRef = React.useRef<string>('');
   const lastLeadEmailWithPIRef = React.useRef<string>('');
   const leadAbortRef = React.useRef<AbortController | null>(null);
+  const billingRef = React.useRef(billing);
+  billingRef.current = billing;
 
   const captureLeadInternal = React.useCallback(
     async (opts?: { force?: boolean }) => {
-      const email = (billing.email || '').trim().toLowerCase();
+      const email = (billingRef.current.email || '').trim().toLowerCase();
       if (!email) return;
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/;
@@ -249,16 +251,16 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
         paymentIntentId: intentId || undefined,
         intentToken: intentToken || undefined,
         email,
-        firstName: (billing.firstName || '').trim() || undefined,
-        lastName: (billing.lastName || '').trim() || undefined,
+        firstName: (billingRef.current.firstName || '').trim() || undefined,
+        lastName: (billingRef.current.lastName || '').trim() || undefined,
         sessionId: localStorage.getItem('ff_session_id') || undefined,
         ...(ctx || {}),
       };
 
       salesiqIdentify({
         email,
-        firstName: (billing.firstName || '').trim() || undefined,
-        lastName: (billing.lastName || '').trim() || undefined,
+        firstName: (billingRef.current.firstName || '').trim() || undefined,
+        lastName: (billingRef.current.lastName || '').trim() || undefined,
       });
 
       try {
@@ -273,7 +275,7 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
         //
       }
     },
-    [billing.email, billing.firstName, billing.lastName, intentId, intentToken, ctx],
+    [intentId, intentToken, ctx],
   );
 
   const onEmailBlur: React.FocusEventHandler<HTMLInputElement> = React.useCallback(() => {
@@ -281,13 +283,6 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
     captureLeadInternal().catch(() => {});
   }, [billing.email, captureLeadInternal]);
 
-  React.useEffect(() => {
-    const email = (billing.email || '').trim().toLowerCase();
-    if (!email) return;
-    if (!intentId || !intentToken) return;
-
-    captureLeadInternal({ force: true }).catch(() => {});
-  }, [intentId, intentToken, billing.email, captureLeadInternal]);
 
   return (
     <Section

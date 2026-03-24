@@ -260,15 +260,15 @@ export const ONE_ON_ONE_LINKS: RecordLink = {
   },
   SINGLE_SESSION_LINK: {
     label: 'BOOK SESSION',
-    href: '#',
+    href: 'https://calendly.com/chystofat/1-1-video-session-with-lily-chystofat',
   },
   THREE_PACKAGE_LINK: {
     label: 'BOOK PACKAGE',
-    href: '#',
+    href: 'https://calendly.com/chystofat/3-single-session-with-lily-chystofat',
   },
   NINE_PACKAGE_LINK: {
     label: 'BOOK PACKAGE',
-    href: '#',
+    href: 'https://calendly.com/chystofat/9-session-pakage-with-lily-chystofat',
   },
   PRIMARY_LINK: {
     label: 'BOOK YOUR SESSION',

@@ -49,7 +49,7 @@ export const ProgramOverview = ({ title, subtitle, description, overviews, cards
 
       <ul
         className='
-      grid grid-cols-1 gap-6 mb-[112px] justify-center justify-items-center
+      grid grid-cols-1 gap-x-6 gap-y-6 mb-[112px] justify-center justify-items-center
       md:grid-cols-4
       md:max-[947px]:[&>li:last-child:nth-child(odd)]:col-start-2
       xl:grid-cols-6
@@ -66,7 +66,7 @@ export const ProgramOverview = ({ title, subtitle, description, overviews, cards
           return (
             <li
               key={card.id}
-              className={`w-full min-[824px]:col-span-2 min-[948px]:max-w-[392px] rounded-[20px] pl-[30px] pr-4 bs:px-[30px] pt-[38px] ${pb} ${bgColor} box-shadow-[0px 10px 20px rgba(0, 0, 0, 0.05)]`}
+              className={`w-full min-[824px]:col-span-2 rounded-[20px] pl-[30px] pr-4 bs:px-[30px] pt-[38px] ${pb} ${bgColor} box-shadow-[0px 10px 20px rgba(0, 0, 0, 0.05)]`}
             >
               <StarIC className={`mb-[26px] ${card.iconColor}`} width={27} height={33} />
 
@@ -126,7 +126,7 @@ export const ProgramOverview = ({ title, subtitle, description, overviews, cards
 
       {link && (
         <Button
-          className='mt-[50px] lg:mt-[145px] w-full max-w-[392px]'
+          className='mt-[50px] lg:mt-[125px] w-full max-w-[392px]'
           href={link.href}
           trackingData={{
             cta_name: 'program_overview_cta',
