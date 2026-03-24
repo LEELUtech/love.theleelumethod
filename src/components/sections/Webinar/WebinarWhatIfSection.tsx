@@ -21,7 +21,7 @@ const WebinarWhatIfSection = () => {
               className='object-cover scale-x-[-1] object-[41%_30%] rounded-[1000px]'
             />
             <ArcAutoOnce
-              className='absolute inset-0 -z-0 -translate-y-[13%] pointer-events-none -translate-x-[-7%]'
+              className='absolute hidden lg:block inset-0 -z-0 -translate-y-[13%] pointer-events-none -translate-x-[-7%]'
               // endAt={0.9}
               flightStart={0.2}
               durMs={1300}

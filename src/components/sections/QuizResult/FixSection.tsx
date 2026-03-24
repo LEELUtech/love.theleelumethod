@@ -32,7 +32,8 @@ const FixSection = () => {
             </p>
 
             <Button
-              className='mt-[28px] md:mt-[36px] px-10 md:px-12 tracking-[0.18em] uppercase'
+              className='mt-[28px] md:mt-[36px] xs:px-4 px-10 md:px-12 tracking-[0.18em] uppercase xs:text-[12px] text-center'
+              href="https://leelutech.ewebinar.com/webinar/decoded-love-22610"
               trackingData={{
                 cta_name: 'secure_seat',
                 cta_text: 'SECURE YOUR SEAT TO RESET THE DYNAMIC',
