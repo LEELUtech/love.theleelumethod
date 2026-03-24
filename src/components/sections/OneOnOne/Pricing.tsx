@@ -199,7 +199,7 @@ export const Pricing = () => {
                 </h3>
 
                 <div className='flex flex-col items-center pt-[86px] mb-[56px] md:mb-[38px]'>
-                  <h4 className='text-h2 font-normal font-canela text-brand-black-100 mb-2.5 md:mb-3 uppercase'>
+                  <h4 className='text-h2 font-normal font-canela text-brand-black-100 mb-2.5 md:mb-3 uppercase text-center'>
                     {title}
                   </h4>
                   <h5 className='text-body font-lato text-brand-gray text-center'>{subtitle}</h5>
