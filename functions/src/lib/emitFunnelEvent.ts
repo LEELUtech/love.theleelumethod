@@ -250,7 +250,8 @@ function assertZohoImportOk(resData: unknown, requestId: string) {
   }
 }
 
-export async function appendRowToZohoAnalytics(row: FunnelEventRow, requestId: string): Promise<void> {
+export async function appendRowToZohoAnalytics(rows: FunnelEventRow | FunnelEventRow[], requestId: string): Promise<void> {
+  const rowsArray = Array.isArray(rows) ? rows : [rows];
   const apiDomain = configs.zohoApiAnalyticsDomain;
   const orgId = configs.zohoAnalyticsOrgId;
   const workspaceId = configs.zohoAnalyticsWorkspaceId;
@@ -268,7 +269,7 @@ export async function appendRowToZohoAnalytics(row: FunnelEventRow, requestId: s
     `?CONFIG=${encodeURIComponent(JSON.stringify(config))}`;
 
   const body = new URLSearchParams();
-  body.set("DATA", JSON.stringify([row]));
+  body.set("DATA", JSON.stringify(rowsArray));
 
   const doRequest = async (token: string) => {
     console.log("[emitFunnelEvent] >>> REQUEST START", {
@@ -276,8 +277,8 @@ export async function appendRowToZohoAnalytics(row: FunnelEventRow, requestId: s
       url,
       orgId,
       config,
-      row_keys: Object.keys(row),
-      row_preview: safePreview(row, 800),
+      rows_count: rowsArray.length,
+      row_preview: safePreview(rowsArray[0], 800),
     });
 
     const res = await axios.post(url, body.toString(), {

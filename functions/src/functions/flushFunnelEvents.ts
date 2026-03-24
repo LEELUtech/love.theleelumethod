@@ -1,6 +1,7 @@
 import { onSchedule } from "firebase-functions/v2/scheduler";
 import { logger } from "firebase-functions";
 import { defineSecret } from "firebase-functions/params";
+import * as admin from "firebase-admin";
 
 import { db } from "../configs/firebase";
 import { appendRowToZohoAnalytics, errToMessage, FunnelEventRow } from "../lib/emitFunnelEvent";
@@ -47,6 +48,9 @@ export const flushFunnelEvents = onSchedule(
 
     logger.info("flushFunnelEvents: flushing", { count: snapshot.size });
 
+    // Separate docs into ready and maxed-out
+    const ready: Array<{ doc: admin.firestore.QueryDocumentSnapshot; row: FunnelEventRow }> = [];
+
     for (const doc of snapshot.docs) {
       const data = doc.data();
 
@@ -54,31 +58,40 @@ export const flushFunnelEvents = onSchedule(
         logger.warn("flushFunnelEvents: max attempts reached, skipping", {
           docId: doc.id,
           event_id: data.event_id,
-          attempts: data._attempts,
         });
         continue;
       }
 
-      // Strip internal queue fields before sending to Zoho
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { _queued_at, _sent, _attempts, _last_error, _sent_at, ...row } = data;
+      ready.push({ doc, row: row as FunnelEventRow });
+    }
 
-      try {
-        await appendRowToZohoAnalytics(row as FunnelEventRow, doc.id);
-        await doc.ref.update({ _sent: true, _sent_at: new Date().toISOString() });
-        logger.info("flushFunnelEvents: sent", { docId: doc.id, event_id: row.event_id });
-      } catch (e) {
-        const error = errToMessage(e);
-        await doc.ref.update({
-          _attempts: (data._attempts || 0) + 1,
-          _last_error: error,
-        });
-        logger.warn("flushFunnelEvents: send failed", {
-          docId: doc.id,
-          event_id: row.event_id,
-          error,
-        });
-      }
+    if (ready.length === 0) return;
+
+    const requestId = `flush_${Date.now()}`;
+
+    try {
+      // Send all rows in one Zoho request
+      await appendRowToZohoAnalytics(ready.map((r) => r.row), requestId);
+
+      const sentAt = new Date().toISOString();
+      await Promise.all(ready.map(({ doc }) => doc.ref.update({ _sent: true, _sent_at: sentAt })));
+
+      logger.info("flushFunnelEvents: batch sent", { count: ready.length });
+    } catch (e) {
+      const error = errToMessage(e);
+      logger.warn("flushFunnelEvents: batch failed", { count: ready.length, error });
+
+      // Mark each doc as failed individually
+      await Promise.all(
+        ready.map(({ doc }) =>
+          doc.ref.update({
+            _attempts: (doc.data()._attempts || 0) + 1,
+            _last_error: error,
+          }),
+        ),
+      );
     }
   },
 );
