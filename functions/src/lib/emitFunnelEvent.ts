@@ -1,6 +1,7 @@
 // functions/src/lib/analytics/emitFunnelEvent.ts
 import axios, { AxiosError } from "axios";
 import { configs } from "../configs/env";
+import { db } from "../configs/firebase";
 
 export type FunnelValue = string | number | boolean | null;
 
@@ -123,7 +124,7 @@ function safePreview(obj: unknown, max = 1600) {
   }
 }
 
-function errToMessage(e: unknown): string {
+export function errToMessage(e: unknown): string {
   const ax = e as AxiosError | undefined;
   const status = ax?.response?.status;
   const data = ax?.response?.data;
@@ -249,7 +250,7 @@ function assertZohoImportOk(resData: unknown, requestId: string) {
   }
 }
 
-async function appendRowToZohoAnalytics(row: FunnelEventRow, requestId: string): Promise<void> {
+export async function appendRowToZohoAnalytics(row: FunnelEventRow, requestId: string): Promise<void> {
   const apiDomain = configs.zohoApiAnalyticsDomain;
   const orgId = configs.zohoAnalyticsOrgId;
   const workspaceId = configs.zohoAnalyticsWorkspaceId;
@@ -345,30 +346,18 @@ export async function emitFunnelEvent(input: FunnelEventRow): Promise<EmitResult
     funnel_step: step,
   });
 
-  const maxAttempts = 4;
-  const retryDelaysMs = [1500, 3000, 5000];
-
-  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-    try {
-      await appendRowToZohoAnalytics(row, requestId);
-      console.log("[emitFunnelEvent] done (delivered_to_zoho=true)", { requestId, eventId, attempt });
-      return { ok: true, event_id: eventId, delivered_to_zoho: true };
-    } catch (e) {
-      const msg = errToMessage(e);
-      const isLocked = msg.includes("ZDB_CANOVERRIDEEXCEPTION");
-
-      if (isLocked && attempt < maxAttempts) {
-        const delay = retryDelaysMs[attempt - 1];
-        console.warn("[emitFunnelEvent] table locked, retrying", { requestId, eventId, attempt, delayMs: delay });
-        await new Promise((r) => setTimeout(r, delay));
-        continue;
-      }
-
-      console.warn("[emitFunnelEvent] done (delivered_to_zoho=false)", { requestId, eventId, attempt, error: msg });
-      return { ok: true, event_id: eventId, delivered_to_zoho: false, error: msg };
-    }
+  try {
+    await db.collection("funnel_events_queue").add({
+      ...row,
+      _queued_at: new Date().toISOString(),
+      _sent: false,
+      _attempts: 0,
+    });
+    console.log("[emitFunnelEvent] queued", { requestId, eventId });
+    return { ok: true, event_id: eventId, delivered_to_zoho: false, error: "queued" };
+  } catch (e) {
+    const msg = errToMessage(e);
+    console.error("[emitFunnelEvent] failed to queue", { requestId, eventId, error: msg });
+    return { ok: false, event_id: eventId, error: msg };
   }
-
-  // unreachable, but TypeScript needs it
-  return { ok: true, event_id: eventId, delivered_to_zoho: false, error: "max retries exceeded" };
 }
