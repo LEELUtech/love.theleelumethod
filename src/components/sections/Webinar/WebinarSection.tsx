@@ -13,12 +13,12 @@ const WebinarSection = () => {
       style={{ backgroundImage: 'url(/images/bg/wooden-bg.jpg)' }}
     >
       <div className='container pt-[33px] pb-[30px] md:pb-28 lg:pt-[97px] lg:pb-[165px] px-4 flex flex-col-reverse lg:flex-row items-center justify-between md:gap-12 lg:gap-16'>
-        <div className='w-full max-w-[530px] lg:text-left md:static'>
+        <div className='w-full max-w-[530px] lg:text-left md:static -mt-[60px] lg:mt-0 relative z-10'>
           <div className='font-light hidden transition lg:flex text-[20px] md:text-[22px] lg:text-[24px] leading-[126%] font-canela  items-center gap-2 md:gap-2.5 lg:gap-3 text-brand-black mb-[32px] justify-center md:justify-start'>
             <Logo />
           </div>
 
-          <div className='text-center lg:text-left relative z-[100] -mt-[110px] lg:mt-0'>
+          <div className='text-center lg:text-left relative z-[100]'>
             <p className='text-[28px]/[126%] font-canela font-light text-black'>Free Masterclass</p>
             <h1 className='lg:text-[60px] leading-tight font-thin md:text-[48px] font-canela text-brand-deep mb-6 text-[48px]'>
               Decoded Love

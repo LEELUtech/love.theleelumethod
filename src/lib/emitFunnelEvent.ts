@@ -324,13 +324,30 @@ export async function emitFunnelEvent(input: FunnelEventRow): Promise<EmitResult
     source: row.source,
   });
 
-  try {
-    await appendRowToZohoAnalytics(row, requestId);
-    console.log("[emitFunnelEvent] done (delivered_to_zoho=true)", { requestId, eventId });
-    return { ok: true, event_id: eventId, delivered_to_zoho: true };
-  } catch (e) {
-    const msg = errToMessage(e);
-    console.warn("[emitFunnelEvent] done (delivered_to_zoho=false)", { requestId, eventId, error: msg });
-    return { ok: true, event_id: eventId, delivered_to_zoho: false, error: msg };
+  const maxAttempts = 4;
+  const retryDelaysMs = [1500, 3000, 5000];
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      await appendRowToZohoAnalytics(row, requestId);
+      console.log("[emitFunnelEvent] done (delivered_to_zoho=true)", { requestId, eventId, attempt });
+      return { ok: true, event_id: eventId, delivered_to_zoho: true };
+    } catch (e) {
+      const msg = errToMessage(e);
+      const isLocked = msg.includes("ZDB_CANOVERRIDEEXCEPTION");
+
+      if (isLocked && attempt < maxAttempts) {
+        const delay = retryDelaysMs[attempt - 1];
+        console.warn("[emitFunnelEvent] table locked, retrying", { requestId, eventId, attempt, delayMs: delay });
+        await new Promise((r) => setTimeout(r, delay));
+        continue;
+      }
+
+      console.warn("[emitFunnelEvent] done (delivered_to_zoho=false)", { requestId, eventId, attempt, error: msg });
+      return { ok: true, event_id: eventId, delivered_to_zoho: false, error: msg };
+    }
   }
+
+  // unreachable, but TypeScript needs it
+  return { ok: true, event_id: eventId, delivered_to_zoho: false, error: "max retries exceeded" };
 }
