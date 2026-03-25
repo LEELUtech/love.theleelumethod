@@ -102,22 +102,18 @@ async function setFieldsOrCreate(
 }
 
 
-/** Call when user downloads the lead magnet. */
 export async function markLeadMagnetDownloaded(email: string): Promise<void> {
   await setFields(email, { [SCORING_FIELDS.Lead_Magnet_Downloaded]: true });
 }
 
-/** Call when user completes the compatibility quiz. */
 export async function markQuizCompleted(email: string): Promise<void> {
   await setFields(email, { [SCORING_FIELDS.Quiz_Completed]: true });
 }
 
-/** Call when user purchases the compatibility_report product. */
 export async function markCompatibilityCodePurchased(email: string): Promise<void> {
   await setFields(email, { [SCORING_FIELDS.Compatibility_Code_Purchased]: true });
 }
 
-/** Call when user registers for a webinar. Creates CRM contact if it doesn't exist yet. */
 export async function markWebinarRegistered(
   email: string,
   meta?: { firstName?: string; lastName?: string },
@@ -125,17 +121,14 @@ export async function markWebinarRegistered(
   await setFieldsOrCreate(email, { [SCORING_FIELDS.Webinar_Registered]: true }, meta);
 }
 
-/** Call when user watched the live webinar (≥80%). */
 export async function markWebinarAttendedLive(email: string): Promise<void> {
   await setFields(email, { [SCORING_FIELDS.Webinar_Attended_Live]: true });
 }
 
-/** Call when user watched the webinar replay (≥80%). */
 export async function markWebinarAttendedReplay(email: string): Promise<void> {
   await setFields(email, { [SCORING_FIELDS.Webinar_Attended_Replay]: true });
 }
 
-/** Save compatibility state (Battle/Truce/Victory/Revolution/Absorption) to CRM contact. */
 export async function setCompatState(email: string, state: string): Promise<void> {
   const id = await findContactId(email);
   if (!id) {

@@ -1,13 +1,8 @@
-// src/lib/analytics/emitFunnelEvent.ts
 import "server-only";
 
 import { db } from "./firebase";
 import { collection, addDoc } from "firebase/firestore";
 
-/**
- * Zoho Analytics import wants flat rows.
- * Extra columns (SalesIQ etc.) are allowed but must be primitive (no objects/arrays).
- */
 export type FunnelValue = string | number | boolean | null;
 
 export type FunnelEventRow = {

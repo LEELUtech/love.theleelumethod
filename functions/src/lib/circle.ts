@@ -44,9 +44,7 @@ function isIdempotentGrantError(status: number, bodyText: string) {
 
   const lower = bodyText.toLowerCase();
 
-  // Your current error:
-  // {"success":false,"message":"User not added to space.","error_details":{}}
-  // This is ambiguous, but in practice it's usually "already invited/member".
+  // "user not added to space" usually means already invited/member
   if (lower.includes("user not added to space")) return true;
 
   // Common variants (future-proof):

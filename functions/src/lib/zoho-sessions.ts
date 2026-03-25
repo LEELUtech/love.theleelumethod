@@ -72,11 +72,6 @@ async function patchContact(id: string, fields: Record<string, unknown>): Promis
 }
 
 
-/**
- * Called when a Calendly booking is confirmed (payment successful).
- * Sets Session_Purchased = true, Package_Tier_Purchased, and optional extra fields
- * (e.g. Calendly_Event_UUID, Last_Session_Booked_At).
- */
 export async function markSessionPurchased(
   email: string,
   packageTier: SessionPackageTier,
@@ -95,9 +90,6 @@ export async function markSessionPurchased(
   console.log("[zoho-sessions] session purchased set", { email, packageTier });
 }
 
-/**
- * Called when a Trust Temple session is booked or canceled via Calendly.
- */
 export async function markTrustTempleBooked(
   email: string,
   booked: boolean,
@@ -115,9 +107,6 @@ export async function markTrustTempleBooked(
   console.log("[zoho-sessions] trust temple booked set", { email, booked });
 }
 
-/**
- * Called when a Trust Temple session is completed (attended).
- */
 export async function markTrustTempleCompleted(email: string): Promise<void> {
   const id = await findContactId(email);
   if (!id) {
@@ -129,10 +118,6 @@ export async function markTrustTempleCompleted(email: string): Promise<void> {
   console.log("[zoho-sessions] trust temple completed set", { email });
 }
 
-/**
- * Increments Diagnostic_Sessions_Completed counter in CRM by 1.
- * Returns the new value.
- */
 export async function incrementDiagnosticSessions(email: string): Promise<number> {
   const token = await getToken();
   const id = await findContactId(email);
@@ -153,10 +138,6 @@ export async function incrementDiagnosticSessions(email: string): Promise<number
   return next;
 }
 
-/**
- * Called when a Calendly booking is canceled.
- * Clears Session_Purchased and Package_Tier_Purchased.
- */
 export async function markSessionCanceled(email: string): Promise<void> {
   const id = await findContactId(email);
   if (!id) {

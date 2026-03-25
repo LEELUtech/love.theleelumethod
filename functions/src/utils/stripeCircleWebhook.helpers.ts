@@ -295,7 +295,6 @@ export async function upsertPaymentBaseFromIntent(
         page_path: cleanStr(metadata.page_path) ?? null,
         checkout_variant: cleanStr(metadata.checkout_variant) ?? null,
 
-        // Keep UTM in Firestore for now (CRM is clean)
         utm_first_source: cleanStr(metadata.utm_first_source) ?? null,
         utm_first_medium: cleanStr(metadata.utm_first_medium) ?? null,
         utm_first_campaign: cleanStr(metadata.utm_first_campaign) ?? null,
@@ -457,11 +456,6 @@ export async function updateProcessingStatus(
   await db.collection("payments").doc(paymentIntentId).set(updates, { merge: true });
 }
 
-/**
- * Lease lock:
- * - prevents parallel webhook executions from creating multiple deals
- * - supports retries after lock expiry
- */
 export async function acquirePaymentLease(
   pi: Stripe.PaymentIntent,
   eventId: string,
@@ -499,7 +493,6 @@ export async function acquirePaymentLease(
     page_path: cleanStr(metadata.page_path) ?? null,
     checkout_variant: cleanStr(metadata.checkout_variant) ?? null,
 
-    // Keep UTM in Firestore for now (CRM is clean)
     utm_first_source: cleanStr(metadata.utm_first_source) ?? null,
     utm_first_medium: cleanStr(metadata.utm_first_medium) ?? null,
     utm_first_campaign: cleanStr(metadata.utm_first_campaign) ?? null,

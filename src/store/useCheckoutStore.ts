@@ -75,7 +75,6 @@ function buildUpdateKey(
 		norm(p.checkoutVariant),
 		norm(p.pagePath),
 
-		// NEW: site is now considered in deduplication
 		norm(p.site),
 		norm(p.installment ?? ""),
 	].join("|");
