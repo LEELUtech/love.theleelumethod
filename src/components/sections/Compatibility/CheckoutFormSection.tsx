@@ -24,7 +24,7 @@ import { StripeCardPart, type StripePayState } from '@/components/sections/Compa
 import CheckoutSectionLoader from '@/components/sections/Checkout/CheckoutSectionLoader';
 import Button from '@/components/ui/Button';
 
-const pk = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!;
+const pk = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY_LILYCHYSTOFAT!;
 const stripePromise = loadStripe(pk);
 
 type CompatibilityCheckoutForm = {
