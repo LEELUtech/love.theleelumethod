@@ -5,7 +5,7 @@ import Script from "next/script";
 import { PAGE_LABELS } from "@/utils/pageLabels";
 
 export default function SalesIQScript() {
-  const widgetCode = process.env.NEXT_PUBLIC_SALESIQ_WIDGET_CODE || "";
+  const widgetCode = process.env.NEXT_PUBLIC_SALESIQ_WIDGET_CODE_LILYCHYSTOFAT || "";
   const debug = process.env.NEXT_PUBLIC_TRACKING_DEBUG === "1";
 
   return (

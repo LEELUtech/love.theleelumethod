@@ -6,7 +6,6 @@ import { ensureCRMContact } from "./zoho-crm";
 
 export type SessionPackageTier = "single" | "three_session" | "nine_session";
 
-// ─── OAuth (own cache, separate from zoho-crm.ts / zoho-scoring.ts) ──────────
 
 let _token: string | null = null;
 let _tokenExp = 0;
@@ -36,7 +35,6 @@ async function getToken(): Promise<string> {
   return _token;
 }
 
-// ─── Low-level helpers ────────────────────────────────────────────────────────
 
 async function findContactId(email: string): Promise<string | null> {
   const token = await getToken();
@@ -73,7 +71,6 @@ async function patchContact(id: string, fields: Record<string, unknown>): Promis
   await axios.request(config);
 }
 
-// ─── Public helpers ───────────────────────────────────────────────────────────
 
 /**
  * Called when a Calendly booking is confirmed (payment successful).

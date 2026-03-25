@@ -310,7 +310,6 @@ export async function POST(req: NextRequest) {
           delivery_status: cur.delivery_status ?? 'not_started',
           delivery_error: cur.delivery_error ?? null,
 
-          // ✅ unified status
           processing_status: cur.processing_status ?? 'created',
 
           // timestamps
@@ -335,7 +334,7 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Analytics event (best-effort) — ✅ dedup by deterministic event_id
+    // analytics event (best-effort)
     try {
       await emitFunnelEvent({
         event_id: `${intent.id}:checkout_viewed`,

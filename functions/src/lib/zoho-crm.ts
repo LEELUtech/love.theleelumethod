@@ -689,16 +689,12 @@ export async function createDeal(data: {
   }
 }
 
-// ======================================================
-// Funnel update by email (advance-only) + ✅ Abandoned markers
-// ======================================================
 export async function updateContactFunnelStepByEmail(params: {
   email: string;
   funnelStep: AppFunnelStep;
   checkoutStatus?: string;
   lastError?: string;
 
-  // ✅ extra abandoned info (optional)
   abandonedAt?: Date;
   abandonedReason?: string;
 }): Promise<{ contactId: string } | null> {
@@ -723,9 +719,6 @@ export async function updateContactFunnelStepByEmail(params: {
   const statusToWrite = cleanStr(params.checkoutStatus) || cleanStr(autoStatus);
   if (statusToWrite) patch[CONTACT_FIELDS.Checkout_Status] = truncate(statusToWrite, 60);
 
-  // ✅ IMPORTANT:
-  // Abandoned is not a "CRM funnel step" (we keep lead_captured there),
-  // but we DO need a marketing marker for campaigns.
   if (params.funnelStep === "abandoned") {
     patch[CONTACT_FIELDS.Abandoned_Checkout_At] = toZohoDateTime(params.abandonedAt ?? new Date());
 
