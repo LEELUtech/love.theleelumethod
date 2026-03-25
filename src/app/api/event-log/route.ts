@@ -1,4 +1,3 @@
-// app/api/event-log/route.ts
 export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
@@ -30,8 +29,6 @@ export async function POST(req: NextRequest) {
     const funnel_step = safeString(body?.funnel_step);
     const event_name = safeString(body?.event_name);
 
-    // Для beacon лучше не падать 400 по мелочи,
-    // но event_id/source — реально обязательны, иначе мусор.
     if (!event_id) {
       return NextResponse.json({ ok: false, error: "event_id is required" }, { status: 400 });
     }
@@ -39,7 +36,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: "source is required" }, { status: 400 });
     }
 
-    // ✅ должно быть хотя бы одно
     if (!event_name && !funnel_step) {
       return NextResponse.json(
         { ok: false, error: "event_name or funnel_step is required" },
@@ -53,7 +49,6 @@ export async function POST(req: NextRequest) {
       event_id,
       source,
 
-      // важно: если null → не пихаем "null" строкой, оставляем null
       event_name: event_name ?? null,
       funnel_step: funnel_step ?? null,
 
@@ -68,7 +63,6 @@ export async function POST(req: NextRequest) {
       console.error("event-log emit failed", err);
     }
 
-    // ✅ beacon safe: всегда 200 при нормальном запросе
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (e) {
     console.error("event-log fatal", e);

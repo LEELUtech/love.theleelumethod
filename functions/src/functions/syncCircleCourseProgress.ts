@@ -41,7 +41,6 @@ export const syncCircleCourseProgress = onSchedule(
   async () => {
     logger.info("syncCircleCourseProgress: start");
 
-    // Step 1: Fetch enrolled members for each module + all community members in parallel
     const [module1Members, module3Members, module6Members, finalModuleMembers, communityMembers] =
       await Promise.all([
         getAllCircleCourseMembersForCourse(MODULE_1_ID),
@@ -51,19 +50,15 @@ export const syncCircleCourseProgress = onSchedule(
         getAllCommunityMembers(),
       ]);
 
-    // Step 3: Build enrollment sets (community_member_id)
-    // Enrolled in a module = completed the prerequisite modules (sequentially locked)
     const module3EnrolledIds = new Set(module3Members.map((m) => m.community_member_id));
     const module6EnrolledIds = new Set(module6Members.map((m) => m.community_member_id));
     const courseEnrolledIds = new Set(finalModuleMembers.map((m) => m.community_member_id));
 
-    // Step 4: Build last_seen_at map from community members
     const lastSeenMap = new Map<number, Date | null>();
     for (const cm of communityMembers) {
       lastSeenMap.set(cm.id, cm.last_seen_at ? new Date(cm.last_seen_at) : null);
     }
 
-    // Step 5: Build per-email map from module-1 participants (all course enrollees)
     const memberMap = new Map<string, { communityMemberId: number; lastSeenAt: Date | null }>();
     for (const m of module1Members) {
       const email = m.community_member?.email?.trim().toLowerCase();

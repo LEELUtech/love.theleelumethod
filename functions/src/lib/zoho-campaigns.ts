@@ -44,7 +44,6 @@ function authHeaders(token: string) {
 
 export type ContactMeta = Record<string, string | number | boolean | null | undefined>;
 
-// ─── FETCH EXISTING CONTACT FIELDS ───────────────────────────────────────────
 
 const NAME_FIELDS = ["First Name", "Last Name"];
 
@@ -70,7 +69,6 @@ async function fetchExistingContactFields(email: string, token: string): Promise
   }
 }
 
-// ─── SUBSCRIBE / UPSERT CONTACT ──────────────────────────────────────────────
 
 async function ensureSubscribed(email: string, meta?: ContactMeta): Promise<void> {
   const token = await getAccessToken();
@@ -128,7 +126,6 @@ async function ensureSubscribed(email: string, meta?: ContactMeta): Promise<void
   }
 }
 
-// ─── TAG HELPERS ─────────────────────────────────────────────────────────────
 
 async function ensureTag(tag: string): Promise<void> {
   const token = await getAccessToken();
@@ -171,7 +168,6 @@ async function removeTag(tag: string, email: string): Promise<void> {
   }
 }
 
-// ─── GET ALL CONTACTS FROM LIST ──────────────────────────────────────────────
 
 async function getAllListContacts(): Promise<string[]> {
   const token = await getAccessToken();
@@ -204,7 +200,6 @@ async function getAllListContacts(): Promise<string[]> {
   return emails;
 }
 
-// ─── PUBLIC API ──────────────────────────────────────────────────────────────
 
 // Bulk-update fields for every contact in the list (5 concurrent)
 export async function bulkUpdateCampaignsContactField(

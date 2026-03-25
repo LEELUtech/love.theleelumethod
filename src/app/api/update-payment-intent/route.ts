@@ -345,7 +345,6 @@ export async function POST(req: NextRequest) {
 
       const patch: Record<string, unknown> = {
         updated_at: serverTimestamp(),
-        // processed_at НЕ трогаем тут
         email: cur.email ?? email,
         site: cur.site ?? siteFromReq,
       };

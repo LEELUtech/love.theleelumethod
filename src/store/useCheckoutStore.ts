@@ -43,7 +43,6 @@ function normLower(v?: string) {
 	return norm(v).toLowerCase();
 }
 
-// Generates unique key from all update intent params for deduplication
 function buildUpdateKey(
 	p: UpdateIntentPayload,
 	intentId: string,
@@ -82,7 +81,6 @@ function buildUpdateKey(
 	].join("|");
 }
 
-// Extracts error message from Axios error
 function getAxiosMsg(e: unknown, fallback: string) {
 	const axiosError = e as AxiosError<ApiErrorResponse>;
 	return axiosError.response?.data?.error || axiosError.message || fallback;
@@ -171,7 +169,6 @@ export const useCheckoutStore = create<CheckoutState>((set, get) => ({
 		return await p;
 	},
 
-	// Updates PaymentIntent with billing data (deduplication by content)
 	updateIntent: async (payload) => {
 		const { intentId, intentToken, updateKey, updatePromise } = get();
 		if (!intentId) throw new Error("No intentId in store. Create intent first.");

@@ -304,7 +304,7 @@ export async function appendRowToZohoAnalytics(rows: FunnelEventRow | FunnelEven
       throw err;
     }
 
-    // ✅ ВАЖНО: даже при 200 может быть "fail" в body
+    // even 200 can have "fail" in body
     assertZohoImportOk(res.data, requestId);
   };
 

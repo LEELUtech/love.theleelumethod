@@ -6,7 +6,6 @@ import { HOME_LINKS } from '@/static/links';
 import Image from 'next/image';
 import React from 'react';
 
-// Legacy code - not currently used but kept for future reference
 type Card = {
   title: string;
   text: string;

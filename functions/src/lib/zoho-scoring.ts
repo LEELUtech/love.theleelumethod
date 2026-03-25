@@ -2,7 +2,6 @@ import axios, { AxiosRequestConfig } from "axios";
 import { configs } from "../configs/env";
 import { ensureCRMContact } from "./zoho-crm";
 
-// ─── Scoring field API names ──────────────────────────────────────────────────
 
 const SCORING_FIELDS = {
   Lead_Magnet_Downloaded: "Lead_Magnet_Downloaded",
@@ -13,7 +12,6 @@ const SCORING_FIELDS = {
   Webinar_Attended_Replay: "Webinar_Attended_Replay",
 } as const;
 
-// ─── OAuth (separate cache from zoho-crm.ts) ─────────────────────────────────
 
 let _token: string | null = null;
 let _tokenExp = 0;
@@ -43,7 +41,6 @@ async function getToken(): Promise<string> {
   return _token;
 }
 
-// ─── Low-level helpers ────────────────────────────────────────────────────────
 
 async function findContactId(email: string): Promise<string | null> {
   const token = await getToken();
@@ -80,7 +77,6 @@ async function patchContact(id: string, fields: Record<string, unknown>): Promis
   await axios.request(config);
 }
 
-// ─── Core: set one or more boolean fields to true ────────────────────────────
 
 async function setFields(email: string, fields: Record<string, true>): Promise<void> {
   const id = await findContactId(email);
@@ -105,7 +101,6 @@ async function setFieldsOrCreate(
   console.log("[zoho-scoring] fields set", { email, fields: Object.keys(fields) });
 }
 
-// ─── Public helpers ───────────────────────────────────────────────────────────
 
 /** Call when user downloads the lead magnet. */
 export async function markLeadMagnetDownloaded(email: string): Promise<void> {
