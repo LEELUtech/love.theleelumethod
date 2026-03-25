@@ -80,7 +80,7 @@ const PHASE_3: Module[] = [
   },
   {
     title: 'Module 11: The Compatibility Matrix',
-    text: `The Crown Jewel (deep dive). (maybe don’t touch) The reality check. We analyze whether this is a "Growth" partner (here to teach you), or a "Life" partner (here to build with you). Gain total clarity before you invest another year of your life.`,
+    text: `The Crown Jewel of my system. We analyze whether this is a "Growth" partner (here to teach you), or a "Life" partner (here to build with you). Gain total clarity before you invest another year of your life.`,
     accent: 'none',
   },
   {

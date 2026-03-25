@@ -31,7 +31,7 @@ import { checkWebinarDiscount } from '@/lib/webinarDiscount';
 
 const WEBINAR_DISCOUNT_PRODUCT = 'protocol_essentials_webinar';
 
-const pk = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!;
+const pk = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY_LILYCHYSTOFAT!;
 const stripePromise = loadStripe(pk);
 
 function getButtonText(productId: string): string {
