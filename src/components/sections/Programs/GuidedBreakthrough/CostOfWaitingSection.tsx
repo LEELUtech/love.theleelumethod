@@ -10,7 +10,7 @@ import { GUIDED_BREAKTHROUGH } from "@/utils/constants";
 import Image from "next/image";
 import React from "react";
 
-export default function CostOfWaitingSection() {
+export default function CostOfWaitingSection({ cohortLabel }: { cohortLabel?: string | null }) {
 	const productId = GUIDED_BREAKTHROUGH;
 
 	const product = useProductStore((s) => s.getProduct(productId));
@@ -127,7 +127,7 @@ export default function CostOfWaitingSection() {
 				</Button>
 
 				<p className="text-brand-primary font-lato font-normal text-[24px] leading-[150%] mt-[33px] mb-[112px]">
-					<span className="text-brand-deep">Next cohort starts</span> March 18
+					<span className="text-brand-deep">Next cohort starts</span> {cohortLabel ?? 'March 18'}
 				</p>
 			</div>
 		</Section>

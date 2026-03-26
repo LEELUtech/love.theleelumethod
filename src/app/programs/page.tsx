@@ -12,6 +12,7 @@ import { FooterPromo } from '@/components/ui/footer/FooterPromo';
 import { PROGRAMS_LINKS } from '@/static/links';
 import SalesPageTagger from '@/components/sections/SalesPage/SalesPageTagger';
 import { PRELOAD_PROGRAM_PRODUCT_IDS } from '@/utils/constants';
+import { getCohortData } from '@/lib/cohort';
 
 const footerPromoContent = {
   title: 'I don’t guess. I calculate.',
@@ -23,7 +24,8 @@ const footerPromoContent = {
   link: PROGRAMS_LINKS.FOOTER_PROMO_LINK,
 };
 
-export default function ProgramPage() {
+export default async function ProgramPage() {
+  const { label: cohortLabel } = await getCohortData();
   return (
     <ProgramPreloader ids={[...PRELOAD_PROGRAM_PRODUCT_IDS]}>
       <main>
@@ -31,10 +33,10 @@ export default function ProgramPage() {
         <HeroSection />
         <StopImprovisingSection />
         <BlindSpotSection />
-        <ModulesSection />
+        <ModulesSection cohortLabel={cohortLabel} />
         <WhoThisIsForSection />
         <TestimonialsSection />
-        <ChooseYourPathSection />
+        <ChooseYourPathSection cohortLabel={cohortLabel} />
         <FAQSection />
         <FooterPromo {...footerPromoContent} buttonClassName='!px-2 md:w-[70%]' />
         <FooterLayout withNavigation={false} />
