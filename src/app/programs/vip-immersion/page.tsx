@@ -17,9 +17,11 @@ import {
 } from '@/components/sections/Programs/VIPImmersion/static';
 import SalesPageTagger from '@/components/sections/SalesPage/SalesPageTagger';
 import FooterLayout from '@/components/ui/footer/FooterLayout';
+import { getCohortData } from '@/lib/cohort';
 import { VIP_IMMERSION } from '@/utils/constants';
 
-export default function VIPImmersionPage() {
+export default async function VIPImmersionPage() {
+  const { label: cohortLabel } = await getCohortData();
   return (
     <>
       <main>
@@ -32,7 +34,7 @@ export default function VIPImmersionPage() {
         <ProgramResult {...vipImmersionResultData} />
         <ProgramItWorks {...vipImmersionItWorksData} />
 
-        <CostOfWaitingSection />
+        <CostOfWaitingSection cohortLabel={cohortLabel} />
         <CheckoutFormSectionLazy productId={VIP_IMMERSION} />
         <SalesPageTagger />
       </main>
