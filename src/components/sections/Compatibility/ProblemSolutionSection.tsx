@@ -40,12 +40,12 @@ const CARDS: BlindCard[] = [
     variant: 'light',
   },
   {
-    title: "Your\nRelationship's\nStrengths:",
+    title: "Your\nRelationship\nStrengths:",
     text: 'The exact advantages your pairing creates and where your connection naturally thrives.',
     variant: 'peach',
   },
   {
-    title: "Your\nRelationship's\nChallenges:",
+    title: "Your\nRelationship\nChallenges:",
     text: "The predictable vulnerabilities you'll face and what threatens to pull you apart.",
     variant: 'light',
   },
@@ -78,7 +78,7 @@ function BlindSpotCard({ title, text, variant }: BlindCard) {
       <h3
         className={[
           'font-canela font-thin leading-[120%] whitespace-pre-line mb-4',
-          'text-[42px] lg:text-[42px] text-center text-brand-deep',
+          'text-[42px] lg:text-[30px] xl:text-[42px] text-center text-brand-deep',
         ].join(' ')}
       >
         {title}
@@ -100,14 +100,14 @@ const ProblemSolutionSection = () => {
         <div className='grid grid-cols-1 md:grid-cols-2 gap-12 items-start'>
           {/* Left Column - Image */}
           <div className='flex justify-center'>
-            <div className='relative mb-[60px] md:mb-0 lg:mb-0 w-[360px] h-[459px] lg:w-[551px] lg:h-[748px] rounded-lg'>
+            <div className='relative mb-[60px] md:mb-0 lg:mb-0 w-[360px] h-[499px] lg:w-full lg:h-[630px] xl:w-[551px] xl:h-[748px] rounded-lg'>
               <Image
                 src='/images/about/fracture_section.png'
                 alt='Person sitting with a laptop'
                 fill
                 priority
                 quality={100}
-                className='rounded-lg'
+                className='object-contain'
               />
               <div className='absolute flex bottom-[-30px] left-[-10px] lg:left-[-30px] items-center justify-center bg-[#d8ac9e] rounded-[300px] w-[80px] h-[100px] md:w-[100px] md:h-[126px] lg:w-[123px] lg:h-[155px] z-10'>
                 <div className=' relative w-[55px] h-[55px] lg:w-[75px] lg:h-[75px]'>
@@ -133,7 +133,7 @@ const ProblemSolutionSection = () => {
 
             <Button
               variant='primary'
-              className='w-full'
+              className='w-full !text-[12px] md:!text-[15px]'
               href={COMPABILITY_REPORT_LINKS.PROBLEM_LINK.href}
               trackingData={{
                 cta_name: 'compatibility_problem_solution_cta',
@@ -279,8 +279,8 @@ const ProblemSolutionSection = () => {
             They have the blueprint.
           </h2>
           <p className='text-[22px] font-normal font-lato leading-[150%] mb-6 text-center text-brand-gray-100  mx-auto'>
-            The LeeluTech Compatibility Code Report analyzes how you each process emotion, handle conflict, and express
-            needs—then ma ps whether your energies amplify, neutralize, or destabilize each other.
+            The Leelu Method Compatibility Code Report analyzes how you each process emotion, handle conflict, and express
+            needs—then maps whether your energies amplify, neutralize, or destabilize each other.
           </p>
           <p className='text-[22px] font-normal font-lato leading-[150%] mb-6 text-center text-brand-gray-100  mx-auto'>
             Your personalized Compatibility Code Report delivers:

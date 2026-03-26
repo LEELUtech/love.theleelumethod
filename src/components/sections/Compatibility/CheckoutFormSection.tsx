@@ -433,7 +433,7 @@ export default function CheckoutFormSection() {
                 disabled={buttonDisabled}
                 loading={payState.paying}
                 fullWidth
-                className='mt-[24px] md:mt-10 lg:mt-[80px] xs:px-0 xs:text-[12px] md:px-6 md:text-[15px]'
+                className='mt-[24px] md:mt-10 lg:mt-[80px] xs:px-0 xs:text-[12px] md:px-6 md:text-[15px] lg:px-0 lg:text-[12px] xl:px-6 xl:text-[15px]'
                 trackingData={{
                   cta_name: 'complete_purchase',
                   cta_text: 'UNLOCK MY COMPATIBILITY CODE',

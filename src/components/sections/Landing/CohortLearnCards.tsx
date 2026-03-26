@@ -48,7 +48,7 @@ const CARDS = {
     text: 'Why you feel drained even after 8 hours of sleep. We will map the specific Attachment Patterns still tethered to your exes that are draining your nervous system and making you invisible to new partners.',
   },
   bottomRight: {
-    title: 'The “Scorekeeper” Trap',
+    title: 'The “Scorekeeper” Trap:',
     text: 'Are you operating as an Unconditional Giver, a Scorekeeper, or a Taker? I will show you how shifting out of the "Transactional Phase" kills resentment and forces him to step up.',
   },
 } satisfies Record<string, Card>;

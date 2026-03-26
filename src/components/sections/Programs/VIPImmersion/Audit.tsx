@@ -50,16 +50,16 @@ export const VIPImmersionAudit = () => {
           <div className='relative mx-auto w-full max-w-[400px] mb-10 lg:mb-0 lg:mx-0 lg:max-w-[518px] aspect-[518/820]'>
             <div>
               <div className='relative max-w-[493px] aspect-[493/367]'>
-                <Image src='/images/resources/resources-section-3.png' alt='Resources Section 3' fill priority />
+                <Image src='/images/resources/resources-section-3.png' alt='Resources Section 3' fill priority className='object-cover object-top' />
               </div>
-              <div className='w-full h-1 bg-white' />
+              <div className='max-w-[493px] h-1 bg-white' />
 
               <div className='relative max-w-[493px] aspect-[493/367] '>
                 <Image src='/images/programs/phase_2.png' alt='Resources Section 3' fill priority />
               </div>
             </div>
 
-            <div className='absolute right-0 top-1/2 -translate-x-5 -translate-y-1/2 z-20'>
+            <div className='absolute right-0 lg:right-[25px] top-[45%] -translate-y-1/2 z-20'>
               <div className='flex items-center justify-center rounded-full bg-white shadow-[0px_6px_20px_rgba(0,0,0,0.12)] size-[86px] md:size-[96px] lg:size-[104px]'>
                 <RotateOnView
                   duration={5}

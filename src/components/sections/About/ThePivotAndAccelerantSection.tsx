@@ -37,7 +37,7 @@ const ThePivotAndAccelerantSection = () => {
             <p className='font-normal text-[17px] text-[#5A5757] font-lato leading-[26px] tracking-normal mb-6'>
               In 2014, a sudden geopolitical shift destabilized the region. Banking froze. The business landscape
               shifted overnight. Most people in my circle waited, relying on optimism, but I mapped the timing windows.
-              The data signaled a critical exit point. Logic said to stay and protect my assets—the numbers said my
+              The data signaled a critical exit point. Logic said to stay and protect my assets; the numbers said my
               window was closing. I packed my life into a car, took my son, and drove across seven countries to Madrid.
             </p>
 
@@ -69,10 +69,10 @@ const ThePivotAndAccelerantSection = () => {
               The Accelerant
             </h2>
             <p className='font-thin font-canela text-[28px] lg:text-[32px] leading-[130%] text-brand-deep mb-6 lg:mb-8'>
-              The St. Petersburg Protocol
+              Protocol 003
             </p>
             <p className='font-medium text-body text-[#5A5757] font-lato leading-[26px] tracking-normal mb-6'>
-              The system I used to escape was effective, but I wanted military- grade precision.
+              The system I used to escape was effective, but I wanted military-grade precision.
             </p>
             <p className='font-normal text-body text-[#5A5757] font-lato leading-[26px] tracking-normal mb-6'>
               I sought out the most advanced training in the world — a restricted facility, not open to the public, not

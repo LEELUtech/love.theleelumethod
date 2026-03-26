@@ -2,6 +2,7 @@ import CheckoutFormSectionLazy from '@/components/sections/Compatibility/Checkou
 import CoreValueSection from '@/components/sections/Compatibility/CoreValueSection';
 import HeroSection from '@/components/sections/Compatibility/HeroSection';
 import ProblemSolutionSection from '@/components/sections/Compatibility/ProblemSolutionSection';
+import Footer from "@/components/ui/Footer"
 import FooterLayout from '@/components/ui/footer/FooterLayout';
 import { FooterPromo } from '@/components/ui/footer/FooterPromo';
 import { COMPABILITY_REPORT_LINKS } from '@/static/links';
@@ -34,7 +35,8 @@ const CompatibilityReport = () => {
         buttonClassName='!px-2 md:w-[70%]'
       />
 
-      <FooterLayout className='pb-[140px]' />
+      {/* <FooterLayout className='pb-[140px]' /> */}
+      <Footer className="!pb-[140px]"/>
     </main>
   );
 };

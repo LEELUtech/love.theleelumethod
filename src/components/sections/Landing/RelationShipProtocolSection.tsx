@@ -74,7 +74,7 @@ const RelationShipProtocolSection = () => {
         <div className='text-center'>
           {/* Heading */}
           <h2 className='font-thin text-[48px]/[126%] pt-[40px] lg:pt-0 lg:text-[80px] font-canela text-brand-deep mb-5'>
-            THE RELATIONSHIP PROTOCOL
+            The Relationship Protocol
           </h2>
 
           {/* Subheading */}

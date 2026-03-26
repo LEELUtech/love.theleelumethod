@@ -17,13 +17,13 @@ const HeroSection = () => {
       <Header />
 
       <div className='container px-4 relative z-10 pt-[33px] pb-[0px] md:pb-[0px] lg:pt-[97px] lg:pb-[165px]'>
-        <div className='flex flex-col items-center justify-between gap-10 lg:flex-row lg:items-start lg:gap-[127px]'>
+        <div className='flex flex-col items-center justify-between gap-10 lg:flex-row lg:items-start lg:gap-[60px] xl:gap-[127px]'>
           {/* IMAGE */}
           <div className='order-1 flex w-full justify-center lg:order-2 lg:w-auto z-10'>
             <div
               className='
 								relative
-								w-[380px] h-[360px]
+								w-[380px] h-[460px]
 								rounded-t-[9999px] rounded-b-[24px]
 								md:w-[490px] md:h-[560px]
 								lg:w-[490px] lg:h-[557px]
@@ -45,7 +45,7 @@ const HeroSection = () => {
               {/* Arc + ornament */}
               <ArcAutoOnce
                 className='
-									absolute inset-0 -z-0 pointer-events-none
+									hidden md:block absolute inset-0 -z-0 pointer-events-none
 									-translate-y-[13%] -translate-x-[-7%]
 									md:-translate-y-[13%] md:-translate-x-[-8%]
 									lg:-translate-y-[13%] lg:-translate-x-[-7%]
@@ -106,7 +106,7 @@ const HeroSection = () => {
             <div className='mt-6 md:mt-7 lg:mt-[32px] order-2 lg:order-4'>
               <Button
                 variant='primary'
-                className='w-full max-w-[481px] lg:w-[75%] !px-0'
+                className='w-full max-w-[481px] lg:w-[88%] !px-0'
                 href={COMPABILITY_REPORT_LINKS.HERO_LINK.href}
                 trackingData={{
                   cta_name: 'compatibility_hero_cta',

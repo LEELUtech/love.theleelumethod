@@ -52,7 +52,7 @@ const HeroSection = () => {
               </Button>
 
               <p className='text-brand-gray text-[15px]/[24px] mt-[32px]'>
-                I am Lily Chystofat and I have used my proprietary numerological system, LeeluTech, to decode the
+                I am Lily Chystofat and I have used my proprietary numerological system, The Leelu Method, to decode the
                 mechanics of human connection across thousands of sessions. I reveal the hidden choreography of your own
                 life. So you can stop guessing and start moving with clarity.
               </p>
@@ -71,12 +71,12 @@ const HeroSection = () => {
 
             <p className='text-brand-black text-body font-lato leading-[26px] mb-[48px]'>
               Every relationship has a rhythm. When you know the steps, it flows. When you don’t, it’s chaos. Whether
-              you’re fighting for the the lead or standing alone on the floor, the truth is the same: you’ve been
+              you’re fighting for the lead or standing alone on the floor, the truth is the same: you’ve been
               dancing without knowing the steps.
             </p>
 
             <p className='text-[#5A5757] text-sm leading-[24px] mb-[48px]'>
-              I am Lily Chystofat and I have used my proprietary numerological system, LeeluTech, to decode the
+              I am Lily Chystofat and I have used my proprietary numerological system, The Leelu Method, to decode the
               mechanics of human connection across thousands of sessions. I reveal the hidden choreography of your own
               life. So you can stop guessing and start moving with clarity.
             </p>

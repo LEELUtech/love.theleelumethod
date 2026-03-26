@@ -41,7 +41,7 @@ const HeroSection = () => {
 
           <Button
             variant='dark'
-            className='w-full lg:w-[55%] mb-8 lg:mb-0 order-2 lg:order-4 mt-2'
+            className='w-full lg:w-[75%] mb-8 lg:mb-0 order-2 lg:order-4 mt-2 lg:mt-[32px]'
             href={link.href}
             trackingData={{
               cta_name: 'about_hero_cta',

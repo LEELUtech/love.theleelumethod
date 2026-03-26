@@ -42,8 +42,8 @@ const WebinarWhatIfSection = () => {
               className='
     /* Mobile default */
     w-[124px] h-[167px]
-
-    lg:bottom-[-90px] lg:left-[-50px]
+    xl:bottom-[-90px] xl:left-[-50px]
+    lg:bottom-[-90px] lg:left-[-30px]
     bottom-[-30px] left-[-10px]
     md:bottom-[-50px] md:left-[-10px]
 
@@ -74,7 +74,7 @@ const WebinarWhatIfSection = () => {
             </h2>
 
             <div className='font-lato font-medium text-[#5A5757] text-[17px]/[130%] md:text-left'>
-              <p>Women who have the love you want aren&apos;t luckier, more confident, or more charming than you.</p>
+              <p>Women who have the love you want aren&apos;t luckier, more confident, or more &apos;feminine&apos; than you.</p>
 
               <p className='mt-4 md:mt-5'>
                 They simply stopped guessing. They learned to read the internal codes driving their relationships
@@ -114,7 +114,7 @@ const WebinarWhatIfSection = () => {
             className='
 								font-canela font-thin lg:text-center text-left text-brand-deep text-[48px]/[130%] mb-8 md:text-[40px] md:mb-12 lg:text-[60px] lg:mb-[64px]'
           >
-            By the end of this free training, you will:
+            By the end of this free masterclass, you will:
           </h3>
 
           <div className='mb-[58px] max-w-[845px] mx-auto'>
@@ -138,7 +138,7 @@ const WebinarWhatIfSection = () => {
               {
                 parts: [
                   {
-                    text: 'Identify the "Compatibility Code" required for true partnership—so you can vet for ',
+                    text: 'Identify the "Compatibility Code" required for a true partnership—so you can vet for ',
                   },
                   {
                     text: 'long-term fit instead of just short-term chemistry.',

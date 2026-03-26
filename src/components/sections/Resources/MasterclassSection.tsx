@@ -13,7 +13,7 @@ export function MasterclassSection() {
       <div className='container flex flex-col-reverse md:flex-row items-center justify-between gap-10 md:gap-12 lg:gap-16 px-4 overflow-hidden'>
         <div className='order-1 md:order-1 w-full md:max-w-[520px]'>
           <p className='font-canela hidden md:block lg:block font-light text-[32px] leading-[100%] tracking-normal text-black mb-6'>
-            Free live masterclass
+            Free Live Masterclass
           </p>
           <h2 className='text-[48px] text-center md:text-left lg:text-left lg:text-h1 font-thin md:font-light lg:font-light font-canela text-brand-deep mb-6'>
             Decoded Love
