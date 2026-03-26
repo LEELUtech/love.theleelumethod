@@ -244,7 +244,7 @@ export function StripeCardPart({
 
         <div className='mt-5 space-y-3'>
           <div className='flex items-baseline justify-between gap-4'>
-            <p className='font-lato text-body font-normal uppercase tracking-[0.03em] text-brand-black'>
+            <p className='font-lato text-body font-normal uppercase tracking-[0.03em] text-[#5A5757]'>
               {loading ? 'Loading...' : (productName ?? '')}
             </p>
             <p className='font-lato text-body font-normal text-brand-black'>{loading ? '...' : priceLabel}</p>

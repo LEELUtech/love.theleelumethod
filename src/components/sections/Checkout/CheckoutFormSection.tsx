@@ -490,7 +490,7 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
                     ctx={ctx}
                     onSubmitAttempt={handleSubmitAttempt}
                     loading={productLoading}
-                    productName={product?.name}
+                    productName={product?.title}
                     priceLabel={priceLabel}
                     firstPaymentLabel={firstPaymentLabel}
                     buttonText={getButtonText(productId)}
