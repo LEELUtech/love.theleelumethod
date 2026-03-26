@@ -229,7 +229,7 @@ const Card = ({ size, title, description, listTitle, list, link, id, for: forTex
   );
 };
 
-export default function ChooseYourPathSection() {
+export default function ChooseYourPathSection({ cohortLabel }: { cohortLabel?: string | null }) {
   return (
     <section
       id='pricing'
@@ -281,7 +281,7 @@ export default function ChooseYourPathSection() {
               <span className='text-brand-primary'>Relationship Protocol</span> Tiers{' '}
             </h2>
             <p className='font-lato text-[24px]/[150%] text-center'>
-              Next cohort starts <span className='text-brand-primary'>March 18</span>
+              Next cohort starts <span className='text-brand-primary'>{cohortLabel ?? 'March 18'}</span>
             </p>
           </div>
 
