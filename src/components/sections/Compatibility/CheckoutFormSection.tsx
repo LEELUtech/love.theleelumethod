@@ -406,7 +406,7 @@ export default function CheckoutFormSection() {
               <div className='mt-5 space-y-3'>
                 <div className='flex items-baseline justify-between gap-4'>
                   <p className='font-lato text-body uppercase tracking-[3%] text-[#5A5757]'>
-                    {productLoading ? 'Loading...' : (product?.name ?? '')}
+                    {productLoading ? 'Loading...' : (product?.title ?? '')}
                   </p>
 
                   {renderProiceLabel()}
@@ -441,7 +441,7 @@ export default function CheckoutFormSection() {
                   cta_location: 'checkout_compatibility',
                 }}
               >
-                UNLOCK MY COMPATIBILITY CODE
+                UNLOCK MY COMPATIBILITY CODE{!productLoading && product ? ` - ${priceLabel}` : ''}
               </Button>
 
               {payState.error ? <p className='mt-3 text-sm font-lato text-red-600'>{payState.error}</p> : null}
