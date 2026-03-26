@@ -8,11 +8,11 @@ import { VIP_LINKS } from '@/static/links';
 const mechanics = [
   {
     id: 1,
-    title: 'Root Cause Extraction',
+    title: 'Full Partner Audit',
     icon: '/icons/ornament_12.svg',
     size: 'lg',
     description:
-      'I bring him into the room—with you, separately, or both. We decode the dynamic from both sides to accelerate alignment.',
+      `I don't just decode your patterns—I decode his. You receive his complete behavioral manual: his wiring, his triggers, what motivates him, what shuts him down, and exactly how to communicate so he hears you.`,
   },
   {
     id: 2,

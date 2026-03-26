@@ -208,13 +208,16 @@ export const Pricing = () => {
                 {description && <p className='text-cta font-lato mb-6 text-brand-gray'>{description}</p>}
 
                 {!!features?.length && (
-                  <ul className='flex flex-col pl-[20px]'>
-                    {features.map((feature, index) => (
-                      <li key={index} className='list-disc text-[15px]/[24px] font-lato text-[#41444E]'>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
+                  <>
+                    <p className='text-cta font-lato mb-6 text-brand-gray'>What You Get:</p>
+                    <ul className='flex flex-col pl-[20px]'>
+                      {features.map((feature, index) => (
+                        <li key={index} className='list-disc text-[15px]/[24px] font-lato text-[#41444E]'>
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
                 )}
 
                 {!!whyList?.length && (

@@ -11,7 +11,7 @@ export const vipImmersionHeroData: IProgramsHero = {
   title: 'THE VIP IMMERSION',
   imgSrc: '/images/lily/lily_4.png',
   subtitle: `Immediate Intervention. Permanent Reconstruction.`,
-  content: `For the woman who needs the problem solved immediately. Real-time access. Deep-tissue deprogramming..`,
+  content: `For the woman who needs the problem solved immediately. Multiple 1:1 sessions. Real-time access. Deep-tissue deprogramming.`,
   link: HERO_LINK,
 };
 
