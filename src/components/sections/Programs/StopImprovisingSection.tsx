@@ -58,7 +58,7 @@ export default function StopImprovisingSection() {
               <p className='text-[#5A5757]'>The Relationship Protocol is not a collection of dating tips.</p>
 
               <p>
-                It is an audit of your relational history, followed by a System Reset — a 12-module deprogramming
+                It is an audit of your relational history, followed by a System Reset—a 12-module deprogramming
                 sequence designed to identify the corrupted script running in your subconscious, delete the glitch, and
                 install a new operating system for connection.
               </p>

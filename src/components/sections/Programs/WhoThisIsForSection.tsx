@@ -14,7 +14,7 @@ const RIGHT = [
   "You've already made your decision. If you know you're leaving and just need support through the exit, that's a different kind of work. This course is for women still exploring whether the relationship is repairable.",
   "You're hoping this will change him. This system will show you how to shift the dynamic—but it can't force someone to grow. If he's fundamentally unavailable or unwilling, the course will help you see that clearly (which may mean accepting it's time to go).",
   "You're looking for someone to take your side. I'm not here to validate your story or assign blame. I'm here to help you see the pattern and break it—which requires looking at your role in the loop.",
-  "You're in immediate danger or emotional meltdown. If the crisis is happening right now, you need crisis support. Please reach out to a therapist or crisis counselor first. You can come back to this work when you're stable enough to engage with it.",
+  "You're in immediate danger or emotional meltdown. If the crisis is happening right now (affair discovered this week, separation underway, you can't stop crying), you need crisis support. Please reach out to a therapist or crisis counselor first. You can come back to this work when you're stable enough to engage with it.",
 ];
 
 export default function WhoThisIsForSection() {

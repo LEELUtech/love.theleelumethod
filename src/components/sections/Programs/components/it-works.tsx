@@ -49,7 +49,7 @@ export const ProgramItWorks = ({ description, subtitle, link, imgSrc }: Props) =
               <Button
                 variant='primary'
                 href={link.href}
-                className='w-full lg:w-[70%] mt-[32px]'
+                className='w-full lg:w-[80%] mt-[32px]'
                 trackingData={{
                   cta_name: 'program_it_works_cta',
                   cta_text: link.label,

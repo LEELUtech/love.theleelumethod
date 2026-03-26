@@ -53,7 +53,7 @@ const tiers = [
       '1 x 90-Min Private Session',
       '-',
       'Same as Essentials',
-      'Optional Partner Inclusion',
+      'Optional (as analysis subject)',
       'Hot Seat Priority',
       'Relationship Roadmap (Session-Based)',
     ],
@@ -126,7 +126,7 @@ const CARDS: ICard[] = [
     list: [
       'The complete 12-module video curriculum (60-dayc access)',
       'The Relationship Protocol Workbook (downloadable)',
-      'Bonus: Your Personal TheLeeluMethod Breakdown PDF',
+      'Bonus: Your Personal Leelu Method Breakdown PDF',
     ],
     link: SELF_GUIDED_LINK,
     for: `You're not in crisis—you're in clarity mode. You've done enough therapy, coaching, or self-work to know what you need to shift; you just need the specific system to do it. You're comfortable working independently, you trust your own discipline, and you'd rather move at your own pace than wait for scheduled calls. You need the blueprint, not a guide holding your hand through it.`,

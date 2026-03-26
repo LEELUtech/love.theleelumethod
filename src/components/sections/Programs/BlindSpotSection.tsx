@@ -12,7 +12,7 @@ type BlindCard = {
 const CARDS: BlindCard[] = [
   {
     title: 'The "Safety"\nGlitch:',
-    text: 'You crave stability, yet you feel sexually bored by men who offer it. Your nervous system mistakes “peace” for “dead air.”',
+    text: 'You crave stability, yet you feel viscerally bored by men who offer it. Your nervous system mistakes “peace” for “dead air.”',
     variant: 'light',
   },
   {
@@ -22,12 +22,12 @@ const CARDS: BlindCard[] = [
   },
   {
     title: 'The "Project\nManager"\nSyndrome:',
-    text: 'You are the one planning, the one initiating talks, and guiding space. You are over-functioning to compensate for his passivity, killing his attraction in the process.',
+    text: 'You are the one planning dates, initiating talks, and "holding space." You are over-functioning to compensate for his passivity, killing his attraction in the process.',
     variant: 'light',
   },
   {
     title: 'The Invisible\nCeiling:',
-    text: 'Every relationship hits the exact same wall at the 6-month or 2-year mark. The dynamics shift, the warmth evaporates, and you don’t know why.',
+    text: `Every relationship hits the exact same wall at the 6-month or 2-year mark. The dynamic shifts, the warmth evaporates, and you don’t know why.`,
     variant: 'mauve',
   },
 ];

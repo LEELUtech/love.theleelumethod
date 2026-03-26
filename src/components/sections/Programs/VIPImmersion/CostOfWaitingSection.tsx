@@ -135,7 +135,7 @@ export default function CostOfWaitingSection() {
         <div className='relative max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-[112px] 2xl:px-[180px] lg:pb-[100px]'>
           <div className='grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-20 mt-[102px] items-center'>
             <div className='text-left'>
-              <h2 className='font-canela font-thin text-[60px] leading-[1.05] text-brand-black lg:text-[60px] text-center lg:text-left'>
+              <h2 className='font-canela font-thin text-[60px] leading-[1.05] text-brand-deep lg:text-[60px] text-center lg:text-left'>
                 WHO THIS IS FOR
               </h2>
 

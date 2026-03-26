@@ -279,7 +279,7 @@ export function StripeCardPart({
         disabled={!canPay}
         loading={paying}
         fullWidth
-        className='mt-[24px] md:mt-10 lg:mt-[80px] px-1'
+        className='mt-[24px] md:mt-10 lg:mt-[80px] !px-2 xl:!px-8 !text-[11px] xl:!text-[14px] !tracking-[0.03em] xl:!tracking-[0.10em]'
         trackingData={{
           cta_name: 'checkout_payment_submit_cta',
           cta_text: buttonText,

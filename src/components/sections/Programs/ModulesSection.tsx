@@ -13,7 +13,7 @@ const MINI_CARDS: MiniCard[] = [
   { title: 'WHAT', text: 'Is the mathematical root of your\nconflict?' },
   {
     title: 'WHY',
-    text: 'Is your "Inner Devil" triggered\nby specific archetypes?',
+    text: 'Is your "Inner Demon" triggered\nby specific archetypes?',
   },
   {
     title: 'HOW',
@@ -39,7 +39,7 @@ const PHASE_1: Module[] = [
   },
   {
     title: 'Module 4: From Dependency to Sovereignty',
-    text: `Learn to stop outsourcing your emotional well-being to your partner. We expose and  reverse insecure attachment patterns so you stop negotiating for love from a place of lack and start receiving it from a place of power.`,
+    text: `Learn to stop outsourcing your emotional well-being to your partner. We expose and reverse insecure attachment patterns so you stop negotiating for love from a place of lack and start receiving it from a place of power.`,
     accent: 'red',
   },
 ];
@@ -70,12 +70,12 @@ const PHASE_2: Module[] = [
 const PHASE_3: Module[] = [
   {
     title: 'Module 9: The Security Anchor',
-    text: `Jealousy is just data. We decode what your fear of loss is actually telling you and how to shift from “Paranoid” to “Magnetic.”`,
+    text: `Jealousy isn't a flaw; it's data. We decode what your fear of loss is actually telling you and give you the tools to shift from anxious to anchored.`,
     accent: 'none',
   },
   {
-    title: 'Module 10: The Energy Audit',
-    text: `We map your personal energy architecture: what drains you, what restores you, and the specific environmental and relational conditions you need to stay emotionally regulated and magnetically present.`,
+    title: 'Module 10: The Energy Architecture',
+    text: `We map your personal energy requirements: what drains you, what restores you, and the specific conditions you need to stay emotionally regulated and magnetically attractive.`,
     accent: 'none',
   },
   {

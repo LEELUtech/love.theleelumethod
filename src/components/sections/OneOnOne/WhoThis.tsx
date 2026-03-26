@@ -53,7 +53,7 @@ export const WhoThis = () => {
     <Section wrapperClasses='py-[80px]'>
       <>
         <h2 className='text-h1 text-center mb-8 text-brand-deep md:text-left md:text-brand-black md:mb-[88px] font-canela font-thin'>
-          WHO THIS IS FOR
+          WHO THIS IS FOR:
         </h2>
 
         <div className='flex flex-col gap-[24px] bs:flex-row bs:gap-[48px]'>

@@ -32,7 +32,7 @@ const FixSection = () => {
             </p>
 
             <Button
-              className='mt-[28px] md:mt-[36px] xs:px-4 px-10 md:px-12 tracking-[0.18em] uppercase xs:text-[12px] text-center'
+              className='mt-[28px] md:mt-[36px] xs:px-4 px-10 md:px-12 tracking-[0.18em] lg:!tracking-[0.05em] xl:!tracking-[0.18em] uppercase xs:text-[12px] lg:!text-[11px] xl:!text-[15px] text-center'
               href="https://leelutech.ewebinar.com/webinar/decoded-love-22610"
               trackingData={{
                 cta_name: 'secure_seat',

@@ -42,9 +42,9 @@ const Card = (props: CardProps) => {
 
         {list && <ArrowList list={list} />}
 
-        {description && <p className='text-[17px]/[26px] text-left font-lato mb-11 text-brand-gray'>{description}</p>}
+        {description && <p className='text-[17px]/[26px] text-left font-lato mt-6 mb-6 text-brand-gray'>{description}</p>}
 
-        {additional_list && <ArrowList list={additional_list} />}
+        {additional_list && <div className='mt-6'><ArrowList list={additional_list} /></div>}
 
         {subtitle_bottom && (
           <h4 className='text-[32px]/[120%] max-w-[500px] mt-[48px] text-left font-canela font-light'>

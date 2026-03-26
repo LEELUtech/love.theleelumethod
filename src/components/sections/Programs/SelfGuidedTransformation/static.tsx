@@ -141,7 +141,7 @@ export const selfGuidedOverviewData: IProgramOverview = {
     },
     {
       id: 3,
-      title: { label: 'Program Duration: Approximately 2-3 weeks with guided pacing', size: '[32px]/[126%]' },
+      title: { label: 'Program Duration: Approximately 2–3 weeks with guided pacing', size: '[32px]/[126%]' },
     },
   ],
 };

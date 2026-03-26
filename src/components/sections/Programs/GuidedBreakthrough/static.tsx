@@ -25,7 +25,7 @@ export const guidedBreakthroughWhoThisData: IProgramsWhoThis = {
       id: 1,
       icon: 'star',
       title: 'IN A RELATIONSHIP:',
-      text: `You're at a breaking point. You need to know right now: is this fixable, or is it dead? You cannot afford to waste another 6 months wondering.`,
+      text: `You're at a breaking point. You need to know now: is this fixable, or is it dead? You can't afford another 6 months of wondering.`,
     },
     {
       id: 2,
@@ -39,7 +39,7 @@ export const guidedBreakthroughWhoThisData: IProgramsWhoThis = {
       id: 3,
       icon: 'necktie',
       title: 'IN CRISIS:',
-      text: `The breakup shattered your confidence. You're spinning in "why did this happen?" loops. You need an external authority to tell you exactly what went wrong so you can sleep again.`,
+      text: `The breakup shattered your confidence. You're stuck in "why did this happen?" loops. You need someone to look at your actual codes and tell you exactly what went wrong.`,
     },
   ],
   imgSrc: '/images/programs/guided-breakthrough/GUIDED_IMMERSION _TOP_1.png',
@@ -173,7 +173,7 @@ export const guidedBreakthroughOverviewData: IProgramOverview = {
     {
       id: 1,
       title: { label: '90-minute private Session with Lilly', size: '[48px]/[126%]' },
-      description: 'A one-on-one strategy session focused entirely on you.Inside this call:',
+      description: 'A one-on-one strategy session focused entirely on you. Inside this call:',
       list: [
         'We review your personalized reports',
         'You may ask any questions about your situation',

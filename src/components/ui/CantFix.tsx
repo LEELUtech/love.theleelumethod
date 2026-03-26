@@ -23,7 +23,7 @@ export const CantFix = ({ href, linkLabel, buttonVariant = 'primary' }: Props) =
               fill
               priority
               quality={100}
-              className=''
+              className='object-cover object-top'
             />
           </div>
 
