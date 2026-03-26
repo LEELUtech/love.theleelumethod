@@ -157,7 +157,7 @@ export default function CostOfWaitingSection() {
 
             <div className='relative mx-auto w-full max-w-[560px]'>
               <div className='relative max-w-[595px] h-[530px] md:h-[813px] lg:h-[813px] rounded-[100px] overflow-hidden'>
-                <Image src='/images/lily/lily_15.jpeg' alt='' fill quality={100} />
+                <Image src='/images/lily/lily_15.jpeg' alt='' fill quality={100} className='object-cover' />
               </div>
             </div>
           </div>

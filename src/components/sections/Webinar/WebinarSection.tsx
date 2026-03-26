@@ -41,7 +41,7 @@ const WebinarSection = () => {
                   <div className='w-4 h-4 pt-2 flex-shrink-0'>
                     <Image src='/icons/arrow_right.svg' alt='Arrow' width={10} height={10} className='object-contain' />
                   </div>
-                  <span>The identity-level programming that determines partner selection and how to rewire it.</span>
+                  <span>Your identity-level programming that determines partner selection and how to rewire it.</span>
                 </li>
 
                 <li className='flex gap-2 items-start'>

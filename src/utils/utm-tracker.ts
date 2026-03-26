@@ -1,5 +1,3 @@
-// src/utils/utm-tracker.ts
-
 export interface UTMParams {
   utm_source?: string;
   utm_medium?: string;
@@ -51,10 +49,6 @@ function safeParse<T>(raw: string | null): T | null {
   }
 }
 
-/**
- * One-time migration from legacy keys:
- * utm_first/utm_last -> ff_utm_first/ff_utm_last
- */
 function migrateLegacyUTMIfNeeded(): void {
   if (typeof window === "undefined") return;
 
@@ -76,9 +70,6 @@ function migrateLegacyUTMIfNeeded(): void {
   }
 }
 
-/**
- * Ensure landing page is stored once (first landing).
- */
 function ensureLandingStored(): void {
   if (typeof window === "undefined") return;
 
@@ -93,12 +84,6 @@ function ensureLandingStored(): void {
   }
 }
 
-/**
- * Capture UTM:
- * - first-touch: store once (never overwrite)
- * - last-touch: overwrite when UTM exists in URL
- * Also stores landing page once.
- */
 export function captureUTM(): { first?: UTMParams; last?: UTMParams } {
   if (typeof window === "undefined") return {};
 
@@ -143,7 +128,6 @@ export function getStoredLandingPage(): string | null {
   return clean(v);
 }
 
-/** Clear ff keys (+ legacy optionally) */
 export function clearStoredUTM(opts?: { clearLegacy?: boolean }): void {
   if (typeof window === "undefined") return;
 

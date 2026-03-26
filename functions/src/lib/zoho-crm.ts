@@ -704,7 +704,7 @@ export async function updateContactFunnelStepByEmail(params: {
   const existing = await findContactByEmail(email);
   if (!existing?.id) return null;
 
-  // We don't store "checkout_viewed" in CRM (Analytics only)
+  // checkout_viewed is analytics-only, not stored in CRM
   if (params.funnelStep === "checkout_viewed") return { contactId: existing.id as string };
 
   const next = toZohoFunnelStep(params.funnelStep);

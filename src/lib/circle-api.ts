@@ -1,8 +1,3 @@
-/**
- * Circle API Client - Functional approach
- * Documentation: https://api.circle.so/
- */
-
 export interface CircleMember {
   id: string;
   email: string;
@@ -179,12 +174,10 @@ export async function createOrGrantCircleAccess(
   try {
     console.log(`[Circle] Processing access for: ${email}`);
 
-    // Step 1: Check if member exists
     let member = await findMemberByEmail(email);
     let isNewMember = false;
     console.log('[Circle] Member lookup result:', member);
 
-    // Step 2: Create member if doesn't exist
     if (!member) {
       console.log(`[Circle] Creating new member: ${email}`);
       const newMember = await createCircleMember({
@@ -199,7 +192,6 @@ export async function createOrGrantCircleAccess(
       console.log(`[Circle] Member already exists: ${email} (${member.id})`);
     }
 
-    // Step 3: Grant access to space/course, with retry if user missing
     if (spaceId) {
       console.log(`[Circle] Granting access to space: ${spaceId}`);
       member = await grantSpaceWithRetry(email, name, spaceId, courseId, member);

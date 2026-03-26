@@ -81,7 +81,7 @@ export function ResourceCardsSection() {
                 {item.ctaType === 'secrets' ? (
                   <Button
                     variant='primary'
-                    className='w-full py-[12px]'
+                    className='w-full py-[12px] text-center !text-[12px]'
                     href={item.href}
                     trackingData={{
                       cta_name: 'download_guide',
@@ -95,7 +95,7 @@ export function ResourceCardsSection() {
                 ) : item.ctaType === 'compatibility' ? (
                   <Button
                     variant='primary'
-                    className='w-full py-[12px]'
+                    className='w-full py-[12px] text-center !text-[12px]'
                     href={item.href}
                     trackingData={{
                       cta_name: 'get_report',
@@ -109,7 +109,7 @@ export function ResourceCardsSection() {
                 ) : item.ctaType === 'quiz' ? (
                   <Button
                     variant='primary'
-                    className='w-full py-[12px]'
+                    className='w-full py-[12px] text-center !text-[12px]'
                     href={item.href}
                     target='_blank'
                     rel='noopener noreferrer'

@@ -7,7 +7,7 @@ const CredentialsSection = () => {
       <div>
         {/* === MOBILE + TABLET IMAGE (TOP) === */}
         <div className='flex justify-center mb-[128px] lg:hidden'>
-          <div className='relative w-full max-w-[595px] aspect-[361/459] lg:aspect-[595/913]'>
+          <div className='relative w-full max-w-[595px] aspect-[361/529] lg:aspect-[595/913]'>
             <Image src='/images/lily/lily_8.png' alt='Credentials' fill quality={100} className='rounded-[60px]' />
 
             {/* Logo Badge */}
@@ -44,11 +44,11 @@ const CredentialsSection = () => {
               {[
                 {
                   title: 'Specialized Training',
-                  text: 'Graduate of the elite St. Petersburg Personality Profiling Program (Levels 1-8).',
+                  text: 'Graduate of the elite Protocol 003 — Personality Profiling Program (Levels 1-8).',
                 },
                 {
                   title: 'Validated Data',
-                  text: 'Methodology stress-tested on  14,325  profiles in a commercial HR environment.',
+                  text: 'Methodology stress-tested on 11,500+ profiles in a commercial HR environment.',
                 },
                 {
                   title: 'Clinical Oversight',
@@ -64,7 +64,7 @@ const CredentialsSection = () => {
                 },
                 {
                   title: 'Global Perspective',
-                  text: 'Systems synthesized from training in Eastern Europe, Japan, India, China, and Israel.',
+                  text: 'Synthesized systems from training in Eastern Europe, Japan, India, China, and Israel.',
                 },
               ].map((item, idx) => (
                 <div key={idx} className='flex items-start gap-4'>

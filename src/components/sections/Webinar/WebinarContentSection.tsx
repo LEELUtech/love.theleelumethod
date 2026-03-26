@@ -19,7 +19,7 @@ const CARD_CONTENT = [
     icon: '/icons/ornament_16.svg',
   },
   {
-    title: 'The Subconscius Level',
+    title: 'The Subconscious Level',
     img: '/images/webinar/webinar_decor_down.png',
     text: 'Deepest. Your inherited "love script" from childhood and past relationships. The hidden code shaping your identity and recreating familiar dynamics—even painful ones.',
     icon: '/icons/ornament_8.svg',
@@ -75,7 +75,7 @@ const WebinarContentSection = () => {
 
               <p className='mt-4 md:mt-5 lg:mt-6'>
                 Or maybe you&apos;re exhausted from carrying the emotional weight, managing everything, while secretly
-                craving to be held, chosen, and cherished
+                craving to be held, chosen, and cherished.
               </p>
 
               <p className='mt-4 md:mt-5 lg:mt-6'>If any of this resonates, this masterclass is for you.</p>

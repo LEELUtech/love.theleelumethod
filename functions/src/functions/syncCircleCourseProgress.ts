@@ -71,7 +71,6 @@ export const syncCircleCourseProgress = onSchedule(
 
     logger.info("syncCircleCourseProgress: participants found", { total: memberMap.size });
 
-    // Step 6: Update Zoho CRM for each participant
     const inactiveCutoff = new Date(Date.now() - INACTIVE_THRESHOLD_MS);
     let succeeded = 0;
     let failed = 0;

@@ -12,7 +12,7 @@ const cards = [
     highlight: 'Confused',
     subtitle: 'Is it a trauma bond or a soul connection?',
     paragraphs: [
-      'Your intuition is currently biased by emotion. Numerological algorithms are not',
+      'Your intuition is currently biased by emotion. Numerological algorithms are not.',
       'Answer 10 questions to uncover:',
       {
         bold: 'The Friction Points:',
@@ -39,10 +39,10 @@ const cards = [
     highlight: 'Fix it',
     subtitle: 'You want the truth? Join the deep dive.',
     paragraphs: [
-      'I will show you the exact mechanics of why men pull away and how to shift the power dynamic instantly.',
+      'I will show you the exact mechanics of why men pull away and the precise correction that makes him pursue you again.',
       { bold: 'We will cover:', text: '' },
       {
-        bold: 'The "Inner Devil":',
+        bold: 'The "Inner Demon":',
         text: 'The dark side of your personality that sabotages love.',
       },
       {
@@ -63,8 +63,8 @@ const cards = [
     raised: true,
   },
   {
-    title: 'I am',
-    highlight: 'Done Guessing',
+    title: 'I want',
+    highlight: 'Answers',
     subtitle: 'Should this relationship be salvaged? Was the last one doomed from the start?',
     paragraphs: [
       "This analysis shows you the structural reality: where relationship codes align, where they clash, and whether the friction you're experiencing is solvable or baked into the pairing itself.",

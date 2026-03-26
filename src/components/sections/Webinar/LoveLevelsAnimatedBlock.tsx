@@ -77,7 +77,7 @@ export default function LoveLevelsAnimatedBlock({ cards }: { cards: Card[] }) {
           animate={headerInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 1.1, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
         >
-          And that&apos;s determined at three levels <br />
+          And that&apos;s determined at three levels, <br />
           each deeper than the last.
         </motion.p>
       </motion.div>

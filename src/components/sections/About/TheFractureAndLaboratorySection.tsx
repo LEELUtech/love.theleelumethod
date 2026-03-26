@@ -18,9 +18,9 @@ const TheFractureAndLaboratorySection = () => {
                 fill
                 priority
                 quality={100}
-                className='rounded-lg'
+                className='rounded-lg object-contain'
               />
-              <div className='absolute flex bottom-[-40px] left-[50%] -translate-x-[50%] md:-translate-x-0 md:left-[-30px] items-center justify-center bg-[#EB4F68] rounded-[300px] w-[80px] h-[100px] md:w-[100px] md:h-[126px] lg:w-[123px] lg:h-[155px] z-10'>
+              <div className='absolute flex bottom-[-40px] lg:bottom-[20px] xl:bottom-[-40px] left-[50%] -translate-x-[50%] md:-translate-x-0 md:left-[-30px] items-center justify-center bg-[#EB4F68] rounded-[300px] w-[80px] h-[100px] md:w-[100px] md:h-[126px] lg:w-[123px] lg:h-[155px] z-10'>
                 <div className=' relative w-[55px] h-[55px] lg:w-[75px] lg:h-[75px]'>
                   <Image src='/leelu_logo.svg' alt='' fill className='absolute filter brightness-0 invert' />
                 </div>
@@ -36,7 +36,7 @@ const TheFractureAndLaboratorySection = () => {
             </p>
             <p className='font-normal text-[#5A5757] font-lato leading-[26px] tracking-normal mb-6'>
               Years ago, I faced a brutal divorce. My life felt like it was incinerating. Therapy, religion, spiritual
-              leaders—they offered comfort, but no map.
+              frameworks—they offered comfort, but no exit door.
             </p>
             <p className='font-normal text-[#5A5757] font-lato leading-[26px] tracking-normal mb-6'>
               Then, I sat with a numerologist. She laid out the prior twelve months of my life with terrifying accuracy
@@ -48,7 +48,7 @@ const TheFractureAndLaboratorySection = () => {
             </p>
 
             <p className='font-thin font-canela text-[32px]/[130%] text-brand-deep lg:mb-[30px] md:mb-[30px] mb-[30px]'>
-              That session was the spark that lit my path into the world of numerology and eventually, heelutech.
+              That session was the spark that lit my path into the world of numerology and eventually, The Leelu Method.
             </p>
             <Button
               variant='dark'

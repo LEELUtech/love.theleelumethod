@@ -166,7 +166,7 @@ export default function DecodedLoveCohortSection() {
 
             <div className='font-lato text-[#5A5757] text-body space-y-2 leading-[130%]'>
               <p className='mb-[40px]'>
-                This is not a passive recording. I review live questions and calibrate the data in real-time. Because I
+                This is not a passive recording. I review participant questions and calibrate the data in real-time. Because I
                 personally calculate codes for my students, I cannot host thousands of people.
               </p>
 

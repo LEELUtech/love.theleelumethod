@@ -4,18 +4,20 @@ import StopGuessingSection from '@/components/sections/About/StopGuessingSection
 import TheFractureAndLaboratorySection from '@/components/sections/About/TheFractureAndLaboratorySection';
 import ThePivotAndAccelerantSection from '@/components/sections/About/ThePivotAndAccelerantSection';
 import TheSynthesisSection from '@/components/sections/About/TheSynthesisSection';
-import FooterLayout from '@/components/ui/footer/FooterLayout';
+import Footer from "@/components/ui/Footer"
+// import FooterLayout from '@/components/ui/footer/FooterLayout';
 
 const AboutPage = () => {
   return (
-    <main>
+    <main className='overflow-x-hidden'>
       <HeroSection />
       <TheFractureAndLaboratorySection />
       <ThePivotAndAccelerantSection />
       <TheSynthesisSection />
       <CredentialsSection />
       <StopGuessingSection />
-      <FooterLayout className='pt-[64px] py-[122px]' />
+      {/* <FooterLayout className='pt-[64px] py-[122px]' /> */}
+      <Footer className="!pt-[64px] !py-[122px]"/>
     </main>
   );
 };

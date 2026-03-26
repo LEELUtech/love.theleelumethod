@@ -73,7 +73,7 @@ const WebinarDiscoverSection = () => {
                     className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[60px] pointer-events-none'
                   />
 
-                  <div className='font-canela font-light text-black absolute bottom-0 left-0 text-[60px]'>1.</div>
+                  <div className='font-canela font-light text-[#c89f26] absolute bottom-0 left-0 text-[60px]'>1.</div>
                 </div>
               </div>
 
@@ -112,7 +112,7 @@ const WebinarDiscoverSection = () => {
                     className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[60px] pointer-events-none'
                   />
 
-                  <div className='font-canela font-light text-black absolute bottom-0 left-0 text-[60px]'>2.</div>
+                  <div className='font-canela font-light text-[#c89f26] absolute bottom-0 left-0 text-[60px]'>2.</div>
                 </div>
               </div>
 
@@ -151,7 +151,7 @@ const WebinarDiscoverSection = () => {
                     className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[60px] pointer-events-none'
                   />
 
-                  <div className='font-canela font-light text-black absolute bottom-0 left-0 text-[60px]'>3.</div>
+                  <div className='font-canela font-light text-[#c89f26] absolute bottom-0 left-0 text-[60px]'>3.</div>
                 </div>
               </div>
 
@@ -167,7 +167,7 @@ const WebinarDiscoverSection = () => {
                   className='font-lato font-medium text-[#5A5757] tracking-[0.03em]
                     text-[17px] leading-[26px] md:text-[17px] md:leading-[26px] lg:text-body lg:leading-[26px] lg:text-left text-center'
                 >
-                  The measurable LeeluTech markers predicting partnership outcomes—and why incompatible men keep
+                  The measurable Leelu Method markers predicting partnership outcomes—and why incompatible men keep
                   matching your current frequency.
                 </p>
               </div>

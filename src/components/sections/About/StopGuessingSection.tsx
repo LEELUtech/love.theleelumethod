@@ -11,7 +11,7 @@ const StopGuessingSection = () => {
       <div className='max-w-[900px] mx-auto text-center pb-[60px] md:pb-0'>
         {/* Top Image */}
         <div className='flex justify-center mb-12 relative pt-[50px] md:pt-[130px]'>
-          <div className='absolute w-[268px] h-[290px] sm:w-[358px] sm:h-[376px] top-[-250px] overflow-visible'>
+          <div className='absolute w-[278px] h-[280px] sm:w-[278px] sm:h-[356px] top-[-250px] overflow-visible'>
             <Image
               src='/images/resources/resources-section-1.png'
               alt='Stop Guessing'

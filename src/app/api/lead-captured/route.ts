@@ -354,8 +354,7 @@ export async function POST(req: NextRequest) {
 		const docSite = final.site ?? piSite ?? siteFromReq;
 		const docPagePath = final.page_path ?? piPagePath ?? pagePathIn ?? null;
 
-		// Analytics (best-effort) — dedup: stable event_id
-		// Also: if you want STRICT "only once", you can gate by becameLeadCapturedNow.
+		// analytics (best-effort)
 		try {
 			await emitFunnelEvent({
 				event_id: stableLeadCapturedEventId(paymentIntentId, email),

@@ -66,7 +66,7 @@ export const ProgramItWorks = ({ description, subtitle, link, imgSrc }: Props) =
             <div className='relative w-full max-w-[420px] md:max-w-[560px] lg:max-w-[520px]'>
               <div className='relative overflow-hidden rounded-[44px] md:rounded-[56px] lg:rounded-[64px]'>
                 <div className='relative w-full h-[510px] md:h-[806px] lg:h-[806px]'>
-                  <Image src={imgSrc} alt='It worked for me' fill priority quality={100} />
+                  <Image src={imgSrc} alt='It worked for me' fill priority quality={100} className='object-cover' />
                 </div>
               </div>
             </div>
