@@ -172,7 +172,7 @@ const GoalContent = ({ phase, title, highlight, highlightColor, description }: G
   </>
 );
 
-export default function ModulesSection({ cohortLabel }: { cohortLabel?: string | null }) {
+export default function ModulesSection() {
   return (
     <section className='relative overflow-hidden'>
       {/* Background for whole section */}
@@ -318,7 +318,7 @@ export default function ModulesSection({ cohortLabel }: { cohortLabel?: string |
           </p>
 
           <p className='mt-6 md:mt-8 text-center font-lato text-brand-deep text-[24px] md:text-[24px] lg:leading-[26px] leading-[150%]'>
-            Next cohort starts <span className='text-brand-primary'>{cohortLabel ?? 'March 18'}</span>
+            Next cohort starts <span className='text-brand-primary'>March 18</span>
           </p>
 
           {/* ================= PHASE 1 ================= */}

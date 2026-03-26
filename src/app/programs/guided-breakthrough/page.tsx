@@ -13,11 +13,10 @@ import {
 } from '@/components/sections/Programs/GuidedBreakthrough/static';
 import SalesPageTagger from '@/components/sections/SalesPage/SalesPageTagger';
 import FooterLayout from '@/components/ui/footer/FooterLayout';
-import { getCohortData } from '@/lib/cohort';
+
 import { GUIDED_BREAKTHROUGH } from '@/utils/constants';
 
-export default async function GuidedBreakthroughPage() {
-  const { label: cohortLabel } = await getCohortData();
+export default function GuidedBreakthroughPage() {
   return (
     <>
       <main>
@@ -27,7 +26,7 @@ export default async function GuidedBreakthroughPage() {
         <ProgramResult {...guidedBreakthroughResultData} />
         <ProgramItWorks {...guidedBreakthroughItWorksData} />
 
-        <CostOfWaitingSection cohortLabel={cohortLabel} />
+        <CostOfWaitingSection />
         <CheckoutFormSectionLazy productId={GUIDED_BREAKTHROUGH} />
         <SalesPageTagger />
       </main>{' '}
