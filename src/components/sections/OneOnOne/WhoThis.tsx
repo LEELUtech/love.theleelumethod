@@ -13,16 +13,19 @@ const content = [
         id: '1',
         title: 'You Have a Specific Problem:',
         description: `You're at a decision point that requires clarity, or comfort. A relationship at breaking point. A career pattern you keep repeating. A behavioral loop that has already cost you years.`,
+        inline: false,
       },
       {
         id: '2',
         title: `You Don't Know What The Problem Is:`,
         description: `You just know something is off. You're stuck but can't name why. You might be succeeding on paper but feel misaligned. That's fine—the diagnostic will reveal the pattern you can't see from the inside. Most people are shocked by what the numbers show them.`,
+        inline: false,
       },
       {
         id: '3',
         title: 'Either Way:',
         description: `You're ready for clarity. You want confirmation that what you're sensing is real—and you want to understand the deeper pattern creating it. You value precision. You've spent months processing the problem; you're ready to identify the root in one hour.`,
+        inline: false,
       },
     ],
   },
@@ -36,13 +39,15 @@ const content = [
     list: [
       {
         id: '1',
-        title: `You're looking to replace therapeutic support`,
+        title: `You're looking to replace therapeutic support.`,
         description: `This session is diagnostic, not therapeutic—I identify patterns and provide strategic direction, but it doesn't replace therapy. If you're working through trauma or need emotional processing, continue with your therapist and consider this as a complementary tool.`,
+        inline: true,
       },
       {
         id: '2',
         title: `You aren't ready to change course.`,
         description: `If the data shows your current path is generating consequences, you must be prepared to adjust your direction immediately.`,
+        inline: true,
       },
     ],
   },
@@ -70,8 +75,14 @@ export const WhoThis = () => {
                   </div>
 
                   <div>
-                    <h4 className='font-bold'>{subItem.title}</h4>
-                    <p>{subItem.description}</p>
+                    {subItem.inline ? (
+                      <p><span className='font-bold'>{subItem.title}</span>{' '}{subItem.description}</p>
+                    ) : (
+                      <>
+                        <h4 className='font-bold'>{subItem.title}</h4>
+                        <p>{subItem.description}</p>
+                      </>
+                    )}
                   </div>
                 </li>
               ))}

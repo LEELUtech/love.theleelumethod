@@ -49,7 +49,7 @@ export default function AnimatedMechanicStep({ id, icon, module_start, module_en
         </h4>
         <h5 className='text-left font-canela text-[20px]/[126%] text-[#010101] mb-6'>{subtitle}</h5>
 
-        <ul className='list-disc list-inside flex flex-col justify-start mb-[46px]'>
+        <ul className='list-disc list-outside pl-5 flex flex-col justify-start mb-[46px]'>
           {modules.map((module, index) => (
             <li key={index} className='text-left'>
               {module}

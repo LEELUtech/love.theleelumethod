@@ -100,7 +100,7 @@ export default function LoveLevelsAnimatedBlock({ cards }: { cards: Card[] }) {
             }}
             className='
               bg-white rounded-[32px] text-center flex flex-col items-center justify-center
-              w-full max-w-[909px] min-h-[450px] p-1 md:p-8 lg:p-10'
+              w-full max-w-[909px] min-h-[450px] p-6 md:p-8 lg:p-10'
           >
             {card.img && (
               <div className='relative w-[139px] h-[139px] mb-4'>
@@ -117,7 +117,7 @@ export default function LoveLevelsAnimatedBlock({ cards }: { cards: Card[] }) {
               </div>
             )}
 
-            <h4 className='font-canela font-normal md:font-light text-brand-black mb-3 text-[48px] md:text-[40px] lg:text-[60px]'>
+            <h4 className='font-canela font-normal md:font-light text-brand-black mb-3 text-[32px] md:text-[40px] lg:text-[60px]'>
               {card.title}
             </h4>
 

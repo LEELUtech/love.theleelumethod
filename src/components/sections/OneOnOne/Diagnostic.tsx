@@ -73,15 +73,19 @@ export const Diagnostic = () => {
               {content.title}
             </h2>
 
-            <h3 className='text-body mb-[40px] font-lato order-2 md:font-canela md:font-thin md:text-[32px]/[110%]'>
+            <p className='md:hidden order-2 font-normal text-[17px]/[24px] font-lato text-brand-deep mb-1'>
+              Precision Pattern Analysis
+            </p>
+
+            <h3 className='text-body mb-[40px] font-lato order-3 md:order-2 md:font-canela md:font-thin md:text-[32px]/[110%]'>
               {content.subtitle}
             </h3>
 
-            <p className='text-[32px]/[126%] font-canela font-thin order-4 md:text-body md:font-lato md:font-normal  md:order-3 mb-6'>
+            <p className='text-[32px]/[126%] font-canela font-thin order-5 md:text-body md:font-lato md:font-normal  md:order-3 mb-6'>
               {content.methodTitle}
             </p>
 
-            <p className='text-body tracking-0 text-left font-lato font-normal order-5 md:order-4 mb-[46px]'>
+            <p className='text-body tracking-0 text-left font-lato font-normal order-6 md:order-4 mb-[46px]'>
               {content.desc.map((line, i) => (
                 <span key={i}>
                   {line}
@@ -92,7 +96,7 @@ export const Diagnostic = () => {
 
             <Button
               variant='primary'
-              className='mb-8 w-full max-w-[316px] py-[16px] order-3 md:order-5 md:mb-0'
+              className='mb-8 w-full max-w-[316px] py-[16px] order-4 md:order-5 md:mb-0'
               href={ONE_ON_ONE_LINKS.HERO_LINK.href}
               trackingData={{
                 cta_name: 'one_on_one_diagnostic_cta',

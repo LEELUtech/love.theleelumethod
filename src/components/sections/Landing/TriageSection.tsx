@@ -16,7 +16,7 @@ const cards = [
       'Answer 10 questions to uncover:',
       {
         bold: 'The Friction Points:',
-        text: 'Why you keep having the same fight',
+        text: 'Why you keep having the same fight.',
       },
       {
         bold: 'The Probability:',

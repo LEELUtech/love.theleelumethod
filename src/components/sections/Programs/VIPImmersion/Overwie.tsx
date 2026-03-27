@@ -42,12 +42,18 @@ const Card = (props: CardProps) => {
 
         {list && <ArrowList list={list} />}
 
-        {description && <p className='text-[17px]/[26px] text-left font-lato mt-6 mb-6 text-brand-gray'>{description}</p>}
+        {description && (
+          Array.isArray(description)
+            ? description.map((line, i) => (
+                <p key={i} className='text-[17px]/[26px] text-left font-lato mb-3 text-brand-gray' style={{ marginTop: i === 0 ? 12 : 26 }}>{line}</p>
+              ))
+            : <p className='text-[17px]/[26px] text-left font-lato mt-6 mb-6 text-brand-gray'>{description}</p>
+        )}
 
-        {additional_list && <div className='mt-6'><ArrowList list={additional_list} /></div>}
+        {additional_list && <div className='mt-12'><ArrowList list={additional_list} /></div>}
 
         {subtitle_bottom && (
-          <h4 className='text-[32px]/[120%] max-w-[500px] mt-[48px] text-left font-canela font-light'>
+          <h4 className='text-[32px]/[120%] max-w-[500px] mt-[48px] text-left font-canela font-light text-brand-deep'>
             {subtitle_bottom}
           </h4>
         )}

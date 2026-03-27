@@ -49,7 +49,7 @@ function cx(...classes: Array<string | false | null | undefined>) {
 }
 
 const base =
-  'inline-flex items-center justify-center rounded-full font-lato font-medium uppercase tracking-[0.10em] transition-colors disabled:cursor-not-allowed disabled:opacity-60';
+  'inline-flex items-center justify-center rounded-full font-lato font-medium uppercase tracking-[0.10em] transition-colors disabled:cursor-not-allowed disabled:opacity-60 text-center';
 
 const sizes: Record<ButtonSize, string> = {
   md: 'text-[13px] md:text-[14px] leading-[26px] px-8 py-3',

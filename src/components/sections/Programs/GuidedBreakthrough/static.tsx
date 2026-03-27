@@ -173,7 +173,7 @@ export const guidedBreakthroughOverviewData: IProgramOverview = {
     {
       id: 1,
       title: { label: '90-minute private Session with Lilly', size: '[48px]/[126%]' },
-      description: 'A one-on-one strategy session focused entirely on you. Inside this call:',
+      description: 'A one-on-one strategy session focused entirely on you.\nInside this call:',
       list: [
         'We review your personalized reports',
         'You may ask any questions about your situation',

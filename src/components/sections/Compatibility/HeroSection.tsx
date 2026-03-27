@@ -16,14 +16,14 @@ const HeroSection = () => {
 
       <Header />
 
-      <div className='container px-4 relative z-10 pt-[33px] pb-[0px] md:pb-[0px] lg:pt-[97px] lg:pb-[165px]'>
+      <div className='container px-4 relative z-10 pt-[10px] pb-[0px] md:pt-[33px] md:pb-[0px] lg:pt-[140px] lg:pb-[100px]'>
         <div className='flex flex-col items-center justify-between gap-10 lg:flex-row lg:items-start lg:gap-[60px] xl:gap-[127px]'>
           {/* IMAGE */}
           <div className='order-1 flex w-full justify-center lg:order-2 lg:w-auto z-10'>
             <div
               className='
 								relative
-								w-[380px] h-[460px]
+								w-[380px] h-[420px]
 								rounded-t-[9999px] rounded-b-[24px]
 								md:w-[490px] md:h-[560px]
 								lg:w-[490px] lg:h-[557px]
@@ -40,12 +40,12 @@ const HeroSection = () => {
               />
 
               {/* Bottom fade (mobile + tablet) */}
-              <div className='absolute bottom-0 left-0 right-0 h-[45%] md:h-[38%] bg-gradient-to-t from-[#F6EFEA] via-[#F6EFEA]/70 to-transparent pointer-events-none lg:hidden' />
+              <div className='absolute bottom-0 left-0 right-0 h-[35%] md:h-[38%] bg-gradient-to-t from-[#F9F3EF] from-50% via-[#F9F3EF]/60 to-transparent pointer-events-none lg:hidden' />
 
               {/* Arc + ornament */}
               <ArcAutoOnce
                 className='
-									hidden md:block absolute inset-0 -z-0 pointer-events-none
+									hidden lg:block absolute inset-0 -z-0 pointer-events-none
 									-translate-y-[13%] -translate-x-[-7%]
 									md:-translate-y-[13%] md:-translate-x-[-8%]
 									lg:-translate-y-[13%] lg:-translate-x-[-7%]
@@ -85,7 +85,7 @@ const HeroSection = () => {
           </div>
 
           {/* TEXT */}
-          <div className='order-2 w-full lg:order-1 lg:text-left flex flex-col z-20 translate-y-[-70px]'>
+          <div className='order-2 w-full lg:order-1 lg:text-left flex flex-col z-20 translate-y-[-110px] mb-[-70px] lg:mb-0'>
             {/* Title */}
             <h1
               className='

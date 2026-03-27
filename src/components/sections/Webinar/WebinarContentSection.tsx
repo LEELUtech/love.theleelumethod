@@ -63,22 +63,22 @@ const WebinarContentSection = () => {
                 alone or in a relationship that slowly eroded your sense of self.
               </p>
 
-              <p className='mt-4 md:mt-5 lg:mt-6'>
+              <p className='mt-6 md:mt-5 lg:mt-6'>
                 Maybe you&apos;re recovering from a breakup that demolished your confidence.
               </p>
 
-              <p className='mt-4 md:mt-5 lg:mt-6'>
+              <p className='mt-6 md:mt-5 lg:mt-6'>
                 Maybe you recognize the cycle:
                 <br />
                 <span className='font-normal italic'>Euphoria → distance → desperation → collapse.</span>
               </p>
 
-              <p className='mt-4 md:mt-5 lg:mt-6'>
+              <p className='mt-6 md:mt-5 lg:mt-6'>
                 Or maybe you&apos;re exhausted from carrying the emotional weight, managing everything, while secretly
                 craving to be held, chosen, and cherished.
               </p>
 
-              <p className='mt-4 md:mt-5 lg:mt-6'>If any of this resonates, this masterclass is for you.</p>
+              <p className='mt-6 md:mt-5 lg:mt-6'>If any of this resonates, this masterclass is for you.</p>
 
               <p className=' font-thin font-canela text-brand-deep leading-[110%] text-[32px] mt-10 md:text-[24px] lg:text-[32px] lg:mt-[60px]'>
                 If this is you, you&apos;re exactly who this masterclass was created for.
