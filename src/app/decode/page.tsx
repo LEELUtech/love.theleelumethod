@@ -20,7 +20,7 @@ const footerPromoContent = {
 
 const WebinarPage = () => {
   return (
-    <main>
+    <main className='overflow-x-hidden'>
       <WebinarSection />
       <TestimonialsSection />
       <WebinarContentSection />

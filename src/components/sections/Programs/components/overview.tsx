@@ -96,7 +96,7 @@ export const ProgramOverview = ({ title, subtitle, description, overviews, cards
         <div className='flex-1 max-w-[496px] aspect-[496/761] rounded-[100px] overflow-hidden'>
           <Image src='/images/lily/lily_12.png' width={496} height={761} alt='' className='w-full h-auto' />
         </div>{' '}
-        <div className='flex-1 pt-[72px] lg:pt-[112px]'>
+        <div className='flex-1 w-full pt-[72px] lg:pt-[112px]'>
           <ul className='flex flex-col gap-[48px]'>
             {overviews.map((item) => {
               const iconMt = item.title.size === '[32px]/[126%]' ? 'mt-1' : 'mt-3';
@@ -112,11 +112,17 @@ export const ProgramOverview = ({ title, subtitle, description, overviews, cards
                     </span>
                   </h4>
 
-                  {item.description && (
-                    <p className='text-[17px]/[26px] font-lato mb-4 text-brand-gray'>{item.description}</p>
-                  )}
+                  <div className='pl-[39px]'>
+                    {item.description && (
+                      <p className='text-left text-[17px]/[26px] font-lato mb-4 text-brand-gray whitespace-pre-line'>{item.description}</p>
+                    )}
 
-                  {item.list && <ArrowList list={item.list} />}
+                    {item.subtitle && (
+                      <p className='text-left text-[32px]/[150%] font-canela font-light mb-4 text-brand-deep'>{item.subtitle}</p>
+                    )}
+
+                    {item.list && <ArrowList list={item.list} />}
+                  </div>
                 </li>
               );
             })}

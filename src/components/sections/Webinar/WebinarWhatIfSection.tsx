@@ -21,12 +21,12 @@ const WebinarWhatIfSection = () => {
               className='object-cover scale-x-[-1] object-[41%_30%] rounded-[1000px]'
             />
             <ArcAutoOnce
-              className='absolute hidden lg:block inset-0 -z-0 -translate-y-[13%] pointer-events-none -translate-x-[-7%]'
+              className='absolute block inset-0 -z-0 -translate-y-[13%] pointer-events-none -translate-x-[-7%]'
               // endAt={0.9}
               flightStart={0.2}
               durMs={1300}
               arrowRotateDeg={248}
-              arrowScale={0.8}
+              arrowScale={1}
               arrowCenterX={6.5}
               arrowCenterY={-6}
               arrowOffsetY={3}
@@ -42,8 +42,8 @@ const WebinarWhatIfSection = () => {
               className='
     /* Mobile default */
     w-[124px] h-[167px]
-    xl:bottom-[-90px] xl:left-[-50px]
-    lg:bottom-[-90px] lg:left-[-30px]
+    xl:bottom-[-90px] xl:left-[-30px]
+    lg:bottom-[-90px] lg:left-[-20px]
     bottom-[-30px] left-[-10px]
     md:bottom-[-50px] md:left-[-10px]
 
@@ -69,14 +69,14 @@ const WebinarWhatIfSection = () => {
 
           {/* Text */}
           <div className='w-full md:w-1/2'>
-            <h2 className='font-canela font-thin text-brand-deep tracking-normal text-[48px]/[130%] mb-6 md:text-[48px] md:mb-8 md:text-left lg:text-[60px] lg:mb-[50px]'>
+            <h2 className='font-canela font-thin text-brand-deep tracking-normal text-[48px]/[130%] mb-8 md:text-[48px] md:mb-8 md:text-left lg:text-[60px] lg:mb-[50px]'>
               What if the women who have the love you want... AREN&apos;T lucky or special?
             </h2>
 
             <div className='font-lato font-medium text-[#5A5757] text-[17px]/[130%] md:text-left'>
               <p>Women who have the love you want aren&apos;t luckier, more confident, or more &apos;feminine&apos; than you.</p>
 
-              <p className='mt-4 md:mt-5'>
+              <p className='mt-8 md:mt-6'>
                 They simply stopped guessing. They learned to read the internal codes driving their relationships
                 instead of fighting them. In this training, I don&apos;t teach you how to &apos;act&apos;. I show you
                 how to read the data.
@@ -149,9 +149,9 @@ const WebinarWhatIfSection = () => {
               {
                 parts: [
                   { text: 'Shift into an identity that ' },
-                  { text: 'naturally', bold: true },
+                  { text: 'naturally attracts', bold: true },
                   {
-                    text: ' attracts healthy, grounded, emotionally available men.',
+                    text: ' healthy, grounded, emotionally available men.',
                   },
                 ],
               },

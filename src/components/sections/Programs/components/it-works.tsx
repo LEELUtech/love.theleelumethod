@@ -34,13 +34,13 @@ export const ProgramItWorks = ({ description, subtitle, link, imgSrc }: Props) =
               For Me
             </h2>
 
-            <p className='mb-6 flex flex-col gap-4 font-lato text-[#757986] text-[17px]/[26px] md:text-[18px] '>
+            <p className='mb-12 flex flex-col gap-4 font-lato text-[#757986] text-[17px]/[26px] md:text-[18px] '>
               {description.map((line, idx) => (
                 <span key={idx}>{line}</span>
               ))}
             </p>
 
-            <p className='mb-[45px] flex flex-col gap-4 font-canela font-light text-brand-deep text-[32px]/[126%]'>
+            <p className='mb-[30px] flex flex-col gap-10 font-canela font-light text-brand-deep text-[32px]/[126%]'>
               {subtitle.map((line, idx) => (
                 <span key={idx}>{line}</span>
               ))}

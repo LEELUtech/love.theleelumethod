@@ -42,7 +42,7 @@ export const VIPImmersionReceive = () => {
               {title}
             </h3>
             <h6 className='text-[17px]/[26px] mb-[30px] text-left font-lato text-brand-gray'>{subtitle}</h6>
-            <ArrowList list={list} />
+            <ArrowList list={list} boldFirst />
 
             <p className='text-[17px]/[26px] text-left mt-10 font-lato text-brand-gray'>
               {description.content} <span className='font-bold'>{description.highlight}</span>

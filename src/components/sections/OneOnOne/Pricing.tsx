@@ -150,7 +150,7 @@ const SaveButton = ({ content }: { content: number }) => {
       }}
     >
       <span className="absolute inset-0 bg-[url('/icons/noise.png')] opacity-10"></span>
-      Save ${content}
+      SAVE ${content}
     </button>
   );
 };
@@ -209,8 +209,8 @@ export const Pricing = () => {
 
                 {!!features?.length && (
                   <>
-                    <p className='text-cta font-lato mb-6 text-brand-gray'>What You Get:</p>
-                    <ul className='flex flex-col pl-[20px]'>
+                    <p className='text-cta font-lato mb-6 mt-4 text-brand-gray'>What You Get:</p>
+                    <ul className='flex flex-col pl-[28px]'>
                       {features.map((feature, index) => (
                         <li key={index} className='list-disc text-[15px]/[24px] font-lato text-[#41444E]'>
                           {feature}
@@ -221,7 +221,7 @@ export const Pricing = () => {
                 )}
 
                 {!!whyList?.length && (
-                  <ul className='flex flex-col pl-[20px] mb-[100px]'>
+                  <ul className='flex flex-col gap-6 pl-[20px] mb-[100px]'>
                     {whyList.map((item, index) => {
                       const { title, description, points } = item;
 
@@ -231,7 +231,7 @@ export const Pricing = () => {
                           {description && <span>{description}</span>}
 
                           {!!points?.length && (
-                            <ul className='flex flex-col pl-[20px]'>
+                            <ul className='flex flex-col pl-[28px]'>
                               {points.map((point, pointIndex) => (
                                 <li key={pointIndex} className='list-disc text-[15px]/[24px] font-lato text-[#41444E]'>
                                   {point.title && <span className='font-bold'>{point.title} </span>}
@@ -248,7 +248,7 @@ export const Pricing = () => {
                 )}
 
                 {note && (
-                  <p className='text-[14px]/[20px] mb-[56px] italic font-lato mt-4 text-center lg:text-left text-brand-gray-100'>
+                  <p className='text-[14px]/[20px] mb-[56px] italic font-lato mt-4 text-center text-brand-gray-100'>
                     {note}
                   </p>
                 )}
@@ -256,7 +256,7 @@ export const Pricing = () => {
                 <div className='mt-auto mb-9 flex flex-col items-center'>
                   {save && <SaveButton content={save} />}
                   <h6 className='text-[32px]/[126%] text-center font-light font-canela text-[#3C1212] mb-2'>
-                    Investment: ${investment}
+                    Investment: ${investment?.toLocaleString('en-US')}
                   </h6>
                   <div
                     className='text-[17px]/[26px] text-center font-canela text-brand-gray-100 mb-8'

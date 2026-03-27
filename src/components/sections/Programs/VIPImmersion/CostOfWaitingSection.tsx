@@ -99,15 +99,15 @@ export default function CostOfWaitingSection({ cohortLabel }: { cohortLabel?: st
             {`A contested divorce costs $30,000-$100,000. Custody battles can exceed $250,000. Years of therapy trying to "process" what went wrong: $15,000+.`}
           </p>
 
-          <p className='font-canela text-[32px] font-thin lg:text-[32px] leading-[130%] text-brand-deep mb-6 lg:mb-12 mx-auto text-center'>
+          <p className='font-canela text-[32px] font-thin lg:text-[32px] leading-[130%] text-brand-deep mb-6 lg:mb-6 mx-auto text-center'>
             {`But the real cost? The year you spend trying to fix an unfixable relationship. The decade you lose rebuilding after the wrong marriage. The life you didn't live because you were trapped in someone else's patterns.`}
           </p>
 
-          <div className='relative mx-auto my-[26px] w-[8px] h-[66px]'>
+          <div className='relative mx-auto w-[8px] h-[66px]'>
             <Image src='/icons/yellow_stick.svg' alt='' fill quality={100} />
           </div>
 
-          <p className='mt-8 font-canela font-normal text-brand-deep text-[32px] leading-[1.6]'>
+          <p className='mt-4 font-canela font-normal text-brand-deep text-[32px] leading-[1.6]'>
             The Leelu Method VIP Immersion is the cheapest insurance policy you will ever buy.
           </p>
         </div>{' '}
