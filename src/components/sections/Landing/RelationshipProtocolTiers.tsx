@@ -120,8 +120,8 @@ export default function RelationshipProtocolTiers() {
 
             {/* The Essentials */}
             <div className='rounded-[32px] bg-brand-white shadow-[0px_4px_20px_0px_rgba(0,0,0,0.1)] px-7 lg:px-8 pb-7 min-h-[966px] pt-[46px] flex flex-col'>
-              <h3 className='font-canela font-thin text-[36px] text-brand-black text-center leading-[126%]'>
-                The <br /> Essentials
+              <h3 className='font-canela font-thin text-[36px] text-brand-black text-center leading-[126%] w-full'>
+                The Essentials
               </h3>
 
               <div className='mt-8 space-y-0'>
@@ -178,8 +178,8 @@ export default function RelationshipProtocolTiers() {
                 </span>
               </div>
 
-              <h3 className='font-canela font-thin text-[36px] text-brand-black text-center leading-[126%]'>
-                Guided <br /> Breakthrough
+              <h3 className='font-canela font-thin text-[36px] text-brand-black text-center leading-[126%] w-full'>
+                Guided Breakthrough
               </h3>
 
               <div className='mt-8 space-y-0'>
@@ -211,8 +211,8 @@ export default function RelationshipProtocolTiers() {
 
             {/* VIP Immersion */}
             <div className='relative rounded-[32px] bg-brand-white shadow-[0px_4px_20px_0px_rgba(0,0,0,0.1)] px-7 lg:px-8 pb-7 min-h-[966px] pt-[46px] flex flex-col'>
-              <h3 className='font-canela font-thin text-[36px] text-brand-black text-center leading-[126%]'>
-                VIP <br /> Immersion
+              <h3 className='font-canela font-thin text-[36px] text-brand-black text-center leading-[126%] w-full'>
+                VIP Immersion
               </h3>
 
               <div className='mt-8 space-y-0'>
@@ -281,7 +281,7 @@ function MobileTierCard({
         </div>
       )}
 
-      <h3 className='font-canela font-thin text-[42px] text-brand-black leading-[126%]'>{title}</h3>
+      <h3 className='font-canela font-thin text-[42px] text-brand-black leading-[126%] text-center'>{title}</h3>
 
       <div className='mt-4'>
         {pairs.map((p, idx) => (
