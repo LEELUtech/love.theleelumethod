@@ -30,7 +30,7 @@ const WebinarContentSection = () => {
   return (
     <Section
       sectionClasses='relative bg-[#f5e8e8] pt-12 pb-[120px] md:py-16 lg:py-32'
-      backgroundImage='/images/bg/webinar_content_bg.png'
+      backgroundImage='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fwebinar_content_bg.png?alt=media'
     >
       <div className='relative'>
         <div className='flex flex-col md:flex-row items-center justify-between mb-[300px] gap-12 md:gap-10 lg:gap-20'>

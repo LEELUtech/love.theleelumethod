@@ -19,7 +19,7 @@ interface Props extends IProgramItWorks {} // eslint-disable-line @typescript-es
 
 export const ProgramItWorks = ({ description, subtitle, link, imgSrc }: Props) => {
   return (
-    <Section backgroundImage='/images/programs/self-guided-transformation/itworks_bg.png'>
+    <Section backgroundImage='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fitworks_bg.png?alt=media'>
       <motion.div
         className='pt-[40px] pb-[160px] lg:pt-[60px]'
         initial={{ opacity: 0 }}

@@ -93,7 +93,7 @@ export default function DecodedLoveCohortSection() {
       <section className='relative py-16 pb-[150px] lg:pb-[200px] lg:py-24'>
         {/* Background */}
         <div className='absolute inset-0 -z-10'>
-          <Image src='/images/landing/cohort_section_bg.png' alt='' fill priority />
+          <Image src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fcohort_section_bg.png?alt=media' alt='' fill priority />
         </div>
 
         <div className='container relative px-4 mx-auto'>

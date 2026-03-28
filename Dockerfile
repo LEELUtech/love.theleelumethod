@@ -1,19 +1,22 @@
-FROM node:20-alpine
-
+FROM node:20-alpine AS builder
 WORKDIR /app
-
 
 COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY . .
+RUN npm run build
 
-RUN chown -R node:node /app
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+
+COPY --chown=node:node --from=builder /app/public ./public
+COPY --chown=node:node --from=builder /app/.next/standalone ./
+COPY --chown=node:node --from=builder /app/.next/static ./.next/static
 
 USER node
 
-RUN npm run build
-
 EXPOSE 3000
 
-CMD [ "npm", "start" ]
+CMD ["node", "server.js"]

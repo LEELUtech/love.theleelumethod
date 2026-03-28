@@ -9,7 +9,7 @@ import { Section } from '@/components/ui/containers/section';
 
 export default function MechanicsDeliverablesSection() {
   return (
-    <Section backgroundImage={'/images/programs/self-guided-transformation/mechanics_section_bg.png'}>
+    <Section backgroundImage={'https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fmechanics_section_bg.png?alt=media'}>
       <div className='text-center xs:mb-[60px]'>
         <ProgramsReceive {...guidedBreakthroughModuleData} />
         <ProgramOverview {...guidedBreakthroughOverviewData} />

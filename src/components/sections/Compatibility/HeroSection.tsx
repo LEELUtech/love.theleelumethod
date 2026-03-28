@@ -11,7 +11,7 @@ const HeroSection = () => {
     <section className='relative overflow-hidden'>
       {/* Background */}
       <div className='absolute inset-0 z-0'>
-        <Image src='/images/programs/hero_section_bg.png' alt='' fill priority sizes='100vw' />
+        <Image src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fhero_section_bg.png?alt=media' alt='' fill priority sizes='100vw' />
       </div>
 
       <Header />

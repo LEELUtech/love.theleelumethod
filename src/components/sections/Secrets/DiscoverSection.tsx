@@ -26,7 +26,7 @@ export default function DiscoverSection() {
   return (
     <section className='relative bg-[#f5e8e8] py-12 md:py-16 lg:pt-[84px] lg:pb-[162px] overflow-hidden'>
       <div className='absolute inset-0 z-0'>
-        <Image src='/images/bg/discover_section_bg.png' alt='' fill quality={100} priority />
+        <Image src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fdiscover_section_bg.png?alt=media' alt='' fill quality={100} priority />
       </div>
 
       <div className='container relative z-10 px-4'>

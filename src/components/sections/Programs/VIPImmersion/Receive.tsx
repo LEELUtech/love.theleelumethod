@@ -23,7 +23,7 @@ export const VIPImmersionReceive = () => {
   const { title, subtitle, description, list } = vipImmersionModuleAdditionalData;
 
   return (
-    <Section backgroundImage='/images/bg/checkout_bg.png'>
+    <Section backgroundImage='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fcheckout_bg.png?alt=media'>
       <div className='text-center mb-[150px] flex flex-col gap-10 xl:gap-[145px]'>
         <ProgramsReceive {...vipImmersionModuleData} />
 

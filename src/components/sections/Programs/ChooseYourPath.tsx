@@ -235,7 +235,7 @@ export default function ChooseYourPathSection({ cohortLabel }: { cohortLabel?: s
       id='pricing'
       className='pt-0 pb-[122px] '
       style={{
-        background: "url('/images/programs/choose_your_path_bg.png') no-repeat center center / cover",
+        background: "url('https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fchoose_your_path_bg.png?alt=media') no-repeat center center / cover",
       }}
     >
       <div className='max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-[60px] 4xl:px-[180px] relative py-[80px] lg:py-[110px]'>

@@ -298,7 +298,7 @@ export default function CheckoutFormSection() {
   return (
     <section id='checkout' className='relative bg-white overflow-visible lg:h-[742px] py-[80px] lg:py-0'>
       <div className='absolute inset-0 z-0'>
-        <Image src='/images/bg/checkout_bg.png' alt='Checkout bg' fill quality={100} />
+        <Image src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fcheckout_bg.png?alt=media' alt='Checkout bg' fill quality={100} />
       </div>
 
       <div className='container relative z-10 lg:top-[-100px]'>

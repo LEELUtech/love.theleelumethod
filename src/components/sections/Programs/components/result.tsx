@@ -21,7 +21,7 @@ export const ProgramResult = ({ title, link, investment, description }: Props) =
       <div
         className='absolute inset-0'
         style={{
-          background: 'url("/images/bg/waves_bg.jpg")',
+          background: 'url("https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fwaves_bg.jpg?alt=media")',
           backgroundSize: 'cover',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',

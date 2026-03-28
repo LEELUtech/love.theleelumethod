@@ -176,7 +176,7 @@ export default function ModulesSection({ cohortLabel }: { cohortLabel?: string |
     <section className='relative overflow-hidden'>
       {/* Background for whole section */}
       <div className='absolute inset-0 -z-10'>
-        <Image src='/images/programs/modules_section_bg.png' alt='' fill priority />
+        <Image src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fmodules_section_bg.png?alt=media' alt='' fill priority />
       </div>
 
       <div className='container px-4'>
