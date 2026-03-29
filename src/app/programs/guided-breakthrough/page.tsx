@@ -20,7 +20,7 @@ export default async function GuidedBreakthroughPage() {
   const { label: cohortLabel } = await getCohortData();
   return (
     <>
-      <main>
+      <main className='overflow-x-hidden'>
         <ProgramsHero {...guidedBreakthroughHeroData} />
         <ProgramsWhoThis {...guidedBreakthroughWhoThisData} />
         <MechanicsDeliverablesSection />

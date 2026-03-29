@@ -24,12 +24,12 @@ export const VIPImmersionReceive = () => {
 
   return (
     <Section backgroundImage='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fcheckout_bg.png?alt=media'>
-      <div className='text-center mb-[150px] flex flex-col gap-10 xl:gap-[145px]'>
+      <div className='text-center mb-[60px] lg:mb-[150px] flex flex-col gap-10 xl:gap-[145px]'>
         <ProgramsReceive {...vipImmersionModuleData} />
 
         <Flex
           component='article'
-          className='flex flex-col-reverse md:flex-row lg:space-between gap-10 lg:gap-[90px] xl:gap-[110px] 2xl:gap-[130px]'
+          className='flex flex-col md:flex-row lg:space-between gap-10 lg:gap-[90px] xl:gap-[110px] 2xl:gap-[130px]'
         >
           <div className='flex-1 flex w-full max-w-full lg:max-w-[496px] flex-col items-center justify-center'>
             <div className='relative w-full max-w-[496px] aspect-[496/535] overflow-hidden rounded-t-[999px]'>

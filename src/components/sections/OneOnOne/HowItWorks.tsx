@@ -56,7 +56,7 @@ const CARD_CONTENT = [
 
 export const HowItWorks = () => {
   return (
-    <Section backgroundImage='/images/bg/new_bg.png'>
+    <Section backgroundImage='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fhow_it_works_bg.png?alt=media'>
       <>
         <OrnamentTitle
           color='#E5B8B8'

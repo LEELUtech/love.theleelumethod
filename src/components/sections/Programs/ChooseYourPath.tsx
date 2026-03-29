@@ -338,7 +338,7 @@ export default function ChooseYourPathSection({ cohortLabel }: { cohortLabel?: s
                   </ul>
 
                   <div className='mt-10 text-left lg:text-center px-4'>
-                    <p className='font-canela lg:font-light mb-5 text-[48px]/[126%] lg:text-[32px] text-[#3C1212]'>
+                    <p className='font-canela lg:font-light mb-5 text-[48px]/[126%] lg:text-[32px] text-[#3C1212] pl-[16px] lg:pl-0'>
                       {tier.price}
                     </p>
                     <Button

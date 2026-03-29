@@ -19,7 +19,7 @@ import SalesPageTagger from '@/components/sections/SalesPage/SalesPageTagger';
 export default function SelfGuidedTransformationPage() {
   return (
     <>
-      <main>
+      <main className='overflow-x-hidden'>
         <ProgramsHero {...selfGuidedHeroData} />
         <ProgramsWhoThis {...selfGuidedWhoThisData} />
         <MechanicsDeliverablesSection />

@@ -24,7 +24,7 @@ export default async function VIPImmersionPage() {
   const { label: cohortLabel } = await getCohortData();
   return (
     <>
-      <main>
+      <main className='overflow-x-hidden'>
         <ProgramsHero {...vipImmersionHeroData} />
         <ProgramsWhoThis {...vipImmersionWhoThisData} />
         <MechanicsDeliverablesSection />

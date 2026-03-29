@@ -90,7 +90,7 @@ export default function DecodedLoveCohortSection() {
 
   return (
     <>
-      <section className='relative py-16 pb-[150px] lg:pb-[200px] lg:py-24'>
+      <section className='relative py-16 pb-[150px] lg:pb-[100px] lg:py-24'>
         {/* Background */}
         <div className='absolute inset-0 -z-10'>
           <Image src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fcohort_section_bg.png?alt=media' alt='' fill priority />
@@ -153,29 +153,6 @@ export default function DecodedLoveCohortSection() {
             >
               {HOME_LINKS.DECODED_LOVE_LINK.label}
             </Button>
-          </div>
-
-          {/* Divider */}
-          <div className='mt-[80px] h-[1px] w-full bg-brand-deep opacity-50 max-w-[1224px]' />
-
-          {/* Restrictions */}
-          <div className='mt-[80px]'>
-            <p className='font-canela font-light uppercase tracking-[2.6px] text-[32px] text-brand-black mb-[40px]'>
-              THE RESTRICTIONS:
-            </p>
-
-            <div className='font-lato text-[#5A5757] text-body space-y-2 leading-[130%]'>
-              <p className='mb-[40px]'>
-                This is not a passive recording. I review participant questions and calibrate the data in real-time. Because I
-                personally calculate codes for my students, I cannot host thousands of people.
-              </p>
-
-              <ul className='list-disc pl-5 space-y-1 text-body font-lato font-normal text-[#5A5757]'>
-                <li>Session Capacity: Capped at 100 Attendees.</li>
-                <li>Next Session: [Dynamic Date: Tomorrow at 7 PM]</li>
-                <li>Warning: Replays are not guaranteed. This is for women ready to execute, not just watch.</li>
-              </ul>
-            </div>
           </div>
         </div>
       </section>
