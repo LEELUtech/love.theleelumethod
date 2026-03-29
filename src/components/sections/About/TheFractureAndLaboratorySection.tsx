@@ -6,7 +6,7 @@ import Image from 'next/image';
 
 const TheFractureAndLaboratorySection = () => {
   return (
-    <Section backgroundImage='/images/about/fracture_section_bg.png' wrapperClasses='py-[80px]' sectionClasses='overflow-x-hidden'>
+    <Section backgroundImage='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Ffracture_section_bg.png?alt=media' wrapperClasses='py-[80px]' sectionClasses='overflow-x-hidden'>
       <div>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-12 items-center'>
           {/* Left Column - Image */}

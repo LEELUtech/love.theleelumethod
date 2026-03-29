@@ -94,7 +94,7 @@ const ProblemSolutionSection = () => {
     <section className='relative py-[80px] lg:py-[112px] pb-[220px] lg:pb-[200px] overflow-hidden'>
       {/* Background Image */}
       <div className='absolute inset-0 z-[-1] overflow-hidden'>
-        <Image src='/images/about/fracture_section_bg.png' alt='' fill priority quality={100} />
+        <Image src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Ffracture_section_bg.png?alt=media' alt='' fill priority quality={100} />
       </div>
       <div className='container px-4'>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-12 items-start'>

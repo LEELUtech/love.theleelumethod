@@ -13,7 +13,7 @@ const ProfileGlitchSection = ({ description, secondaryDescription }: ProfileGlit
       {/* background */}
       <div className='absolute inset-0 z-0'>
         <Image
-          src='/images/quiz-result/profile_glitch_bg.png'
+          src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fprofile_glitch_bg.png?alt=media'
           alt=''
           fill
           priority

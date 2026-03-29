@@ -69,7 +69,7 @@ interface Props {
 export const VIPImmersionOverview = ({ overviews }: Props) => {
   return (
     <Section
-      backgroundImage='/images/programs/self-guided-transformation/mechanics_section_bg.png'
+      backgroundImage='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fmechanics_section_bg.png?alt=media'
       wrapperClasses='py-[80px]'
     >
       <Flex vertical gap={120}>

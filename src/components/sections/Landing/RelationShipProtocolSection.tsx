@@ -60,7 +60,7 @@ const RelationShipProtocolSection = () => {
       {/* Background Image */}
       <div className='absolute inset-0 -z-10'>
         <Image
-          src='/images/landing/relationship_protocol_section_bg.png'
+          src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Frelationship_protocol_section_bg.png?alt=media'
           alt=''
           fill
           priority

@@ -73,10 +73,6 @@ export const Diagnostic = () => {
               {content.title}
             </h2>
 
-            <p className='md:hidden order-2 font-normal text-[17px]/[24px] font-lato text-brand-deep mb-1'>
-              Precision Pattern Analysis
-            </p>
-
             <h3 className='text-body mb-[40px] font-lato order-3 md:order-2 md:font-canela md:font-thin md:text-[32px]/[110%]'>
               {content.subtitle}
             </h3>

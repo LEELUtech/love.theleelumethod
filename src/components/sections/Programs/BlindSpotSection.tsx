@@ -70,7 +70,7 @@ export default function BlindSpotSection() {
     <section className='relative py-[72px] lg:py-[120px]'>
       <div className='absolute inset-0 -mt-[120px] z-'>
         <Image
-          src='/images/programs/blindspot_section_bg.png'
+          src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fblindspot_section_bg.png?alt=media'
           alt=''
           fill
           priority

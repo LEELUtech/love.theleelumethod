@@ -6,5 +6,5 @@ Dockerfile
 .dockerignore
 *.md
 *.log
-functions/node_modules
+functions
 src/node_modules

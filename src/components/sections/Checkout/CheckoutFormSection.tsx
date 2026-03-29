@@ -286,7 +286,7 @@ export default function CheckoutFormSection({ productId }: CheckoutFormSectionPr
 
   return (
     <Section
-      backgroundImage='/images/bg/checkout_bg.png'
+      backgroundImage='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fcheckout_bg.png?alt=media'
       sectionClasses='bg-white py-[37px] md:py-[56px] lg:py-[37px]'
       wrapperClasses='lg:top-[-200px] !pb-0 lg:pt-[70px]'
       id='checkout'

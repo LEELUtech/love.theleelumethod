@@ -10,7 +10,7 @@ const HeroSection = () => {
     <section className='relative overflow-hidden pt-[40px] lg:pt-[64px]'>
       {/* Background */}
       <div className='absolute inset-0 -z-10'>
-        <Image src='/images/programs/hero_section_bg.png' alt='' fill priority className='object-cover' sizes='100vw' />
+        <Image src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fhero_section_bg.png?alt=media' alt='' fill priority className='object-cover' sizes='100vw' />
       </div>
 
       <div className='container px-4 relative z-10'>

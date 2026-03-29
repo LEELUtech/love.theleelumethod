@@ -13,7 +13,7 @@ import Image from 'next/image';
 
 const TheSynthesisSection = () => {
   return (
-    <Section backgroundImage='/images/about/synthesis_section_bg.png'>
+    <Section backgroundImage='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fsynthesis_section_bg.png?alt=media'>
       <div className='max-w-[800px] mx-auto text-center px-2'>
         {/* Top Image */}
         <div className='flex justify-center mb-[120px] lg:mb-[75px]'>

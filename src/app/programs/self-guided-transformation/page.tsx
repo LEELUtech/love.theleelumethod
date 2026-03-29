@@ -19,7 +19,7 @@ import SalesPageTagger from '@/components/sections/SalesPage/SalesPageTagger';
 export default function SelfGuidedTransformationPage() {
   return (
     <>
-      <main>
+      <main className='overflow-x-hidden'>
         <ProgramsHero {...selfGuidedHeroData} />
         <ProgramsWhoThis {...selfGuidedWhoThisData} />
         <MechanicsDeliverablesSection />
@@ -31,7 +31,7 @@ export default function SelfGuidedTransformationPage() {
         <CheckoutFormSectionLazy productId={PROTOCOL_ESSENTIALS} />
         <SalesPageTagger />
       </main>{' '}
-      <FooterLayout withNavigation={false} className='lg:mt-[-200px]' backgroundImage='/images/bg/checkout_bg.png' />
+      <FooterLayout withNavigation={false} className='lg:mt-[-200px]' backgroundImage='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fcheckout_bg.png?alt=media' />
     </>
   );
 }

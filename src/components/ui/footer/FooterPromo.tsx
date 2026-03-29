@@ -64,7 +64,7 @@ export const FooterPromo = (props: Props) => {
           </div>
 
           <div className='flex flex-col  lg:items-start text-left'>
-            <h1 className='font-canela flex flex-col 3xl:flex-row  font-light mb-8 md:mb-8 lg:mb-8 leading-[130%] text-brand-black text-[60px] md:text-[60px] lg:text-[60px]'>
+            <h1 className='font-canela flex flex-col 3xl:flex-row 3xl:gap-3 font-light mb-8 md:mb-8 lg:mb-8 leading-[130%] text-brand-black text-[60px] md:text-[60px] lg:text-[60px]'>
               <span>{title_top}</span>
               <span>{title_bottom}</span>
             </h1>

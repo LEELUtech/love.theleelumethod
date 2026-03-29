@@ -51,7 +51,7 @@ export default function AnimatedMechanicStep({ id, icon, module_start, module_en
 
         <ul className='list-disc list-outside pl-5 flex flex-col justify-start mb-[46px]'>
           {modules.map((module, index) => (
-            <li key={index} className='text-left'>
+            <li key={index} className='text-left text-brand-gray'>
               {module}
             </li>
           ))}

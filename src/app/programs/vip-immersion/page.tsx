@@ -24,7 +24,7 @@ export default async function VIPImmersionPage() {
   const { label: cohortLabel } = await getCohortData();
   return (
     <>
-      <main>
+      <main className='overflow-x-hidden'>
         <ProgramsHero {...vipImmersionHeroData} />
         <ProgramsWhoThis {...vipImmersionWhoThisData} />
         <MechanicsDeliverablesSection />
@@ -39,7 +39,7 @@ export default async function VIPImmersionPage() {
         <SalesPageTagger />
       </main>
 
-      <FooterLayout withNavigation={false} className='lg:mt-[-200px]' backgroundImage='/images/bg/checkout_bg.png' />
+      <FooterLayout withNavigation={false} className='lg:mt-[-200px]' backgroundImage='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fcheckout_bg.png?alt=media' />
     </>
   );
 }

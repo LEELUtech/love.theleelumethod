@@ -1,4 +1,3 @@
-import { OpacityTitleOrnamentIC } from '@/components/icons';
 import Button from '@/components/ui/Button';
 import Phase3Orb from '@/components/ui/Phase3Orb';
 import RotateOnView from '@/components/ui/RotateOnView';
@@ -161,7 +160,7 @@ const GoalContent = ({ phase, title, highlight, highlightColor, description }: G
       PHASE {phase}:
     </p>
 
-    <h3 className='mt-1 mb-4 font-canela font-thin text-brand-deep text-[34px] md:text-[46px] lg:text-[56px] leading-[105%]'>
+    <h3 className='mt-1 mb-4 font-canela font-thin text-brand-black text-[34px] md:text-[46px] lg:text-[56px] leading-[105%]'>
       {title} <br className='hidden lg:block' />
       <span className={`font-canela font-thin leading-[126%] tracking-normal ${highlightColor}`}>{highlight}</span>
     </h3>
@@ -177,7 +176,7 @@ export default function ModulesSection({ cohortLabel }: { cohortLabel?: string |
     <section className='relative overflow-hidden'>
       {/* Background for whole section */}
       <div className='absolute inset-0 -z-10'>
-        <Image src='/images/programs/modules_section_bg.png' alt='' fill priority />
+        <Image src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fmodules_section_bg.png?alt=media' alt='' fill priority />
       </div>
 
       <div className='container px-4'>
@@ -224,17 +223,19 @@ export default function ModulesSection({ cohortLabel }: { cohortLabel?: string |
               </div>
 
               {/* CENTER ornament */}
-              <div className='relative w-[261px] h-[266px] lg:w-[500px] lg:h-[500px]'>
+              <div
+                className='relative w-[261px] h-[266px] lg:w-[500px] lg:h-[500px]'
+                style={{
+                  maskImage: 'linear-gradient(to bottom, black 0%, transparent 80%)',
+                  WebkitMaskImage: 'linear-gradient(to bottom, black 0%, transparent 80%)',
+                }}
+              >
                 <Image
                   src='/icons/ornament_2/ornament_2_light.svg'
                   alt=''
                   fill
-                  className='absolute filter brightness-0 invert'
-                  style={{
-                    maskImage: 'linear-gradient(to bottom, black 0%, transparent 80%)',
-                    WebkitMaskImage: 'linear-gradient(to bottom, black 0%, transparent 80%)',
-                    filter: 'brightness(200%)',
-                  }}
+                  className='absolute'
+                  style={{ filter: 'brightness(0) invert(1)' }}
                 />
               </div>
 
@@ -423,7 +424,7 @@ export default function ModulesSection({ cohortLabel }: { cohortLabel?: string |
           </div>
 
           <div className='text-center relative mt-[200px] lg:mt-[100px]'>
-            <div className='lg:hidden absolute z-0 left-1/2 -translate-x-1/2 top-[-150px] md:top-[-180px] lg:top-[-300px] flex flex-row items-center justify-center gap-[130px]'>
+            <div className='lg:hidden absolute z-0 left-1/2 -translate-x-1/2 top-[-80px] md:top-[-280px] lg:top-[-300px] flex flex-row items-center justify-center gap-[130px]'>
               <div
                 className='relative overflow-hidden w-[340px] h-[340px] sm:w-[418px] sm:h-[418px] md:translate-y-[50px] lg:translate-y-[60px]   '
                 style={{
@@ -445,7 +446,13 @@ export default function ModulesSection({ cohortLabel }: { cohortLabel?: string |
                   className='absolute inset-0'
                   style={{ willChange: 'transform', transform: 'translateZ(0)' }}
                 >
-                  <OpacityTitleOrnamentIC stopColor={'#FFFFFF'} />
+                  <Image
+                    src='/icons/ornament_2/ornament_2_light.svg'
+                    alt=''
+                    fill
+                    className='object-contain'
+                    style={{ filter: 'brightness(0) invert(1) opacity(0.5)' }}
+                  />
                 </RotateOnView>
               </div>
             </div>
