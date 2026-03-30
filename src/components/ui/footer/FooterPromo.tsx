@@ -65,8 +65,8 @@ export const FooterPromo = (props: Props) => {
 
           <div className='flex flex-col  lg:items-start text-left'>
             <h1 className='font-canela flex flex-col 3xl:flex-row 3xl:gap-3 font-light mb-8 md:mb-8 lg:mb-8 leading-[130%] text-brand-black text-[60px] md:text-[60px] lg:text-[60px]'>
-              <span className='whitespace-nowrap'>{title_top}</span>
-              <span className='whitespace-nowrap'>{title_bottom}</span>
+              <span className='3xl:whitespace-nowrap'>{title_top}</span>
+              <span className='3xl:whitespace-nowrap'>{title_bottom}</span>
             </h1>
 
             <div className='space-y-8 md:space-y-8 lg:space-y-8 mb-8 md:mb-8 lg:mb-10'>

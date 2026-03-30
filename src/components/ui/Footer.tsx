@@ -67,9 +67,6 @@ export default function Footer({ className }: { className?: string }) {
   return (
     <footer className={`bg-white py-8 md:py-12 lg:py-16 px-4 md:px-6 lg:px-8 ${className}`}>
       <div className='container mx-auto px-4'>
-        <span className='inline-block w-[57px] h-[57px] md:w-12 md:h-12 relative mb-[12px] lg:mb-[12px]'>
-          <Image src='/leelu_logo.svg' alt='Lily Chystofat Logo' fill className='object-contain' priority />
-        </span>
         <div className='flex flex-col lg:flex-row lg:justify-between lg:items-start gap-10 lg:gap-0'>
           <div className='order-2 lg:order-2'>
             <div className='grid grid-cols-2 gap-x-14 gap-y-12 sm:flex sm:flex-row sm:gap-12 md:gap-16 lg:gap-[68px]'>
@@ -168,13 +165,18 @@ export default function Footer({ className }: { className?: string }) {
           </div>
 
           <div className='order-1 lg:order-1'>
-            <div className=' text-[32px]/[130%] flex gap-1 font-canela text-brand-black-100'>
-              <span className='font-light'>THE</span>
-              <span className='font-medium '> LEELU</span>
-              <span className='font-light'>METHOD</span>
+            <div className='flex items-center gap-3'>
+              <span className='inline-block w-[57px] h-[57px] relative shrink-0'>
+                <Image src='/leelu_logo.svg' alt='Lily Chystofat Logo' fill className='object-contain' priority />
+              </span>
+              <div className='text-[32px]/[130%] flex gap-1 font-canela text-brand-black-100'>
+                <span className='font-light'>THE</span>
+                <span className='font-medium '> LEELU</span>
+                <span className='font-light'>METHOD</span>
+              </div>
             </div>
 
-            <p className='mt-2 text-gray-600 font-medium font-lato leading-6 text-[11px] uppercase max-w-xs'>
+            <p className='mt-2 text-gray-600 font-medium font-lato leading-6 text-[11px] uppercase max-w-xs pl-[69px]'>
               Stop Guessing. Start Calculating.
             </p>
 

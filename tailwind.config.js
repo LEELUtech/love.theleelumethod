@@ -20,7 +20,7 @@ module.exports = {
       padding: {
         DEFAULT: '16px',
         md: '32px',
-        lg: '56px',
+        lg: '16px',
       },
       screens: {
         sm: '480px',

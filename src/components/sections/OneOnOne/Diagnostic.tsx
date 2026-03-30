@@ -30,11 +30,11 @@ const DiagnosticImg = () => {
             fill
             priority
             quality={100}
-            className='[mask-image:linear-gradient(to_bottom,black_80%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_80%,transparent_100%)]'
+            className='[mask-image:linear-gradient(to_bottom,black_40%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_30%,transparent_100%)]'
           />
         </div>
         <RotateOnView
-          className='absolute bottom-[-18px] left-[110px] hidden lg:block pointer-events-none'
+          className='absolute bottom-[-6px] left-[110px] hidden lg:block pointer-events-none'
           duration={5}
           ease='easeOut'
         >
