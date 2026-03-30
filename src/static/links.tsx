@@ -100,7 +100,7 @@ export const PROGRAMS_LINKS: RecordLink = {
     href: '#pricing',
   },
   BLIND_LINK: {
-    label: 'READ MORE STORIES',
+    label: 'READ MORE TESTIMONIALS',
     href: '#stories', // Stories
   },
   PROTOCOL_LINK: {
@@ -168,7 +168,7 @@ export const HOME_LINKS: RecordLink = {
   },
   RELATIONSHIP_LINK: {
     label: 'VIEW THE CURRICULUM',
-    href: '#',
+    href: '/programs/self-guided-transformation',
   },
   PROTOCOL_BREAKTHROUGH_LINK: {
     label: 'BREAK THROUGH',
@@ -176,7 +176,7 @@ export const HOME_LINKS: RecordLink = {
   },
   FOOTER_PROMO_LINK: {
     label: `YES, I'M IN`,
-    href: '#',
+    href: '#triage-cards',
   },
 };
 

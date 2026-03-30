@@ -17,13 +17,14 @@ export const CantFix = ({ href, linkLabel, buttonVariant = 'primary' }: Props) =
       <div className='grid grid-cols-1 md:grid-cols-[4fr,3fr] gap-[43px] lg:gap-[102px] '>
         <div className='flex flex-col gap-5 lg:gap-8 justify-center'>
           <div className='relative md:mb-0 lg:mb-0 w-full h-[245px]  xl:w-[600px] lg:h-[380px] rounded-[32px]  overflow-hidden'>
-            <Image
-              src='/images/landing/triage_section_women_new.png'
-              alt='Person sitting with a laptop'
-              fill
-              priority
-              quality={100}
-              className='object-cover object-top'
+            <video
+              src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/landingVideos%2Flanding_video_2.mp4?alt=media&token=fde1d13e-5f99-4c5b-b1a1-7ebbf25cde04'
+              autoPlay
+              muted
+              loop
+              playsInline
+              className='w-full h-full object-cover'
+              style={{ objectPosition: '50% 58%' }}
             />
           </div>
 

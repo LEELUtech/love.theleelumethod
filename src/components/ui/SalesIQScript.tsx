@@ -233,6 +233,8 @@ export default function SalesIQScript() {
   window.$zoho.salesiq.ready = function () {
     log("[SalesIQ] READY fired");
 
+    try { window.$zoho.salesiq.floatbutton.visible("hide"); } catch(e) {}
+
     getOrCreateSessionId();
     identifyFromStorage();
     trackCurrentPage();

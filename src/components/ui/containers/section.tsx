@@ -6,11 +6,12 @@ interface Props {
   sectionClasses?: string;
   wrapperClasses?: string;
   bottomBackgroundImage?: string;
+  topFade?: boolean;
   id?: string;
 }
 
 export const Section = (props: Props) => {
-  const { children, backgroundImage, bottomBackgroundImage, sectionClasses = '', wrapperClasses = '', id = '' } = props;
+  const { children, backgroundImage, bottomBackgroundImage, topFade, sectionClasses = '', wrapperClasses = '', id = '' } = props;
   const style = backgroundImage
     ? {
         backgroundImage: `url('${backgroundImage}')`,
@@ -20,9 +21,12 @@ export const Section = (props: Props) => {
       }
     : {};
   return (
-    <section id={id} className={sectionClasses} style={style}>
+    <section id={id} className={`relative ${sectionClasses}`} style={style}>
+      {topFade && (
+        <div className='pointer-events-none absolute inset-x-0 top-0 h-[200px] bg-gradient-to-b from-white to-transparent z-20' />
+      )}
       <div
-        className={`relative z-10 max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-[40px] 4xl:px-[180px] py-4 md:py-[70px] lg:py-[110px] ${wrapperClasses}`}
+        className={`relative z-10 max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-[40px] 2xl:px-[80px] 4xl:px-[180px] py-4 md:py-[70px] lg:py-[110px] ${wrapperClasses}`}
       >
         {children}
       </div>

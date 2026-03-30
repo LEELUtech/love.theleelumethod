@@ -149,7 +149,7 @@ const SaveButton = ({ content }: { content: number }) => {
         boxShadow: '0 10px 20px 0 rgba(0, 0, 0, 0.1)',
       }}
     >
-      <span className="absolute inset-0 bg-[url('/icons/noise.png')] opacity-10"></span>
+      <span className="absolute inset-0 bg-[url('/icons/noise.png')] opacity-[9%] mix-blend-multiply"></span>
       SAVE ${content}
     </button>
   );
