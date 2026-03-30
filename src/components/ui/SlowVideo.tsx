@@ -6,20 +6,22 @@ type SlowVideoProps = {
 	src: string;
 	className?: string;
 	playbackRate?: number;
+	skipSlowVideo?: boolean;
 };
 
 export default function SlowVideo({
 	src,
 	className = "",
 	playbackRate = 0.5,
+	skipSlowVideo = false,
 }: SlowVideoProps) {
 	const ref = useRef<HTMLVideoElement>(null);
 
 	useEffect(() => {
 		if (ref.current) {
-			ref.current.playbackRate = playbackRate;
+			ref.current.playbackRate = skipSlowVideo ? 1 : playbackRate;
 		}
-	}, [playbackRate]);
+	}, [playbackRate, skipSlowVideo]);
 
 	return (
 		<video

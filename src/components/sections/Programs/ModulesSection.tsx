@@ -323,7 +323,7 @@ export default function ModulesSection({ cohortLabel }: { cohortLabel?: string |
           </p>
 
           {/* ================= PHASE 1 ================= */}
-          <div className='mt-12 lg:mt-16 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-start'>
+          <div className='mt-12 lg:mt-16 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center'>
             {/* left */}
             <div className='text-left'>
               <GoalContent {...GOAL_CONTENT.phase_1} />
@@ -366,7 +366,7 @@ export default function ModulesSection({ cohortLabel }: { cohortLabel?: string |
           <div className='mt-[88px] hidden lg:block lg:mt-24 h-px w-full bg-brand-deep/20' />
 
           {/* ================= PHASE 2 ================= */}
-          <div className='mt-14 lg:mt-24 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-start'>
+          <div className='mt-14 lg:mt-24 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center'>
             <div className='lg:order-1 order-2 grid gap-4'>
               {PHASE_2.map((m) => (
                 <ModuleCard key={m.title} {...m} />
@@ -405,7 +405,7 @@ export default function ModulesSection({ cohortLabel }: { cohortLabel?: string |
           </div>
 
           {/* ================= PHASE 3 ================= */}
-          <div className='mt-14 lg:mt-28 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-start'>
+          <div className='mt-14 lg:mt-28 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center'>
             {/* left */}
             <div className='text-left'>
               <GoalContent {...GOAL_CONTENT.phase_3} />

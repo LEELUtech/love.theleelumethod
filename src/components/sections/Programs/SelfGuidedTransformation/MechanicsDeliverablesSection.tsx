@@ -72,7 +72,8 @@ const content = {
 const VideoContent = () => (
   <div className='relative w-full max-w-[496px] aspect-[496/535] mx-auto'>
     <SlowVideo
-      src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/landingVideos%2Flanding_video_1.mp4?alt=media&token=0c8dc725-566d-4cff-a30a-f88ccec29974'
+      skipSlowVideo
+      src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/landingVideos%2Flanding_video_1.mp4?alt=media&token=34b349ac-bfae-4eb4-8926-f8e297d2b898'
       className='
         absolute inset-0
         w-full h-full

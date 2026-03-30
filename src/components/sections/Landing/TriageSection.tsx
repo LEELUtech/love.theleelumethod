@@ -85,7 +85,7 @@ const cards = [
 
 const TriageSection = () => {
   return (
-    <section className='relative pt-[57px] pb-[22px] lg:pt-[120px] lg:pb-[112px] overflow-hidden'>
+    <section id='triage' className='relative pt-[57px] pb-[22px] lg:pt-[120px] lg:pb-[112px] overflow-hidden'>
       <div className='absolute inset-0 -z-10'>
         <Image src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Ftriage_section_bg.png?alt=media' alt='' fill priority quality={100} sizes='100vw' />
       </div>
@@ -224,7 +224,7 @@ const TriageSection = () => {
             The Relationship TRIAGE
           </h2>
 
-          <div className='mt-12 lg:mt-[100px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-2 xl:gap-6 items-stretch justify-items-center'>
+          <div id='triage-cards' className='mt-12 lg:mt-[100px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-2 xl:gap-6 items-stretch justify-items-center'>
             {cards.map((card, i) => {
               const containerClass = i === 1 ? 'lg:h-[672px]' : 'lg:h-[658px]';
 

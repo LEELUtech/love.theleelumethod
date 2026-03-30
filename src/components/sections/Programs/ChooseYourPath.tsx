@@ -211,7 +211,7 @@ const Card = ({ size, title, description, listTitle, list, link, id, for: forTex
         )}
       </div>
 
-      <div>
+      <div className='mt-auto'>
         <Button
           variant='primary'
           className='w-full'
@@ -269,7 +269,7 @@ export default function ChooseYourPathSection({ cohortLabel }: { cohortLabel?: s
           CHOOSE YOUR PATH
         </h2>
 
-        <div className='mt-[80px] mb-[60px] lg:mb-[130px] lg:mt-[178px] grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-6 items-start'>
+        <div className='mt-[80px] mb-[60px] lg:mb-[130px] lg:mt-[178px] grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-6 items-stretch'>
           {CARDS.map((card) => (
             <Card key={card.id} {...card} />
           ))}

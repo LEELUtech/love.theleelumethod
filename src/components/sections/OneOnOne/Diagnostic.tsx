@@ -21,28 +21,41 @@ const content = {
 
 const DiagnosticImg = () => {
   return (
-    <div className='flex-1 relative flex justify-center mt-[40px]'>
-      <div className='relative w-full max-w-[490px] max-h-[529px] aspect-[379/410] lg:aspect-[490/529] lg:min-w-[440px]'>
-        <Image
-          src='/images/lily/lily_3.png'
-          alt='I am Lily Chystofat'
-          fill
-          priority
-          quality={100}
-          className='       
-                [mask-image:linear-gradient(to_bottom,black_55%,transparent_75%)]
-                [-webkit-mask-image:linear-gradient(to_bottom,black_55%,transparent_75%)]
-                lg:[mask-image:none]
-                lg:[-webkit-mask-image:none]
-    '
-        />
+    <div className='flex-1 flex justify-center mt-[40px]'>
+      <div className='relative w-full max-w-[420px]'>
+        <div className='relative w-full aspect-[379/550] lg:aspect-[520/740] rounded-t-[100%] overflow-hidden'>
+          <Image
+            src='/images/lily/lily_15.jpeg'
+            alt='I am Lily Chystofat'
+            fill
+            priority
+            quality={100}
+            className='[mask-image:linear-gradient(to_bottom,black_80%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_80%,transparent_100%)]'
+          />
+        </div>
         <RotateOnView
-          className='absolute bottom-[-80px] left-[140px] hidden lg:block pointer-events-none'
+          className='absolute bottom-[-18px] left-[110px] hidden lg:block pointer-events-none'
           duration={5}
           ease='easeOut'
         >
           <Image src='/icons/ornament_13.svg' alt='' width={209} height={215} priority quality={100} className='' />
         </RotateOnView>
+        {/* <ArcAutoOnce
+          className='absolute hidden bs:block inset-0 -z-0 -translate-y-[0%] pointer-events-none -translate-x-[-7%]'
+          flightStart={0.2}
+          durMs={1500}
+          arrowRotateDeg={254}
+          arrowScale={0.8}
+          arrowCenterX={6.5}
+          arrowCenterY={-6}
+          arrowOffsetY={3}
+          endAtByDevice={{ mobile: 0.87, desktop: 0.95 }}
+          arcEnd={{ x: -70, y: 219 }}
+          arcRx={155}
+          arcRy={169}
+          yUp={24}
+          strokeWidth={2}
+        /> */}
         <ArcAutoOnce
           className='absolute hidden bs:block inset-0 -z-0 -translate-y-[13%] pointer-events-none -translate-x-[-7%]'
           // endAt={0.9}
@@ -67,8 +80,8 @@ export const Diagnostic = () => {
   return (
     <Section wrapperClasses='!pb-0 !px-2 sm:!px-6 lg:!px-[40px] 4xl:!px-[180px]'>
       <div className='flex flex-col-reverse lg:flex-row  gap-[76px]'>
-        <div>
-          <div className='text-brand-deep flex-1 lg:max-w-[610px] flex flex-col items-center text-center lg:items-start lg:text-left'>
+        <div className='flex-1 min-w-0'>
+          <div className='text-brand-deep lg:max-w-[610px] flex flex-col items-center text-center lg:items-start lg:text-left'>
             <h2 className='text-[48px]/[120%] order-1 w-[300px] -mt-[200px] lg:mt-0 mb-6 font-canela font-thin md:w-full md:text-[60px]/[120%] md:-mt-0'>
               {content.title}
             </h2>

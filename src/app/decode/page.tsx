@@ -7,6 +7,7 @@ import TestimonialsSection from "@/components/sections/Webinar/TestimonialsSecti
 import FooterLayout from "@/components/ui/footer/FooterLayout";
 import { FooterPromo } from "@/components/ui/footer/FooterPromo";
 import { DESCODE_LINKS } from "@/static/links";
+import Footer from "@/components/ui/Footer";
 
 const footerPromoContent = {
 	description: [
@@ -27,7 +28,7 @@ const WebinarPage = () => {
 			<WebinarDiscoverSection />
 			<TestimonialsSection />
 			<FooterPromo {...footerPromoContent} />
-			<FooterLayout withNavigation={false} />
+			<Footer />
 		</main>
 	);
 };
