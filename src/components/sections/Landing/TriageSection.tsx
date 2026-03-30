@@ -91,9 +91,9 @@ const TriageSection = () => {
       </div>
       <div className='container w-full px-1'>
         <p className='font-canela text-[42px]/[126%] lg:text-[60px] font-thin text-brand-deep text-center mb-[200px] md:mb-[300px] lg:mb-[400px]'>
-          We fought for years and tried everything. A friend referred us to Lily. She ran our codes, showing us exactly
+          &ldquo;We fought for years and tried everything. A friend referred us to Lily. She ran our codes, showing us exactly
           where we clash, where we naturally align, and how to navigate our differences. Words cannot describe the
-          impact she had. Without Lily, our relationship would have crumbled.
+          impact she had. Without Lily, our relationship would have crumbled.&rdquo;
         </p>
 
         {/* <CantFix

@@ -92,6 +92,10 @@ export default function BirthDatePicker({ placeholder, onChange }: Props) {
   };
 
   const openPopup = () => {
+    if (isOpen) {
+      setIsOpen(false);
+      return;
+    }
     setIsOpen(true);
     setStep('year');
     setSelectedYear(null);
