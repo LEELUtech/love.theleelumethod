@@ -135,6 +135,9 @@ export async function setCompatState(email: string, state: string): Promise<void
     console.warn("[zoho-scoring] contact not found for setCompatState", { email });
     return;
   }
-  await patchContact(id, { Compat_State: state });
+  await patchContact(id, {
+    Compat_State: state,
+    Compatibility_Report_Filename: state.toLowerCase(),
+  });
   console.log("[zoho-scoring] Compat_State set", { email, state });
 }
