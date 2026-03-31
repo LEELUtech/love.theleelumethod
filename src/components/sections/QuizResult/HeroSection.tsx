@@ -50,7 +50,7 @@ const HeroSection = ({ title }: HeroSectionProps) => {
 
           <Button
             className='mt-[24px] md:mt-[28px] xs:px-4 px-10 xs:text-[12px] text-center'
-            href="https://leelutech.ewebinar.com/webinar/decoded-love-22610"
+            href="https://theleelumethod.ewebinar.com/webinar/decoded-love-22610"
             trackingData={{
               cta_name: 'quiz_result_secure_seat_cta',
               cta_text: 'SECURE YOUR SEAT TO RESET THE DYNAMIC',

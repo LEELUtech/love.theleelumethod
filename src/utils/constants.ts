@@ -1,5 +1,5 @@
 // URLs
-export const WEBINAR_URL = 'https://leelutech.ewebinar.com/webinar/decoded-love-22610';
+export const WEBINAR_URL = 'https://theleelumethod.ewebinar.com/webinar/decoded-love-22610';
 
 export const QUIZ_URL = 'https://quiz.tryinteract.com/#/6924e6b9f816b54db5bec555?user.email=test@example.com';
 

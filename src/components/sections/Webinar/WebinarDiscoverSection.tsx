@@ -51,7 +51,7 @@ const WebinarDiscoverSection = () => {
             className='font-canela font-thin leading-[110%] text-center text-brand-deep mb-10 md:mb-12 lg:mb-16
               text-[48px] md:text-[48px] lg:text-[60px]'
           >
-            During our time together you&apos;ll discover:
+            Inside the free masterclass, you will learn:
           </motion.h2>
 
           {/* Three cards */}
@@ -160,15 +160,15 @@ const WebinarDiscoverSection = () => {
                   className='font-canela font-light text-brand-black mb-3 lg:mb-4
                     text-[24px] leading-[130%] md:text-[24px] lg:text-[24px] lg:leading-[130%] lg:text-left text-center'
                 >
-                  Your Relationship Code & Compatibility Formula
+                  Your Destruction Pattern & Compatibility Formula
                 </h3>
 
                 <p
                   className='font-lato font-medium text-[#5A5757] tracking-[0.03em]
                     text-[17px] leading-[26px] md:text-[17px] md:leading-[26px] lg:text-body lg:leading-[26px] lg:text-left text-center'
                 >
-                  The measurable Leelu Method markers predicting partnership outcomes—and why incompatible men keep
-                  matching your current frequency.
+                  The specific way you push love away when triggered — and the coded map that predicts whether a
+                  relationship will grow or collapse.
                 </p>
               </div>
             </motion.div>
