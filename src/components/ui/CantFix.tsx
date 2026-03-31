@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import Button, { ButtonVariant, TrackingData } from './Button';
 
 interface Props {
@@ -12,12 +12,8 @@ interface Props {
 }
 
 export const CantFix = ({ href, linkLabel, buttonVariant = 'primary' }: Props) => {
-  const [muted, setMuted] = useState(false);
+  const [muted, setMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    if (videoRef.current) videoRef.current.muted = false;
-  }, []);
 
   const toggleMute = () => {
     const next = !muted;
