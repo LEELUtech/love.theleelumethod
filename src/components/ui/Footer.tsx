@@ -65,7 +65,7 @@ function InstagramIcon() {
 
 export default function Footer({ className }: { className?: string }) {
   return (
-    <footer className={`bg-white py-8 md:py-12 lg:py-16 px-4 md:px-6 lg:px-8 ${className}`}>
+    <footer className={`bg-white py-8 md:py-12 lg:py-16 ${className}`}>
       <div className='container mx-auto px-4'>
         <div className='flex flex-col lg:flex-row lg:justify-between lg:items-start gap-10 lg:gap-0'>
           <div className='order-2 lg:order-2'>
