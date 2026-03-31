@@ -4,10 +4,9 @@ import WebinarContentSection from "@/components/sections/Webinar/WebinarContentS
 import WebinarDiscoverSection from "@/components/sections/Webinar/WebinarDiscoverSection";
 import WebinarWhatIfSection from "@/components/sections/Webinar/WebinarWhatIfSection";
 import TestimonialsSection from "@/components/sections/Webinar/TestimonialsSection";
-import FooterLayout from "@/components/ui/footer/FooterLayout";
 import { FooterPromo } from "@/components/ui/footer/FooterPromo";
 import { DESCODE_LINKS } from "@/static/links";
-import Footer from "@/components/ui/Footer";
+import FooterDecode from "@/components/ui/footer/FooterDecode";
 
 const footerPromoContent = {
 	description: [
@@ -28,7 +27,7 @@ const WebinarPage = () => {
 			<WebinarDiscoverSection />
 			<TestimonialsSection />
 			<FooterPromo {...footerPromoContent} />
-			<Footer />
+			<FooterDecode />
 		</main>
 	);
 };
