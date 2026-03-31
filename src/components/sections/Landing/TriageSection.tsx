@@ -86,8 +86,14 @@ const cards = [
 const TriageSection = () => {
   return (
     <section id='triage' className='relative pt-[57px] pb-[22px] lg:pt-[120px] lg:pb-[112px] overflow-hidden'>
-      <div className='absolute inset-0 -z-10'>
+      {/* <div className='absolute inset-0 -z-10'>
         <Image src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Ftriage_section_bg.png?alt=media' alt='' fill priority quality={100} sizes='100vw' />
+      </div> */}
+      <div className='absolute inset-0 -z-10'>
+        <Image src='/noise_bg.svg' alt='' fill priority quality={100} sizes='100vw' className='object-cover' />
+      </div>
+      <div className='absolute bottom-0 left-0 right-0 -z-10 pointer-events-none'>
+        <Image src='/gradiend.svg' alt='' width={1440} height={400} className='w-full' />
       </div>
       <div className='container w-full px-1'>
         <p className='font-canela text-[42px]/[126%] lg:text-[60px] font-thin text-brand-deep text-center mb-[200px] md:mb-[300px] lg:mb-[400px]'>
