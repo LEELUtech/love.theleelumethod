@@ -5,10 +5,10 @@ const FooterDecode = () => {
   return (
     <footer className='bg-white pb-[72px] pt-6 lg:pb-[180px]'>
       <div className='relative z-10 max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-[40px] 4xl:px-[180px]'>
-        <div className='flex flex-col lg:flex-row lg:justify-between lg:items-start gap-10 lg:gap-0'>
+        <div className='flex flex-col lg:flex-row lg:justify-between gap-10 lg:gap-0'>
           <FooterLabel />
 
-          <div className='mt-0 lg:mt-0'>
+          <div className='mt-0 lg:mt-[62px]'>
             <h4 className='text-[32px] font-canela font-thin text-black mb-4 leading-[130%]'>
               Support
             </h4>
