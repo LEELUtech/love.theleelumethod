@@ -17,7 +17,7 @@ export const FooterLabel = () => {
             />
           </span>
 
-          <div className='text-[32px] md:text-[32px] leading-[130%]'>
+          <div className='text-[28px] md:text-[32px] leading-[130%]'>
             <span className='font-canela font-light'>THE</span>
             <span className='font-medium font-canela tracking-tight mr-1'> LEELU</span>
             <span className='font-canela font-light'>METHOD</span>

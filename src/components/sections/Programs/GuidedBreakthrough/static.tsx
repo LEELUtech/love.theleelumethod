@@ -56,7 +56,7 @@ export const guidedBreakthroughModuleData: IProgramsReceive = {
     list: [
       '12-Module Video System (60-day access)',
       'Workbook & Written Integration Assignments',
-      '3 Personalized Reports: Energy Activation, His Secret Desires,',
+      '3 Personalized Reports: Personal Energy Map, His Hidden Desires,',
       'Compatibility & Couple Dynamics',
       '2 Live Group Q&A Calls (Week 1 + Week 2)',
       '60 Days of Circle Community Support',
