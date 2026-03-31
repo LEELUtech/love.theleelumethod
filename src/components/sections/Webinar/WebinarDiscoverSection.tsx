@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useRef } from 'react';
-import Image from 'next/image';
 import { motion, useInView, type Variants } from 'framer-motion';
 import { Section } from '@/components/ui/containers/section';
 
@@ -24,14 +23,52 @@ const fadeUp: Variants = {
   },
 };
 
-const cardFade: Variants = {
-  hidden: { opacity: 0, y: 26 },
+const itemFade: Variants = {
+  hidden: { opacity: 0, y: 18 },
   show: {
     opacity: 1,
     y: 0,
     transition: { duration: 1.05, ease: [0.22, 1, 0.36, 1] },
   },
 };
+
+const ITEMS = [
+  {
+    parts: [
+      { text: 'Understand why your nervous system was trained to read intensity as love — and how to ' },
+      { text: 'reset the signal.', bold: true },
+    ],
+  },
+  {
+    parts: [
+      { text: 'Finally understand how to ' },
+      { text: 'break the patterns', bold: true },
+      { text: " you've inherited from past relationships." },
+    ],
+  },
+  {
+    parts: [
+      { text: 'Know what ' },
+      { text: 'chemistry', bold: true },
+      { text: " can't tell you about " },
+      { text: 'compatibility', bold: true },
+      { text: ', and what The Leelu Method can.' },
+    ],
+  },
+  {
+    parts: [
+      { text: 'Know what the connection to your ex really means, and how to ' },
+      { text: 'cut the cord', bold: true },
+      { text: ' for good.' },
+    ],
+  },
+  {
+    parts: [
+      { text: 'Understand how to create a lasting, meaningful connection from clarity, ensuring your next relationship is built on a foundation of ' },
+      { text: 'deep intimacy and enduring love.', bold: true },
+    ],
+  },
+];
 
 const WebinarDiscoverSection = () => {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -45,133 +82,31 @@ const WebinarDiscoverSection = () => {
     <Section wrapperClasses='xs:!pt-[1000px] md:!pt-[550px] lg:!pt-[420px]'>
       <div className='max-w-[1200px] mx-auto'>
         <motion.div ref={ref} variants={wrap} initial='hidden' animate={inView ? 'show' : 'hidden'}>
-          {/* Title */}
           <motion.h2
             variants={fadeUp}
             className='font-canela font-thin leading-[110%] text-center text-brand-deep mb-10 md:mb-12 lg:mb-16
               text-[48px] md:text-[48px] lg:text-[60px]'
           >
-            Inside the free masterclass, you will learn:
+            By the end, you will:
           </motion.h2>
 
-          {/* Three cards */}
-          <div className='grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 lg:gap-10'>
-            {/* Card 1 */}
-            <motion.div
-              variants={cardFade}
-              className='bg-white rounded-[32px] flex flex-col items-center p-6 md:p-7 lg:p-8 lg:text-left'
-            >
-              <div className='w-full flex justify-center md:justify-start'>
-                <div className='relative mb-5 md:mb-6 w-[140px] md:w-[160px] lg:w-[177px] aspect-[177/251]'>
-                  <Image src='/images/webinar/webinar_discover_icon.png' alt='' fill className='object-contain' />
-
-                  <Image
-                    src='/icons/ornament_9.svg'
-                    alt=''
-                    width={87}
-                    height={87}
-                    className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[60px] pointer-events-none'
-                  />
-
-                  <div className='font-canela font-light text-[#c89f26] absolute bottom-0 left-0 text-[60px]'>1.</div>
-                </div>
-              </div>
-
-              <div>
-                <h3
-                  className='font-canela font-light text-brand-black mb-3 lg:mb-4
-                    text-[24px] leading-[130%] md:text-[24px] lg:text-[24px] lg:leading-[130%] lg:text-left text-center'
-                >
-                  Why You Attract Who You Are Not Who You Want
-                </h3>
-
-                <p
-                  className='font-lato font-medium text-[#5A5757] tracking-[0.03em]
-                    text-[17px] leading-[26px] md:text-[17px] md:leading-[26px] lg:text-body lg:leading-[26px] lg:text-left text-center'
-                >
-                  How your internal baseline dictates partner selection, and the specific identity shift that finally
-                  attracts your ideal mate.
+          <div className='max-w-[845px] mx-auto'>
+            {ITEMS.map((item, i) => (
+              <motion.div key={i} variants={itemFade} className={`flex gap-8 items-start ${i !== 0 ? 'mt-6 lg:mt-8' : ''}`}>
+                <div className='font-canela font-light text-[32px] flex-shrink-0'>{i + 1}.</div>
+                <p className='font-lato font-medium text-[#5A5757] text-[20px]/[130%] pt-1'>
+                  {item.parts.map((part, idx) =>
+                    part.bold ? (
+                      <span key={idx} className='font-bold text-brand-primary'>
+                        {part.text}
+                      </span>
+                    ) : (
+                      <span key={idx}>{part.text}</span>
+                    ),
+                  )}
                 </p>
-              </div>
-            </motion.div>
-
-            {/* Card 2 */}
-            <motion.div
-              variants={cardFade}
-              className='bg-white rounded-[32px] flex flex-col items-center p-6 md:p-7 lg:p-8 lg:text-left'
-            >
-              <div className='w-full flex justify-center md:justify-start'>
-                <div className='relative mb-5 md:mb-6 w-[140px] md:w-[160px] lg:w-[177px] aspect-[177/251]'>
-                  <Image src='/images/webinar/webinar_discover_icon.png' alt='' fill className='object-contain' />
-
-                  <Image
-                    src='/icons/ornament_10.svg'
-                    alt=''
-                    width={87}
-                    height={87}
-                    className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[60px] pointer-events-none'
-                  />
-
-                  <div className='font-canela font-light text-[#c89f26] absolute bottom-0 left-0 text-[60px]'>2.</div>
-                </div>
-              </div>
-
-              <div>
-                <h3
-                  className='font-canela font-light text-brand-black mb-3 lg:mb-4
-                    text-[24px] leading-[130%] md:text-[24px] lg:text-[24px] lg:leading-[130%] lg:text-left text-center'
-                >
-                  Your Subconscious Love Script
-                </h3>
-
-                <p
-                  className='font-lato font-medium text-[#5A5757] tracking-[0.03em]
-                    text-[17px] leading-[26px] md:text-[17px] md:leading-[26px] lg:text-body lg:leading-[26px] lg:text-left text-center'
-                >
-                  The childhood programming creating repetitive relationship dynamics—and how energetic ties to past
-                  partners keep you locked in destructive patterns.
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Card 3 */}
-            <motion.div
-              variants={cardFade}
-              className='bg-white rounded-[32px] flex flex-col items-center p-6 md:p-7 lg:p-8 lg:text-left'
-            >
-              <div className='w-full flex justify-center md:justify-start'>
-                <div className='relative mb-5 md:mb-6 w-[140px] md:w-[160px] lg:w-[177px] aspect-[177/251]'>
-                  <Image src='/images/webinar/webinar_discover_icon.png' alt='' fill className='object-contain' />
-
-                  <Image
-                    src='/icons/ornament_11.svg'
-                    alt=''
-                    width={87}
-                    height={87}
-                    className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[60px] pointer-events-none'
-                  />
-
-                  <div className='font-canela font-light text-[#c89f26] absolute bottom-0 left-0 text-[60px]'>3.</div>
-                </div>
-              </div>
-
-              <div>
-                <h3
-                  className='font-canela font-light text-brand-black mb-3 lg:mb-4
-                    text-[24px] leading-[130%] md:text-[24px] lg:text-[24px] lg:leading-[130%] lg:text-left text-center'
-                >
-                  Your Destruction Pattern & Compatibility Formula
-                </h3>
-
-                <p
-                  className='font-lato font-medium text-[#5A5757] tracking-[0.03em]
-                    text-[17px] leading-[26px] md:text-[17px] md:leading-[26px] lg:text-body lg:leading-[26px] lg:text-left text-center'
-                >
-                  The specific way you push love away when triggered — and the coded map that predicts whether a
-                  relationship will grow or collapse.
-                </p>
-              </div>
-            </motion.div>
+              </motion.div>
+            ))}
           </div>
         </motion.div>
       </div>
