@@ -75,7 +75,7 @@ export const selfGuidedOverviewData: IProgramOverview = {
     {
       id: 1,
       size: 'md',
-      title: 'Energy Activation Report',
+      title: 'Personal Energy Map Report',
       subtitle: 'Your personal energy & magnetism code.',
       description: 'Inside:',
       iconColor: 'text-brand-gold',
@@ -91,7 +91,7 @@ export const selfGuidedOverviewData: IProgramOverview = {
     {
       id: 2,
       size: 'md',
-      title: `“His Secret Desires” Report`,
+      title: `“His Hidden Desires” Report`,
       subtitle: 'Calculated for your partner or desired partner.',
       description: 'Inside:',
       iconColor: 'text-brand-gold',

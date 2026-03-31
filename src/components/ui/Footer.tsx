@@ -169,7 +169,7 @@ export default function Footer({ className }: { className?: string }) {
               <span className='inline-block w-[57px] h-[57px] relative shrink-0'>
                 <Image src='/leelu_logo.svg' alt='Lily Chystofat Logo' fill className='object-contain' priority />
               </span>
-              <div className='text-[32px]/[130%] flex gap-1 font-canela text-brand-black-100'>
+              <div className='text-[28px] md:text-[32px] leading-[130%] flex gap-1 font-canela text-brand-black-100'>
                 <span className='font-light'>THE</span>
                 <span className='font-medium '> LEELU</span>
                 <span className='font-light'>METHOD</span>

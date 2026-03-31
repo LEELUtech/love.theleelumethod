@@ -24,7 +24,7 @@ const tiers = [
       '12-Module Video Sequence',
       'Written Assignments (Curator Reviewed)',
       '60-Day Circle Access + 2 Group Zooms + 3 Monthly Q&As',
-      '3 Custom Reports: Energy Activation, Hidden Desires, Compatibility',
+      '3 Custom Reports: Personal Energy Map, Hidden Desires, Compatibility',
       '-',
       'Basic Couple Dynamics Report',
       'His Hidden Desires Only',

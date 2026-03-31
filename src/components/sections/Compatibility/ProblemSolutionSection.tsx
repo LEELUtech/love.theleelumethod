@@ -133,7 +133,7 @@ const ProblemSolutionSection = () => {
 
             <Button
               variant='primary'
-              className='w-full !text-[12px] md:!text-[15px]'
+              className='w-full xs:!px-[12px] !text-[12px] md:!text-[15px]'
               href={COMPABILITY_REPORT_LINKS.PROBLEM_LINK.href}
               trackingData={{
                 cta_name: 'compatibility_problem_solution_cta',
