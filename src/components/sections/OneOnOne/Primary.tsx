@@ -39,7 +39,7 @@ export const Primary = () => {
 
         <div className='flex-1 order-1 md:order-2 relative'>
           <div className='max-w-full md:max-w-[600px] rounded-[100px] overflow-hidden '>
-            <Image src='/images/programs/vip-immersion/who_this_is_for.png' width={600} height={600} alt='' className='w-full h-auto' />
+            <Image src='/images/programs/vip-immersion/who_this_is_for.png' width={600} height={600} alt='' className='w-full h-auto' quality={100} />
           </div>{' '}
           {isTablet && <SectionBadge position='right' size='md' color='coral' />}
         </div>

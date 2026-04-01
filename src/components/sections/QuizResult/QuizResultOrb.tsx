@@ -71,6 +71,7 @@ export function QuizResultOrb({
 							fill
 							priority
 							className="object-contain select-none"
+							quality={100}
 						/>
 					</div>
 				</div>
@@ -89,7 +90,7 @@ export function QuizResultOrb({
 						style={{ backgroundColor: topBg }}
 					>
 						<div className="relative w-[16px] h-[16px] md:w-[22px] md:h-[22px] lg:w-[32px] lg:h-[39px]">
-							<Image src={topBadgeIcon} alt="" fill className="object-contain" />
+							<Image src={topBadgeIcon} alt="" fill className="object-contain" quality={100} />
 						</div>
 					</div>
 				)}
@@ -113,6 +114,7 @@ export function QuizResultOrb({
 								alt=""
 								fill
 								className="object-contain"
+								quality={100}
 							/>
 						</div>
 					</div>

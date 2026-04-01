@@ -87,7 +87,7 @@ const descriptions = [
 export default function DecodedLoveCohortSection() {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const ornamentIcon = (
-		<Image src="/icons/ornament_1.svg" alt="" width={24} height={24} />
+		<Image src="/icons/ornament_1.svg" alt="" width={24} height={24} quality={100} />
 	);
 
 	return (
@@ -116,6 +116,7 @@ export default function DecodedLoveCohortSection() {
 						width={1440}
 						height={400}
 						className="w-full"
+						quality={100}
 					/>
 				</div>
 
@@ -215,6 +216,7 @@ export default function DecodedLoveCohortSection() {
 								width={63}
 								height={61}
 								className="w-[51px] h-[53px] md:w-[65px] md:h-[63px] lg:w-[61px] lg:h-[63px] filter invert-[100%] brightness-[100%]"
+								quality={100}
 							/>
 						</RotateOnView>
 					</div>

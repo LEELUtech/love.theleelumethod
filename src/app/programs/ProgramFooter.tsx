@@ -6,7 +6,7 @@ const ProgramFooter = () => {
     <div className='relative z-10 mt-[60px] lg:mt-[80px] lg:top-[-80px] '>
       <div className='flex justify-start mb-4'>
         <div className='relative w-[68px] h-[68px]'>
-          <Image src='/leelu_logo.svg' alt='Lily Chystofat Logo' fill className='object-contain' priority />
+          <Image src='/leelu_logo.svg' alt='Lily Chystofat Logo' fill className='object-contain' priority quality={100} />
         </div>
       </div>
 

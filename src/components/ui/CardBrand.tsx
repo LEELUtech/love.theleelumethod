@@ -9,6 +9,7 @@ export default function CardBrand({ label }: { label: string }) {
 				alt={label}
 				width={24}
 				height={14}
+				quality={100}
 			/>
 
 	);

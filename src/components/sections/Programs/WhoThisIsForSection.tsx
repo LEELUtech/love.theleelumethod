@@ -55,7 +55,7 @@ export default function WhoThisIsForSection() {
               {LEFT.map((item, i) => (
                 <li key={i} className='flex gap-4'>
                   <div className='w-4 h-4 pt-2 flex-shrink-0'>
-                    <Image src='/icons/arrow_right.svg' alt='Arrow' width={10} height={10} className='object-contain' />
+                    <Image src='/icons/arrow_right.svg' alt='Arrow' width={10} height={10} className='object-contain' quality={100} />
                   </div>
                   <p className='font-lato font-normal text-[#5A5757] text-[15px] leading-[26px]'>{item}</p>
                 </li>
@@ -73,7 +73,7 @@ export default function WhoThisIsForSection() {
               {RIGHT.map((item, i) => (
                 <li key={i} className='flex gap-4'>
                   <div className='w-4 h-4 pt-2 flex-shrink-0'>
-                    <Image src='/icons/arrow_right.svg' alt='Arrow' width={10} height={10} className='object-contain' />
+                    <Image src='/icons/arrow_right.svg' alt='Arrow' width={10} height={10} className='object-contain' quality={100} />
                   </div>
                   <p className='font-lato font-normal text-[#5A5757] text-[15px] leading-[26px]'>{item}</p>
                 </li>

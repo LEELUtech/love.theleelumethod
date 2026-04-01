@@ -113,8 +113,8 @@ const WebinarWhatIfSection = () => {
             <div className='flex flex-col items-center lg:text-left'>
               <div className='w-full flex justify-center md:justify-start'>
                 <div className='relative mb-5 md:mb-6 w-[140px] md:w-[160px] lg:w-[177px] aspect-[177/251]'>
-                  <Image src='/images/webinar/webinar_discover_icon.png' alt='' fill className='object-contain' />
-                  <Image src='/icons/ornament_9.svg' alt='' width={87} height={87} className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[60px] pointer-events-none' />
+                  <Image src='/images/webinar/webinar_discover_icon.png' alt='' fill className='object-contain' quality={100} />
+                  <Image src='/icons/ornament_9.svg' alt='' width={87} height={87} className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[60px] pointer-events-none' quality={100} />
                   <div className='font-canela font-light text-[#c89f26] absolute bottom-0 left-0 text-[60px]'>1.</div>
                 </div>
               </div>
@@ -132,8 +132,8 @@ const WebinarWhatIfSection = () => {
             <div className='flex flex-col items-center lg:text-left'>
               <div className='w-full flex justify-center md:justify-start'>
                 <div className='relative mb-5 md:mb-6 w-[140px] md:w-[160px] lg:w-[177px] aspect-[177/251]'>
-                  <Image src='/images/webinar/webinar_discover_icon.png' alt='' fill className='object-contain' />
-                  <Image src='/icons/ornament_10.svg' alt='' width={87} height={87} className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[60px] pointer-events-none' />
+                  <Image src='/images/webinar/webinar_discover_icon.png' alt='' fill className='object-contain' quality={100} />
+                  <Image src='/icons/ornament_10.svg' alt='' width={87} height={87} className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[60px] pointer-events-none' quality={100} />
                   <div className='font-canela font-light text-[#c89f26] absolute bottom-0 left-0 text-[60px]'>2.</div>
                 </div>
               </div>
@@ -151,8 +151,8 @@ const WebinarWhatIfSection = () => {
             <div className='flex flex-col items-center lg:text-left'>
               <div className='w-full flex justify-center md:justify-start'>
                 <div className='relative mb-5 md:mb-6 w-[140px] md:w-[160px] lg:w-[177px] aspect-[177/251]'>
-                  <Image src='/images/webinar/webinar_discover_icon.png' alt='' fill className='object-contain' />
-                  <Image src='/icons/ornament_11.svg' alt='' width={87} height={87} className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[60px] pointer-events-none' />
+                  <Image src='/images/webinar/webinar_discover_icon.png' alt='' fill className='object-contain' quality={100} />
+                  <Image src='/icons/ornament_11.svg' alt='' width={87} height={87} className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[60px] pointer-events-none' quality={100} />
                   <div className='font-canela font-light text-[#c89f26] absolute bottom-0 left-0 text-[60px]'>3.</div>
                 </div>
               </div>

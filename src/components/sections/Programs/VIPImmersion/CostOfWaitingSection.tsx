@@ -68,7 +68,7 @@ export default function CostOfWaitingSection({ cohortLabel }: { cohortLabel?: st
                 '
               >
                 <div className='relative w-[45px] h-[45px] lg:w-[58px] lg:h-[56px]'>
-                  <Image src='/leelu_logo.svg' alt='' fill className='filter brightness-0 invert' />
+                  <Image src='/leelu_logo.svg' alt='' fill className='filter brightness-0 invert' quality={100} />
                 </div>
               </div>
 

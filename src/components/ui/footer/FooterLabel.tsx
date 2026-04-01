@@ -20,6 +20,7 @@ export const FooterLabel = ({ mb = 12 }: Props) => {
 					alt="Lily Chystofat Logo"
 					className="object-contain"
 					priority
+					quality={100}
 				/>
 			</span>
 

@@ -99,6 +99,7 @@ export const ProgramsWhoThis = (props: Props) => {
                       alt=''
                       fill
                       className='object-contain filter brightness-0 invert'
+                      quality={100}
                     />
                   </div>
                 </div>

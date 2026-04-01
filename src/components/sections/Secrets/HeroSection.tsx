@@ -110,7 +110,7 @@ export default function SecretsHeroSection() {
 
               <div className="absolute left-1/2 -translate-x-1/2 bottom-[-25px] md:bottom-[-30px] lg:bottom-[-35px] flex items-center justify-center rounded-[300px] w-[74px] h-[102px] z-10 overflow-hidden bg-[#EB4F68] before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay">
                 <RotateOnView className='relative z-10' duration={5} amount={0.35} ease='easeOut'>
-                  <Image src='/leelu_logo.svg' alt='' width={46} height={46} className='filter invert' />
+                  <Image src='/leelu_logo.svg' alt='' width={46} height={46} className='filter invert' quality={100} />
                 </RotateOnView>
               </div>
             </div>

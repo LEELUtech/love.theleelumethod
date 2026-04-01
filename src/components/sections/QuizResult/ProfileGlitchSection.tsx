@@ -26,7 +26,7 @@ const ProfileGlitchSection = ({ description, secondaryDescription }: ProfileGlit
         <Image src='/noise_bg.svg' alt='' fill priority quality={100} sizes='100vw' className='object-cover' />
       </div>
       <div className='absolute bottom-0 left-0 right-0 -z-10 pointer-events-none'>
-        <Image src='/gradiend.svg' alt='' width={1440} height={400} className='w-full h-[500px] md:h-auto object-cover object-bottom md:object-fill' />
+        <Image src='/gradiend.svg' alt='' width={1440} height={400} className='w-full h-[500px] md:h-auto object-cover object-bottom md:object-fill' quality={100} />
       </div>
 
       <div className='container relative z-10 px-4 py-24 md:py-20 lg:py-24'>

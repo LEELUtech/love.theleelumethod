@@ -176,7 +176,7 @@ export default function ModulesSection({ cohortLabel }: { cohortLabel?: string |
     <section className='relative overflow-hidden'>
       {/* Background for whole section */}
       <div className='absolute inset-0 -z-10'>
-        <Image src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fmodules_section_bg.png?alt=media' alt='' fill priority />
+        <Image src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fmodules_section_bg.png?alt=media' alt='' quality={100} fill priority />
       </div>
 
       <div className='container px-4'>
@@ -214,6 +214,7 @@ export default function ModulesSection({ cohortLabel }: { cohortLabel?: string |
                   alt=''
                   fill
                   className='absolute filter brightness-0 invert'
+                  quality={100}
                   style={{
                     maskImage: 'linear-gradient(to bottom, black 0%, black 10%, transparent 90%)',
                     WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 10%, transparent 90%)',
@@ -235,6 +236,7 @@ export default function ModulesSection({ cohortLabel }: { cohortLabel?: string |
                   alt=''
                   fill
                   className='absolute'
+                  quality={100}
                   style={{ filter: 'brightness(0) invert(1)' }}
                 />
               </div>
@@ -246,6 +248,7 @@ export default function ModulesSection({ cohortLabel }: { cohortLabel?: string |
                   alt=''
                   fill
                   className='absolute filter brightness-0 invert'
+                  quality={100}
                   style={{
                     maskImage: 'linear-gradient(to bottom, black 0%, black 20%, transparent 100%)',
                     WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 20%, transparent 100%)',
@@ -275,6 +278,7 @@ export default function ModulesSection({ cohortLabel }: { cohortLabel?: string |
                   width={63}
                   height={61}
                   className='w-[51px] h-[53px] md:w-[65px] md:h-[63px] lg:w-[61px] lg:h-[63px] filter invert-[100%] brightness-[100%]'
+                  quality={100}
                 />
               </RotateOnView>
             </div>
@@ -451,6 +455,7 @@ export default function ModulesSection({ cohortLabel }: { cohortLabel?: string |
                     alt=''
                     fill
                     className='object-contain'
+                    quality={100}
                     style={{ filter: 'brightness(0) invert(1) opacity(0.5)' }}
                   />
                 </RotateOnView>

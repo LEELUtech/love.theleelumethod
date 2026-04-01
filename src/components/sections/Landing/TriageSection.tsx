@@ -93,7 +93,7 @@ const TriageSection = () => {
         <Image src='/noise_bg.svg' alt='' fill priority quality={100} sizes='100vw' className='object-cover' />
       </div>
       <div className='absolute bottom-0 left-0 right-0 -z-10 pointer-events-none'>
-        <Image src='/gradiend.svg' alt='' width={1440} height={400} className='w-full' />
+        <Image src='/gradiend.svg' alt='' width={1440} height={400} className='w-full' quality={100} />
       </div>
       <div className='container w-full px-1'>
         <p className='font-canela text-[42px]/[126%] lg:text-[60px] font-thin text-brand-deep text-center mb-[200px] md:mb-[300px] lg:mb-[400px]'>
@@ -150,6 +150,7 @@ const TriageSection = () => {
                   fill
                   className='object-contain'
                   style={{ filter: 'brightness(200%)' }}
+                  quality={100}
                 />
               </RotateOnView>
             </div>
@@ -183,6 +184,7 @@ const TriageSection = () => {
                   fill
                   className='object-contain'
                   style={{ filter: 'brightness(200%)' }}
+                  quality={100}
                 />
               </RotateOnView>
             </div>
@@ -222,6 +224,7 @@ const TriageSection = () => {
                   fill
                   className='object-contain'
                   style={{ filter: 'brightness(200%)' }}
+                  quality={100}
                 />
               </RotateOnView>
             </div>

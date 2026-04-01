@@ -8,7 +8,7 @@ export default function SuccessPage() {
     <main className='relative min-h-screen overflow-hidden bg-white'>
       {/* Background for whole section */}
       <div className='absolute inset-0 z-0'>
-        <Image src='/images/bg/success_bg.png' alt='' fill priority />
+        <Image src='/images/bg/success_bg.png' alt='' fill priority quality={100} />
       </div>
 
       <div className='container relative mx-auto flex min-h-screen items-center justify-center'>
@@ -41,7 +41,7 @@ export default function SuccessPage() {
             {/* logo */}
             <div className='font-light transition text-[24px] md:text-[22px] lg:text-[24px] leading-[126%] font-canela flex items-center gap-2 md:gap-2.5 lg:gap-3 text-brand-black  justify-center md:justify-start mt-[47px]'>
               <span className='w-[29px] h-[29px] relative flex-shrink-0'>
-                <Image src='/leelu_logo.svg' alt='Lily Chystofat Logo' fill className='object-contain' priority />
+                <Image src='/leelu_logo.svg' alt='Lily Chystofat Logo' fill className='object-contain' priority quality={100} />
               </span>
 
               <div className='whitespace-nowrap lg:order-2 font-canela flex gap-1'>

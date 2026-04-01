@@ -96,6 +96,7 @@ export default function Footer({ className }: { className?: string }) {
 						fill
 						className="object-contain"
 						priority
+						quality={100}
 					/>
 				</span>
 				<div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-10 lg:gap-0">
