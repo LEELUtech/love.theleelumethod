@@ -118,10 +118,10 @@ export default function SecretsHeroSection() {
 
           <div className='mt-6 px-4 md:px-0'>
             <h1 className='font-canela text-[48px] lg:text-[60px] font-light leading-[130%] text-black'>
-              <span className='text-[#BD2E45] italic mr-2'>7 Secrets</span> to Mend a Broken Heart
+              <span className='text-[#BD2E45] italic mr-2'>The Heartbreak</span> Protocol
             </h1>
             <p className='text-body mt-3 md:text-lg text-[#5A5757] font-lato font-medium leading-[26px]'>
-              This guide gives you 7 evidence-based strategies to reclaim your nervous system and your life.
+              This guide gives you 6 evidence-based strategies to reclaim your nervous system and your life.
             </p>
           </div>
 

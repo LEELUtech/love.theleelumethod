@@ -11,7 +11,7 @@ const ProfileGlitchSection = ({ description, secondaryDescription }: ProfileGlit
   return (
     <section className='relative overflow-hidden'>
       {/* background */}
-      <div className='absolute inset-0 z-0'>
+      {/* <div className='absolute inset-0 z-0'>
         <Image
           src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fprofile_glitch_bg.png?alt=media'
           alt=''
@@ -20,6 +20,13 @@ const ProfileGlitchSection = ({ description, secondaryDescription }: ProfileGlit
           quality={100}
           className='object-cover'
         />
+      </div> */}
+
+      <div className='absolute inset-0 -z-10'>
+        <Image src='/noise_bg.svg' alt='' fill priority quality={100} sizes='100vw' className='object-cover' />
+      </div>
+      <div className='absolute bottom-0 left-0 right-0 -z-10 pointer-events-none'>
+        <Image src='/gradiend.svg' alt='' width={1440} height={400} className='w-full h-[500px] md:h-auto object-cover object-bottom md:object-fill' />
       </div>
 
       <div className='container relative z-10 px-4 py-24 md:py-20 lg:py-24'>

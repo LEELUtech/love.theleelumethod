@@ -71,14 +71,13 @@ export default function DiscoverSection() {
             <div className='flex flex-col gap-6'>
               <Card
                 withMarginTop
-                title='The Emotional Detox'
-                description={`Why "staying strong" traps the pain in your body, and the exact release protocol that allows you metabolize it safely.`}
+                title='The Discharge'
+                description={`Why "staying strong" reroutes your grief into your emotional baseline, and the timed release method that lets you metabolize it on your terms.`}
               />
 
               <Card
-                title='The Pattern Interrupt'
-                description={`Why your routine is keeping you trapped in the past, and the radical environmental shifts that snap
-                  your brain into the present.`}
+                title='The Signal Fast'
+                description={`Every check resets the withdrawal clock to zero. The protocol that starves the dopamine loop and forces neurological stabilization.`}
               />
             </div>
 
@@ -89,29 +88,16 @@ export default function DiscoverSection() {
                 description={`How to identify who's actually helping you heal versus who's keeping you stuck in the story, and what to do about it.`}
               />
 
-              <div className='block lg:hidden relative mx-auto w-[298px] h-[273px]'>
-                <RotateOnView className='flex w-[298px] h-[272px]' duration={5} amount={0.4} ease='easeOut'>
-                  <Image src='/icons/ornament_14.svg' alt='' fill />
-                </RotateOnView>
-
-                <div
-                  className="
-                flex  items-center justify-center rounded-[300px] overflow-hidden bg-[#EB4F68] 
-                before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay w-[74px] h-[102px]
-                absolute z-20 top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]"
-                >
+              <div className='relative flex justify-center'>
+                <Image src='/icons/ornament_14.svg' alt='' width={320} height={292} className='w-[325px] md:w-[325px] lg:w-[325px] h-auto' />
+                <div className="absolute top-1/2 left-1/2 -translate-x-[32px] -translate-y-1/2 flex items-center justify-center rounded-[300px] overflow-hidden bg-[#EB4F68] before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay w-[74px] h-[102px] z-10">
                   <Image src='/leelu_logo.svg' alt='' width={46} height={46} className='filter invert' />
                 </div>
               </div>
 
               <Card
-                title='The Mind Unload'
-                description={`A specific writing technique that stops the intrusive thought spiral. Instantly.`}
-              />
-
-              <Card
-                title='The Freedom Audit'
-                description={`A line-by-line inventory of what you sacrificed for him, and the exact plan to take it back.`}
+                title='The Pattern Interrupt'
+                description={`Why your routine keeps you trapped in the past, and the environmental shifts that force your brain to build new pathways.`}
               />
             </div>
 
@@ -119,13 +105,13 @@ export default function DiscoverSection() {
             <div className='flex flex-col gap-6'>
               <Card
                 withMarginTop
-                title='The Belief Debug'
-                description={`How to catch the "I'll never love again" script running in your subconscious, and overwrite it.`}
+                title='The Territory Reclaim'
+                description={`A line-by-line inventory of what you sacrificed for him, and the exact plan to take it back.`}
               />
 
               <Card
-                title='Re-Entry Strategy'
-                description={`How to step back into the world without getting triggered, overwhelmed, or pulled back into the past.`}
+                title='The Rerun Override'
+                description={`How to identify the corrupted connection script still running your selections, and rewrite it before it executes again.`}
               />
             </div>
           </div>
@@ -134,7 +120,7 @@ export default function DiscoverSection() {
         {/* Bottom text and CTA */}
         <div className='text-center max-w-[774px] mx-auto'>
           <p className='text-black text-[32px] font-light font-canela mb-[32px] leading-[130%] tracking-normal'>
-            This guide gives you 7 evidence-based strategies to reclaim your nervous system and your life.
+            This guide gives you 6 evidence-based strategies to reclaim your nervous system and your life.
           </p>
           <Button
             variant='primary'
