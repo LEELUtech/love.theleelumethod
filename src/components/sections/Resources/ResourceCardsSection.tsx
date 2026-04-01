@@ -18,8 +18,8 @@ const { SECRETS_LINK, COMPATIBILITY_LINK, QUIZ_LINK } = RESOURCES_LINKS;
 
 const resources: ResourceCard[] = [
   {
-    title: '7 Secrets to Mend a Broken Heart',
-    description: 'This guide gives you 7 evidence-based strategies to reclaim your nervous system and your life.',
+    title: 'The Heartbreak Protocol',
+    description: 'This guide gives you 6 evidence-based strategies to reclaim your nervous system and your life.',
     cta: SECRETS_LINK.label,
     href: SECRETS_LINK.href,
     ctaType: 'secrets',
