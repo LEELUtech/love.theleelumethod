@@ -1,0 +1,111 @@
+runConfig:
+  maxInstances: 1
+
+env:
+  # Firebase (public)
+  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+    value: AIzaSyArLc4mXkgHyciJyeFRAQAOVAUaKkHsD5k
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    value: leelu-tech.firebaseapp.com
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    value: leelu-tech
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+    value: leelu-tech.firebasestorage.app
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    value: '33861651579'
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
+    value: 1:33861651579:web:adf4f4db87194e17a626de
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+    value: G-PD8VPFMSPH
+    availability:
+      - BUILD
+      - RUNTIME
+
+  # Zoho (non-secret config)
+  - variable: ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT
+    value: accounts.zoho.com
+
+  - variable: ZOHO_API_DOMAIN_LILYCHYSTOFAT
+    value: www.zohoapis.com
+
+  - variable: ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT
+    value: love.theleelumethod.com
+
+  - variable: ZOHO_ANALYTICS_API_DOMAIN_LILYCHYSTOFAT
+    value: analyticsapi.zoho.com
+
+  - variable: ZOHO_ANALYTICS_ORG_ID_LILYCHYSTOFAT
+    value: '890176752'
+
+  - variable: ZOHO_ANALYTICS_WORKSPACE_ID_LILYCHYSTOFAT
+    value: '3053104000000439023'
+
+  - variable: ZOHO_ANALYTICS_VIEW_ID_LILYCHYSTOFAT
+    value: '3053104000000439002'
+
+  - variable: ZOHO_SALESIQ_API_DOMAIN_LILYCHYSTOFAT
+    value: https://salesiq.zoho.com
+
+  - variable: ZOHO_CONTACT_LAYOUT_ID_LILYCHYSTOFAT
+    value: '6782764000008920002'
+
+  - variable: NEXT_PUBLIC_SALESIQ_PORTAL
+    value: leelutechinc
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NEXT_PUBLIC_SALESIQ_WIDGET_CODE_LILYCHYSTOFAT
+    value: siqcc89ea13efc8ccd730e60a5c5d8ff6146c861a440ccd18abafb50fa7bbf17417
+    availability:
+      - BUILD
+      - RUNTIME
+
+  # Secrets (stored in Google Secret Manager)
+  - variable: STRIPE_SECRET_KEY
+    secret: STRIPE_SECRET_KEY_LILYCHYSTOFAT
+
+  - variable: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY_LILYCHYSTOFAT
+    secret: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY_LILYCHYSTOFAT
+
+  - variable: ZOHO_CLIENT_ID_LILYCHYSTOFAT
+    secret: ZOHO_CLIENT_ID_LILYCHYSTOFAT
+
+  - variable: ZOHO_CLIENT_SECRET_LILYCHYSTOFAT
+    secret: ZOHO_CLIENT_SECRET_LILYCHYSTOFAT
+
+  - variable: ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT
+    secret: ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT
+
+  - variable: ZOHO_REFRESH_TOKEN_SALESIQ_LILYCHYSTOFAT
+    secret: ZOHO_REFRESH_TOKEN_SALESIQ_LILYCHYSTOFAT
+
+  - variable: ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT
+    secret: ZOHO_REFRESH_TOKEN_CAMPAIGN_LILYCHYSTOFAT
+
+  - variable: ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT
+    secret: ZOHO_CAMPAIGNS_LISTKEY_LILYCHYSTOFAT
