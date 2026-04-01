@@ -65,7 +65,7 @@ export const FooterNavigation = () => {
   return (
     <div className='flex flex-col lg:flex-row lg:justify-between lg:items-start gap-10 lg:gap-0'>
       <div className='order-2 lg:order-2'>
-        <div className='grid grid-cols-2 gap-x-14 gap-y-12 sm:flex sm:flex-row sm:gap-12 md:gap-16 lg:gap-[68px]'>
+        <div className='grid grid-cols-2 gap-x-14 gap-y-12 lg:flex lg:flex-row lg:gap-[68px]'>
           {/* Offers */}
           <div className='min-w-[130px]'>
             <h4 className='text-[32px] md:text-[32px] font-canela font-thin text-black mb-4 md:mb-6 leading-[130%]'>
@@ -132,7 +132,7 @@ export const FooterNavigation = () => {
             </ul>
           </div>
 
-          <div className='min-w-[130px] col-span-2 sm:col-span-1'>
+          <div className='min-w-[130px] col-span-2 lg:col-span-1'>
             <h4 className='text-[32px] md:text-[32px] font-canela font-thin text-black mb-4 md:mb-6 leading-[130%]'>
               Support
             </h4>

@@ -92,7 +92,7 @@ const VideoContent = () => (
     <div className='absolute top-[62%] left-1/2 -translate-x-1/2 translate-y-1/2 z-20'>
       <div className='w-[166px] p-4 flex flex-col items-center gap-6 bg-[#FFEBE5] rounded-[20px] shadow-lg'>
         <div className='relative w-[62px] h-[86px] flex items-center justify-center bg-[#EB4F68] rounded-full'>
-          <Image src='/leelu_logo.svg' alt='' fill className='object-contain p-3 filter brightness-0 invert' />
+          <Image src='/leelu_logo.svg' alt='' fill className='object-contain p-3 filter brightness-0 invert' quality={100} />
         </div>
 
         <p className='text-center font-canela text-[18px] font-light'>The Relationship Protocol Workbook</p>

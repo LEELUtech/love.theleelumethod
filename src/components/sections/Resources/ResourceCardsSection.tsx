@@ -18,8 +18,8 @@ const { SECRETS_LINK, COMPATIBILITY_LINK, QUIZ_LINK } = RESOURCES_LINKS;
 
 const resources: ResourceCard[] = [
   {
-    title: '7 Secrets to Mend a Broken Heart',
-    description: 'This guide gives you 7 evidence-based strategies to reclaim your nervous system and your life.',
+    title: 'The Heartbreak Protocol',
+    description: 'This guide gives you 6 evidence-based strategies to reclaim your nervous system and your life.',
     cta: SECRETS_LINK.label,
     href: SECRETS_LINK.href,
     ctaType: 'secrets',
@@ -50,8 +50,20 @@ const resources: ResourceCard[] = [
 
 export function ResourceCardsSection() {
   return (
-    <section className=' text-brand-deep bg-cover' style={{ backgroundImage: 'url(/images/bg/resources-bg.png)' }}>
+    <section className='relative text-brand-deep bg-cover'>
       <Header />
+
+      <div className="absolute inset-0 -z-10">
+					<Image
+						src="/noise_bg.svg"
+						alt=""
+						fill
+						priority
+						quality={100}
+						sizes="100vw"
+						className="object-cover"
+					/>
+				</div>
 
       <div className='max-w-[1224px] mx-auto mt-10 md:mt-16 lg:mt-[80px] px-4 md:px-6 lg:px-8'>
         <h1 className='text-h1 font-canela mb-8 md:mb-10 lg:mb-12 font-thin lg:text-left text-center'>Resources</h1>

@@ -27,14 +27,14 @@ export function MasterclassSection() {
             <ul className='pl-2 md:pl-4 font-lato text-body font-medium leading-[26px] space-y-4 text-[#5A5757]'>
               <li className='flex gap-2 items-start'>
                 <div className='w-4 h-4 pt-2 flex-shrink-0'>
-                  <Image src='/icons/arrow_right.svg' alt='Arrow' width={10} height={10} className='object-contain' />
+                  <Image src='/icons/arrow_right.svg' alt='Arrow' width={10} height={10} className='object-contain' quality={100} />
                 </div>
                 <span>Your identity-level programming that determines partner selection and how to rewire it.</span>
               </li>
 
               <li className='flex gap-2 items-start'>
                 <div className='w-4 h-4 pt-2 flex-shrink-0'>
-                  <Image src='/icons/arrow_right.svg' alt='Arrow' width={10} height={10} className='object-contain' />
+                  <Image src='/icons/arrow_right.svg' alt='Arrow' width={10} height={10} className='object-contain' quality={100} />
                 </div>
                 <span>
                   How early attachment imprints create repetitive relationship dynamics across different partners.
@@ -43,7 +43,7 @@ export function MasterclassSection() {
 
               <li className='flex gap-2 items-start'>
                 <div className='w-4 h-4 pt-2 flex-shrink-0'>
-                  <Image src='/icons/arrow_right.svg' alt='Arrow' width={10} height={10} className='object-contain' />
+                  <Image src='/icons/arrow_right.svg' alt='Arrow' width={10} height={10} className='object-contain' quality={100} />
                 </div>
                 <span>Why attraction follows algorithmic patterns—and how to stop investing in incompatible men.</span>
               </li>
@@ -72,7 +72,7 @@ export function MasterclassSection() {
                   className='relative size-[70px] md:size-[70px] lg:size-[80px]'
                   ease='easeOut'
                 >
-                  <Image src='/icons/ornament_2/ornament_2_black.svg' alt='' fill priority />
+                  <Image src='/icons/ornament_2/ornament_2_black.svg' alt='' fill priority quality={100} />
                 </RotateOnView>
               </div>
             </div>

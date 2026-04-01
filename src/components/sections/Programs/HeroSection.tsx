@@ -10,7 +10,7 @@ const HeroSection = () => {
     <section className='relative overflow-hidden pt-[40px] lg:pt-[64px]'>
       {/* Background */}
       <div className='absolute inset-0 -z-10'>
-        <Image src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fhero_section_bg.png?alt=media' alt='' fill priority className='object-cover' sizes='100vw' />
+        <Image src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fhero_section_bg.png?alt=media' alt='' fill priority className='object-cover' sizes='100vw' quality={100} />
       </div>
 
       <div className='container px-4 relative z-10'>
@@ -66,6 +66,7 @@ const HeroSection = () => {
                   width={63}
                   height={61}
                   className='w-[51px] h-[53px] md:w-[65px] md:h-[63px] lg:w-[61px] lg:h-[63px] filter invert'
+                  quality={100}
                 />
               </RotateOnView>
             </div>

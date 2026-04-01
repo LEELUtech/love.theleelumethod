@@ -92,10 +92,28 @@ function BlindSpotCard({ title, text, variant }: BlindCard) {
 const ProblemSolutionSection = () => {
   return (
     <section className='relative py-[80px] lg:py-[112px] pb-[220px] lg:pb-[200px] overflow-hidden'>
-      {/* Background Image */}
-      <div className='absolute inset-0 z-[-1] overflow-hidden'>
-        <Image src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Ffracture_section_bg.png?alt=media' alt='' fill priority quality={100} />
-      </div>
+
+      <div className="absolute inset-0 -z-10">
+					<Image
+						src="/noise_bg.svg"
+						alt=""
+						fill
+						priority
+						quality={100}
+						sizes="100vw"
+						className="object-cover"
+					/>
+				</div>
+				<div className="absolute bottom-0 left-0 right-0 -z-10 pointer-events-none">
+					<Image
+						src="/gradiend.svg"
+						alt=""
+            quality={100}
+						width={1440}
+						height={400}
+						className="w-full h-[1000px] object-cover lg:h-auto lg:object-fill"
+					/>
+				</div>
       <div className='container px-4'>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-12 items-start'>
           {/* Left Column - Image */}
@@ -111,7 +129,7 @@ const ProblemSolutionSection = () => {
               />
               <div className='absolute flex bottom-[-30px] left-[-10px] lg:left-[-30px] items-center justify-center bg-[#d8ac9e] rounded-[300px] w-[80px] h-[100px] md:w-[100px] md:h-[126px] lg:w-[123px] lg:h-[155px] z-10'>
                 <div className=' relative w-[55px] h-[55px] lg:w-[75px] lg:h-[75px]'>
-                  <Image src='/leelu_logo.svg' alt='' fill className='absolute filter brightness-0 invert' />
+                  <Image src='/leelu_logo.svg' alt='' fill className='absolute filter brightness-0 invert' quality={100} />
                 </div>
               </div>
             </div>
@@ -193,6 +211,7 @@ const ProblemSolutionSection = () => {
                   fill
                   className='object-contain'
                   style={{ filter: 'brightness(200%)' }}
+                  quality={100}
                 />
               </RotateOnView>
             </div>
@@ -229,6 +248,7 @@ const ProblemSolutionSection = () => {
                   fill
                   className='object-contain'
                   style={{ filter: 'brightness(200%)' }}
+                  quality={100}
                 />
               </RotateOnView>
             </div>
@@ -268,6 +288,7 @@ const ProblemSolutionSection = () => {
                   fill
                   className='object-contain'
                   style={{ filter: 'brightness(200%)' }}
+                  quality={100}
                 />
               </RotateOnView>
             </div>

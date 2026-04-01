@@ -164,9 +164,30 @@ export const Pricing = () => {
       id='pricing'
       className='px-4 bg-gradient-to-b from-[#F2E1E2] to-transparent md:px-6 2xl:px-[180px] relative '
     >
-      <div className='absolute h-[50%] w-full bottom-0 left-0 z-[-1]'>
+      {/* <div className='absolute h-[50%] w-full bottom-0 left-0 z-[-1]'>
         <Image src='/images/bg/new_bg.png' alt='' fill priority quality={100} />
-      </div>
+      </div> */}
+
+      <div className="absolute inset-0 -z-10">
+				<Image
+					src="/noise_bg.svg"
+					alt=""
+					fill
+					priority
+					quality={100}
+					sizes="100vw"
+					className="object-cover"
+				/>
+			</div>
+			<div className="absolute bottom-0 left-0 right-0 -z-10 pointer-events-none">
+				<Image
+					src="/gradiend.svg"
+					alt=""
+					width={1440}
+					height={400}
+					className="w-full h-[500px] object-cover lg:h-auto lg:object-fill"
+				/>
+			</div>
 
       <div className='relative'>
         <SectionBadge bottom={-97} />

@@ -54,7 +54,7 @@ const Card = ({ title, description, id }: CardProps) => {
 
 const RelationShipProtocolSection = () => {
 	const ornamentIcon = (
-		<Image src="/icons/ornament_1.svg" alt="" width={24} height={24} />
+		<Image src="/icons/ornament_1.svg" alt="" width={24} height={24} quality={100} />
 	);
 
 	return (

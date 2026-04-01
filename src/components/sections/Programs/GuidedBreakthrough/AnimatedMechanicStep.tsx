@@ -34,9 +34,9 @@ export default function AnimatedMechanicStep({
       }}
     >
       <div className='relative h-[210px] w-[177px]'>
-        <Image src='/images/programs/self-guided-transformation/mechanic_icon.png' alt='' fill />
+        <Image src='/images/programs/self-guided-transformation/mechanic_icon.png' alt='' fill quality={100} />
         <div className='absolute top-1/2 left-[50px] -translate-y-14 h-[80px] w-[80px]'>
-          <Image src={icon} alt='' fill className='object-contain' />
+          <Image src={icon} alt='' fill className='object-contain' quality={100} />
         </div>
         <p className='mt-4 absolute bottom-[-15px] left-[70px] font-canela font-light text-[#C89F26] text-[60px] leading-none'>
           {stepNumber}

@@ -4,7 +4,7 @@ import { IProgramsReceive } from '../components/receive';
 import { IProgramOverview } from '../components/overview';
 import { IProgramResult } from '../components/result';
 import { IProgramItWorks } from '../components/it-works';
-import { OrnamentTitle } from '@/components/ui/titles/OrnamentTitle';
+import { GuidedOrnamentTitle } from './GuidedOrnamentTitle';
 import { GUIDED_BREAKTHROUGH_LINKS } from '@/static/links';
 
 const { HERO_LINK, COMPATIBILITY_LINK, WORKED_LINK } = GUIDED_BREAKTHROUGH_LINKS;
@@ -87,7 +87,7 @@ export const guidedBreakthroughModuleData: IProgramsReceive = {
 
 export const guidedBreakthroughOverviewData: IProgramOverview = {
   title: (
-    <OrnamentTitle
+    <GuidedOrnamentTitle
       classNames='mt-[200px] lg:mt-[300px]'
       title='The Extended Leelu Method'
       titleHightlight='Compatibility Blueprint'

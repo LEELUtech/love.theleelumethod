@@ -3,6 +3,7 @@ import { ReactNode } from 'react';
 interface Props {
   children: ReactNode;
   backgroundImage?: string;
+  backgroundPosition?: string;
   sectionClasses?: string;
   wrapperClasses?: string;
   bottomBackgroundImage?: string;
@@ -11,13 +12,13 @@ interface Props {
 }
 
 export const Section = (props: Props) => {
-  const { children, backgroundImage, bottomBackgroundImage, topFade, sectionClasses = '', wrapperClasses = '', id = '' } = props;
+  const { children, backgroundImage, backgroundPosition = 'center', bottomBackgroundImage, topFade, sectionClasses = '', wrapperClasses = '', id = '' } = props;
   const style = backgroundImage
     ? {
         backgroundImage: `url('${backgroundImage}')`,
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center',
+        backgroundPosition,
       }
     : {};
   return (

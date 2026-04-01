@@ -63,6 +63,7 @@ export default function CostOfWaitingSection({ cohortLabel }: { cohortLabel?: st
 									alt=""
 									fill
 									className="filter brightness-0 invert"
+									quality={100}
 								/>
 							</div>
 						</div>

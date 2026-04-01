@@ -74,6 +74,7 @@ export default function BlindSpotSection() {
           alt=''
           fill
           priority
+          quality={100}
           className='object-cover'
           sizes='100vw'
           style={{

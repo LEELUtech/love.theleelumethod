@@ -13,11 +13,11 @@ export const OrnamentTitle = ({ title, titleHightlight, subtitle, classNames = '
   <div className={`relative ${classNames}`}>
     <div
       className={`absolute z-0 left-1/2 -translate-x-1/2
-                  top-[-200px] md:top-[-230px] lg:top-[-350px]
+                  top-[-200px] sm:top-[-240px] md:top-[-230px] lg:top-[-350px]
                   flex flex-row items-center justify-center gap-[130px] `}
     >
       <div
-        className='relative overflow-hidden w-[340px] h-[340px] sm:w-[418px] sm:h-[418px] md:translate-y-[50px] lg:translate-y-[100px]   '
+        className='relative overflow-hidden w-[340px] h-[340px] sm:w-[418px] sm:h-[418px] translate-y-[20px] md:translate-y-[10px] lg:translate-y-[120px]   '
         style={{
           WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 55%)',
           maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 55%)',
@@ -36,7 +36,7 @@ export const OrnamentTitle = ({ title, titleHightlight, subtitle, classNames = '
           className='absolute inset-0'
           style={{ willChange: 'transform', transform: 'translateZ(0)' }}
         >
-          <Image src='/icons/ornament_2/ornament_2_pink.svg' alt='' fill className='object-contain opacity-50' />
+          <Image src='/icons/ornament_2/ornament_2_pink.svg' alt='' fill className='object-contain opacity-50' quality={100} />
         </RotateOnView>
       </div>
     </div>

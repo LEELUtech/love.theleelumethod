@@ -54,6 +54,7 @@ export const FooterPromo = (props: Props) => {
                   width={83}
                   height={83}
                   className='w-[65px] h-[65px] md:w-[65px] md:h-[65px] lg:w-[83px] lg:h-[83px]'
+                  quality={100}
                 />
               </RotateOnView>
             </div>
