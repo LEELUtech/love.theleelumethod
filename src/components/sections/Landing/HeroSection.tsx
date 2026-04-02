@@ -24,7 +24,7 @@ const HeroSection = () => {
           />
 
           {/* Overlay Card */}
-          <div className='absolute left-1/2 -translate-x-1/2 bottom-[-440px] md:bottom-[-360px] w-[calc(100%-32px)] md:w-[calc(100%-64px)] max-w-[360px] md:max-w-[560px] z-40'>
+          <div className='absolute left-1/2 -translate-x-1/2 bottom-[-440px] md:bottom-[-360px] w-[calc(100%-32px)] md:w-[calc(100%-64px)] max-w-[460px] md:max-w-[560px] z-40'>
             <div className='rounded-[20px] bg-brand-white shadow-[0_4px_20px_rgba(0,0,0,0.05)] px-4 md:px-8 pt-4 md:pt-6 pb-6 md:pb-8 text-center'>
               <p className='font-canela font-thin text-[42px] md:text-[44px] italic text-brand-black'>
                 Love isn’t a mystery.

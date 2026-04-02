@@ -49,7 +49,7 @@ export function MasterclassSection() {
               </li>
             </ul>
           </div>
-          <Button variant='dark' className='w-full max-w-[340px]' href={HOME_LINKS.DECODED_LINK.href}>
+          <Button variant='dark' className='w-full md:max-w-[340px]' href={HOME_LINKS.DECODED_LINK.href}>
             {HOME_LINKS.DECODED_LINK.label}
           </Button>
         </div>

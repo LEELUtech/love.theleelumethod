@@ -95,7 +95,7 @@ const TriageSection = () => {
       <div className='absolute bottom-0 left-0 right-0 -z-10 pointer-events-none'>
         <Image src='/gradiend.svg' alt='' width={1440} height={400} className='w-full' quality={100} />
       </div>
-      <div className='container w-full px-1'>
+      <div className='container w-full'>
         <p className='font-canela text-[42px]/[126%] lg:text-[60px] font-thin text-brand-deep text-center mb-[200px] md:mb-[300px] lg:mb-[400px]'>
           &ldquo;We fought for years and tried everything. A friend referred us to Lily. She ran our codes, showing us exactly
           where we clash, where we naturally align, and how to navigate our differences. Words cannot describe the
@@ -241,7 +241,7 @@ const TriageSection = () => {
                 <div
                   key={i}
                   className={`
-                  max-w-[392px] w-full rounded-[24px] bg-brand-white backdrop-blur-md px-[22.5px] lg:px-2
+                  w-full md:max-w-[392px] rounded-[24px] bg-brand-white backdrop-blur-md px-[22.5px] lg:px-2
                   xl:px-[22.5px] py-[47px] shadow-[0_4px_20px_rgba(0,0,0,0.05)]
                   flex flex-col
                   ${card.raised ? 'lg:-translate-y-10' : ''} ${containerClass}

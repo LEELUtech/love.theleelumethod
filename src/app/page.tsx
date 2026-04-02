@@ -30,7 +30,7 @@ export default function HomePage() {
       <MasterclassSection />
       <DecodedLoveCohortSection />
       <RelationShipProtocolSection />
-      <FooterPromo {...footerPromoContent} buttonClassName='!px-2 md:w-[70%]' />
+      <FooterPromo {...footerPromoContent} buttonClassName='!w-full md:w-[70%]' />
       <Footer />
     </main>
   );
