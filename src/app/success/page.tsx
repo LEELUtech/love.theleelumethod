@@ -68,8 +68,8 @@ export default function SuccessPage() {
             Please allow 10–15 minutes for it to arrive.
             <br />
             If it doesn&apos;t appear, simply reach out to{' '}
-            <Link className='underline underline-offset-2' href='mailto:hello@lily.com'>
-              hello@lily.com
+            <Link className='underline underline-offset-2' href='https://mail.google.com/mail/?view=cm&to=support@theleelumethod.com' target='_blank' rel='noopener noreferrer'>
+              support@theleelumethod.com
             </Link>
             , and our team will be glad to assist you.
           </p>

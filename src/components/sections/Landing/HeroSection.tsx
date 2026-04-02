@@ -5,7 +5,7 @@ import React from 'react';
 
 const HeroSection = () => {
   return (
-    <section className='relative xs:h-[938px] md:h-[968px] lg:h-[1048px] bg-[#fcefeb] w-full md:bg-transparent'>
+    <section className='relative xs:h-[938px] md:h-[968px] lg:h-[1048px] bg-[#fcefeb] w-full lg:bg-transparent'>
       <div
         className='hidden lg:block absolute inset-0 bg-cover bg-center'
         style={{ backgroundImage: 'url(https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fhero_section_landing_bg.png?alt=media)' }}
