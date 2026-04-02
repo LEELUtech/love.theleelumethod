@@ -208,19 +208,19 @@ export default function Footer({ className }: { className?: string }) {
 						</p>
 
 						<div className="flex items-center gap-4 mt-8 lg:mt-[56px]">
-							<SocialIcon href="https://instagram.com">
+							<SocialIcon href="https://www.instagram.com/lilychystofat?igsh=MXB0bGpiamVzMTNoZA%3D%3D&utm_source=qr">
 								<InstagramIcon />
 							</SocialIcon>
 
-							<SocialIcon href="https://tiktok.com">
+							<SocialIcon href="https://www.tiktok.com/@lily_chystofat?_r=1&_t=ZN-95Bk08xgHlG">
 								<TikTokIcon />
 							</SocialIcon>
 
-							<SocialIcon href="https://facebook.com">
+							<SocialIcon href="https://www.facebook.com/share/18REZhrPNn/?mibextid=wwXIfr">
 								<FacebookIcon />
 							</SocialIcon>
 
-							<SocialIcon href="https://youtube.com">
+							<SocialIcon href="https://youtube.com/@lily_chystofat?si=Y4yNNLdGlzhEM-UA">
 								<YouTubeIcon />
 							</SocialIcon>
 						</div>
