@@ -238,7 +238,7 @@ export default function ChooseYourPathSection({ cohortLabel }: { cohortLabel?: s
         background: "url('https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fchoose_your_path_bg.png?alt=media') no-repeat center center / cover",
       }}
     >
-      <div className='max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-[60px] 4xl:px-[180px] relative py-[80px] lg:py-[110px]'>
+      <div className=' container relative py-[80px] lg:py-[110px]'>
         <div className='relative flex justify-center'>
           <div
             className="
@@ -287,15 +287,21 @@ export default function ChooseYourPathSection({ cohortLabel }: { cohortLabel?: s
           </div>
 
           <Flex>
-            <ul className='min-w-[280px] hidden 4xl:block'>
-              <h4 className='font-canela mt-[50px] mb-[80px] text-[36px]/[126%] font-light text-black'> Feature</h4>
+            <div className='min-w-[280px] hidden 4xl:flex 4xl:flex-col relative rounded-[32px] py-8'>
+              <h3 className=' text-[42px]/[126%] mb-[10px] max-w-[200px] font-canela font-thin text-brand-black lg:text-[36px]  min-h-[91px] flex items-center justify-start'>
+                Feature
+              </h3>
 
-              {tiers_titles.map((title) => (
-                <li className='3xl:h-[100px] 4xl:h-[90px] text-[24px]/[150%] font-lato text-brand-gray' key={title}>
-                  {title}
-                </li>
-              ))}
-            </ul>
+              <ul className='mt-8 flex flex-col gap-4 3xl:gap-0 flex-1 pr-8 font-lato text-[18px]/[120%] text-brand-gray'>
+                {tiers_titles.map((title) => (
+                  <li key={title} className='flex flex-col items-start justify-start 4xl:flex-row 4xl:items-center h-auto 3xl:h-[100px] 4xl:h-[90px] 3xl:border-b border-[#C6ABB3] last:border-none'>
+                    <span className='font-lato font-normal text-[24px]/[150%] text-left'>
+                      {title}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
             <div className='w-full grid grid-cols-1 gap-10 lg:gap-6 justify-center justify-items-stretch lg:grid-cols-3 lg:justify-items-center'>
               {tiers.map((tier) => (
@@ -325,7 +331,7 @@ export default function ChooseYourPathSection({ cohortLabel }: { cohortLabel?: s
                       return (
                         <li
                           key={i}
-                          className={`flex flex-col justify-center 4xl:flex-row 4xl:items-center h-auto 3xl:h-[100px] 4xl:h-[90px] 3xl:border-b border-[#C6ABB3] last:border-none ${justifyClass}`}
+                          className={`flex flex-col 4xl:flex-row 4xl:items-center h-auto 3xl:h-[100px] 4xl:h-[90px] 3xl:border-b border-[#C6ABB3] last:border-none justify-start ${justifyClass}`}
                         >
                           <h5 className={`text-brand-gray text-[17px]/[26px] 4xl:hidden`}>{title}</h5>
                           <span
