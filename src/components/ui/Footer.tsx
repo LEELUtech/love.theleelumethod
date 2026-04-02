@@ -175,7 +175,7 @@ export default function Footer({ className }: { className?: string }) {
 								<ul className="space-y-2">
 									<li>
 										<Link
-											href="https://mail.google.com/mail/?view=cm&to=hello@theleelumethod.com"
+											href="https://mail.google.com/mail/?view=cm&to=support@theleelumethod.com"
 											target="_blank"
 											rel="noopener noreferrer"
 											className="text-[11px] font-lato font-medium leading-6 tracking-widest text-black uppercase"

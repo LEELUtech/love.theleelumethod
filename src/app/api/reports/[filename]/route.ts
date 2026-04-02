@@ -26,6 +26,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ file
       source: site,
       funnel_step: "report_downloaded",
       email,
+      report_name: filename,
       utm_last_source: searchParams.get("utm_source") ?? null,
       utm_last_medium: searchParams.get("utm_medium") ?? null,
       utm_last_campaign: searchParams.get("utm_campaign") ?? null,
