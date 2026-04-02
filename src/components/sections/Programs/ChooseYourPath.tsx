@@ -287,15 +287,15 @@ export default function ChooseYourPathSection({ cohortLabel }: { cohortLabel?: s
           </div>
 
           <Flex>
-            <div className='min-w-[280px] hidden 4xl:flex 4xl:flex-col relative rounded-[32px] py-8'>
-              <h3 className=' text-[42px]/[126%] mb-[10px] max-w-[200px] font-canela font-thin text-brand-black lg:text-[36px]  min-h-[91px] flex items-center justify-start'>
+            <div className='min-w-[180px] 4xl:min-w-[280px] hidden lg:flex lg:flex-col relative rounded-[32px] py-8'>
+              <h3 className='text-[28px]/[126%] 4xl:text-[36px]/[126%] mb-[10px] max-w-[200px] font-canela font-thin text-brand-black min-h-[91px] flex items-center justify-start'>
                 Feature
               </h3>
 
-              <ul className='mt-8 flex flex-col gap-4 3xl:gap-0 flex-1 pr-8 font-lato text-[18px]/[120%] text-brand-gray'>
+              <ul className='mt-8 flex flex-col gap-4 lg:gap-0 flex-1 pr-4 4xl:pr-8 font-lato text-[18px]/[120%] text-brand-gray'>
                 {tiers_titles.map((title) => (
-                  <li key={title} className='flex flex-col items-start justify-start 4xl:flex-row 4xl:items-center h-auto 3xl:h-[100px] 4xl:h-[90px] 3xl:border-b border-[#C6ABB3] last:border-none'>
-                    <span className='font-lato font-normal text-[24px]/[150%] text-left'>
+                  <li key={title} className='flex flex-col items-start justify-start lg:flex-row lg:items-center h-auto lg:h-[90px] 4xl:h-[90px]'>
+                    <span className='font-lato font-normal text-[15px]/[150%] xl:text-[18px]/[150%] 4xl:text-[24px]/[150%] text-left'>
                       {title}
                     </span>
                   </li>
@@ -320,23 +320,19 @@ export default function ChooseYourPathSection({ cohortLabel }: { cohortLabel?: s
                     {tier.title}
                   </h3>
 
-                  <ul className='mt-8 flex flex-col gap-4 3xl:gap-0 flex-1 px-8 font-lato text-[18px]/[120%] text-brand-gray'>
+                  <ul className='mt-8 flex flex-col gap-4 lg:gap-0 flex-1 px-4 4xl:px-8 font-lato text-[18px]/[120%] text-brand-gray'>
                     {tier.features.map((feature, i) => {
                       const isExist = feature !== '-';
-
-                      const justifyClass = isExist ? 'justify-start' : 'justify-center';
 
                       const title = tiers_titles[i];
 
                       return (
                         <li
                           key={i}
-                          className={`flex flex-col 4xl:flex-row 4xl:items-center h-auto 3xl:h-[100px] 4xl:h-[90px] 3xl:border-b border-[#C6ABB3] last:border-none justify-start ${justifyClass}`}
+                          className={`flex flex-col lg:items-start lg:justify-center h-auto lg:h-[90px] lg:border-b lg:border-[#C6ABB3] lg:last:border-none ${!isExist ? 'lg:justify-center lg:items-center' : ''}`}
                         >
-                          <h5 className={`text-brand-gray text-[17px]/[26px] 4xl:hidden`}>{title}</h5>
-                          <span
-                            className={`font-lato font-semibold text-[22px]/[150%] 4xl:font-normal 2xl:text-[18px]`}
-                          >
+                          <h5 className='text-brand-gray text-[17px]/[22px] lg:hidden'>{title}</h5>
+                          <span className={`font-lato font-semibold text-[18px]/[150%] lg:font-normal lg:text-[16px] xl:text-[18px] 4xl:text-[18px]`}>
                             {feature}
                           </span>
                         </li>

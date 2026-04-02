@@ -64,6 +64,9 @@ const canela = localFont({
 export const metadata = {
 	title: "Love | The Leelu Method",
 	description: "Stop guessing. Start calculating. The Leelu Method is relationship intelligence built on numerology and behavioral science. Decode your patterns. Find love.",
+	icons: {
+		icon: "/favicon.svg",
+	},
 };
 
 export default function RootLayout({
