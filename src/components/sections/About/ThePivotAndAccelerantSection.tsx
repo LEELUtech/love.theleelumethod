@@ -1,4 +1,6 @@
+import Button from '@/components/ui/Button';
 import { Section } from '@/components/ui/containers/section';
+import { ABOUT_LINKS } from '@/static/links';
 import Image from 'next/image';
 
 const ThePivotAndAccelerantSection = () => {
@@ -41,9 +43,22 @@ const ThePivotAndAccelerantSection = () => {
               window was closing. I packed my life into a car, took my son, and drove across seven countries to Madrid.
             </p>
 
-            <p className='font-thin font-canela text-[28px] lg:text-[32px] leading-[130%] text-brand-deep'>
+            <p className='font-thin font-canela text-[28px] lg:text-[32px] leading-[130%] text-brand-deep mb-8'>
               The system didn&apos;t just predict my path; it secured my future.
             </p>
+
+            <Button
+              variant='dark'
+              className='w-full lg:w-[60%]'
+              href={ABOUT_LINKS.PIVOT_LINK.href}
+              trackingData={{
+                cta_name: 'about_pivot_cta',
+                cta_text: ABOUT_LINKS.PIVOT_LINK.label,
+                cta_location: 'pivot',
+              }}
+            >
+              {ABOUT_LINKS.PIVOT_LINK.label}
+            </Button>
           </div>
         </div>
 

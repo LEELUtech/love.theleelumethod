@@ -56,11 +56,11 @@ export function MasterclassSection() {
           <Button
             variant='primary'
             className='w-full md:w-[60%]'
-            href={WEBINAR_URL}
+            href='/decode'
             trackingData={{
               cta_name: 'save_seat',
               cta_text: 'Save My Seat',
-              cta_target_url: WEBINAR_URL,
+              cta_target_url: '/decode',
               cta_location: 'masterclass_section',
             }}
           >

@@ -6,13 +6,14 @@ export default function StopImprovisingSection() {
     <section className='bg-brand-white pt-[72px] lg:pt-[160px]'>
       <div className='container'>
         <div className='grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-9 lg:gap-[104px] items-start'>
-          <div className='order-1 lg:order-2 relative w-full max-w-[520px] mx-auto lg:mx-0 lg:ml-auto flex flex-col items-end'>
-            <div className='relative xs:w-[360px] xs:h-[459px] lg:w-[496px] lg:h-[833px] md:w-[596px] md:h-[833px] overflow-hidden rounded-[60px] lg:rounded-[100px]'>
-              <Image src='/images/woman-sitting-windowsill.png' alt='' fill priority className='object-cover' quality={100} />
-            </div>
-
-            <div className='block lg:hidden w-[130px] -mt-[85px] mr-6 h-[172px] relative rounded-[400px] overflow-hidden'>
-              <Image fill src='/images/programs/happy_women.png' priority alt='Happy Women' quality={100} />
+          <div className='order-1 lg:order-2 relative w-full max-w-[520px] mx-auto lg:mx-0 lg:ml-auto flex flex-col items-center'>
+            <div className='relative w-[320px] xs:w-[360px] md:w-full lg:w-[496px]'>
+              <div className='relative h-[408px] xs:h-[459px] md:h-[660px] lg:h-[833px] overflow-hidden rounded-[60px] lg:rounded-[100px]'>
+                <Image src='/images/woman-sitting-windowsill.png' alt='' fill priority className='object-cover' quality={100} />
+              </div>
+              <div className='block lg:hidden absolute bottom-[-40px] right-[20px] w-[130px] h-[172px] rounded-[400px] overflow-hidden'>
+                <Image fill src='/images/programs/happy_women.png' priority alt='Happy Women' quality={100} />
+              </div>
             </div>
           </div>
 

@@ -345,7 +345,7 @@ export default function ChooseYourPathSection({ cohortLabel }: { cohortLabel?: s
                       {tier.price}
                     </p>
                     <Button
-                      className='w-full max-w-[450px] px-0'
+                      className='w-full lg:max-w-[450px] px-0'
                       variant='dark'
                       href={tier.link.href}
                       trackingData={{
