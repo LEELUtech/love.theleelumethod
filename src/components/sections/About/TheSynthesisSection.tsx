@@ -135,14 +135,14 @@ const TheSynthesisSection = () => {
 					<Button
 						variant="primary"
 						className="w-full lg:w-[40%]"
-						href={ABOUT_LINKS.HERO_LINK.href}
+						href={ABOUT_LINKS.SYNTHESIS_LINK.href}
 						trackingData={{
 							cta_name: "about_synthesis_cta",
-							cta_text: ABOUT_LINKS.HERO_LINK.label,
+							cta_text: ABOUT_LINKS.SYNTHESIS_LINK.label,
 							cta_location: "synthesis",
 						}}
 					>
-						{ABOUT_LINKS.HERO_LINK.label}
+						{ABOUT_LINKS.SYNTHESIS_LINK.label}
 					</Button>
 				</div>
 			</Section>

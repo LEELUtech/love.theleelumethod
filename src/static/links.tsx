@@ -81,11 +81,15 @@ export const ABOUT_LINKS: RecordLink = {
     href: '/decode',
   },
   FRACTURE_LINK: {
-    label: 'START THE DECODE',
+    label: 'FIND YOUR PATTERN',
+    href: '/decode',
+  },
+  PIVOT_LINK: {
+    label: 'RUN YOUR NUMBERS',
     href: '/decode',
   },
   SYNTHESIS_LINK: {
-    label: 'START THE DECODE',
+    label: 'GET YOUR CODE',
     href: '/decode',
   },
   STOP_GUESSING_LINK: {
@@ -140,7 +144,7 @@ export const PROGRAMS_LINKS: RecordLink = {
 export const HOME_LINKS: RecordLink = {
   HERO_LINK: {
     label: 'START THE DECODE',
-    href: '/decode',
+    href: '#triage-cards',
   },
   READ_LINK: {
     label: 'READ MORE STORIES',

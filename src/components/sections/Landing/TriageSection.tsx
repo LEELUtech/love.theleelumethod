@@ -54,7 +54,7 @@ const cards = [
         text: 'How to stop over-functioning and inspire his loyalty.',
       },
     ],
-    button: { label: REGISTER_LINK.label, href: REGISTER_LINK.href },
+    button: { label: REGISTER_LINK.label, href: '/decode' },
     trackingData: {
       cta_name: 'landing_triage_webinar_cta',
       cta_text: REGISTER_LINK.label,

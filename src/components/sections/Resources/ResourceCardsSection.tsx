@@ -12,6 +12,7 @@ interface ResourceCard {
   imageAlt: string;
   imageSrc: string;
   ctaType?: 'compatibility' | 'quiz' | 'secrets';
+  imageClassName?: string;
 }
 
 const { SECRETS_LINK, COMPATIBILITY_LINK, QUIZ_LINK } = RESOURCES_LINKS;
@@ -44,7 +45,8 @@ const resources: ResourceCard[] = [
     href: QUIZ_LINK.href,
     ctaType: 'quiz',
     imageAlt: 'Woman sitting by window smiling',
-    imageSrc: '/images/resources/resources-section-3.png',
+    imageSrc: '/images/resources/resources-section-3.jpg',
+    imageClassName: 'rounded-t-[100%]',
   },
 ];
 
@@ -80,7 +82,7 @@ export function ResourceCardsSection() {
                   fill
                   quality={100}
                   sizes='(min-width:1024px) 33vw, (min-width:768px) 50vw, 100vw'
-                  className='object-cover'
+                  className={`object-cover ${item.imageClassName ?? ''}`}
                 />
               </div>
               <h3 className='text-[32px] md:text-[30px] font-light leading-[100%] font-canela mb-4 md:mb-4 text-brand-deep'>
