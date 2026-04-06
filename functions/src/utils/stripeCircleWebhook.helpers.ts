@@ -188,16 +188,16 @@ export function validatePaymentIntent(pi: Stripe.PaymentIntent): {
 export async function processPayment(pi: Stripe.PaymentIntent): Promise<void> {
   const productType = pi.metadata?.product_type as ProductType;
 
-  console.log(`Processing payment for product type: ${pi}`);
+  console.log(`Processing payment for product type: ${productType}`);
 
   switch (productType) {
     case "compatibility_report":
-      handleCompatibilityReport(pi);
+      await handleCompatibilityReport(pi);
       break;
     case "protocol_essentials":
     case "guided_breakthrough":
     case "vip_immersion":
-      handleCircleProduct(pi);
+      await handleCircleProduct(pi);
       break;
 
     default:

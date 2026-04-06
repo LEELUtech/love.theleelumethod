@@ -85,13 +85,16 @@ async function makeCircleRequest<T>(
     },
   });
 
+  const bodyText = await response.text();
+
   if (!response.ok && response.status === 404) {
-    return (await response.json()) as T;
+    const parsed404 = safeJsonParse<T>(bodyText);
+    if (parsed404 !== null) return parsed404;
+    // Circle returned 404 + HTML (CDN glitch) — treat as "not found"
+    return { success: false } as unknown as T;
   }
 
   if (!response.ok) {
-    const bodyText = await response.text();
-
     if (cfg?.tolerateIdempotentGrantErrors && isIdempotentGrantError(response.status, bodyText)) {
       console.log("[Circle] Non-fatal grant error (treated as success)", {
         endpoint,
@@ -110,7 +113,26 @@ async function makeCircleRequest<T>(
     throw new Error(`Circle API Error: ${response.status} - ${bodyText}`);
   }
 
-  return (await response.json()) as T;
+  const parsed = safeJsonParse<T>(bodyText);
+
+  if (parsed === null) {
+    if (cfg?.tolerateIdempotentGrantErrors) {
+      // Circle sometimes returns 200 + HTML on grant endpoints (CDN glitch / rate limit).
+      // Treat as success to not block delivery — access was likely granted.
+      console.warn("[Circle] Grant endpoint returned non-JSON 200 (treated as success)", {
+        endpoint,
+        body: bodyText.slice(0, 200),
+      });
+      const fake: GrantAccessResponse = { success: true, message: "Non-JSON 200 treated as success" };
+      return fake as unknown as T;
+    }
+
+    throw new Error(
+      `Circle API returned non-JSON response (status ${response.status}): ${bodyText.slice(0, 300)}`,
+    );
+  }
+
+  return parsed;
 }
 
 export async function findCircleMemberByEmail(email: string): Promise<CircleMember | null> {
@@ -137,40 +159,32 @@ export async function createCircleMember(email: string, name: string): Promise<C
 }
 
 export async function grantCircleSpaceAccess(email: string, spaceId: string): Promise<boolean> {
-  try {
-    const response = await makeCircleRequest<GrantAccessResponse>(
-      "/space_members?space_id=" + encodeURIComponent(spaceId),
-      {
-        method: "POST",
-        body: JSON.stringify({ email }),
-      },
-      { tolerateIdempotentGrantErrors: true },
-    );
+  const response = await makeCircleRequest<GrantAccessResponse>(
+    "/space_members?space_id=" + encodeURIComponent(spaceId),
+    {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    },
+    { tolerateIdempotentGrantErrors: true },
+  );
 
-    return response.success;
-  } catch {
-    return false;
-  }
+  return response.success;
 }
 
 export async function grantCircleCourseAccess(email: string, courseId: string): Promise<boolean> {
-  try {
-    const response = await makeCircleRequest<GrantAccessResponse>(
-      "/course_members",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          email,
-          course_id: parseInt(courseId, 10),
-        }),
-      },
-      { tolerateIdempotentGrantErrors: true },
-    );
+  const response = await makeCircleRequest<GrantAccessResponse>(
+    "/course_members",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        email,
+        course_id: parseInt(courseId, 10),
+      }),
+    },
+    { tolerateIdempotentGrantErrors: true },
+  );
 
-    return response.success;
-  } catch {
-    return false;
-  }
+  return response.success;
 }
 
 interface IProcessCircleAccess {
@@ -450,13 +464,22 @@ export async function getAllCircleCourseMembersForCourse(
   let page = 1;
   let hasNext = true;
   while (hasNext) {
-    const resp = await makeCircleRequest<CircleCourseMembersListResponse>(
-      `/space_members?space_id=${spaceId}&per_page=100&page=${page}`,
-      { method: "GET" },
-    );
-    all.push(...(resp.records ?? []));
-    hasNext = resp.has_next_page;
-    page++;
+    try {
+      const resp = await makeCircleRequest<CircleCourseMembersListResponse>(
+        `/space_members?space_id=${spaceId}&per_page=100&page=${page}`,
+        { method: "GET" },
+      );
+      all.push(...(resp.records ?? []));
+      hasNext = resp.has_next_page;
+      page++;
+    } catch (e) {
+      console.error("[Circle] getAllCircleCourseMembersForCourse page failed, stopping pagination", {
+        spaceId,
+        page,
+        error: e instanceof Error ? e.message : String(e),
+      });
+      break;
+    }
   }
   return all;
 }
@@ -466,13 +489,21 @@ export async function getAllCommunityMembers(): Promise<CircleCommunityMemberRec
   let page = 1;
   let hasNext = true;
   while (hasNext) {
-    const resp = await makeCircleRequest<CircleCommunityMembersListResponse>(
-      `/community_members?per_page=100&page=${page}`,
-      { method: "GET" },
-    );
-    all.push(...(resp.records ?? []));
-    hasNext = resp.has_next_page;
-    page++;
+    try {
+      const resp = await makeCircleRequest<CircleCommunityMembersListResponse>(
+        `/community_members?per_page=100&page=${page}`,
+        { method: "GET" },
+      );
+      all.push(...(resp.records ?? []));
+      hasNext = resp.has_next_page;
+      page++;
+    } catch (e) {
+      console.error("[Circle] getAllCommunityMembers page failed, stopping pagination", {
+        page,
+        error: e instanceof Error ? e.message : String(e),
+      });
+      break;
+    }
   }
   return all;
 }

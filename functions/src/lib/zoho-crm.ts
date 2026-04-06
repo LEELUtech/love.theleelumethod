@@ -474,7 +474,13 @@ export async function createOrUpdateContact(data: {
   const purchasedValue = pickPurchasedProduct(data.productType, data.productNameForZoho);
   const cohort = await getCohortData();
 
-  console.log("HUGELOG", data);
+  console.log("[zoho-crm] createOrUpdateContact", {
+    email: data.email,
+    productType: data.productType,
+    amount: data.amount,
+    currency: data.currency,
+    stripePaymentIntentId: data.stripePaymentIntentId,
+  });
 
   // ---------- UPDATE ----------
   if (existing?.id) {
@@ -545,16 +551,13 @@ export async function createOrUpdateContact(data: {
       if (merged) patch[CONTACT_FIELDS.Purchased_Products] = merged;
     }
 
-    console.log("Updating existing Zoho contact", { email, id: existing.id, patch });
+    console.log("[zoho-crm] updating contact", { email, id: existing.id });
 
-    const res = await zohoRequest({
+    await zohoRequest({
       method: "PUT",
       url: `https://${configs.zohoApiCRMDomain}/crm/v2/Contacts`,
       data: { data: [patch] },
     });
-
-    console.log("ZOHO RAW RESPONSE:");
-    console.log(JSON.stringify(res, null, 2));
 
     return { contactId: existing.id as string, isNew: false };
   }

@@ -200,6 +200,10 @@ export const stripeCircleWebhook = onRequest(
       const sessionId = cleanStr(metadata.session_id) ?? null;
       const salesiqVisitorId = cleanStr(metadata.salesiq_visitor_id) ?? null;
 
+      const isWebinarDiscount = metadata.webinar_discount === "1";
+      const isInstallment = metadata.installment === "1" || metadata.installment === "2";
+      const installmentNumber = metadata.installment === "2" ? 2 : metadata.installment === "1" ? 1 : null;
+
       const productTypeFromMeta = cleanStr(metadata.product_type) ?? null;
       const customerId = pi.customer ? String(pi.customer) : null;
 
@@ -254,6 +258,10 @@ export const stripeCircleWebhook = onRequest(
         zoho_contact_id?: string | null;
         zoho_deal_id?: string | null;
 
+        webinar_discount?: boolean | null;
+        installment?: boolean | null;
+        installment_number?: number | null;
+
         event_time_override?: string;
       }) => {
         const existing: PaymentRecord | null = await getPaymentRecord(pi.id);
@@ -296,6 +304,10 @@ export const stripeCircleWebhook = onRequest(
           delivery_status: args.delivery_status ?? null,
           delivery_error: args.delivery_error ?? null,
           abandon_reason: args.abandon_reason ?? null,
+
+          webinar_discount: args.webinar_discount ?? null,
+          installment: args.installment ?? null,
+          installment_number: args.installment_number ?? null,
 
           lead_source: leadSource,
           session_id: sessionId,
@@ -412,7 +424,7 @@ export const stripeCircleWebhook = onRequest(
               : null,
             processing_status: "failed",
             stripe_error_code: pi.last_payment_error?.code ?? null,
-            stripe_error_message: msg,
+            stripe_error_message: pi.last_payment_error?.message ?? msg,
             delivery_status: null,
             delivery_error: null,
             abandon_reason: null,
@@ -545,6 +557,9 @@ export const stripeCircleWebhook = onRequest(
           delivery_status: null,
           delivery_error: null,
           abandon_reason: null,
+          webinar_discount: isWebinarDiscount || null,
+          installment: isInstallment || null,
+          installment_number: installmentNumber,
           event_time_override: isoFromStripeEvent(event),
         });
       } catch (e) {
@@ -583,7 +598,7 @@ export const stripeCircleWebhook = onRequest(
           checkoutStatus: "Paid",
         });
 
-        console.log("Zoho contact synced", { payment_intent_id: pi.id, contactId, c: c });
+        console.log("Zoho contact synced", { payment_intent_id: pi.id, contactId });
       } catch (e) {
         console.error("Zoho contact sync failed", {
           payment_intent_id: pi.id,
@@ -645,7 +660,13 @@ export const stripeCircleWebhook = onRequest(
           try {
             const paymentMethodId = typeof pi.payment_method === "string" ? pi.payment_method : null;
             await createInstallmentPlan(pi.id, validation.email, customerId, piAmount, normalizedProductType, paymentMethodId);
-            console.log("Installment plan created", { payment_intent_id: pi.id });
+            console.log("Installment plan created", {
+              payment_intent_id: pi.id,
+              email: validation.email,
+              product_type: normalizedProductType,
+              amount: piAmount,
+              due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
+            });
           } catch (e) {
             console.error("Installment plan creation failed (non-critical)", {
               payment_intent_id: pi.id,
@@ -665,6 +686,9 @@ export const stripeCircleWebhook = onRequest(
             delivery_error: null,
             abandon_reason: null,
             zoho_contact_id: contactId ?? null,
+            webinar_discount: isWebinarDiscount || null,
+            installment: isInstallment || null,
+            installment_number: installmentNumber,
             event_time_override: new Date().toISOString(),
           });
         } catch (e) {
