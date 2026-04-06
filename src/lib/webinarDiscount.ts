@@ -1,15 +1,15 @@
 import { db } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 export async function checkWebinarDiscount(email: string): Promise<boolean> {
   if (!email) return false;
   try {
-    const docId = email.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
-    const ref = doc(db, 'webinar_discounts', docId);
-    const snap = await getDoc(ref);
-    if (!snap.exists()) return false;
+    const snap = await getDocs(
+      query(collection(db, 'webinar_discounts'), where('email', '==', email.trim().toLowerCase()))
+    );
+    if (snap.empty) return false;
 
-    const data = snap.data() as { expires_at?: { toDate?: () => Date } | Date | string };
+    const data = snap.docs[0].data() as { expires_at?: { toDate?: () => Date } | Date | string };
     let expiresAt: Date | null = null;
 
     if (data.expires_at) {
@@ -25,5 +25,23 @@ export async function checkWebinarDiscount(email: string): Promise<boolean> {
     return expiresAt !== null && expiresAt > new Date();
   } catch {
     return false;
+  }
+}
+
+export async function checkInstallmentPlan(email: string, productType: string): Promise<number | null> {
+  if (!email) return null;
+  try {
+    const snap = await getDocs(
+      query(collection(db, 'installment_plans'), where('email', '==', email))
+    );
+    const plan = snap.docs.find((d) => {
+      const data = d.data() as { status?: string; product_type?: string };
+      return (data.status === 'pending' || data.status === 'overdue') && data.product_type === productType;
+    });
+    if (!plan) return null;
+    const amount = (plan.data() as { amount?: number }).amount;
+    return typeof amount === 'number' && amount > 0 ? amount : null;
+  } catch {
+    return null;
   }
 }

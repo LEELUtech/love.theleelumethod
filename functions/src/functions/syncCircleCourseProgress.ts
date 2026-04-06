@@ -12,7 +12,6 @@ const ZOHO_API_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_API_DOMAIN_LILYCHYSTOFA
 const CIRCLE_API_KEY = defineSecret("CIRCLE_API_KEY");
 
 // Circle space IDs (stable production IDs, verified via Postman)
-const MODULE_1_ID = 2520173;
 const MODULE_3_ID = 2524933;
 const MODULE_6_ID = 2524937;
 const MODULE_12_ID = 2524945;
@@ -41,9 +40,8 @@ export const syncCircleCourseProgress = onSchedule(
   async () => {
     logger.info("syncCircleCourseProgress: start");
 
-    const [module1Members, module3Members, module6Members, finalModuleMembers, communityMembers] =
+    const [module3Members, module6Members, finalModuleMembers, communityMembers] =
       await Promise.all([
-        getAllCircleCourseMembersForCourse(MODULE_1_ID),
         getAllCircleCourseMembersForCourse(MODULE_3_ID),
         getAllCircleCourseMembersForCourse(MODULE_6_ID),
         getAllCircleCourseMembersForCourse(MODULE_12_ID),
@@ -54,18 +52,13 @@ export const syncCircleCourseProgress = onSchedule(
     const module6EnrolledIds = new Set(module6Members.map((m) => m.community_member_id));
     const courseEnrolledIds = new Set(finalModuleMembers.map((m) => m.community_member_id));
 
-    const lastSeenMap = new Map<number, Date | null>();
-    for (const cm of communityMembers) {
-      lastSeenMap.set(cm.id, cm.last_seen_at ? new Date(cm.last_seen_at) : null);
-    }
-
     const memberMap = new Map<string, { communityMemberId: number; lastSeenAt: Date | null }>();
-    for (const m of module1Members) {
-      const email = m.community_member?.email?.trim().toLowerCase();
+    for (const cm of communityMembers) {
+      const email = cm.email?.trim().toLowerCase();
       if (!email) continue;
       memberMap.set(email, {
-        communityMemberId: m.community_member_id,
-        lastSeenAt: lastSeenMap.get(m.community_member_id) ?? null,
+        communityMemberId: cm.id,
+        lastSeenAt: cm.last_seen_at ? new Date(cm.last_seen_at) : null,
       });
     }
 

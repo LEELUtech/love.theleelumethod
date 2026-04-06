@@ -70,9 +70,9 @@ export type UpdateIntentPayload = {
 	checkoutVariant?: string;
 	pagePath?: string;
 
-	// NEW
 	site?: string;
 	installment?: string;
+	webinarDiscount?: boolean;
 };
 
 export type CreateIntentResponse = {

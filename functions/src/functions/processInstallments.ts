@@ -67,7 +67,17 @@ export const processInstallments = onSchedule(
 
         if (pi.status === "succeeded") {
           console.log("processInstallments: payment succeeded", { id: doc.id, email });
-          await doc.ref.delete();
+          try {
+            // Mark completed first so cron never picks it up again even if delete fails
+            await doc.ref.update({ status: "completed" });
+            await doc.ref.delete();
+          } catch (deleteErr) {
+            console.error("processInstallments: failed to finalize plan after successful charge", {
+              id: doc.id,
+              email,
+              error: deleteErr instanceof Error ? deleteErr.message : String(deleteErr),
+            });
+          }
         } else {
           throw new Error(`PaymentIntent status: ${pi.status}`);
         }

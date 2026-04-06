@@ -30,6 +30,13 @@ function clean(v?: string | null): string | undefined {
   return s ? s : undefined;
 }
 
+function splitFullName(raw?: string): { firstName?: string; lastName?: string } {
+  const s = (raw ?? "").trim();
+  if (!s) return {};
+  const parts = s.split(/\s+/);
+  if (parts.length === 1) return { firstName: parts[0] };
+  return { firstName: parts[0], lastName: parts.slice(1).join(" ") };
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -41,8 +48,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true, ignored: true });
     }
 
-    const firstName = clean(body.firstName);
-    const lastName = clean(body.lastName);
+    const split = splitFullName(clean(body.firstName));
+    const firstName = split.firstName;
+    const lastName = clean(body.lastName) ?? split.lastName;
     const site = process.env.ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT || "unknown";
     const pagePath = clean(body.pagePath);
 

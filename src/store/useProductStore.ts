@@ -61,6 +61,7 @@ const useProductStore = create<ProductState>((set, get) => ({
         name: data.name ?? '',
         description: data.description ?? '',
         price: normalizePriceToCents(data.price),
+        discount_price: typeof data.discount_price === 'number' ? normalizePriceToCents(data.discount_price) : undefined,
         currency: data.currency ?? 'USD',
         space_id: data.space_id,
       };

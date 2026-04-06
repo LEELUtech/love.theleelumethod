@@ -12,6 +12,7 @@ export type FirestoreOfferingDoc = {
   name?: string;
   description?: string;
   price?: number;
+  discount_price?: number;
   currency?: string;
   space_id?: string;
 };
