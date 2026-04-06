@@ -4,6 +4,7 @@ export type Product = {
   name: string;
   description: string;
   price: number;
+  discount_price?: number;
   currency: string;
   space_id?: string;
 };

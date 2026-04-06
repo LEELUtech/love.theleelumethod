@@ -17,7 +17,6 @@ const ALLOWED_PRODUCT_TYPES = new Set([
   'compatibility_report',
   'guided_breakthrough',
   'protocol_essentials',
-  'protocol_essentials_webinar',
   'vip_immersion',
 ]);
 
@@ -193,6 +192,7 @@ export async function POST(req: NextRequest) {
 
     const offering = offeringSnap.data() as {
       price?: number; // cents
+      discount_price?: number; // cents
       currency?: string;
       space_id?: string;
       name?: string;

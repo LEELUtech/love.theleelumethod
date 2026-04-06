@@ -11,6 +11,13 @@ import type Stripe from 'stripe';
 
 const stripe = getStripe();
 
+const PRODUCT_NAMES: Record<string, string> = {
+  compatibility_report: 'Compatibility Report',
+  protocol_essentials: 'Protocol Essentials',
+  guided_breakthrough: 'Guided Breakthrough',
+  vip_immersion: 'VIP Immersion',
+};
+
 type Body = {
   intentId: string;
   intentToken: string;
@@ -52,6 +59,7 @@ type Body = {
 
   salesiqVisitorId?: string;
   installment?: string;
+  webinarDiscount?: boolean;
 };
 
 function clean(v?: string | null): string | undefined {
@@ -270,6 +278,7 @@ export async function POST(req: NextRequest) {
 
     // Installment amount (existing plan takes priority over toggle)
     const installmentIn = clean(body.installment);
+    const webinarDiscountIn = !!body.webinarDiscount;
     let installmentAmount: number | undefined;
     let setupFutureUsage: 'off_session' | undefined;
 
@@ -281,19 +290,42 @@ export async function POST(req: NextRequest) {
     }
 
     if (existingPlan !== null) {
+      // Existing installment plan takes highest priority
       installmentAmount = existingPlan.amount;
       nextMeta.source = existingPlan.status === 'overdue' ? 'installment_retry' : 'installment_early';
-    } else if (installmentIn === '1') {
-      nextMeta.installment = '1';
-      if (pi.metadata?.installment !== '1') {
-        installmentAmount = Math.ceil(pi.amount / 2);
-        nextMeta.original_amount = String(pi.amount);
-        setupFutureUsage = 'off_session';
+      nextMeta.installment = '2';
+    } else {
+      // Resolve base amount (webinar discount or full price)
+      let baseAmount = pi.amount;
+      if (webinarDiscountIn) {
+        try {
+          const offeringSnap = await getDoc(doc(collection(db, 'offerings'), productTypeIn));
+          if (offeringSnap.exists()) {
+            const offeringData = offeringSnap.data() as { discount_price?: number };
+            if (typeof offeringData.discount_price === 'number' && offeringData.discount_price > 0) {
+              baseAmount = offeringData.discount_price;
+              nextMeta.webinar_discount = '1';
+            }
+          }
+        } catch (e) {
+          console.error('Failed to fetch discount price (non-critical)', { e });
+        }
       }
-    } else if (pi.metadata?.installment === '1' && pi.metadata?.original_amount) {
-      const orig = parseInt(pi.metadata.original_amount, 10);
-      if (Number.isFinite(orig) && orig > 0) installmentAmount = orig;
-      nextMeta.installment = '';
+
+      if (installmentIn === '1') {
+        nextMeta.installment = '1';
+        if (pi.metadata?.installment !== '1') {
+          installmentAmount = Math.ceil(baseAmount / 2);
+          nextMeta.original_amount = String(baseAmount);
+          setupFutureUsage = 'off_session';
+        }
+      } else if (pi.metadata?.installment === '1' && pi.metadata?.original_amount) {
+        const orig = parseInt(pi.metadata.original_amount, 10);
+        if (Number.isFinite(orig) && orig > 0) installmentAmount = orig;
+        nextMeta.installment = '';
+      } else if (webinarDiscountIn && baseAmount !== pi.amount) {
+        installmentAmount = baseAmount;
+      }
     }
 
     const piUpdated = await stripe.paymentIntents.update(intentId, {
@@ -429,8 +461,12 @@ export async function POST(req: NextRequest) {
         checkout_variant: final.checkout_variant ?? checkoutVariantIn ?? piCheckoutVariant ?? null,
 
         product_type: final.product_type ?? productTypeIn ?? piProductType ?? null,
-        amount: final.amount ?? piAmount ?? null,
+        product_name: PRODUCT_NAMES[productTypeIn] ?? productTypeIn ?? null,
+        amount: piAmount ?? final.amount ?? null,
         currency: final.currency ?? piCurrency ?? null,
+
+        webinar_discount: webinarDiscountIn && nextMeta.webinar_discount === '1' ? true : null,
+        installment: installmentIn === '1' ? true : null,
 
         stripe_status: piStatus,
         stripe_customer_id: piCustomer,

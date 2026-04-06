@@ -35,9 +35,7 @@ import { getStoredFirstUTM } from "@/utils/utm-tracker";
 import { salesiqIdentify } from "@/lib/tracking/salesiqIdentify";
 import { saveEmailToLS } from "@/lib/tracking/localEmail";
 import { Section } from "@/components/ui/containers/section";
-import { checkWebinarDiscount } from "@/lib/webinarDiscount";
-
-const WEBINAR_DISCOUNT_PRODUCT = "protocol_essentials_webinar";
+import { checkWebinarDiscount, checkInstallmentPlan } from "@/lib/webinarDiscount";
 
 const pk = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY_LILYCHYSTOFAT!;
 const stripePromise = loadStripe(pk);
@@ -98,11 +96,11 @@ export default function CheckoutFormSection({
 	const router = useRouter();
 	const searchParams = useSearchParams();
 
-	const [effectiveProductId, setEffectiveProductId] = React.useState(productId);
+	const [webinarDiscount, setWebinarDiscount] = React.useState(false);
 
-	const product = useProductStore((s) => s.getProduct(effectiveProductId));
+	const product = useProductStore((s) => s.getProduct(productId));
 	const productLoading = useProductStore((s) =>
-		s.isLoading(effectiveProductId),
+		s.isLoading(productId),
 	);
 	const fetchProduct = useProductStore((s) => s.fetchProduct);
 
@@ -122,6 +120,7 @@ export default function CheckoutFormSection({
 	const [payInInstallments, setPayInInstallments] = React.useState(false);
 	const [submitAttempted, setSubmitAttempted] = React.useState(false);
 	const [hadSecretOnce, setHadSecretOnce] = React.useState(false);
+	const [installmentOwed, setInstallmentOwed] = React.useState<number | null>(null);
 	const [errors, setErrors] = React.useState(() =>
 		validateBilling(initialBilling),
 	);
@@ -139,18 +138,24 @@ export default function CheckoutFormSection({
 
 		setBilling((prev) => ({ ...prev, email: emailFromUrl }));
 
-		checkWebinarDiscount(emailFromUrl)
-			.then((hasDiscount) => {
-				if (hasDiscount) {
-					setEffectiveProductId(WEBINAR_DISCOUNT_PRODUCT);
-				}
+		checkInstallmentPlan(emailFromUrl, productId)
+			.then((amount) => {
+				setInstallmentOwed(amount);
+				if (amount !== null) return;
+				return checkWebinarDiscount(emailFromUrl).then((hasDiscount) => {
+					if (hasDiscount) setWebinarDiscount(true);
+				});
 			})
 			.catch(() => {});
 	}, [productId, searchParams]);
 
+	const effectivePrice = webinarDiscount && product?.discount_price != null
+		? product.discount_price
+		: (product?.price ?? 0);
+
 	const priceLabel =
 		!productLoading && product
-			? formatPriceFromCents(product.price, {
+			? formatPriceFromCents(effectivePrice, {
 					currency: product.currency ?? "USD",
 					showCents: false,
 				})
@@ -158,14 +163,18 @@ export default function CheckoutFormSection({
 
 	const halfPriceLabel =
 		!productLoading && product
-			? formatPriceFromCents(Math.ceil(product.price / 2), {
+			? formatPriceFromCents(Math.ceil(effectivePrice / 2), {
 					currency: product.currency ?? "USD",
 					showCents: true,
 				})
 			: "...";
 
+	const effectivePriceLabel = installmentOwed !== null
+		? formatPriceFromCents(installmentOwed, { currency: product?.currency ?? 'USD', showCents: false })
+		: priceLabel;
+
 	const firstPaymentLabel =
-		payInInstallments && !productLoading && product
+		installmentOwed === null && payInInstallments && !productLoading && product
 			? halfPriceLabel
 			: undefined;
 
@@ -184,22 +193,24 @@ export default function CheckoutFormSection({
 	}, [clientSecret]);
 
 	React.useEffect(() => {
-		const expectedKey = `create:${effectiveProductId}`;
+		const expectedKey = `create:${productId}`;
 		if (intentKey && intentKey !== expectedKey) reset();
-	}, [intentKey, effectiveProductId, reset]);
+	}, [intentKey, productId, reset]);
 
 	React.useEffect(() => {
-		if (clientSecret) setHadSecretOnce(true);
+		if (clientSecret) {
+			setHadSecretOnce(true);
+		}
 	}, [clientSecret]);
 
 	React.useEffect(() => {
-		if (!product && !productLoading) fetchProduct(effectiveProductId);
-	}, [product, productLoading, fetchProduct, effectiveProductId]);
+		if (!product && !productLoading) fetchProduct(productId);
+	}, [product, productLoading, fetchProduct, productId]);
 
 	React.useEffect(() => {
 		if (!product || productLoading) return;
 
-		const expectedKey = `create:${effectiveProductId}`;
+		const expectedKey = `create:${productId}`;
 
 		if (intentKey && intentKey !== expectedKey) {
 			reset();
@@ -212,7 +223,7 @@ export default function CheckoutFormSection({
 		if (!ctx?.site) return;
 
 		createIntent({
-			productType: effectiveProductId,
+			productType: productId,
 			sessionId: localStorage.getItem("ff_session_id") || undefined,
 			salesiqVisitorId:
 				localStorage.getItem("ff_salesiq_visitor_id") || undefined,
@@ -318,7 +329,23 @@ export default function CheckoutFormSection({
 		React.useCallback(() => {
 			saveEmailToLS(billing.email);
 			captureLeadInternal().catch(() => {});
-		}, [billing.email, captureLeadInternal]);
+			const emailNorm = billing.email.trim().toLowerCase();
+			if (emailNorm) {
+				checkInstallmentPlan(emailNorm, productId)
+					.then((amount) => {
+						setInstallmentOwed(amount);
+						if (amount !== null) return;
+						if (productId === 'protocol_essentials') {
+							return checkWebinarDiscount(emailNorm).then((hasDiscount) => {
+								if (hasDiscount && !webinarDiscount) {
+									setWebinarDiscount(true);
+								}
+							});
+						}
+					})
+					.catch(() => {});
+			}
+		}, [billing.email, captureLeadInternal, productId]);
 
 	return (
 		<div className="relative">
@@ -428,6 +455,11 @@ export default function CheckoutFormSection({
 												{errors.email}
 											</p>
 										) : null}
+										{installmentOwed !== null ? (
+											<p className="mt-2 text-sm font-lato text-brand-primary">
+												You have an outstanding installment payment of {formatPriceFromCents(installmentOwed, { currency: 'USD', showCents: false })}. Please complete your existing payment plan.
+											</p>
+										) : null}
 									</div>
 
 									<div className="h-3 md:h-2" />
@@ -526,41 +558,52 @@ export default function CheckoutFormSection({
 									Payment Info
 								</h3>
 
-								<div className="mt-8 flex gap-3">
-									<button
-										type="button"
-										onClick={() => setPayInInstallments(false)}
-										className={`flex-1 rounded-[8px] border px-4 py-3 text-left transition-colors ${
-											!payInInstallments
-												? "border-brand-primary bg-brand-primary/5"
-												: "border-[#C3C6D1] bg-white"
-										}`}
-									>
+								{installmentOwed !== null ? (
+									<div className="mt-8 rounded-[8px] border border-brand-primary bg-brand-primary/5 px-4 py-3">
 										<p className="font-lato text-[13px] font-semibold uppercase tracking-[0.05em] text-brand-black">
-											Pay in full
+											Outstanding installment
 										</p>
 										<p className="mt-0.5 font-lato text-[15px] text-[#41444E]">
-											{productLoading ? "..." : priceLabel}
+											{productLoading ? "..." : effectivePriceLabel}
 										</p>
-									</button>
+									</div>
+								) : (
+									<div className="mt-8 flex gap-3">
+										<button
+											type="button"
+											onClick={() => setPayInInstallments(false)}
+											className={`flex-1 rounded-[8px] border px-4 py-3 text-left transition-colors ${
+												!payInInstallments
+													? "border-brand-primary bg-brand-primary/5"
+													: "border-[#C3C6D1] bg-white"
+											}`}
+										>
+											<p className="font-lato text-[13px] font-semibold uppercase tracking-[0.05em] text-brand-black">
+												Pay in full
+											</p>
+											<p className="mt-0.5 font-lato text-[15px] text-[#41444E]">
+												{productLoading ? "..." : priceLabel}
+											</p>
+										</button>
 
-									<button
-										type="button"
-										onClick={() => setPayInInstallments(true)}
-										className={`flex-1 rounded-[8px] border px-4 py-3 text-left transition-colors ${
-											payInInstallments
-												? "border-brand-primary bg-brand-primary/5"
-												: "border-[#C3C6D1] bg-white"
-										}`}
-									>
-										<p className="font-lato text-[13px] font-semibold uppercase tracking-[0.05em] text-brand-black">
-											2 payments
-										</p>
-										<p className="mt-0.5 font-lato text-[15px] text-[#41444E]">
-											{productLoading ? "..." : `${halfPriceLabel} × 2`}
-										</p>
-									</button>
-								</div>
+										<button
+											type="button"
+											onClick={() => setPayInInstallments(true)}
+											className={`flex-1 rounded-[8px] border px-4 py-3 text-left transition-colors ${
+												payInInstallments
+													? "border-brand-primary bg-brand-primary/5"
+													: "border-[#C3C6D1] bg-white"
+											}`}
+										>
+											<p className="font-lato text-[13px] font-semibold uppercase tracking-[0.05em] text-brand-black">
+												2 payments
+											</p>
+											<p className="mt-0.5 font-lato text-[15px] text-[#41444E]">
+												{productLoading ? "..." : `${halfPriceLabel} × 2`}
+											</p>
+										</button>
+									</div>
+								)}
 
 								<p className="mt-10 font-lato font-normal text-[15px] text-[#41444E] md:mt-8">
 									We accept
@@ -578,15 +621,16 @@ export default function CheckoutFormSection({
 									<Elements stripe={stripePromise} options={elementsOptions}>
 										<StripeCardPart
 											clientSecret={clientSecret}
-											productType={effectiveProductId}
+											productType={productId}
 											billing={billing}
 											ctx={ctx}
 											onSubmitAttempt={handleSubmitAttempt}
 											loading={productLoading}
 											productName={product?.title}
-											priceLabel={priceLabel}
+											priceLabel={effectivePriceLabel}
 											firstPaymentLabel={firstPaymentLabel}
 											buttonText={getButtonText(productId)}
+											webinarDiscount={webinarDiscount || undefined}
 											onSuccess={() => {
 												markSuccess();
 												router.push("/success");
