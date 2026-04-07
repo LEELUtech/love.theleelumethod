@@ -1,6 +1,7 @@
 // lib/zoho-campaigns.ts
 import { configs } from "../configs/env";
 import { getCohortData } from "./cohort";
+import { getContactNameByEmail } from "./zoho-crm";
 
 let cachedAccessToken: string | null = null;
 let tokenExpiresAt = 0;
@@ -45,31 +46,6 @@ function authHeaders(token: string) {
 export type ContactMeta = Record<string, string | number | boolean | null | undefined>;
 
 
-const NAME_FIELDS = ["First Name", "Last Name"];
-
-async function fetchExistingContactFields(email: string, token: string): Promise<Record<string, string>> {
-  try {
-    const url = new URL("https://campaigns.zoho.com/api/v1.1/json/getcontactdetails");
-    url.searchParams.set("resfmt", "JSON");
-    url.searchParams.set("email", email);
-
-    const resp = await fetch(url.toString(), { method: "GET", headers: authHeaders(token) });
-    const data = await resp.json();
-
-    const details = data?.contact_info?.Contact_Details;
-    if (!details || typeof details !== "object") return {};
-
-    const result: Record<string, string> = {};
-    for (const [k, v] of Object.entries(details)) {
-      if (typeof v === "string" && v.trim()) result[k] = v.trim();
-    }
-    return result;
-  } catch {
-    return {};
-  }
-}
-
-
 async function ensureSubscribed(email: string, meta?: ContactMeta): Promise<void> {
   const token = await getAccessToken();
 
@@ -79,20 +55,32 @@ async function ensureSubscribed(email: string, meta?: ContactMeta): Promise<void
   };
 
   if (meta) {
-    // For name fields: only set if the contact doesn't already have them
-    const hasNameFields = NAME_FIELDS.some((f) => meta[f] !== undefined && meta[f] !== null && String(meta[f]).trim());
-    let existing: Record<string, string> = {};
+    const hasNameFields = ["First Name", "Last Name"].some(
+      (f) => meta[f] !== undefined && meta[f] !== null && String(meta[f]).trim(),
+    );
+
+    // Use CRM as source of truth for names — it already has correct protected values
+    // Fall back to meta value for new contacts not yet in CRM
+    let crmFirst: string | null = null;
+    let crmLast: string | null = null;
     if (hasNameFields) {
-      existing = await fetchExistingContactFields(email, token);
+      const crmName = await getContactNameByEmail(email);
+      crmFirst = crmName.firstName;
+      crmLast = crmName.lastName;
     }
 
     for (const [key, value] of Object.entries(meta)) {
       if (value === undefined || value === null) continue;
       const v = String(value).trim();
       if (!v) continue;
-      // Skip name fields if contact already has them
-      if (NAME_FIELDS.includes(key) && existing[key]) continue;
-      contact[key] = v;
+
+      if (key === "First Name") {
+        contact[key] = crmFirst ?? v;
+      } else if (key === "Last Name") {
+        contact[key] = crmLast ?? v;
+      } else {
+        contact[key] = v;
+      }
     }
   }
 
