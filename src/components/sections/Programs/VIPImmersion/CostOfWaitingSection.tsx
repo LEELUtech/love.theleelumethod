@@ -77,8 +77,8 @@ export default function CostOfWaitingSection({ cohortLabel }: { cohortLabel?: st
                 className='absolute inset-0 -z-0 -translate-y-[13%] pointer-events-none -translate-x-[2%]'
                 endAt={0.9}
                 flightStart={0.2}
-                durMs={4995}
-                startDelayMs={1665}
+                durMs={2500}
+                startDelayMs={800}
                 arrowRotateDeg={254}
                 arrowScale={0}
                 arrowCenterX={6.5}

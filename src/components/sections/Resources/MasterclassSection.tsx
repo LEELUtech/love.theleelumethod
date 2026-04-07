@@ -95,7 +95,7 @@ export function MasterclassSection() {
               className='absolute inset-0 -z-0 -translate-y-[35%] pointer-events-none -translate-x-[-26%]'
               endAt={0.52}
               // flightStart={0.4}
-              durMs={6660}
+              durMs={3330}
               arrowRotateDeg={254}
               arrowScale={0.6}
               arrowCenterX={6.5}

@@ -42,7 +42,7 @@ export const ProgramsHero = (props: Props) => {
           <ArcAutoOnce
             className='absolute inset-0 -z-0 -translate-y-[15%] pointer-events-none -translate-x-[-7%]'
             flightStart={0.2}
-            durMs={4995}
+            durMs={2500}
             arrowRotateDeg={254}
             arrowScale={0}
             arrowCenterX={6.5}

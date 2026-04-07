@@ -51,8 +51,8 @@ const StopGuessingSection = () => {
               className='absolute inset-0 -z-0 -translate-y-[15%] pointer-events-none -translate-x-[2%]'
               endAt={0.9}
               flightStart={0.2}
-              durMs={4995}
-              startDelayMs={1665}
+              durMs={2500}
+              startDelayMs={800}
               arrowRotateDeg={254}
               arrowScale={1.2}
               arrowCenterX={6.5}

@@ -43,7 +43,7 @@ const DiagnosticImg = () => {
         {/* <ArcAutoOnce
           className='absolute hidden bs:block inset-0 -z-0 -translate-y-[0%] pointer-events-none -translate-x-[-7%]'
           flightStart={0.2}
-          durMs={4995}
+          durMs={2500}
           arrowRotateDeg={254}
           arrowScale={0.8}
           arrowCenterX={6.5}
@@ -60,7 +60,7 @@ const DiagnosticImg = () => {
           className='absolute hidden bs:block inset-0 -z-0 -translate-y-[13%] pointer-events-none -translate-x-[-7%]'
           // endAt={0.9}
           flightStart={0.2}
-          durMs={4995}
+          durMs={2500}
           arrowRotateDeg={254}
           arrowScale={0.8}
           arrowCenterX={6.5}

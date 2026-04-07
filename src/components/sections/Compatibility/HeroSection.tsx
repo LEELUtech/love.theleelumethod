@@ -51,7 +51,7 @@ const HeroSection = () => {
 									lg:-translate-y-[13%] lg:-translate-x-[-7%]
 								'
                 flightStart={0.2}
-                durMs={4995}
+                durMs={2500}
                 arrowRotateDeg={254}
                 arrowScale={0.8}
                 arrowCenterX={6.5}

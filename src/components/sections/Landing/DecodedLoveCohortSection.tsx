@@ -144,7 +144,7 @@ export default function DecodedLoveCohortSection() {
 						// biasLeft={0.5}
 						// yUp={0.15}
 						strokeWidth={5}
-						durMs={4995}
+						durMs={2500}
 						arcStart={{ x: -500, y: 200 }}
 						arcEnd={{ x: 560, y: 340 }}
 						arcRx={260}
