@@ -22,7 +22,7 @@ export default function SuccessPage() {
                 className='absolute inset-0 z-[50] -translate-y-[-23%] pointer-events-none -translate-x-[-29%] rotate-[-28deg]'
                 // endAt={0.9}
                 flightStart={0.2}
-                durMs={1500}
+                durMs={4995}
                 arrowRotateDeg={254}
                 arrowScale={1.2}
                 arrowCenterX={6.5}

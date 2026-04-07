@@ -26,7 +26,7 @@ type RotateOnViewProps = {
 export default function RotateOnView({
 	children,
 	rotateTo = 360,
-	duration = 5,
+	duration = 17,
 	once = true,
 	amount = 0.4,
 	delay = 0,

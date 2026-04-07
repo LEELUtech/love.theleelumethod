@@ -67,7 +67,7 @@ export function MasterclassSection() {
             <div className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20'>
               <div className='flex items-center justify-center rounded-full bg-white shadow-[0px_6px_20px_rgba(0,0,0,0.12)] size-[86px] md:size-[96px] lg:size-[104px]'>
                 <RotateOnView
-                  duration={5}
+                  duration={17}
                   amount={0.5}
                   className='relative size-[70px] md:size-[70px] lg:size-[80px]'
                   ease='easeOut'
@@ -80,7 +80,7 @@ export function MasterclassSection() {
               className='absolute inset-0 -z-0 -translate-y-[35%] pointer-events-none -translate-x-[-26%]'
               endAt={0.52}
               // flightStart={0.03}
-              durMs={1500}
+              durMs={4995}
               arrowRotateDeg={254}
               arrowScale={0.8}
               arrowCenterX={6.5}

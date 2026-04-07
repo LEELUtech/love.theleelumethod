@@ -271,7 +271,7 @@ export default function ModulesSection({ cohortLabel }: { cohortLabel?: string |
 											z-10
 										"
             >
-              <RotateOnView duration={5} amount={0.4} ease='easeOut'>
+              <RotateOnView duration={17} amount={0.4} ease='easeOut'>
                 <Image
                   src='/leelu_logo.svg'
                   alt=''
@@ -444,7 +444,7 @@ export default function ModulesSection({ cohortLabel }: { cohortLabel?: string |
                 }}
               >
                 <RotateOnView
-                  duration={10}
+                  duration={33}
                   amount={0.2}
                   ease='easeOut'
                   className='absolute inset-0'

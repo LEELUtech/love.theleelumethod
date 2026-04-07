@@ -51,7 +51,7 @@ const CoreValueSection = () => {
 									z-10
 								"
               >
-                <RotateOnView duration={5} amount={0.4} ease='easeOut'>
+                <RotateOnView duration={17} amount={0.4} ease='easeOut'>
                   <Image
                     src='/leelu_logo.svg'
                     alt=''
@@ -68,8 +68,8 @@ const CoreValueSection = () => {
 								className="absolute inset-0 -z-0 -translate-y-[15%] pointer-events-none -translate-x-[2%]"
 								endAt={0.9}
 								flightStart={0.2}
-								durMs={1500}
-								startDelayMs={500}
+								durMs={4995}
+								startDelayMs={1665}
 								arrowRotateDeg={254}
 								arrowScale={0}
 								arrowCenterX={6.5}
@@ -83,8 +83,8 @@ const CoreValueSection = () => {
                 className='absolute inset-0 -z-0 -translate-y-[18%] pointer-events-none -translate-x-[4%]'
                 endAt={0.9}
                 flightStart={0.2}
-                durMs={1500}
-                startDelayMs={500}
+                durMs={4995}
+                startDelayMs={1665}
                 arrowRotateDeg={254}
                 arrowScale={0}
                 arrowCenterX={6.5}

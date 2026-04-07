@@ -144,7 +144,7 @@ export default function DecodedLoveCohortSection() {
 						// biasLeft={0.5}
 						// yUp={0.15}
 						strokeWidth={5}
-						durMs={1500}
+						durMs={4995}
 						arcStart={{ x: -500, y: 200 }}
 						arcEnd={{ x: 560, y: 340 }}
 						arcRx={260}
@@ -209,7 +209,7 @@ export default function DecodedLoveCohortSection() {
 				z-10
 			"
 					>
-						<RotateOnView duration={5} amount={0.4} ease="easeOut">
+						<RotateOnView duration={17} amount={0.4} ease="easeOut">
 							<Image
 								src="/leelu_logo.svg"
 								alt=""

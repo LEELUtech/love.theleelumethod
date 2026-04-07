@@ -42,7 +42,7 @@ export default function LoveLevelsAnimatedBlock({ cards }: { cards: Card[] }) {
             WebkitMaskImage: 'linear-gradient(to bottom, black 0%, transparent 80%)',
           }}
         >
-          <RotateOnView duration={5} amount={0.2} ease='linear' className='absolute inset-0'>
+          <RotateOnView duration={17} amount={0.2} ease='linear' className='absolute inset-0'>
             <Image
               src='/icons/ornament_2/ornament_2_light.svg'
               alt=''
@@ -62,7 +62,7 @@ export default function LoveLevelsAnimatedBlock({ cards }: { cards: Card[] }) {
           '
           initial={{ opacity: 0, y: 22 }}
           animate={headerInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 3.67, ease: [0.22, 1, 0.36, 1] }}
         >
           Love isn&apos;t just about who you choose…
           <br />
@@ -76,7 +76,7 @@ export default function LoveLevelsAnimatedBlock({ cards }: { cards: Card[] }) {
           '
           initial={{ opacity: 0, y: 18 }}
           animate={headerInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1.1, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 3.67, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
         >
           And that&apos;s determined at three levels, <br />
           each deeper than the last.
@@ -96,7 +96,7 @@ export default function LoveLevelsAnimatedBlock({ cards }: { cards: Card[] }) {
               margin: '0px 0px -20% 0px',
             }}
             transition={{
-              duration: 1.15,
+              duration: 3.83,
               ease: [0.22, 1, 0.36, 1],
             }}
             className='

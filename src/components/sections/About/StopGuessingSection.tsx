@@ -34,7 +34,7 @@ const StopGuessingSection = () => {
 											z-10
 										"
             >
-              <RotateOnView duration={5} amount={0.4} ease='easeOut'>
+              <RotateOnView duration={17} amount={0.4} ease='easeOut'>
                 <Image
                   src='/leelu_logo.svg'
                   alt=''
@@ -51,8 +51,8 @@ const StopGuessingSection = () => {
               className='absolute inset-0 -z-0 -translate-y-[15%] pointer-events-none -translate-x-[2%]'
               endAt={0.9}
               flightStart={0.2}
-              durMs={1500}
-              startDelayMs={500}
+              durMs={4995}
+              startDelayMs={1665}
               arrowRotateDeg={254}
               arrowScale={1.2}
               arrowCenterX={6.5}

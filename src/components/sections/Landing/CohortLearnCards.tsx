@@ -70,7 +70,7 @@ const itemVariants: Variants = {
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.55, ease: easeOutQuint },
+    transition: { duration: 1.83, ease: easeOutQuint },
   },
 };
 

@@ -73,21 +73,21 @@ export default function Header({ className }: { className?: string }) {
             {/* Top */}
             <span
               className={[
-                'absolute left-0 top-[5px] w-5 h-[2px] bg-brand-black origin-center transition-transform duration-200',
+                'absolute left-0 top-[5px] w-5 h-[2px] bg-brand-black origin-center transition-transform duration-[667ms]',
                 // open ? "translate-y-[7px] rotate-45" : "translate-y-0 rotate-0",
               ].join(' ')}
             />
             {/* Middle */}
             <span
               className={[
-                'absolute left-0 top-[12px] w-5 h-[2px] bg-brand-black transition-opacity duration-200',
+                'absolute left-0 top-[12px] w-5 h-[2px] bg-brand-black transition-opacity duration-[667ms]',
                 // open ? "opacity-0" : "opacity-100",
               ].join(' ')}
             />
             {/* Bottom */}
             <span
               className={[
-                'absolute left-0 top-[19px] w-5 h-[2px] bg-brand-black origin-center transition-transform duration-200',
+                'absolute left-0 top-[19px] w-5 h-[2px] bg-brand-black origin-center transition-transform duration-[667ms]',
                 // open
                 // 	? "-translate-y-[7px] -rotate-45"
                 // 	: "translate-y-0 rotate-0",
@@ -105,7 +105,7 @@ export default function Header({ className }: { className?: string }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.18 }}
+            transition={{ duration: 2.0 }}
           >
             {/* Backdrop (dark area on the right) */}
             <motion.button
@@ -116,7 +116,7 @@ export default function Header({ className }: { className?: string }) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.18 }}
+              transition={{ duration: 2.0 }}
             />
 
             {/* Panel */}
@@ -125,7 +125,7 @@ export default function Header({ className }: { className?: string }) {
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
-              transition={{ duration: 0.22, ease: 'easeOut' }}
+              transition={{ duration: 0.73, ease: 'easeOut' }}
             >
               {/* Top row: logo + close */}
               <div className='flex items-center justify-between'>

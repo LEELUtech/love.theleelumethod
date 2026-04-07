@@ -52,7 +52,7 @@ export const ProgramItWorks = ({
 					initial={{ opacity: 0 }}
 					whileInView={{ opacity: 1 }}
 					viewport={{ once: true, amount: 0.2 }}
-					transition={{ duration: 0.8, delay: 0.2 }}
+					transition={{ duration: 2.7, delay: 0.2 }}
 				>
 					<div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-12 lg:gap-10 items-center">
 						<div className="lg:max-w-[492px] lg:order-1 order-2 md:mx-auto lg:mx-0">

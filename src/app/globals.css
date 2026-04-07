@@ -4,7 +4,7 @@
 
 @layer components {
   .btn-pill {
-    @apply inline-flex items-center justify-center rounded-full bg-black text-white px-8 py-3 text-base font-semibold transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-200/40;
+    @apply inline-flex items-center justify-center rounded-full bg-black text-white px-8 py-3 text-base font-semibold transition-all duration-[667ms] ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-200/40;
   }
 
   .btn-pill:hover {
@@ -57,7 +57,7 @@ h2 {
 }
 
 .animate-marquee {
-  animation: marquee 30s linear infinite;
+  animation: marquee 100s linear infinite;
 }
 
 .react-international-phone-country-selector-dropdown {
