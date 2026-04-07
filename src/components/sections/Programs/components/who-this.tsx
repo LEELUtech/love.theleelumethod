@@ -39,7 +39,7 @@ export const ProgramsWhoThis = (props: Props) => {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
+        transition={{ duration: 2.7, delay: 0.2, ease: 'easeOut' }}
       >
         <div className='grid grid-cols-1 lg:grid-cols-[1.50fr_0.50fr] gap-12 md:gap-14 lg:gap-16 items-center'>
           <div className='order-2 lg:order-1'>

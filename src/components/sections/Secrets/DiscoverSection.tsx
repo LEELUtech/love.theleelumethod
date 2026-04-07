@@ -72,7 +72,7 @@ export default function DiscoverSection() {
 						/>
 						<RotateOnView
 							className="hidden absolute z-[10] bottom-[-120px] lg:flex left-[25px] w-[298px] h-[272px] lg:w-[298px] lg:h-[272px]"
-							duration={5}
+							duration={17}
 							amount={0.4}
 							ease="easeOut"
 						>

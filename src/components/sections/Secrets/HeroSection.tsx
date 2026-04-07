@@ -96,8 +96,8 @@ export default function SecretsHeroSection() {
                 className='hidden md:block absolute inset-0 -z-0 -translate-y-[18%] pointer-events-none -translate-x-[4%]'
                 endAt={0.9}
                 flightStart={0.2}
-                durMs={1500}
-                startDelayMs={500}
+                durMs={2500}
+                startDelayMs={800}
                 arrowRotateDeg={254}
                 arrowScale={0}
                 arrowCenterX={6.5}
@@ -109,7 +109,7 @@ export default function SecretsHeroSection() {
               />
 
               <div className="absolute left-1/2 -translate-x-1/2 bottom-[-25px] md:bottom-[-30px] lg:bottom-[-35px] flex items-center justify-center rounded-[300px] w-[74px] h-[102px] z-10 overflow-hidden bg-[#EB4F68] before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay">
-                <RotateOnView className='relative z-10' duration={5} amount={0.35} ease='easeOut'>
+                <RotateOnView className='relative z-10' duration={17} amount={0.35} ease='easeOut'>
                   <Image src='/leelu_logo.svg' alt='' width={46} height={46} className='filter invert' quality={100} />
                 </RotateOnView>
               </div>

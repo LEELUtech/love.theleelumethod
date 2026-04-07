@@ -52,8 +52,8 @@ export default function ArcAutoOnce({
 	biasLeft = 0.7,
 	scale = 1.8,
 	yUp = 0.26,
-	durMs = 1600,
-	startDelayMs = 500,
+	durMs = 2500,
+	startDelayMs = 800,
 
 	flightStart = 0,
 

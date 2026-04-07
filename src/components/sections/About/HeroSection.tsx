@@ -75,7 +75,7 @@ const HeroSection = () => {
             />
             <RotateOnView
               className='absolute bottom-[-80px] left-[140px] hidden lg:block pointer-events-none'
-              duration={5}
+              duration={17}
               ease='easeOut'
             >
               <Image src='/icons/ornament_13.svg' alt='' width={209} height={215} priority quality={100} className='' />
@@ -85,7 +85,7 @@ const HeroSection = () => {
               className='absolute hidden lg:block inset-0 -z-0 -translate-y-[13%] pointer-events-none -translate-x-[-7%]'
               // endAt={0.9}
               flightStart={0.2}
-              durMs={1500}
+              durMs={2500}
               arrowRotateDeg={254}
               arrowScale={0.8}
               arrowCenterX={6.5}

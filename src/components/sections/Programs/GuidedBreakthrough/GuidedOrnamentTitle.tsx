@@ -30,7 +30,7 @@ export const GuidedOrnamentTitle = ({ title, titleHightlight, subtitle, classNam
         }}
       >
         <RotateOnView
-          duration={10}
+          duration={33}
           amount={0.2}
           ease='easeOut'
           className='absolute inset-0'

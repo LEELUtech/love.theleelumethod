@@ -22,7 +22,7 @@ export default function AnimatedMechanicStep({ id, icon, module_start, module_en
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
       transition={{
-        duration: 0.6,
+        duration: 2.0,
         delay: id * 0.2,
         ease: 'easeOut',
       }}

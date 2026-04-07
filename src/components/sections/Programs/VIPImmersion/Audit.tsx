@@ -56,7 +56,7 @@ export const VIPImmersionAudit = () => {
                 <div className='absolute right-[20px] xl:right-[25px] top-1/2 -translate-y-1/2 z-20'>
                   <div className='flex items-center justify-center rounded-full bg-white shadow-[0px_6px_20px_rgba(0,0,0,0.12)] size-[86px] md:size-[96px] lg:size-[104px]'>
                     <RotateOnView
-                      duration={5}
+                      duration={17}
                       amount={0.5}
                       className='relative size-[70px] md:size-[70px] lg:size-[80px]'
                       ease='easeOut'

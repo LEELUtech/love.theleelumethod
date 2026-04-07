@@ -17,7 +17,7 @@ export default function Phase3Orb() {
             initial={{ rotate: 0 }}
             whileInView={{ rotate: 360 }}
             viewport={{ once: true, amount: 0.35 }}
-            transition={{ duration: 5, ease: 'linear' }}
+            transition={{ duration: 17, ease: 'linear' }}
             style={{
               willChange: 'transform',
               transformOrigin: '50% 50%',

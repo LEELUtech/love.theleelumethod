@@ -42,7 +42,7 @@ export const ProgramsHero = (props: Props) => {
           <ArcAutoOnce
             className='absolute inset-0 -z-0 -translate-y-[15%] pointer-events-none -translate-x-[-7%]'
             flightStart={0.2}
-            durMs={1500}
+            durMs={2500}
             arrowRotateDeg={254}
             arrowScale={0}
             arrowCenterX={6.5}
@@ -69,7 +69,7 @@ export const ProgramsHero = (props: Props) => {
                   z-10
                 "
           >
-            <RotateOnView duration={5} amount={0.4} ease='easeOut'>
+            <RotateOnView duration={17} amount={0.4} ease='easeOut'>
               <Image
                 src='/leelu_logo.svg'
                 alt=''

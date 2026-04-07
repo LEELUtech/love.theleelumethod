@@ -62,7 +62,7 @@ const TheSynthesisSection = () => {
 								z-10
 							"
 							>
-								<RotateOnView duration={5} amount={0.4} ease="easeOut">
+								<RotateOnView duration={17} amount={0.4} ease="easeOut">
 									<Image
 										src="/leelu_logo.svg"
 										alt=""

@@ -77,7 +77,7 @@ export const HowItWorks = () => {
                 margin: '0px 0px -20% 0px',
               }}
               transition={{
-                duration: 1.15,
+                duration: 3.83,
                 ease: [0.22, 1, 0.36, 1],
               }}
               className='

@@ -51,7 +51,7 @@ const HeroSection = () => {
 									lg:-translate-y-[13%] lg:-translate-x-[-7%]
 								'
                 flightStart={0.2}
-                durMs={1500}
+                durMs={2500}
                 arrowRotateDeg={254}
                 arrowScale={0.8}
                 arrowCenterX={6.5}
@@ -64,7 +64,7 @@ const HeroSection = () => {
               />
 
               <RotateOnView
-                duration={5}
+                duration={17}
                 ease='easeOut'
                 className='absolute lg:left-[30%] left-[20%] pointer-events-none z-[1]
 			bottom-[-130px] md:bottom-[-110px] lg:bottom-[-100px] hidden lg:block'

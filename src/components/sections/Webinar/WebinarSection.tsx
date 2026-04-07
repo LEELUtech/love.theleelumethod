@@ -98,7 +98,7 @@ const WebinarSection = () => {
               className='absolute hidden lg:block inset-0 -z-0 -translate-y-[13%] pointer-events-none -translate-x-[-7%]'
               // endAt={0.9}
               flightStart={0.2}
-              durMs={1500}
+              durMs={2500}
               arrowRotateDeg={254}
               arrowScale={0.8}
               arrowCenterX={6.5}
@@ -114,7 +114,7 @@ const WebinarSection = () => {
 
             <RotateOnView
               className='absolute bottom-[-60px] left-[140px] hidden lg:block pointer-events-none'
-              duration={5}
+              duration={17}
               ease='easeOut'
             >
               <Image
