@@ -117,7 +117,7 @@ const RelationShipProtocolSection = () => {
 					</p>
 
 					{/* Cards (ONLY tablet tweaks) */}
-					<div className="w-full grid gap-8 md:gap-6 lg:gap-5 lg:grid-cols-3 mb-12 lg:mt-[100px] mt-[50px]">
+					<div className="w-full grid gap-8 md:gap-6 lg:gap-5 lg:grid-cols-3 lg:items-start mb-12 lg:mt-[100px] mt-[50px]">
 						{CARDS.map((c) => (
 							<Card key={c.id} {...c} />
 						))}
