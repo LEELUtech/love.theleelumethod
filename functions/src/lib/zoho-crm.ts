@@ -375,6 +375,17 @@ async function findContactByEmail(email: string): Promise<Record<string, unknown
   }
 }
 
+export async function getContactNameByEmail(email: string): Promise<{ firstName: string | null; lastName: string | null }> {
+  try {
+    const contact = await findContactByEmail(email);
+    const firstName = typeof contact?.First_Name === "string" && contact.First_Name.trim() ? contact.First_Name.trim() : null;
+    const lastName = typeof contact?.Last_Name === "string" && contact.Last_Name.trim() && contact.Last_Name.trim() !== "." ? contact.Last_Name.trim() : null;
+    return { firstName, lastName };
+  } catch {
+    return { firstName: null, lastName: null };
+  }
+}
+
 async function findDealByPaymentIntentId(
   paymentIntentId: string,
 ): Promise<Record<string, unknown> | null> {
