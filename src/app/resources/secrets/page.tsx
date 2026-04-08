@@ -1,3 +1,5 @@
+export const metadata = { title: "Secrets | The Leelu Method" };
+
 import DiscoverSection from '@/components/sections/Secrets/DiscoverSection';
 import SecretsHeroSection from '@/components/sections/Secrets/HeroSection';
 import Footer from '@/components/ui/Footer';

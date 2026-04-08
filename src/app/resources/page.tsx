@@ -1,3 +1,5 @@
+export const metadata = { title: "Resources | The Leelu Method" };
+
 import React from "react";
 import { ResourceCardsSection } from "@/components/sections/Resources/ResourceCardsSection";
 import { MasterclassSection } from "@/components/sections/Resources/MasterclassSection";

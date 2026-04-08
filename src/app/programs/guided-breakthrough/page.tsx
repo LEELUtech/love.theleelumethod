@@ -1,3 +1,5 @@
+export const metadata = { title: "Guided Breakthrough | The Leelu Method" };
+
 import CheckoutFormSectionLazy from '@/components/sections/Checkout/CheckoutFormSectionLazy';
 import { ProgramsHero } from '@/components/sections/Programs/components/hero';
 import { ProgramItWorks } from '@/components/sections/Programs/components/it-works';
