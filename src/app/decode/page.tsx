@@ -1,3 +1,5 @@
+export const metadata = { title: "Decode Your Love | The Leelu Method" };
+
 import React from "react";
 import WebinarSection from "@/components/sections/Webinar/WebinarSection";
 import WebinarContentSection from "@/components/sections/Webinar/WebinarContentSection";

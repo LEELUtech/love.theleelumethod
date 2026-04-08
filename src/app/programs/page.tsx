@@ -1,3 +1,5 @@
+export const metadata = { title: "Programs | The Leelu Method" };
+
 import ProgramPreloader from '@/app/programs/ProgramPreloader';
 import BlindSpotSection from '@/components/sections/Programs/BlindSpotSection';
 import ChooseYourPathSection from '@/components/sections/Programs/ChooseYourPath';

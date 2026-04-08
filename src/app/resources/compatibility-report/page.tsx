@@ -1,3 +1,5 @@
+export const metadata = { title: "Compatibility Report | The Leelu Method" };
+
 import CheckoutFormSectionLazy from '@/components/sections/Compatibility/CheckoutFormSectionLazy';
 import CoreValueSection from '@/components/sections/Compatibility/CoreValueSection';
 import HeroSection from '@/components/sections/Compatibility/HeroSection';

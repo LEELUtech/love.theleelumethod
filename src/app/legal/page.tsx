@@ -1,3 +1,5 @@
+export const metadata = { title: "Legal | The Leelu Method" };
+
 import Header from '@/components/ui/Header';
 
 type Section = {
