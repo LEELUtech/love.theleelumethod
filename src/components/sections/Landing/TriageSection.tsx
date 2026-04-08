@@ -331,6 +331,7 @@ const TriageSection = () => {
 										variant="dark"
 										className="w-full mt-auto px-4"
 										href={card.button.href}
+										trackingData={card.trackingData}
 									>
 										{card.button.label}
 									</Button>
