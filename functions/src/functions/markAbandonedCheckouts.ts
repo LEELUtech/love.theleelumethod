@@ -383,7 +383,7 @@ export const markAbandonedCheckouts = onSchedule(
       uniqueEmails.map(async (email) => {
         const snap = await db.collection("payments")
           .where("email", "==", email)
-          .where("funnel_step", "==", "paid")
+          .where("funnel_step", "in", ["paid", "delivered", "delivery_failed"])
           .limit(1)
           .get();
         if (!snap.empty) paidEmailSet.add(email);
