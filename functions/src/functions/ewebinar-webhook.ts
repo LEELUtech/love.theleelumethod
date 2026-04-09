@@ -7,6 +7,7 @@ import {
   markWebinarAttendedReplay,
 } from "../lib/zoho-scoring";
 import { db } from "../configs/firebase";
+import { emitFunnelEvent } from "../lib/emitFunnelEvent";
 
 const WEBINAR_DISCOUNT_HOURS = 48;
 
@@ -19,6 +20,11 @@ const ZOHO_ACCOUNTS_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_ACCOUNTS_DOMAIN_LI
 const ZOHO_API_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_API_DOMAIN_LILYCHYSTOFAT");
 const ZOHO_CONTACT_LAYOUT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_CONTACT_LAYOUT_ID_LILYCHYSTOFAT");
 const ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT");
+const ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT");
+const ZOHO_ANALYTICS_API_DOMAIN = defineSecret("ZOHO_ANALYTICS_API_DOMAIN_LILYCHYSTOFAT");
+const ZOHO_ANALYTICS_ORG_ID = defineSecret("ZOHO_ANALYTICS_ORG_ID_LILYCHYSTOFAT");
+const ZOHO_ANALYTICS_WORKSPACE_ID = defineSecret("ZOHO_ANALYTICS_WORKSPACE_ID_LILYCHYSTOFAT");
+const ZOHO_ANALYTICS_VIEW_ID = defineSecret("ZOHO_ANALYTICS_VIEW_ID_LILYCHYSTOFAT");
 
 const WB_REGISTERED_TIME_FIELD = "wb_registered_at";
 
@@ -189,6 +195,11 @@ export const ewebinarWebhook = onRequest(
       ZOHO_API_DOMAIN_LILYCHYSTOFAT,
       ZOHO_CONTACT_LAYOUT_ID_LILYCHYSTOFAT,
       ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT,
+      ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT,
+      ZOHO_ANALYTICS_API_DOMAIN,
+      ZOHO_ANALYTICS_ORG_ID,
+      ZOHO_ANALYTICS_WORKSPACE_ID,
+      ZOHO_ANALYTICS_VIEW_ID,
     ],
   },
   async (req, res) => {
@@ -234,6 +245,17 @@ export const ewebinarWebhook = onRequest(
             firstName: body.firstName ? String(body.firstName).trim() : undefined,
             lastName: body.lastName ? String(body.lastName).trim() : undefined,
           });
+          console.log("ewebinarWebhook: emitting funnel event webinar_registered", { email });
+          emitFunnelEvent({
+            event_id: `webinar_registered_${email.replace(/[^a-z0-9]/g, "_")}_${Date.now()}`,
+            source: "ewebinar:webhook",
+            funnel_step: "lead_captured",
+            event_name: "webinar_registered",
+            email,
+            product_type: "protocol_essentials_webinar",
+            site: "love.theleelumethod.com",
+          }).then((r) => console.log("ewebinarWebhook: emitFunnelEvent result", r))
+            .catch((e) => console.error("ewebinarWebhook: emitFunnelEvent failed", e));
         } else if (action === "WebinarFinished") {
           const isReplay = body.sessionType === "Replay";
           const totalPct = toNum(body.totalWatchedPercent);
@@ -251,6 +273,18 @@ export const ewebinarWebhook = onRequest(
             } else {
               await markWebinarAttendedLive(email);
             }
+
+            console.log("ewebinarWebhook: emitting funnel event webinar_watched", { email, pct });
+            emitFunnelEvent({
+              event_id: `webinar_watched_${email.replace(/[^a-z0-9]/g, "_")}_${Date.now()}`,
+              source: "ewebinar:webhook",
+              funnel_step: "delivered",
+              event_name: "webinar_watched",
+              email,
+              product_type: "protocol_essentials_webinar",
+              site: "love.theleelumethod.com",
+            }).then((r) => console.log("ewebinarWebhook: emitFunnelEvent result", r))
+              .catch((e) => console.error("ewebinarWebhook: emitFunnelEvent failed", e));
           }
         }
       } catch (scoringErr: unknown) {

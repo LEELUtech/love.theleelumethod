@@ -5,6 +5,7 @@ import { db } from "../configs/firebase";
 
 import { upsertContactAndUpdateTags } from "../lib/zoho-campaigns";
 import { markSessionPurchased, markSessionCanceled, markTrustTempleBooked, type SessionPackageTier } from "../lib/zoho-sessions";
+import { emitFunnelEvent } from "../lib/emitFunnelEvent";
 
 const GCP_PROJECT = "leelu-tech";
 const GCP_LOCATION = "us-central1";
@@ -47,7 +48,7 @@ async function scheduleCompleteTask(email: string, startTimeISO: string): Promis
   console.log("calendlyWebhook: trust temple task scheduled", { email, taskName, scheduleAt: new Date(scheduleMs).toISOString() });
 }
 
-async function scheduleDiagnosticTask(email: string, startTimeISO: string): Promise<void> {
+async function scheduleDiagnosticTask(email: string, startTimeISO: string, kind?: string): Promise<void> {
   const startMs = new Date(startTimeISO).getTime();
   const scheduleMs = startMs + DIAG_SESSION_DURATION_MIN * 60 * 1000;
   const scheduleSeconds = Math.floor(scheduleMs / 1000);
@@ -74,6 +75,7 @@ async function scheduleDiagnosticTask(email: string, startTimeISO: string): Prom
     taskName,
     scheduledAt: new Date(),
     startTime: startTimeISO,
+    ...(kind ? { kind } : {}),
   });
 
   console.log("calendlyWebhook: diagnostic task scheduled", { email, taskName, scheduleAt: new Date(scheduleMs).toISOString() });
@@ -126,6 +128,11 @@ const ZOHO_API_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_API_DOMAIN_LILYCHYSTOFA
 const ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT");
 const ZOHO_CONTACT_LAYOUT_ID_LILYCHYSTOFAT = defineSecret("ZOHO_CONTACT_LAYOUT_ID_LILYCHYSTOFAT");
 const ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT = defineSecret("ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT");
+const ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT = defineSecret("ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT");
+const ZOHO_ANALYTICS_API_DOMAIN = defineSecret("ZOHO_ANALYTICS_API_DOMAIN_LILYCHYSTOFAT");
+const ZOHO_ANALYTICS_ORG_ID = defineSecret("ZOHO_ANALYTICS_ORG_ID_LILYCHYSTOFAT");
+const ZOHO_ANALYTICS_WORKSPACE_ID = defineSecret("ZOHO_ANALYTICS_WORKSPACE_ID_LILYCHYSTOFAT");
+const ZOHO_ANALYTICS_VIEW_ID = defineSecret("ZOHO_ANALYTICS_VIEW_ID_LILYCHYSTOFAT");
 
 type CalendlyEventKind = SessionPackageTier | "trust_temple";
 
@@ -200,6 +207,11 @@ export const calendlyWebhook = onRequest(
       ZOHO_REFRESH_TOKEN_CRM_LILYCHYSTOFAT,
       ZOHO_CONTACT_LAYOUT_ID_LILYCHYSTOFAT,
       ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT,
+      ZOHO_REFRESH_TOKEN_ANALYTICS_LILYCHYSTOFAT,
+      ZOHO_ANALYTICS_API_DOMAIN,
+      ZOHO_ANALYTICS_ORG_ID,
+      ZOHO_ANALYTICS_WORKSPACE_ID,
+      ZOHO_ANALYTICS_VIEW_ID,
     ],
   },
   async (req, res) => {
@@ -289,6 +301,24 @@ export const calendlyWebhook = onRequest(
 
       await upsertContactAndUpdateTags(email, { add, remove }, Object.keys(meta).length ? meta : undefined);
 
+      const sessionProductType: Record<CalendlyEventKind, string> = {
+        single: "session_single",
+        three_session: "session_3pack",
+        nine_session: "session_9pack",
+        trust_temple: "trust_temple",
+      };
+
+      emitFunnelEvent({
+        event_id: `calendly_booked_${email.replace(/[^a-z0-9]/g, "_")}_${Date.now()}`,
+        source: "calendly:webhook",
+        funnel_step: "lead_captured",
+        event_name: "booking_confirmed",
+        email,
+        product_type: sessionProductType[kind],
+        product_name: eventName || null,
+        site: "love.theleelumethod.com",
+      }).catch((e) => console.error("calendlyWebhook: emitFunnelEvent failed", e));
+
       if (kind === "trust_temple") {
         try {
           await markTrustTempleBooked(email, true, inviteeMeta);
@@ -310,7 +340,7 @@ export const calendlyWebhook = onRequest(
         }
         if (payload.scheduled_event?.start_time) {
           try {
-            await scheduleDiagnosticTask(email, String(payload.scheduled_event.start_time));
+            await scheduleDiagnosticTask(email, String(payload.scheduled_event.start_time), kind);
           } catch (e) {
             console.error("calendlyWebhook: scheduleDiagnosticTask failed (non-critical)", { email, error: e });
           }

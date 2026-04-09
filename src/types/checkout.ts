@@ -31,6 +31,7 @@ export type StripePayState = {
 export type CreateIntentPayload = {
 	productType: string;
 
+	email?: string;
 	site?: string;
 	pagePath?: string;
 	sessionId?: string;

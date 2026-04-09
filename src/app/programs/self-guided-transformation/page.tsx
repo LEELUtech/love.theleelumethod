@@ -1,5 +1,7 @@
 export const metadata = { title: "Self-Guided Transformation | The Leelu Method" };
 
+import { Suspense } from 'react';
+import ScrollToCheckout from './ScrollToCheckout';
 import CheckoutFormSectionLazy from '@/components/sections/Checkout/CheckoutFormSectionLazy';
 import { ProgramsHero } from '@/components/sections/Programs/components/hero';
 import { ProgramItWorks } from '@/components/sections/Programs/components/it-works';
@@ -30,6 +32,7 @@ export default function SelfGuidedTransformationPage() {
         <ProgramItWorks {...selfGuidedItWorksData} />
 
         <CostOfWaitingSection />
+        <Suspense><ScrollToCheckout /></Suspense>
         <CheckoutFormSectionLazy productId={PROTOCOL_ESSENTIALS} />
         <SalesPageTagger />
       </main>{' '}

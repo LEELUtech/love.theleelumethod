@@ -22,6 +22,7 @@ const ALLOWED_PRODUCT_TYPES = new Set([
 
 type Body = {
   productType: string;
+  email?: string;
   pagePath?: string;
 
   // FIRST-touch UTM (from client)
@@ -210,6 +211,7 @@ export async function POST(req: NextRequest) {
     const pagePath = clean(body.pagePath);
     const landingPage = buildLandingPage(site, pagePath);
 
+    const emailFromClient = clean(body.email);
     const utmFirstSource = clean(body.utmSource);
     const utmFirstMedium = clean(body.utmMedium);
     const utmFirstCampaign = clean(body.utmCampaign);
@@ -276,7 +278,8 @@ export async function POST(req: NextRequest) {
           stripe_payment_intent_id: intent.id,
           intent_token: intentToken,
 
-          // do NOT force email here
+          // set email only if not already present
+          email: cur.email ?? emailFromClient ?? null,
           product_type: cur.product_type ?? productType,
 
           // stripe snapshot
@@ -346,7 +349,7 @@ export async function POST(req: NextRequest) {
 
         payment_intent_id: intent.id,
         intent_token: intentToken,
-        email: null,
+        email: emailFromClient ?? null,
 
         site,
         landing_page: landingPage,
