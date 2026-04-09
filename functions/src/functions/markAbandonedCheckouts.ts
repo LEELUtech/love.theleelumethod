@@ -376,9 +376,37 @@ export const markAbandonedCheckouts = onSchedule(
       updatedCount: updated.length,
     });
 
+    // Check once which emails already have a paid order — skip campaigns tag and analytics for them
+    const uniqueEmails = [...new Set(updated.map((p) => p.email).filter(Boolean))];
+    const paidEmailSet = new Set<string>();
+    await Promise.all(
+      uniqueEmails.map(async (email) => {
+        const snap = await db.collection("payments")
+          .where("email", "==", email)
+          .where("funnel_step", "==", "paid")
+          .limit(1)
+          .get();
+        if (!snap.empty) paidEmailSet.add(email);
+      }),
+    );
+    if (paidEmailSet.size) {
+      logger.info("markAbandonedCheckouts: emails with paid orders (will skip)", {
+        emails: [...paidEmailSet],
+      });
+    }
+
     const campaignsResults = await Promise.allSettled(
       updated.map(async (p) => {
         if (!p.email) return;
+
+        if (paidEmailSet.has(p.email)) {
+          logger.info("markAbandonedCheckouts: skip campaigns tag - email has paid order", {
+            id: p.id,
+            email: p.email,
+          });
+          return;
+        }
+
         logger.info("markAbandonedCheckouts: setting campaigns tag", {
           id: p.id,
           email: p.email,
@@ -408,6 +436,13 @@ export const markAbandonedCheckouts = onSchedule(
     const zohoResults = await Promise.allSettled(
       updated.map(async (p) => {
         if (!p.email) return;
+        if (paidEmailSet.has(p.email)) {
+          logger.info("markAbandonedCheckouts: skip CRM - email has paid order", {
+            id: p.id,
+            email: p.email,
+          });
+          return;
+        }
         logger.info("markAbandonedCheckouts: updating CRM", { id: p.id, email: p.email });
         try {
           await updateContactFunnelStepByEmail({
@@ -430,6 +465,13 @@ export const markAbandonedCheckouts = onSchedule(
 
     const analyticsResults = await Promise.allSettled(
       updated.map(async (p) => {
+        if (p.email && paidEmailSet.has(p.email)) {
+          logger.info("markAbandonedCheckouts: skip analytics - email has paid order", {
+            id: p.id,
+            email: p.email,
+          });
+          return;
+        }
         logger.info("markAbandonedCheckouts: emitting analytics", { id: p.id, email: p.email });
         try {
           await emitFunnelEvent({
