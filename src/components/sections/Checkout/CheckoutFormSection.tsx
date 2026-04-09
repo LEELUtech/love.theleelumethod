@@ -136,7 +136,7 @@ export default function CheckoutFormSection({
 		const emailFromUrl = searchParams.get("email")?.trim().toLowerCase();
 		if (!emailFromUrl) return;
 
-		setBilling((prev) => ({ ...prev, email: emailFromUrl }));
+		saveEmailToLS(emailFromUrl);
 
 		checkInstallmentPlan(emailFromUrl, productId)
 			.then((amount) => {
