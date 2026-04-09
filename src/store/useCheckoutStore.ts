@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { AxiosError } from "axios";
 import { api } from "@/lib/api";
+import { getEmailFromLS } from "@/lib/tracking/localEmail";
 import type {
 	ApiErrorResponse,
 	CreateIntentPayload,
@@ -133,7 +134,8 @@ export const useCheckoutStore = create<CheckoutState>((set, get) => ({
 				const { data } = await api.post<CreateIntentResponse>(
 					"/api/create-payment-intent",
 					{
-						...payload, // Now we send site/pagePath/utm* if they exist
+						...payload,
+						email: payload.email ?? getEmailFromLS() ?? undefined,
 					},
 				);
 
