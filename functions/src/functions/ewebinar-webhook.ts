@@ -214,8 +214,12 @@ export const ewebinarWebhook = onRequest(
       const email = normEmail(body.email);
       const action = normAction(body.action);
 
-      if (!email || !action) {
-        res.status(400).json({ ok: false, error: "missing email or valid action", email, action: body.action });
+      if (!email) {
+        res.status(400).json({ ok: false, error: "missing email", email });
+        return;
+      }
+      if (!action) {
+        res.json({ ok: true, ignored: true, reason: "unhandled action", action: body.action });
         return;
       }
 
