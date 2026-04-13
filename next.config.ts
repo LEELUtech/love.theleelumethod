@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
 			"leelu-tech.firebasestorage.app",
 			"media.tryinteract.com"
 		],
+		formats: ['image/avif', 'image/webp'],
 		qualities: [25, 50, 75, 85, 90, 100],
 	},
 	typescript: {

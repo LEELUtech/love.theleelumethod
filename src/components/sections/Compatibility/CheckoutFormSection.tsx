@@ -16,7 +16,7 @@ import { useCheckoutStore } from "@/store/useCheckoutStore";
 
 import { formatPriceFromCents } from "@/helpers";
 import { COMPATIBILITY_REPORT, DATE_FORMAT } from "@/utils/constants";
-import { getStoredFirstUTM } from "@/utils/utm-tracker";
+import { getStoredFirstUTM, getStoredLastUTM } from "@/utils/utm-tracker";
 import { salesiqIdentify } from "@/lib/tracking/salesiqIdentify";
 import { saveEmailToLS } from "@/lib/tracking/localEmail";
 
@@ -49,17 +49,24 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 function getClientContext() {
 	if (typeof window === "undefined") return {};
 
-	const utm = getStoredFirstUTM();
+	const utmFirst = getStoredFirstUTM();
+	const utmLast = getStoredLastUTM();
 
 	return {
 		site: window.location.hostname,
 		pagePath: window.location.pathname,
 
-		utmSource: utm?.utm_source,
-		utmMedium: utm?.utm_medium,
-		utmCampaign: utm?.utm_campaign,
-		utmContent: utm?.utm_content,
-		utmTerm: utm?.utm_term,
+		utmSource: utmFirst?.utm_source,
+		utmMedium: utmFirst?.utm_medium,
+		utmCampaign: utmFirst?.utm_campaign,
+		utmContent: utmFirst?.utm_content,
+		utmTerm: utmFirst?.utm_term,
+
+		utmLastSource: utmLast?.utm_source,
+		utmLastMedium: utmLast?.utm_medium,
+		utmLastCampaign: utmLast?.utm_campaign,
+		utmLastContent: utmLast?.utm_content,
+		utmLastTerm: utmLast?.utm_term,
 	};
 }
 

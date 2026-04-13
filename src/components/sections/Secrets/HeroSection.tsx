@@ -5,7 +5,7 @@ import Header from '@/components/ui/Header';
 import RotateOnView from '@/components/ui/RotateOnView';
 import { sendFreeGuideEmail } from '@/lib/firebaseFunctions';
 import { api } from '@/lib/api';
-import { getStoredFirstUTM } from '@/utils/utm-tracker';
+import { getStoredFirstUTM, getStoredLastUTM } from '@/utils/utm-tracker';
 import { salesiqIdentify } from '@/lib/tracking/salesiqIdentify';
 import Image from 'next/image';
 import React from 'react';
@@ -38,7 +38,8 @@ export default function SecretsHeroSection() {
       saveEmailToLS(em);
 
       // fire-and-forget: create contact in Zoho CRM
-      const utm = getStoredFirstUTM();
+      const utmFirst = getStoredFirstUTM();
+      const utmLast = getStoredLastUTM();
       api
         .post('/api/resource-optin', {
           email: em,
@@ -47,11 +48,16 @@ export default function SecretsHeroSection() {
           pagePath: window.location.pathname,
           sessionId: localStorage.getItem('ff_session_id') || undefined,
           salesiqVisitorId: localStorage.getItem('ff_salesiq_visitor_id') || undefined,
-          utmSource: utm?.utm_source,
-          utmMedium: utm?.utm_medium,
-          utmCampaign: utm?.utm_campaign,
-          utmContent: utm?.utm_content,
-          utmTerm: utm?.utm_term,
+          utmSource: utmFirst?.utm_source,
+          utmMedium: utmFirst?.utm_medium,
+          utmCampaign: utmFirst?.utm_campaign,
+          utmContent: utmFirst?.utm_content,
+          utmTerm: utmFirst?.utm_term,
+          utmLastSource: utmLast?.utm_source,
+          utmLastMedium: utmLast?.utm_medium,
+          utmLastCampaign: utmLast?.utm_campaign,
+          utmLastContent: utmLast?.utm_content,
+          utmLastTerm: utmLast?.utm_term,
         })
         .catch(() => {});
 

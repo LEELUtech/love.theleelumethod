@@ -42,6 +42,12 @@ export type CreateIntentPayload = {
 	utmCampaign?: string;
 	utmContent?: string;
 	utmTerm?: string;
+
+	utmLastSource?: string;
+	utmLastMedium?: string;
+	utmLastCampaign?: string;
+	utmLastContent?: string;
+	utmLastTerm?: string;
 };
 
 export type UpdateIntentPayload = {
