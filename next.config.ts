@@ -2,22 +2,6 @@ import type { NextConfig } from "next";
 
 
 const nextConfig: NextConfig = {
-	async redirects() {
-		return [
-			{
-				source: "/:path*",
-				destination: "https://love.theleelumethod.com/:path*",
-				permanent: true,
-				has: [{ type: "host", value: "theleelumethod.com" }],
-			},
-			{
-				source: "/:path*",
-				destination: "https://love.theleelumethod.com/:path*",
-				permanent: true,
-				has: [{ type: "host", value: "www.theleelumethod.com" }],
-			},
-		];
-	},
 	output: "standalone",
 	serverExternalPackages: ['stripe', 'google-libphonenumber'],
 	images: {

@@ -124,7 +124,7 @@ const CARDS: ICard[] = [
     description: 'For the woman ready to do the work on her own timeline.',
     listTitle: 'What You Get:',
     list: [
-      'The complete 12-module video curriculum (60-dayc access)',
+      'The complete 12-module video curriculum (60-days access)',
       'The Relationship Protocol Workbook (downloadable)',
       'Bonus: Your Personal Leelu Method Breakdown PDF',
     ],
