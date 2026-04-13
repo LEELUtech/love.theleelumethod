@@ -105,7 +105,7 @@ export default function Header({ className }: { className?: string }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 2.0 }}
+            transition={{ duration: 0.25 }}
           >
             {/* Backdrop (dark area on the right) */}
             <motion.button
@@ -116,7 +116,7 @@ export default function Header({ className }: { className?: string }) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 2.0 }}
+              transition={{ duration: 0.25 }}
             />
 
             {/* Panel */}
@@ -125,7 +125,7 @@ export default function Header({ className }: { className?: string }) {
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
-              transition={{ duration: 0.73, ease: 'easeOut' }}
+              transition={{ duration: 0.35, ease: 'easeOut' }}
             >
               {/* Top row: logo + close */}
               <div className='flex items-center justify-between'>
