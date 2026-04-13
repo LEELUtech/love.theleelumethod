@@ -31,7 +31,7 @@ export const ProgramResult = ({ title, link, investment, description }: Props) =
 
       <div className='text-center	max-w-[1600px] mx-auto px-0 sm:px-6 lg:px-[112px] 2xl:px-[180px] relative py-[80px] lg:pb-[143px] lg:pt-[70px]'>
         <div className='relative'>
-          <RotateOnView duration={33} repeat={false} amount={0.1} ease='easeOut' className='w-full h-full'>
+          <RotateOnView duration={33} repeat={true} amount={0.1} ease='linear' className='w-full h-full'>
             <LogoIC className='text-white mx-auto opacity-60' />
           </RotateOnView>
         </div>

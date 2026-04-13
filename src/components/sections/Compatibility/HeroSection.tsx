@@ -65,7 +65,8 @@ const HeroSection = () => {
 
               <RotateOnView
                 duration={17}
-                ease='easeOut'
+                ease='linear'
+                repeat={true}
                 className='absolute lg:left-[30%] left-[20%] pointer-events-none z-[1]
 			bottom-[-130px] md:bottom-[-110px] lg:bottom-[-100px] hidden lg:block'
               >

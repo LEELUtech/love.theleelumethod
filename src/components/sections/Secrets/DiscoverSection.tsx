@@ -74,7 +74,8 @@ export default function DiscoverSection() {
 							className="hidden absolute z-[10] bottom-[-120px] lg:flex left-[25px] w-[298px] h-[272px] lg:w-[298px] lg:h-[272px]"
 							duration={17}
 							amount={0.4}
-							ease="easeOut"
+							ease="linear"
+							repeat={true}
 						>
 							<Image src="/icons/ornament_14.svg" alt="" fill quality={100} />
 						</RotateOnView>

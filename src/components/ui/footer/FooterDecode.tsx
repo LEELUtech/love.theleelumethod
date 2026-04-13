@@ -8,7 +8,7 @@ const FooterDecode = () => {
         <div className='flex flex-col lg:flex-row lg:justify-between gap-10 lg:gap-0'>
           <FooterLabel />
 
-          <div className='mt-0 lg:mt-[62px]'>
+          <div>
             <h4 className='text-[32px] font-canela font-thin text-black mb-4 leading-[130%]'>
               Support
             </h4>

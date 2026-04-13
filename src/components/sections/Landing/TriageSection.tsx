@@ -163,7 +163,8 @@ const TriageSection = () => {
 							<RotateOnView
 								duration={33}
 								amount={0.2}
-								ease="easeOut"
+								ease="linear"
+								repeat={true}
 								className="absolute inset-0"
 								style={{ willChange: "transform", transform: "translateZ(0)" }}
 							>
@@ -197,7 +198,8 @@ const TriageSection = () => {
 							<RotateOnView
 								duration={17}
 								amount={0.2}
-								ease="easeOut"
+								ease="linear"
+								repeat={true}
 								className="absolute inset-0"
 								style={{ willChange: "transform", transform: "translateZ(0)" }}
 							>
@@ -239,7 +241,8 @@ const TriageSection = () => {
 							<RotateOnView
 								duration={33}
 								amount={0.2}
-								ease="easeOut"
+								ease="linear"
+								repeat={true}
 								className="absolute inset-0"
 								style={{ willChange: "transform", transform: "translateZ(0)" }}
 							>

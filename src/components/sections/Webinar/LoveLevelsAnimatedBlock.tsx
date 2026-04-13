@@ -42,7 +42,7 @@ export default function LoveLevelsAnimatedBlock({ cards }: { cards: Card[] }) {
             WebkitMaskImage: 'linear-gradient(to bottom, black 0%, transparent 80%)',
           }}
         >
-          <RotateOnView duration={17} amount={0.2} ease='linear' className='absolute inset-0'>
+          <RotateOnView duration={17} amount={0.2} ease='linear' repeat={true} className='absolute inset-0'>
             <Image
               src='/icons/ornament_2/ornament_2_light.svg'
               alt=''

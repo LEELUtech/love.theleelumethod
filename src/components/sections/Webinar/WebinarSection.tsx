@@ -115,7 +115,8 @@ const WebinarSection = () => {
             <RotateOnView
               className='absolute bottom-[-60px] left-[140px] hidden lg:block pointer-events-none'
               duration={17}
-              ease='easeOut'
+              ease='linear'
+              repeat={true}
             >
               <Image
                 src='/icons/ornament_2/ornament_2_pink.svg'

@@ -36,7 +36,8 @@ const DiagnosticImg = () => {
         <RotateOnView
           className='absolute bottom-[-6px] left-[110px] hidden lg:block pointer-events-none'
           duration={17}
-          ease='easeOut'
+          ease='linear'
+          repeat={true}
         >
           <Image src='/icons/ornament_13.svg' alt='' width={209} height={215} priority quality={100} className='' />
         </RotateOnView>

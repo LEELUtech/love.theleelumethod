@@ -51,7 +51,7 @@ const CoreValueSection = () => {
 									z-10
 								"
               >
-                <RotateOnView duration={17} amount={0.4} ease='easeOut'>
+                <RotateOnView duration={17} amount={0.4} ease='linear' repeat={true}>
                   <Image
                     src='/leelu_logo.svg'
                     alt=''

@@ -59,7 +59,8 @@ export const VIPImmersionAudit = () => {
                       duration={17}
                       amount={0.5}
                       className='relative size-[70px] md:size-[70px] lg:size-[80px]'
-                      ease='easeOut'
+                      ease='linear'
+                      repeat={true}
                     >
                       <Image src='/icons/ornament_2/ornament_2_black.svg' alt='' fill priority quality={100} />
                     </RotateOnView>
