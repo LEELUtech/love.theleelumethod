@@ -19,6 +19,12 @@ type Body = {
   utmContent?: string;
   utmTerm?: string;
 
+  utmLastSource?: string;
+  utmLastMedium?: string;
+  utmLastCampaign?: string;
+  utmLastContent?: string;
+  utmLastTerm?: string;
+
   sessionId?: string;
   resource?: string; // e.g. "secrets"
 };
@@ -93,11 +99,17 @@ export async function POST(req: NextRequest) {
 
         product_type: body.resource ?? "secrets",
 
-        utm_last_source: clean(body.utmSource) ?? null,
-        utm_last_medium: clean(body.utmMedium) ?? null,
-        utm_last_campaign: clean(body.utmCampaign) ?? null,
-        utm_last_content: clean(body.utmContent) ?? null,
-        utm_last_term: clean(body.utmTerm) ?? null,
+        utm_first_source: clean(body.utmSource) ?? null,
+        utm_first_medium: clean(body.utmMedium) ?? null,
+        utm_first_campaign: clean(body.utmCampaign) ?? null,
+        utm_first_content: clean(body.utmContent) ?? null,
+        utm_first_term: clean(body.utmTerm) ?? null,
+
+        utm_last_source: clean(body.utmLastSource) ?? null,
+        utm_last_medium: clean(body.utmLastMedium) ?? null,
+        utm_last_campaign: clean(body.utmLastCampaign) ?? null,
+        utm_last_content: clean(body.utmLastContent) ?? null,
+        utm_last_term: clean(body.utmLastTerm) ?? null,
       });
       console.log("[resource-optin] emitFunnelEvent ok", { eventId });
     } catch (e) {

@@ -32,6 +32,13 @@ type Body = {
   utmContent?: string;
   utmTerm?: string;
 
+  // LAST-touch UTM (from client)
+  utmLastSource?: string;
+  utmLastMedium?: string;
+  utmLastCampaign?: string;
+  utmLastContent?: string;
+  utmLastTerm?: string;
+
   // optional (if you decide to send later)
   sessionId?: string;
   salesiqVisitorId?: string;
@@ -217,6 +224,13 @@ export async function POST(req: NextRequest) {
     const utmFirstCampaign = clean(body.utmCampaign);
     const utmFirstContent = clean(body.utmContent);
     const utmFirstTerm = clean(body.utmTerm);
+
+    const utmLastSource = clean(body.utmLastSource);
+    const utmLastMedium = clean(body.utmLastMedium);
+    const utmLastCampaign = clean(body.utmLastCampaign);
+    const utmLastContent = clean(body.utmLastContent);
+    const utmLastTerm = clean(body.utmLastTerm);
+
     const sessionId = clean(body.sessionId);
     const salesiqVisitorId = clean(body.salesiqVisitorId);
 
@@ -233,6 +247,12 @@ export async function POST(req: NextRequest) {
       ...(utmFirstCampaign ? { utm_first_campaign: utmFirstCampaign } : {}),
       ...(utmFirstContent ? { utm_first_content: utmFirstContent } : {}),
       ...(utmFirstTerm ? { utm_first_term: utmFirstTerm } : {}),
+
+      ...(utmLastSource ? { utm_last_source: utmLastSource } : {}),
+      ...(utmLastMedium ? { utm_last_medium: utmLastMedium } : {}),
+      ...(utmLastCampaign ? { utm_last_campaign: utmLastCampaign } : {}),
+      ...(utmLastContent ? { utm_last_content: utmLastContent } : {}),
+      ...(utmLastTerm ? { utm_last_term: utmLastTerm } : {}),
 
       ...(sessionId ? { session_id: sessionId } : {}),
       ...(salesiqVisitorId ? { salesiq_visitor_id: salesiqVisitorId } : {}),
@@ -300,12 +320,12 @@ export async function POST(req: NextRequest) {
           utm_first_content: cur.utm_first_content ?? utmFirstContent ?? null,
           utm_first_term: cur.utm_first_term ?? utmFirstTerm ?? null,
 
-          // last-touch untouched here
-          utm_last_source: cur.utm_last_source ?? null,
-          utm_last_medium: cur.utm_last_medium ?? null,
-          utm_last_campaign: cur.utm_last_campaign ?? null,
-          utm_last_content: cur.utm_last_content ?? null,
-          utm_last_term: cur.utm_last_term ?? null,
+          // last-touch (overwrite allowed — latest visit wins)
+          utm_last_source: utmLastSource ?? cur.utm_last_source ?? null,
+          utm_last_medium: utmLastMedium ?? cur.utm_last_medium ?? null,
+          utm_last_campaign: utmLastCampaign ?? cur.utm_last_campaign ?? null,
+          utm_last_content: utmLastContent ?? cur.utm_last_content ?? null,
+          utm_last_term: utmLastTerm ?? cur.utm_last_term ?? null,
 
           session_id: cur.session_id ?? sessionId ?? null,
           salesiq_visitor_id: cur.salesiq_visitor_id ?? salesiqVisitorId ?? null,
@@ -370,11 +390,11 @@ export async function POST(req: NextRequest) {
         utm_first_content: utmFirstContent ?? null,
         utm_first_term: utmFirstTerm ?? null,
 
-        utm_last_source: null,
-        utm_last_medium: null,
-        utm_last_campaign: null,
-        utm_last_content: null,
-        utm_last_term: null,
+        utm_last_source: utmLastSource ?? null,
+        utm_last_medium: utmLastMedium ?? null,
+        utm_last_campaign: utmLastCampaign ?? null,
+        utm_last_content: utmLastContent ?? null,
+        utm_last_term: utmLastTerm ?? null,
 
         session_id: sessionId ?? null,
         salesiq_visitor_id: salesiqVisitorId ?? null,

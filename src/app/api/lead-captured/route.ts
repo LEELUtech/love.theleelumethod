@@ -41,6 +41,12 @@ type Body = {
 	utmContent?: string;
 	utmTerm?: string;
 
+	utmLastSource?: string;
+	utmLastMedium?: string;
+	utmLastCampaign?: string;
+	utmLastContent?: string;
+	utmLastTerm?: string;
+
 	checkoutVariant?: string;
 	sessionId?: string;
 
@@ -225,8 +231,37 @@ export async function POST(req: NextRequest) {
 			});
 		}
 
-		// If still no PI — we can’t tie to payment record yet
+		// If still no PI — emit analytics with what we have, then return
 		if (!paymentIntentId) {
+			try {
+				await emitFunnelEvent({
+					event_id: `no_pi:lead_captured:${email}:${Date.now()}`,
+					event_time: new Date().toISOString(),
+					source: "api:lead-captured",
+					funnel_step: "lead_captured",
+
+					email,
+					site: siteFromReq,
+					page_path: pagePathIn ?? null,
+					landing_page: buildLandingPage(siteFromReq, pagePathIn ?? undefined),
+					session_id: clean(body.sessionId) ?? null,
+					salesiq_visitor_id: clean(body.salesiqVisitorId) ?? null,
+
+					utm_first_source: clean(body.utmSource) ?? null,
+					utm_first_medium: clean(body.utmMedium) ?? null,
+					utm_first_campaign: clean(body.utmCampaign) ?? null,
+					utm_first_content: clean(body.utmContent) ?? null,
+					utm_first_term: clean(body.utmTerm) ?? null,
+
+					utm_last_source: clean(body.utmLastSource) ?? null,
+					utm_last_medium: clean(body.utmLastMedium) ?? null,
+					utm_last_campaign: clean(body.utmLastCampaign) ?? null,
+					utm_last_content: clean(body.utmLastContent) ?? null,
+					utm_last_term: clean(body.utmLastTerm) ?? null,
+				});
+			} catch (e) {
+				console.error("emitFunnelEvent no-pi lead_captured failed", { requestId, e });
+			}
 			return NextResponse.json({ ok: true, deferred: true });
 		}
 
@@ -406,6 +441,12 @@ export async function POST(req: NextRequest) {
 					null,
 				utm_first_term:
 					final.utm_first_term ?? piUtmFirstTerm ?? utmFirstTermIn ?? null,
+
+				utm_last_source: clean(body.utmLastSource) ?? null,
+				utm_last_medium: clean(body.utmLastMedium) ?? null,
+				utm_last_campaign: clean(body.utmLastCampaign) ?? null,
+				utm_last_content: clean(body.utmLastContent) ?? null,
+				utm_last_term: clean(body.utmLastTerm) ?? null,
 
 				session_id: clean(body.sessionId) ?? null,
 
