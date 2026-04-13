@@ -36,7 +36,7 @@ const CoreValueSection = () => {
           {/* Top Image */}
           <div className='flex justify-center mb-12 relative'>
             <div className='absolute w-[346px] h-[331px] top-[-320px] overflow-visible'>
-              <Image src='/images/compatibility/core_value_section.png' alt='' fill quality={100} />
+              <Image src='/images/compatibility/core_value_section.png' alt='' fill quality={85} />
 
               <div
                 className="
@@ -51,14 +51,14 @@ const CoreValueSection = () => {
 									z-10
 								"
               >
-                <RotateOnView duration={17} amount={0.4} ease='easeOut'>
+                <RotateOnView duration={17} amount={0.4} ease='linear' repeat={true}>
                   <Image
                     src='/leelu_logo.svg'
                     alt=''
                     width={63}
                     height={61}
                     className='w-[51px] h-[53px] md:w-[65px] md:h-[63px] lg:w-[61px] lg:h-[63px] filter invert-[100%] brightness-[100%]'
-                    quality={100}
+                    quality={85}
                   />
                 </RotateOnView>
               </div>

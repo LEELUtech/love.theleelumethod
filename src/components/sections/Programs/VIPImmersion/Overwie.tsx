@@ -40,7 +40,7 @@ const Card = (props: CardProps) => {
 		>
 			<div className="flex-1 flex w-full max-w-full lg:max-w-[496px] flex-col items-center justify-center">
 				<div className="relative w-full max-w-[496px] aspect-[496/761] overflow-hidden rounded-[100px]">
-					<Image src={imgSrc} alt={title} fill quality={100} />
+					<Image src={imgSrc} alt={title} fill quality={85} />
 				</div>
 			</div>
 
@@ -102,8 +102,7 @@ export const VIPImmersionOverview = ({ overviews }: Props) => {
 					src="/noise_bg.svg"
 					alt=""
 					fill
-					priority
-					quality={100}
+					quality={85}
 					sizes="100vw"
 					className="object-cover"
 				/>

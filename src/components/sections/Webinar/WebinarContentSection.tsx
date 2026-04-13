@@ -41,7 +41,7 @@ const WebinarContentSection = () => {
                 src='/images/beautiful-asian-woman-wrapped-blanket.png'
                 alt=''
                 fill
-                quality={100}
+                quality={85}
                 objectFit='cover'
               />
             </div>

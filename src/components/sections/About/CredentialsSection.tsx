@@ -8,7 +8,7 @@ const CredentialsSection = () => {
         {/* === MOBILE + TABLET IMAGE (TOP) === */}
         <div className='flex justify-center mb-[128px] lg:hidden'>
           <div className='relative w-full max-w-[595px] aspect-[361/529] lg:aspect-[595/913]'>
-            <Image src='/images/lily/lily_8.png' alt='Credentials' fill quality={100} className='rounded-[60px]' />
+            <Image src='/images/lily/lily_8.png' alt='Credentials' fill quality={85} className='rounded-[60px]' />
 
             {/* Logo Badge */}
             <div
@@ -23,7 +23,7 @@ const CredentialsSection = () => {
                 width={65}
                 height={65}
                 className='relative z-10 filter brightness-0 invert'
-                quality={100}
+                quality={85}
               />
             </div>
           </div>
@@ -31,7 +31,7 @@ const CredentialsSection = () => {
 
         {/* === TITLE === */}
         <div className='flex items-start gap-[24px] lg:gap-[37px] mb-[60px] lg:mb-[82px] justify-center lg:justify-start'>
-          <Image src='/icons/star_with_line.png' alt='' width={48} height={48} quality={100} />
+          <Image src='/icons/star_with_line.png' alt='' width={48} height={48} quality={85} />
           <h2 className='font-thin text-[48px] lg:text-[60px] leading-[126%] font-canela text-brand-deep text-left'>
             Credentials At Glance
           </h2>
@@ -69,7 +69,7 @@ const CredentialsSection = () => {
                 },
               ].map((item, idx) => (
                 <div key={idx} className='flex items-start gap-4'>
-                  <Image src='/icons/star.svg' alt='' width={20} height={20} className='flex-shrink-0 mt-1' quality={100} />
+                  <Image src='/icons/star.svg' alt='' width={20} height={20} className='flex-shrink-0 mt-1' quality={85} />
                   <div>
                     <h3 className='font-medium text-body font-lato text-[#8F6E0E] mb-3 italic'>{item.title}</h3>
                     <p className=' lg:max-w-[455px] font-normal text-body text-[#5A5757] font-canela leading-[130%]'>
@@ -84,7 +84,7 @@ const CredentialsSection = () => {
           {/* RIGHT: IMAGE (DESKTOP ONLY) */}
           <div className='hidden lg:flex'>
             <div className='relative w-full max-w-[595px]  aspect-[595/913] shrink-0'>
-              <Image src='/images/lily/lily_8.png' alt='Credentials' fill quality={100} className='rounded-[113px]' />
+              <Image src='/images/lily/lily_8.png' alt='Credentials' fill quality={85} className='rounded-[113px]' />
 
               {/* Logo Badge */}
               <div
@@ -111,7 +111,7 @@ const CredentialsSection = () => {
                   width={75}
                   height={75}
                   className='relative z-10 filter brightness-0 invert'
-                  quality={100}
+                  quality={85}
                 />
               </div>
             </div>

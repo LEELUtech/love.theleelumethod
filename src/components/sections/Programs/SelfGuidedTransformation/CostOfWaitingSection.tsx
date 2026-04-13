@@ -41,7 +41,7 @@ export default function CostOfWaitingSection() {
                 src='/images/programs/self-guided-transformation/sad-anxiety-depressed.jpg'
                 alt='Stop Guessing'
                 fill
-                quality={100}
+                quality={85}
                 className='object-cover !top-[20px] rounded-t-[200px] object-[90%_50%]'
               />
               {/* Logo badge */}
@@ -57,7 +57,7 @@ export default function CostOfWaitingSection() {
                 "
               >
                 <div className='relative w-[45px] h-[45px] lg:w-[58px] lg:h-[56px]'>
-                  <Image src='/leelu_logo.svg' alt='' fill className='filter brightness-0 invert' quality={100} />
+                  <Image src='/leelu_logo.svg' alt='' fill className='filter brightness-0 invert' quality={85} />
                 </div>
               </div>
 
@@ -94,7 +94,7 @@ export default function CostOfWaitingSection() {
           </p>
 
           <div className='relative mx-auto my-[26px] w-[8px] h-[66px]'>
-            <Image src='/icons/yellow_stick.svg' alt='' fill quality={100} />
+            <Image src='/icons/yellow_stick.svg' alt='' fill quality={85} />
           </div>
 
           <p className='text-[17px]/[26px] font-lato text-brand-deep'>

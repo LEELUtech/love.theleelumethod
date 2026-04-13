@@ -124,7 +124,7 @@ const CARDS: ICard[] = [
     description: 'For the woman ready to do the work on her own timeline.',
     listTitle: 'What You Get:',
     list: [
-      'The complete 12-module video curriculum (60-dayc access)',
+      'The complete 12-module video curriculum (60-days access)',
       'The Relationship Protocol Workbook (downloadable)',
       'Bonus: Your Personal Leelu Method Breakdown PDF',
     ],
@@ -253,14 +253,14 @@ export default function ChooseYourPathSection({ cohortLabel }: { cohortLabel?: s
 											z-10
 										"
           >
-            <RotateOnView duration={17} amount={0.4} ease='easeOut'>
+            <RotateOnView duration={17} amount={0.4} ease='linear' repeat={true}>
               <Image
                 src='/leelu_logo.svg'
                 alt=''
                 width={88}
                 height={88}
                 className='w-[65px] h-[65px] md:w-[65px] md:h-[65px] lg:w-[88px] lg:h-[88px] filter invert-[100%] brightness-[100%]'
-                quality={100}
+                quality={85}
               />
             </RotateOnView>
           </div>

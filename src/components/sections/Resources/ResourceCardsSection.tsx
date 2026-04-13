@@ -60,8 +60,7 @@ export function ResourceCardsSection() {
 						src="/noise_bg.svg"
 						alt=""
 						fill
-						priority
-						quality={100}
+						quality={85}
 						sizes="100vw"
 						className="object-cover"
 					/>
@@ -77,7 +76,7 @@ export function ResourceCardsSection() {
                   src={item.imageSrc}
                   alt={item.imageAlt}
                   fill
-                  quality={100}
+                  quality={85}
                   sizes='(min-width:1024px) 33vw, (min-width:768px) 50vw, 100vw'
                   className={`object-cover ${item.imageClassName ?? ''}`}
                 />

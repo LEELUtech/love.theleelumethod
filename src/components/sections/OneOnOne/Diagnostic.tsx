@@ -29,16 +29,17 @@ const DiagnosticImg = () => {
             alt='I am Lily Chystofat'
             fill
             priority
-            quality={100}
+            quality={85}
             className='[mask-image:linear-gradient(to_bottom,black_40%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_30%,transparent_100%)]'
           />
         </div>
         <RotateOnView
           className='absolute bottom-[-6px] left-[110px] hidden lg:block pointer-events-none'
           duration={17}
-          ease='easeOut'
+          ease='linear'
+          repeat={true}
         >
-          <Image src='/icons/ornament_13.svg' alt='' width={209} height={215} priority quality={100} className='' />
+          <Image src='/icons/ornament_13.svg' alt='' width={209} height={215} quality={85} className='' />
         </RotateOnView>
         {/* <ArcAutoOnce
           className='absolute hidden bs:block inset-0 -z-0 -translate-y-[0%] pointer-events-none -translate-x-[-7%]'

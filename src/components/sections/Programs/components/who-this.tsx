@@ -71,7 +71,7 @@ export const ProgramsWhoThis = (props: Props) => {
             <div className='relative w-full max-w-[380px] md:max-w-[420px] lg:max-w-[520px]'>
               <div className='relative'>
                 <div className='relative w-full aspect-[360/560] lg:w-[496px] lg:h-[834px] rounded-[100px] overflow-hidden'>
-                  <Image src={imgSrc} alt='' fill priority quality={100} />
+                  <Image src={imgSrc} alt='' fill quality={85} />
                 </div>
               </div>
 
@@ -99,7 +99,7 @@ export const ProgramsWhoThis = (props: Props) => {
                       alt=''
                       fill
                       className='object-contain filter brightness-0 invert'
-                      quality={100}
+                      quality={85}
                     />
                   </div>
                 </div>

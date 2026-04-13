@@ -9,10 +9,10 @@ export default function StopImprovisingSection() {
           <div className='order-1 lg:order-2 relative w-full max-w-[520px] mx-auto lg:mx-0 lg:ml-auto flex flex-col items-center'>
             <div className='relative w-[320px] xs:w-[360px] md:w-full lg:w-[496px]'>
               <div className='relative h-[408px] xs:h-[459px] md:h-[660px] lg:h-[833px] overflow-hidden rounded-[60px] lg:rounded-[100px]'>
-                <Image src='/images/woman-sitting-windowsill.png' alt='' fill priority className='object-cover' quality={100} />
+                <Image src='/images/woman-sitting-windowsill.png' alt='' fill className='object-cover' quality={85} />
               </div>
               <div className='block lg:hidden absolute bottom-[-40px] right-[20px] w-[130px] h-[172px] rounded-[400px] overflow-hidden'>
-                <Image fill src='/images/programs/happy_women.png' priority alt='Happy Women' quality={100} />
+                <Image fill src='/images/programs/happy_women.png' alt='Happy Women' quality={85} />
               </div>
             </div>
           </div>

@@ -73,8 +73,7 @@ export default function BlindSpotSection() {
           src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fblindspot_section_bg.png?alt=media'
           alt=''
           fill
-          priority
-          quality={100}
+          quality={85}
           className='object-cover'
           sizes='100vw'
           style={{

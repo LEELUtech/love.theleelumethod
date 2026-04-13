@@ -50,7 +50,7 @@ export const VIPImmersionAudit = () => {
           <div className='relative mx-auto w-full max-w-[400px] mb-10 lg:mb-0 lg:mx-0 lg:max-w-[518px] aspect-[518/820]'>
             <div>
               <div className='relative max-w-[493px] aspect-[493/367] overflow-hidden rounded-t-[300px]'>
-                <Image src='/images/programs/vip-immersion/woman_orange.png' alt='Resources Section 3' quality={100} fill priority className='object-cover object-top' />
+                <Image src='/images/programs/vip-immersion/woman_orange.png' alt='Resources Section 3' quality={85} fill className='object-cover object-top' />
               </div>
               <div className='relative max-w-[493px] h-1 bg-white'>
                 <div className='absolute right-[20px] xl:right-[25px] top-1/2 -translate-y-1/2 z-20'>
@@ -59,15 +59,16 @@ export const VIPImmersionAudit = () => {
                       duration={17}
                       amount={0.5}
                       className='relative size-[70px] md:size-[70px] lg:size-[80px]'
-                      ease='easeOut'
+                      ease='linear'
+                      repeat={true}
                     >
-                      <Image src='/icons/ornament_2/ornament_2_black.svg' alt='' fill priority quality={100} />
+                      <Image src='/icons/ornament_2/ornament_2_black.svg' alt='' fill quality={85} />
                     </RotateOnView>
                   </div>
                 </div>
               </div>
               <div className='relative max-w-[493px] aspect-[493/367] overflow-hidden rounded-b-[20px]'>
-                <Image src='/images/programs/phase_2.png' alt='Resources Section 3' quality={100} fill priority />
+                <Image src='/images/programs/phase_2.png' alt='Resources Section 3' quality={85} fill />
               </div>
             </div>
           </div>

@@ -19,8 +19,7 @@ const TheSynthesisSection = () => {
 					src="/noise_bg.svg"
 					alt=""
 					fill
-					priority
-					quality={100}
+					quality={85}
 					sizes="100vw"
 					className="object-cover"
 				/>
@@ -29,7 +28,7 @@ const TheSynthesisSection = () => {
 				<Image
 					src="/gradiend.svg"
 					alt=""
-					quality={100}
+					quality={85}
 					width={1440}
 					height={400}
 					className="w-full h-[500px] object-cover lg:h-auto lg:object-fill"
@@ -45,7 +44,7 @@ const TheSynthesisSection = () => {
 								src="/images/about/synthesis_section_img.png"
 								alt="The Synthesis"
 								fill
-								quality={100}
+								quality={85}
 							/>
 
 							{/* Logo */}
@@ -62,14 +61,14 @@ const TheSynthesisSection = () => {
 								z-10
 							"
 							>
-								<RotateOnView duration={17} amount={0.4} ease="easeOut">
+								<RotateOnView duration={17} amount={0.4} ease="linear" repeat={true}>
 									<Image
 										src="/leelu_logo.svg"
 										alt=""
 										width={63}
 										height={61}
 										className="w-[51px] h-[53px] md:w-[65px] md:h-[63px] lg:w-[61px] lg:h-[63px] filter invert-[100%] brightness-[100%]"
-										quality={100}
+										quality={85}
 									/>
 								</RotateOnView>
 							</div>
@@ -99,7 +98,7 @@ const TheSynthesisSection = () => {
 								alt=""
 								fill
 								className="object-contain"
-								quality={100}
+								quality={85}
 							/>
 						</div>
 						<div className="relative w-full sm:w-[48%] lg:max-w-[306px]  aspect-[306/196]">
@@ -108,7 +107,7 @@ const TheSynthesisSection = () => {
 								alt=""
 								fill
 								className="object-contain"
-								quality={100}
+								quality={85}
 							/>
 						</div>
 					</div>

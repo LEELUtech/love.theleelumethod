@@ -29,7 +29,7 @@ export const ProgramsHero = (props: Props) => {
               src={imgSrc}
               alt='Lily'
               fill
-              quality={100}
+              quality={85}
               priority
               className='object-cover object-top md:object-top lg:object-top rounded-t-[999px]'
               style={{
@@ -69,14 +69,14 @@ export const ProgramsHero = (props: Props) => {
                   z-10
                 "
           >
-            <RotateOnView duration={17} amount={0.4} ease='easeOut'>
+            <RotateOnView duration={17} amount={0.4} ease='linear' repeat={true}>
               <Image
                 src='/leelu_logo.svg'
                 alt=''
                 width={46}
                 height={46}
                 className='w-[46px] h-[46px] md:w-[46px] md:h-[46px] lg:w-[46px] lg:h-[46px] filter invert'
-                quality={100}
+                quality={85}
               />
             </RotateOnView>
           </div>

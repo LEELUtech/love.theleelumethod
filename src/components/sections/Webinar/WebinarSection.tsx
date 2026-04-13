@@ -39,14 +39,14 @@ const WebinarSection = () => {
               <ul className='list-none pl-2 md:pl-8 font-lato text-body font-medium leading-[26px] space-y-4'>
                 <li className='flex gap-2 items-start'>
                   <div className='w-4 h-4 pt-2 flex-shrink-0'>
-                    <Image src='/icons/arrow_right.svg' alt='Arrow' width={10} height={10} className='object-contain' quality={100} />
+                    <Image src='/icons/arrow_right.svg' alt='Arrow' width={10} height={10} className='object-contain' quality={85} />
                   </div>
                   <span>Your identity-level programming that determines partner selection and how to rewire it.</span>
                 </li>
 
                 <li className='flex gap-2 items-start'>
                   <div className='w-4 h-4 pt-2 flex-shrink-0'>
-                    <Image src='/icons/arrow_right.svg' alt='Arrow' width={10} height={10} className='object-contain' quality={100} />
+                    <Image src='/icons/arrow_right.svg' alt='Arrow' width={10} height={10} className='object-contain' quality={85} />
                   </div>
                   <span>
                     How early attachment imprints create repetitive relationship dynamics across different partners.
@@ -55,7 +55,7 @@ const WebinarSection = () => {
 
                 <li className='flex gap-2 items-start'>
                   <div className='w-4 h-4 pt-2 flex-shrink-0'>
-                    <Image src='/icons/arrow_right.svg' alt='Arrow' width={10} height={10} className='object-contain' quality={100} />
+                    <Image src='/icons/arrow_right.svg' alt='Arrow' width={10} height={10} className='object-contain' quality={85} />
                   </div>
                   <span>
                     Why attraction follows algorithmic patterns—and how to stop investing in incompatible men.
@@ -91,7 +91,7 @@ const WebinarSection = () => {
             </div>
 
             <div className='relative w-full max-w-[488px] aspect-[488/536] overflow-hidden'>
-              <Image src='/images/webinar/hero_lily.png' alt='Decoded Love Masterclass' fill priority quality={100} />
+              <Image src='/images/webinar/hero_lily.png' alt='Decoded Love Masterclass' fill priority quality={85} />
             </div>
 
             <ArcAutoOnce
@@ -115,7 +115,8 @@ const WebinarSection = () => {
             <RotateOnView
               className='absolute bottom-[-60px] left-[140px] hidden lg:block pointer-events-none'
               duration={17}
-              ease='easeOut'
+              ease='linear'
+              repeat={true}
             >
               <Image
                 src='/icons/ornament_2/ornament_2_pink.svg'
@@ -123,7 +124,7 @@ const WebinarSection = () => {
                 width={209}
                 height={215}
                 priority
-                quality={100}
+                quality={85}
               />
             </RotateOnView>
           </div>

@@ -14,17 +14,17 @@ const ThePivotAndAccelerantSection = () => {
             <div className='relative w-full max-w-[340px] md:max-w-[420px] lg:max-w-none h-[380px] md:h-[450px] lg:h-[520px] mx-auto'>
               {/* BACK IMAGE */}
               <div className='absolute top-0 left-0 w-[52%] h-[69%] rotate-[-3deg] shadow-[0_4px_50px_rgba(0,0,0,0.16)]'>
-                <Image src='/images/pivot/img_3.jpg' alt='' fill quality={100} />
+                <Image src='/images/pivot/img_3.jpg' alt='' fill quality={85} />
               </div>
 
               {/* RIGHT IMAGE */}
               <div className='absolute top-[33%] right-[-4%] w-[62%] h-[47%] rotate-[8deg] z-20 shadow-[0_4px_50px_rgba(0,0,0,0.16)]'>
-                <Image src='/images/pivot/img_1.jpg' alt='' fill quality={100} />
+                <Image src='/images/pivot/img_1.jpg' alt='' fill quality={85} />
               </div>
 
               {/* BOTTOM IMAGE */}
               <div className='absolute bottom-[-18%] left-[12%] w-[65%] h-[63%] z-10 shadow-[0_4px_50px_rgba(0,0,0,0.16)]'>
-                <Image src='/images/pivot/img_2.jpg' alt='' fill quality={100} />
+                <Image src='/images/pivot/img_2.jpg' alt='' fill quality={85} />
               </div>
             </div>
           </div>
@@ -71,7 +71,7 @@ const ThePivotAndAccelerantSection = () => {
                 src='/images/lily/lily_9.png'
                 alt='The Accelerant'
                 fill
-                quality={100}
+                quality={85}
                 className='object-cover'
                 sizes='(min-width:1024px) 511px, 90vw'
               />

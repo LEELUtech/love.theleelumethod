@@ -84,7 +84,7 @@ export const ProgramsReceive = (props: Props) => {
 
 				<div className="flex-1 flex w-full max-w-full lg:max-w-[496px] flex-col items-center justify-center">
 					<div className="relative w-full max-w-[496px] aspect-[496/535]">
-						{/* <Image src='/images/lily/lily_11.png' alt={module.title} fill quality={100} /> */}
+						{/* <Image src='/images/lily/lily_11.png' alt={module.title} fill quality={85} /> */}
 						<SlowVideo
 							skipSlowVideo
 							src="https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/landingVideos%2Flanding_video_1.mp4?alt=media&token=34b349ac-bfae-4eb4-8926-f8e297d2b898"
@@ -113,7 +113,7 @@ export const ProgramsReceive = (props: Props) => {
 								src={additionalModule.imgSrc}
 								alt={additionalModule.title}
 								fill
-								quality={100}
+								quality={85}
 							/>
 						</div>
 					</div>

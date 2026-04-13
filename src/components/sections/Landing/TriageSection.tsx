@@ -91,15 +91,14 @@ const TriageSection = () => {
 			className="relative pt-[57px] pb-[22px] lg:pt-[120px] lg:pb-[112px] overflow-hidden"
 		>
 			{/* <div className='absolute inset-0 -z-10'>
-        <Image src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Ftriage_section_bg.png?alt=media' alt='' fill priority quality={100} sizes='100vw' />
+        <Image src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Ftriage_section_bg.png?alt=media' alt='' fill priority quality={85} sizes='100vw' />
       </div> */}
 			<div className="absolute inset-0 -z-10">
 				<Image
 					src="/noise_bg.svg"
 					alt=""
 					fill
-					priority
-					quality={100}
+					quality={85}
 					sizes="100vw"
 					className="object-cover"
 				/>
@@ -111,7 +110,7 @@ const TriageSection = () => {
 					width={1440}
 					height={400}
 					className="w-full"
-					quality={100}
+					quality={85}
 				/>
 			</div>
 			<div className="container w-full">
@@ -163,7 +162,8 @@ const TriageSection = () => {
 							<RotateOnView
 								duration={33}
 								amount={0.2}
-								ease="easeOut"
+								ease="linear"
+								repeat={true}
 								className="absolute inset-0"
 								style={{ willChange: "transform", transform: "translateZ(0)" }}
 							>
@@ -173,7 +173,7 @@ const TriageSection = () => {
 									fill
 									className="object-contain"
 									style={{ filter: "brightness(200%)" }}
-									quality={100}
+									quality={85}
 								/>
 							</RotateOnView>
 						</div>
@@ -197,7 +197,8 @@ const TriageSection = () => {
 							<RotateOnView
 								duration={17}
 								amount={0.2}
-								ease="easeOut"
+								ease="linear"
+								repeat={true}
 								className="absolute inset-0"
 								style={{ willChange: "transform", transform: "translateZ(0)" }}
 							>
@@ -207,7 +208,7 @@ const TriageSection = () => {
 									fill
 									className="object-contain"
 									style={{ filter: "brightness(200%)" }}
-									quality={100}
+									quality={85}
 								/>
 							</RotateOnView>
 						</div>
@@ -239,7 +240,8 @@ const TriageSection = () => {
 							<RotateOnView
 								duration={33}
 								amount={0.2}
-								ease="easeOut"
+								ease="linear"
+								repeat={true}
 								className="absolute inset-0"
 								style={{ willChange: "transform", transform: "translateZ(0)" }}
 							>
@@ -249,7 +251,7 @@ const TriageSection = () => {
 									fill
 									className="object-contain"
 									style={{ filter: "brightness(200%)" }}
-									quality={100}
+									quality={85}
 								/>
 							</RotateOnView>
 						</div>

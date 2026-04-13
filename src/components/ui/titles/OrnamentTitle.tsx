@@ -32,11 +32,12 @@ export const OrnamentTitle = ({ title, titleHightlight, subtitle, classNames = '
         <RotateOnView
           duration={33}
           amount={0.2}
-          ease='easeOut'
+          ease='linear'
+          repeat={true}
           className='absolute inset-0'
           style={{ willChange: 'transform', transform: 'translateZ(0)' }}
         >
-          <Image src='/icons/ornament_2/ornament_2_pink.svg' alt='' fill className='object-contain opacity-50' quality={100} />
+          <Image src='/icons/ornament_2/ornament_2_pink.svg' alt='' fill className='object-contain opacity-50' quality={85} />
         </RotateOnView>
       </div>
     </div>

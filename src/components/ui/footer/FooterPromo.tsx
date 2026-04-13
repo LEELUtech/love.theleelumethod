@@ -47,20 +47,20 @@ export const FooterPromo = (props: Props) => {
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10 lg:gap-12 items-center'>
           <div className='relative w-full max-w-[400px] md:max-w-[480px] lg:max-w-[551px] mx-auto lg:mx-0'>
             <div className="absolute left-[-10px] top-[-30px] md:left-[-40px] md:top-[-50px] lg:top-[-60px] lg:left-[-60px] flex items-center justify-center overflow-hidden bg-[#EB4F68] before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay rounded-[300px] w-[80px] h-[100px] md:w-[100px] md:h-[126px] lg:w-[134px] lg:h-[168px] z-10">
-              <RotateOnView duration={17} amount={0.4} ease='easeOut'>
+              <RotateOnView duration={17} amount={0.4} ease='linear' repeat={true}>
                 <Image
                   src='/icons/ornament_2/ornament_2_light.svg'
                   alt=''
                   width={83}
                   height={83}
                   className='w-[65px] h-[65px] md:w-[65px] md:h-[65px] lg:w-[83px] lg:h-[83px]'
-                  quality={100}
+                  quality={85}
                 />
               </RotateOnView>
             </div>
 
             <div className='relative w-full aspect-[551/748] rounded-[24px] md:rounded-[32px] lg:rounded-[40px] overflow-hidden'>
-              <Image src='/images/lily/lily_2.png' alt='Lily' fill quality={100} className='object-cover' />
+              <Image src='/images/lily/lily_2.png' alt='Lily' fill quality={85} className='object-cover' />
             </div>
           </div>
 

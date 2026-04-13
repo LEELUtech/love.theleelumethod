@@ -52,7 +52,7 @@ export default function CostOfWaitingSection({ cohortLabel }: { cohortLabel?: st
                 src='/images/programs/vip-immersion/man-holding-rose-flower-back_1.png'
                 alt='Stop Guessing'
                 fill
-                quality={100}
+                quality={85}
                 sizes='(min-width: 640px) 358px, 320px'
                 className='object-contain'
               />
@@ -68,7 +68,7 @@ export default function CostOfWaitingSection({ cohortLabel }: { cohortLabel?: st
                 '
               >
                 <div className='relative w-[45px] h-[45px] lg:w-[58px] lg:h-[56px]'>
-                  <Image src='/leelu_logo.svg' alt='' fill className='filter brightness-0 invert' quality={100} />
+                  <Image src='/leelu_logo.svg' alt='' fill className='filter brightness-0 invert' quality={85} />
                 </div>
               </div>
 
@@ -104,7 +104,7 @@ export default function CostOfWaitingSection({ cohortLabel }: { cohortLabel?: st
           </p>
 
           <div className='relative mx-auto w-[8px] h-[66px]'>
-            <Image src='/icons/yellow_stick.svg' alt='' fill quality={100} />
+            <Image src='/icons/yellow_stick.svg' alt='' fill quality={85} />
           </div>
 
           <p className='mt-4 font-canela font-normal text-brand-deep text-[32px] leading-[1.6]'>
@@ -157,7 +157,7 @@ export default function CostOfWaitingSection({ cohortLabel }: { cohortLabel?: st
 
             <div className='relative mx-auto w-full max-w-[560px]'>
               <div className='relative max-w-[595px] h-[530px] md:h-[813px] lg:h-[813px] rounded-[100px] overflow-hidden'>
-                <Image src='/images/lily/lily_15.jpeg' alt='' fill quality={100} className='object-cover' />
+                <Image src='/images/lily/lily_15.jpeg' alt='' fill quality={85} className='object-cover' />
               </div>
             </div>
           </div>

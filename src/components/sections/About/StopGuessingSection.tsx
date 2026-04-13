@@ -11,12 +11,12 @@ const StopGuessingSection = () => {
       <div className='max-w-[900px] mx-auto text-center pb-[60px] md:pb-0'>
         {/* Top Image */}
         <div className='flex justify-center mb-12 relative pt-[50px] md:pt-[130px]'>
-          <div className='absolute w-[278px] h-[280px] sm:w-[340px] sm:h-[356px] top-[-250px] overflow-visible'>
+          <div className='absolute w-[350px] h-[356px] sm:w-[360px] sm:h-[356px] top-[-250px] overflow-visible'>
             <Image
               src='/images/resources/resources-section-1.png'
               alt='Stop Guessing'
               fill
-              quality={100}
+              quality={85}
               sizes='(min-width: 640px) 358px, 320px'
             />
 
@@ -34,14 +34,14 @@ const StopGuessingSection = () => {
 											z-10
 										"
             >
-              <RotateOnView duration={17} amount={0.4} ease='easeOut'>
+              <RotateOnView duration={17} amount={0.4} ease='linear' repeat={true}>
                 <Image
                   src='/leelu_logo.svg'
                   alt=''
                   width={63}
                   height={61}
                   className='w-[51px] h-[53px] md:w-[65px] md:h-[63px] lg:w-[61px] lg:h-[63px] filter invert-[100%] brightness-[100%]'
-                  quality={100}
+                  quality={85}
                 />
               </RotateOnView>
             </div>

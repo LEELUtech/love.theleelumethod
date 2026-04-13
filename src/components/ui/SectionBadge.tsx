@@ -42,8 +42,8 @@ export const SectionBadge = ({ bottom = -40, position = 'center', size = 'lg', c
         bottom: bottom,
       }}
     >
-      <RotateOnView duration={17} amount={0.4} ease='easeOut'>
-        <Image src='/leelu_logo.svg' alt='' width={55} height={55} className={`${imageSizes[size]} filter invert`} quality={100} />
+      <RotateOnView duration={17} amount={0.4} ease='linear' repeat={true}>
+        <Image src='/leelu_logo.svg' alt='' width={55} height={55} className={`${imageSizes[size]} filter invert`} quality={85} />
       </RotateOnView>
     </div>
   );

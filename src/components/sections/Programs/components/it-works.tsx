@@ -30,8 +30,7 @@ export const ProgramItWorks = ({
 					src="/noise_bg.svg"
 					alt=""
 					fill
-					priority
-					quality={100}
+					quality={85}
 					sizes="100vw"
 					className="object-cover"
 				/>
@@ -43,7 +42,7 @@ export const ProgramItWorks = ({
 					width={1440}
 					height={400}
 					className="w-full h-[1000px] object-cover lg:h-auto lg:object-fill"
-					quality={100}
+					quality={85}
 				/>
 			</div>
 			<Section>
@@ -97,8 +96,7 @@ export const ProgramItWorks = ({
 											src={imgSrc}
 											alt="It worked for me"
 											fill
-											priority
-											quality={100}
+											quality={85}
 											className="object-cover"
 										/>
 									</div>
