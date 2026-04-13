@@ -13,8 +13,7 @@ export const FooterLabel = () => {
 						height={57}
 						alt="Lily Chystofat Logo"
 						className="object-contain"
-						priority
-						quality={100}
+						quality={85}
 					/>
 				</span>
 

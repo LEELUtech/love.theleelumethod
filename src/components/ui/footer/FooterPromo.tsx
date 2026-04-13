@@ -54,13 +54,13 @@ export const FooterPromo = (props: Props) => {
                   width={83}
                   height={83}
                   className='w-[65px] h-[65px] md:w-[65px] md:h-[65px] lg:w-[83px] lg:h-[83px]'
-                  quality={100}
+                  quality={85}
                 />
               </RotateOnView>
             </div>
 
             <div className='relative w-full aspect-[551/748] rounded-[24px] md:rounded-[32px] lg:rounded-[40px] overflow-hidden'>
-              <Image src='/images/lily/lily_2.png' alt='Lily' fill quality={100} className='object-cover' />
+              <Image src='/images/lily/lily_2.png' alt='Lily' fill quality={85} className='object-cover' />
             </div>
           </div>
 

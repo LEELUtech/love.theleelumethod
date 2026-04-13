@@ -47,8 +47,7 @@ export default function LoveLevelsAnimatedBlock({ cards }: { cards: Card[] }) {
               src='/icons/ornament_2/ornament_2_light.svg'
               alt=''
               fill
-              priority
-              quality={100}
+              quality={85}
               className='object-contain'
               style={{ filter: 'brightness(200%)' }}
             />
@@ -105,7 +104,7 @@ export default function LoveLevelsAnimatedBlock({ cards }: { cards: Card[] }) {
           >
             {card.img && (
               <div className='relative w-[139px] h-[139px] mb-4'>
-                <Image src={card.img} alt='' fill className='object-contain opacity-35' quality={100} />
+                <Image src={card.img} alt='' fill className='object-contain opacity-35' quality={85} />
                 {card.icon && (
                   <Image
                     src={card.icon}
@@ -113,7 +112,7 @@ export default function LoveLevelsAnimatedBlock({ cards }: { cards: Card[] }) {
                     width={90}
                     height={90}
                     className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
-                    quality={100}
+                    quality={85}
                   />
                 )}
               </div>

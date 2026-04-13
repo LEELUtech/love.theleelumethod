@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
 			"leelu-tech.firebasestorage.app",
 			"media.tryinteract.com"
 		],
-		qualities: [25, 50, 75, 90, 100],
+		qualities: [25, 50, 75, 85, 90, 100],
 	},
 	typescript: {
 		ignoreBuildErrors: true,

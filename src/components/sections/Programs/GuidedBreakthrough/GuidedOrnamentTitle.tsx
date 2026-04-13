@@ -37,7 +37,7 @@ export const GuidedOrnamentTitle = ({ title, titleHightlight, subtitle, classNam
           className='absolute inset-0'
           style={{ willChange: 'transform', transform: 'translateZ(0)' }}
         >
-          <Image src='/icons/ornament_2/ornament_2_light.svg' alt='' fill className='object-contain brightness-0 invert' quality={100} />
+          <Image src='/icons/ornament_2/ornament_2_light.svg' alt='' fill className='object-contain brightness-0 invert' quality={85} />
         </RotateOnView>
       </div>
     </div>

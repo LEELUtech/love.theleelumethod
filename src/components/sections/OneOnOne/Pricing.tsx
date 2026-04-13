@@ -165,7 +165,7 @@ export const Pricing = () => {
       className='px-4 bg-gradient-to-b from-[#F2E1E2] to-transparent md:px-6 2xl:px-[180px] relative '
     >
       {/* <div className='absolute h-[50%] w-full bottom-0 left-0 z-[-1]'>
-        <Image src='/images/bg/new_bg.png' alt='' fill priority quality={100} />
+        <Image src='/images/bg/new_bg.png' alt='' fill priority quality={85} />
       </div> */}
 
       <div className="absolute inset-0 -z-10">
@@ -173,8 +173,7 @@ export const Pricing = () => {
 					src="/noise_bg.svg"
 					alt=""
 					fill
-					priority
-					quality={100}
+					quality={85}
 					sizes="100vw"
 					className="object-cover"
 				/>

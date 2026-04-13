@@ -16,7 +16,7 @@ const StopGuessingSection = () => {
               src='/images/resources/resources-section-1.png'
               alt='Stop Guessing'
               fill
-              quality={100}
+              quality={85}
               sizes='(min-width: 640px) 358px, 320px'
             />
 
@@ -41,7 +41,7 @@ const StopGuessingSection = () => {
                   width={63}
                   height={61}
                   className='w-[51px] h-[53px] md:w-[65px] md:h-[63px] lg:w-[61px] lg:h-[63px] filter invert-[100%] brightness-[100%]'
-                  quality={100}
+                  quality={85}
                 />
               </RotateOnView>
             </div>

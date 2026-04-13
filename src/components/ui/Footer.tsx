@@ -194,8 +194,7 @@ export default function Footer({ className }: { className?: string }) {
 									alt="Lily Chystofat Logo"
 									fill
 									className="object-contain"
-									priority
-									quality={100}
+									quality={85}
 								/>
 							</span>
 								<div>

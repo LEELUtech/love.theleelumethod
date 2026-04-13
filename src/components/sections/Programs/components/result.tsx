@@ -39,7 +39,7 @@ export const ProgramResult = ({ title, link, investment, description }: Props) =
         <div className='relative z-10 flex -mt-[285px] justify-center mb-8 md:mb-10 lg:mb-8'>
           <div className="relative h-[129px] w-[93px] md:h-[140px] md:w-[100px] lg:h-[140px] lg:w-[96px] overflow-hidden bg-[#EB4F68] before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay rounded-full flex items-center justify-center">
             <div className='relative w-[56px] h-[56px]'>
-              <Image src='/leelu_logo.svg' alt='' fill className='object-contain filter brightness-0 invert' quality={100} />
+              <Image src='/leelu_logo.svg' alt='' fill className='object-contain filter brightness-0 invert' quality={85} />
             </div>
           </div>
         </div>

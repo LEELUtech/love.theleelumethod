@@ -61,7 +61,7 @@ const HeroSection = () => {
               alt='I am Lily Chystofat'
               fill
               priority
-              quality={100}
+              quality={85}
               className='
 
 							/* MOBILE: fade bottom */
@@ -79,7 +79,7 @@ const HeroSection = () => {
               ease='linear'
               repeat={true}
             >
-              <Image src='/icons/ornament_13.svg' alt='' width={209} height={215} priority quality={100} className='' />
+              <Image src='/icons/ornament_13.svg' alt='' width={209} height={215} priority quality={85} className='' />
             </RotateOnView>
 
             <ArcAutoOnce

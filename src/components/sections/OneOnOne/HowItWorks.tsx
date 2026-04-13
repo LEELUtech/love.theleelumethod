@@ -91,14 +91,14 @@ export const HowItWorks = () => {
               <div className='max-w-[350px] mx-auto md:mx-0'>
                 {img && (
                   <div className='relative w-[139px] h-[139px] mb-[10px] mx-auto md:mx-0 md:mt-[52px]'>
-                    <Image src={img} alt='' fill className='object-contain opacity-35' quality={100} />
+                    <Image src={img} alt='' fill className='object-contain opacity-35' quality={85} />
                     <Image
                       src={icon}
                       alt={title_bottom}
                       width={90}
                       height={90}
                       className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
-                      quality={100}
+                      quality={85}
                     />
                   </div>
                 )}

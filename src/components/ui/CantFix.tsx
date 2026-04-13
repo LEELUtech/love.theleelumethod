@@ -62,8 +62,7 @@ export const CantFix = ({ href, linkLabel, buttonVariant = 'primary' }: Props) =
                 src='/images/programs/lisa_avatar.jpg'
                 alt='Person sitting with a laptop'
                 fill
-                priority
-                quality={100}
+                quality={85}
                 className='object-cover'
               />
             </div>

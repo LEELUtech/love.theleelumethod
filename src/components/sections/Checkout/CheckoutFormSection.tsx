@@ -354,8 +354,7 @@ export default function CheckoutFormSection({
 					src="/noise_bg.svg"
 					alt=""
 					fill
-					priority
-					quality={100}
+					quality={85}
 					sizes="100vw"
 					className="object-cover"
 				/>
@@ -402,7 +401,7 @@ export default function CheckoutFormSection({
 							</div>
 
 							<div className="relative hidden md:block h-[160px] w-[154px] lg:h-[200px] lg:w-[192px]">
-								<Image src="/icons/checkout_ornament_pink.svg" alt="" fill quality={100} />
+								<Image src="/icons/checkout_ornament_pink.svg" alt="" fill quality={85} />
 							</div>
 						</div>
 

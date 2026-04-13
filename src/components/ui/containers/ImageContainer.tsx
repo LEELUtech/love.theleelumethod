@@ -22,7 +22,7 @@ export const ImageContainer = ({ src, alt, height, children, mb = 0 }: Props) =>
       <div className='flex-1'>{children}</div>
 
       <div className={`flex-1 w-full max-w-[496px] rounded-[100px] overflow-hidden`} style={{ maxHeight, aspectRatio }}>
-        <Image src={src} width={496} height={height} alt={alt} className='w-full h-full object-cover object-top' quality={100} />
+        <Image src={src} width={496} height={height} alt={alt} className='w-full h-full object-cover object-top' quality={85} />
       </div>
     </Flex>
   );

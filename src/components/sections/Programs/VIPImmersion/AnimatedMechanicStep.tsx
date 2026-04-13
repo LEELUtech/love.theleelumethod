@@ -41,7 +41,7 @@ export default function AnimatedMechanicStep({ id, icon, title, description, siz
           }}
         >
           <div className={imgClass}>
-            <Image src={icon} alt={title} width={imgSize} height={imgSize} className='object-cover w-full h-full' quality={100} />
+            <Image src={icon} alt={title} width={imgSize} height={imgSize} className='object-cover w-full h-full' quality={85} />
           </div>
         </div>
 

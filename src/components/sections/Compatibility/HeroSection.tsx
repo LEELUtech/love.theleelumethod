@@ -11,7 +11,7 @@ const HeroSection = () => {
     <section className='relative overflow-hidden'>
       {/* Background */}
       <div className='absolute inset-0 z-0'>
-        <Image src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fhero_section_bg.png?alt=media' alt='' fill priority sizes='100vw' quality={100} />
+        <Image src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fhero_section_bg.png?alt=media' alt='' fill priority sizes='100vw' quality={85} />
       </div>
 
       <Header />
@@ -36,7 +36,7 @@ const HeroSection = () => {
                 alt='THE COMPATIBILITY CODE REPORT'
                 fill
                 priority
-                quality={100}
+                quality={85}
               />
 
               {/* Bottom fade (mobile + tablet) */}
@@ -76,7 +76,7 @@ const HeroSection = () => {
                   width={209}
                   height={215}
                   priority
-                  quality={100}
+                  quality={85}
                   className='
 			
 		'

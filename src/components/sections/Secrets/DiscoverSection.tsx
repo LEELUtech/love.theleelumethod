@@ -35,8 +35,7 @@ export default function DiscoverSection() {
 					src="/noise_bg.svg"
 					alt=""
 					fill
-					priority
-					quality={100}
+					quality={85}
 					sizes="100vw"
 					className="object-cover"
 				/>
@@ -45,7 +44,7 @@ export default function DiscoverSection() {
 				<Image
 					src="/gradiend.svg"
 					alt=""
-					quality={100}
+					quality={85}
 					width={1440}
 					height={400}
 					className="w-full h-[1000px] object-cover lg:h-auto lg:object-fill"
@@ -61,14 +60,14 @@ export default function DiscoverSection() {
 							width={103}
 							height={103}
 							className="absolute hidden md:block lg:block top-[140px] left-[-30px] md:top-[180px] md:left-[-40px] lg:top-[200px] lg:left-[-55px] z-0 w-[180px] h-[180px] md:w-[180px] md:h-[180px] lg:w-[103px] lg:h-[103px]"
-							quality={100}
+							quality={85}
 						/>
 						<Image
 							src="/images/lily/lily_1.png"
 							alt="Woman"
 							fill
 							className="relative z-10"
-							quality={100}
+							quality={85}
 						/>
 						<RotateOnView
 							className="hidden absolute z-[10] bottom-[-120px] lg:flex left-[25px] w-[298px] h-[272px] lg:w-[298px] lg:h-[272px]"
@@ -77,7 +76,7 @@ export default function DiscoverSection() {
 							ease="linear"
 							repeat={true}
 						>
-							<Image src="/icons/ornament_14.svg" alt="" fill quality={100} />
+							<Image src="/icons/ornament_14.svg" alt="" fill quality={85} />
 						</RotateOnView>
 
 						{/* Ornament badge */}
@@ -88,7 +87,7 @@ export default function DiscoverSection() {
 								width={46}
 								height={46}
 								className="filter invert"
-								quality={100}
+								quality={85}
 							/>
 						</div>
 					</div>
@@ -133,7 +132,7 @@ export default function DiscoverSection() {
 									width={320}
 									height={292}
 									className="w-[325px] md:w-[325px] lg:w-[325px] h-auto"
-									quality={100}
+									quality={85}
 								/>
 								<div className="absolute top-1/2 left-1/2 -translate-x-[32px] -translate-y-1/2 flex items-center justify-center rounded-[300px] overflow-hidden bg-[#EB4F68] before:absolute before:inset-0 before:bg-[url('/icons/noise.png')] before:opacity-15 before:mix-blend-overlay w-[74px] h-[102px] z-10">
 									<Image
@@ -142,7 +141,7 @@ export default function DiscoverSection() {
 										width={46}
 										height={46}
 										className="filter invert"
-										quality={100}
+										quality={85}
 									/>
 								</div>
 							</div>

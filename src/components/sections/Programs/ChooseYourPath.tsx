@@ -260,7 +260,7 @@ export default function ChooseYourPathSection({ cohortLabel }: { cohortLabel?: s
                 width={88}
                 height={88}
                 className='w-[65px] h-[65px] md:w-[65px] md:h-[65px] lg:w-[88px] lg:h-[88px] filter invert-[100%] brightness-[100%]'
-                quality={100}
+                quality={85}
               />
             </RotateOnView>
           </div>

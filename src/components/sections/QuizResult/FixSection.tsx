@@ -13,7 +13,7 @@ const FixSection = () => {
               src='/images/programs/vip-immersion/who_this_is_for.png'
               alt=''
               fill
-              quality={100}
+              quality={85}
               className='object-contain'
             />
           </div>

@@ -54,7 +54,7 @@ const Card = ({ title, description, id }: CardProps) => {
 
 const RelationShipProtocolSection = () => {
 	const ornamentIcon = (
-		<Image src="/icons/ornament_1.svg" alt="" width={24} height={24} quality={100} />
+		<Image src="/icons/ornament_1.svg" alt="" width={24} height={24} quality={85} />
 	);
 
 	return (
@@ -66,7 +66,7 @@ const RelationShipProtocolSection = () => {
           alt=''
           fill
           priority
-          quality={100}
+          quality={85}
           className='object-cover'
           sizes='100vw'
         />
@@ -77,8 +77,7 @@ const RelationShipProtocolSection = () => {
 					src="/noise_bg.svg"
 					alt=""
 					fill
-					priority
-					quality={100}
+					quality={85}
 					sizes="100vw"
 					className="object-cover"
 				/>

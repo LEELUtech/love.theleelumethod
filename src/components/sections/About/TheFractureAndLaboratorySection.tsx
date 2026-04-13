@@ -12,8 +12,7 @@ const TheFractureAndLaboratorySection = () => {
 					src="/noise_bg.svg"
 					alt=""
 					fill
-					priority
-					quality={100}
+					quality={85}
 					sizes="100vw"
 					className="object-cover"
 				/>
@@ -22,7 +21,7 @@ const TheFractureAndLaboratorySection = () => {
 				<Image
 					src="/gradiend.svg"
 					alt=""
-					quality={100}
+					quality={85}
 					width={1440}
 					height={400}
 					className="w-full h-[500px] object-cover lg:h-auto lg:object-fill"
@@ -39,8 +38,7 @@ const TheFractureAndLaboratorySection = () => {
 									src="/images/about/about_fracture.png"
 									alt="Person sitting with a laptop"
 									fill
-									priority
-									quality={100}
+									quality={85}
 									className="rounded-lg object-contain"
 								/>
 								<div className="absolute flex bottom-[-40px] lg:bottom-[20px] xl:bottom-[-40px] left-[50%] -translate-x-[50%] md:-translate-x-0 md:left-[-30px] items-center justify-center bg-[#EB4F68] rounded-[300px] w-[80px] h-[100px] md:w-[100px] md:h-[126px] lg:w-[123px] lg:h-[155px] z-10">
@@ -50,7 +48,7 @@ const TheFractureAndLaboratorySection = () => {
 											alt=""
 											fill
 											className="absolute filter brightness-0 invert"
-											quality={100}
+											quality={85}
 										/>
 									</div>
 								</div>
@@ -144,7 +142,7 @@ const TheFractureAndLaboratorySection = () => {
 										fill
 										className="object-contain"
 										style={{ filter: "brightness(200%)" }}
-										quality={100}
+										quality={85}
 									/>
 								</RotateOnView>
 							</div>
@@ -186,7 +184,7 @@ const TheFractureAndLaboratorySection = () => {
 										fill
 										className="object-contain"
 										style={{ filter: "brightness(200%)" }}
-										quality={100}
+										quality={85}
 									/>
 								</RotateOnView>
 							</div>
@@ -233,7 +231,7 @@ const TheFractureAndLaboratorySection = () => {
 										fill
 										className="object-contain"
 										style={{ filter: "brightness(200%)" }}
-										quality={100}
+										quality={85}
 									/>
 								</RotateOnView>
 							</div>

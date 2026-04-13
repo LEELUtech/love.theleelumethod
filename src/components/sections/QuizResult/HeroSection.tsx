@@ -17,7 +17,7 @@ const HeroSection = ({ title }: HeroSectionProps) => {
           alt=''
           fill
           priority
-          quality={100}
+          quality={85}
           className='object-cover lg:hidden'
         />
 
@@ -27,7 +27,7 @@ const HeroSection = ({ title }: HeroSectionProps) => {
           alt=''
           fill
           priority
-          quality={100}
+          quality={85}
           className='object-cover hidden lg:block'
         />
       </div>

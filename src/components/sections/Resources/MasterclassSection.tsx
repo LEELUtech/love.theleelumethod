@@ -29,14 +29,14 @@ export function MasterclassSection() {
             <ul className='list-none pl-2 md:pl-8 font-lato text-body font-medium leading-[26px] space-y-4 text-[#5A5757]'>
               <li className='flex gap-2 items-start'>
                 <div className='w-4 h-4 pt-2 flex-shrink-0'>
-                  <Image src='/icons/arrow_right.svg' alt='Arrow' width={10} height={10} className='object-contain' quality={100} />
+                  <Image src='/icons/arrow_right.svg' alt='Arrow' width={10} height={10} className='object-contain' quality={85} />
                 </div>
                 <span>Why you don&apos;t attract who you want—you attract who you are on the inside.</span>
               </li>
 
               <li className='flex gap-2 items-start'>
                 <div className='w-4 h-4 pt-2 flex-shrink-0'>
-                  <Image src='/icons/arrow_right.svg' alt='Arrow' width={10} height={10} className='object-contain' quality={100} />
+                  <Image src='/icons/arrow_right.svg' alt='Arrow' width={10} height={10} className='object-contain' quality={85} />
                 </div>
                 <span>
                   How your subconscious &quot;love script&quot; keeps recreating the same breakup in a different body.
@@ -45,7 +45,7 @@ export function MasterclassSection() {
 
               <li className='flex gap-2 items-start'>
                 <div className='w-4 h-4 pt-2 flex-shrink-0'>
-                  <Image src='/icons/arrow_right.svg' alt='Arrow' width={10} height={10} className='object-contain' quality={100} />
+                  <Image src='/icons/arrow_right.svg' alt='Arrow' width={10} height={10} className='object-contain' quality={85} />
                 </div>
                 <span>
                   Why compatibility isn&apos;t chemistry—it&apos;s math—and how to stop wasting years on the wrong men.
@@ -73,8 +73,7 @@ export function MasterclassSection() {
               src='/images/resources/resources-webinar-section.png'
               alt='Decoded Love Masterclass'
               fill
-              priority
-              quality={100}
+              quality={85}
               sizes='(min-width:1024px) 642px, (min-width:768px) 80vw, 90vw'
             />
 
@@ -87,7 +86,7 @@ export function MasterclassSection() {
                   ease='linear'
                   repeat={true}
                 >
-                  <Image src='/icons/ornament_2/ornament_2_black.svg' alt='' fill priority quality={100} />
+                  <Image src='/icons/ornament_2/ornament_2_black.svg' alt='' fill quality={85} />
                 </RotateOnView>
               </div>
             </div>

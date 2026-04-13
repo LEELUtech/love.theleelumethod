@@ -29,7 +29,7 @@ export default function TestimonialsSection() {
                 width={1200}
                 height={1200}
                 className='w-full h-auto'
-                quality={100}
+                quality={85}
               />
             </div>
           ))}

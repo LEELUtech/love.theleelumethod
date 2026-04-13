@@ -41,7 +41,7 @@ export default function CostOfWaitingSection({ cohortLabel }: { cohortLabel?: st
 							src="/images/programs/guided-breakthrough/man-holding-rose-flower-back.png"
 							alt="Stop Guessing"
 							fill
-							quality={100}
+							quality={85}
 							sizes="(min-width: 640px) 358px, 320px"
 							className="object-contain"
 						/>
@@ -63,7 +63,7 @@ export default function CostOfWaitingSection({ cohortLabel }: { cohortLabel?: st
 									alt=""
 									fill
 									className="filter brightness-0 invert"
-									quality={100}
+									quality={85}
 								/>
 							</div>
 						</div>
@@ -103,7 +103,7 @@ export default function CostOfWaitingSection({ cohortLabel }: { cohortLabel?: st
 				</p>
 
 				<div className="relative mx-auto my-[26px] w-[8px] h-[66px]">
-					<Image src="/icons/yellow_stick.svg" alt="" fill quality={100} />
+					<Image src="/icons/yellow_stick.svg" alt="" fill quality={85} />
 				</div>
 
 				<p className="font-canela font-normal text-brand-deep text-[22px] lg:text-[32px] leading-[150%] text-center mb-8">

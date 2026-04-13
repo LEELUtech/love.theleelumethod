@@ -32,7 +32,7 @@ function ProblemCard({ text, icon = "red_star" }: { text: string; icon?: "red_st
 			<div className="flex flex-row gap-4 items-center">
 				{icon === "red_star" && (
 					<div className="relative mt-[2px] w-[26px] h-[33px] shrink-0">
-						<Image src={"/icons/red_star.svg"} alt="" fill priority quality={100} />
+						<Image src={"/icons/red_star.svg"} alt="" fill quality={85} />
 					</div>
 				)}
 				<p className="font-canela font-normal text-brand-black text-[20px] md:text-[18px] leading-[1.4]">

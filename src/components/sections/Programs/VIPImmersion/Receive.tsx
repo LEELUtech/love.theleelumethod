@@ -31,8 +31,7 @@ export const VIPImmersionReceive = () => {
 					src="/noise_bg.svg"
 					alt=""
 					fill
-					priority
-					quality={100}
+					quality={85}
 					sizes="100vw"
 					className="object-cover"
 				/>
@@ -60,7 +59,7 @@ export const VIPImmersionReceive = () => {
 									src="/images/lily/lily_1.png"
 									alt={title}
 									fill
-									quality={100}
+									quality={85}
 								/>
 							</div>
 						</div>

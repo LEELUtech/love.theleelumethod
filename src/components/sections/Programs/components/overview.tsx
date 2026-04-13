@@ -94,7 +94,7 @@ export const ProgramOverview = ({ title, subtitle, description, overviews, cards
 
       <div className='flex flex-col items-center justify-center lg:items-start lg:flex-row lg:justify-between lg:gap-[60px] xl:gap-[90px] 2xl:gap-[130px]'>
         <div className='flex-1 max-w-[496px] aspect-[496/761] rounded-[100px] overflow-hidden'>
-          <Image src='/images/lily/lily_12.png' width={496} height={761} alt='' className='w-full h-auto' quality={100} />
+          <Image src='/images/lily/lily_12.png' width={496} height={761} alt='' className='w-full h-auto' quality={85} />
         </div>{' '}
         <div className='flex-1 w-full pt-[72px] lg:pt-[112px]'>
           <ul className='flex flex-col gap-[48px]'>
