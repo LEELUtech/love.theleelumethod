@@ -58,7 +58,7 @@ const RelationShipProtocolSection = () => {
 	);
 
 	return (
-		<section className="relative pb-[80px] lg:pt-[100px]">
+		<section className="relative pb-[80px] lg:pt-[100px] bg-[#f5e9e9]">
 			{/* Background Image */}
 			{/* <div className='absolute inset-0 -z-10'>
         <Image
@@ -72,7 +72,7 @@ const RelationShipProtocolSection = () => {
         />
       </div> */}
 
-			<div className="absolute inset-0 -z-10">
+			{/* <div className="absolute inset-0 -z-10">
 				<Image
 					src="/noise_bg.svg"
 					alt=""
@@ -81,7 +81,7 @@ const RelationShipProtocolSection = () => {
 					sizes="100vw"
 					className="object-cover"
 				/>
-			</div>
+			</div> */}
 			{/* <div className="absolute bottom-0 left-0 right-0 -z-10 pointer-events-none">
 				<Image
 					src="/gradiend.svg"

@@ -92,13 +92,13 @@ export default function DecodedLoveCohortSection() {
 
 	return (
 		<>
-			<section className="relative py-16 pb-[150px] lg:pb-[100px] lg:py-24">
+			<section className="relative py-16 pb-[150px] lg:pb-[100px] lg:py-24 bg-[#f5e9e9]">
 				{/* Background */}
 				{/* <div className='absolute inset-0 -z-10'>
           <Image src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Fcohort_section_bg.png?alt=media' alt='' fill priority />
         </div> */}
 
-				<div className="absolute inset-0 -z-10">
+				{/* <div className="absolute inset-0 -z-10">
 					<Image
 						src="/noise_bg.svg"
 						alt=""
@@ -107,8 +107,8 @@ export default function DecodedLoveCohortSection() {
 						sizes="100vw"
 						className="object-cover"
 					/>
-				</div>
-				<div className="absolute bottom-0 left-0 right-0 -z-10 pointer-events-none">
+				</div> */}
+				<div className="absolute bottom-0 left-0 right-0 z-2 pointer-events-none">
 					<Image
 						src="/gradiend.svg"
 						alt=""
