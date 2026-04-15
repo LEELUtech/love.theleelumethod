@@ -58,7 +58,7 @@ const RelationShipProtocolSection = () => {
 	);
 
 	return (
-		<section className="relative pb-[80px] lg:pt-[100px] bg-[#f5e9e9]">
+		<section className="relative pb-[80px] lg:pt-[100px] bg-[#F3E0E1]">
 			{/* Background Image */}
 			{/* <div className='absolute inset-0 -z-10'>
         <Image

@@ -88,7 +88,7 @@ const TriageSection = () => {
 	return (
 		<section
 			id="triage"
-			className="relative pt-[57px] pb-[22px] lg:pt-[120px] lg:pb-[112px] overflow-hidden bg-[#f5e9e9]"
+			className="relative pt-[57px] pb-[22px] lg:pt-[120px] lg:pb-[112px] overflow-hidden bg-[#F3E0E1]"
 		>
 			{/* <div className='absolute inset-0 -z-10'>
         <Image src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/love.theleelumethod%2Fbg%2Ftriage_section_bg.png?alt=media' alt='' fill priority quality={85} sizes='100vw' />
