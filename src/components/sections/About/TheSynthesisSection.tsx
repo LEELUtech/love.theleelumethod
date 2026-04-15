@@ -35,7 +35,7 @@ const TheSynthesisSection = () => {
 				/>
 			</div>
 
-			<Section>
+			<Section sectionClasses="!pb-16 md:!pb-0">
 				<div className="max-w-[800px] mx-auto text-center px-2">
 					{/* Top Image */}
 					<div className="flex justify-center mb-[120px] lg:mb-[75px]">

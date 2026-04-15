@@ -86,7 +86,7 @@ export default function SecretsHeroSection() {
     >
       <Header />
 
-      <div className='container pt-8 pb-16 md:pt-12 md:pb-20 lg:pt-16 lg:pb-[112px] px-4'>
+      <div className='container pt-0 pb-16 md:pt-12 md:pb-20 lg:pt-16 lg:pb-[112px] px-4'>
         <div className='relative flex flex-col items-center justify-center w-full text-center gap-4 md:gap-5 lg:gap-6'>
           <div className='relative flex flex-col items-center gap-3 md:gap-4 mt-4 md:mt-5 lg:mt-6'>
             <div className='relative w-[300px] h-[280px]'>

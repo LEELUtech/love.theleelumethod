@@ -16,8 +16,8 @@ function LearnCard({ title, text, size = 'lg' }: Card) {
     <div
       className={`rounded-[32px] bg-brand-white backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.1)]
         max-w-[392px] px-8 py-[48px]
-        sm:max-w-none sm:w-full sm:h-auto sm:px-7 sm:py-7
-        lg:px-[38px] ${height}`}
+        sm:max-w-none sm:w-full sm:h-auto sm:px-7 sm:py-7 sm:pt-[48px]
+        lg:px-[38px] lg:pt-[48px] ${height}`}
     >
       <h3 className='font-canela font-light text-[32px]/[120%] text-brand-deep mb-4'>{title}</h3>
 
@@ -122,7 +122,7 @@ export default function CohortLearnCards() {
 
       {/* Mobile/Tablet layout (stack) */}
       <motion.div
-        className='lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4'
+        className='lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 justify-items-center sm:justify-items-stretch'
         variants={containerVariants}
         initial='hidden'
         whileInView='show'

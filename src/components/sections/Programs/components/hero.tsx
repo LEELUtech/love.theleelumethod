@@ -24,7 +24,7 @@ export const ProgramsHero = (props: Props) => {
     <Section sectionClasses='bg-brand-white' wrapperClasses='pt-[80px]'>
       <div className='flex flex-col items-center'>
         <div className='relative'>
-          <div className='w-[359px] h-[305px] md:w-[520px] md:h-[420px] lg:w-[356px] lg:h-[322px] overflow-hidden'>
+          <div className='w-[235px] h-[225px] md:w-[520px] md:h-[420px] lg:w-[356px] lg:h-[322px] overflow-hidden'>
             <Image
               src={imgSrc}
               alt='Lily'

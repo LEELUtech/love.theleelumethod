@@ -307,7 +307,7 @@ export default function ChooseYourPathSection({ cohortLabel }: { cohortLabel?: s
               {tiers.map((tier) => (
                 <div
                   key={tier.title}
-                  className={`relative flex w-full flex-col rounded-[32px] bg-white py-8 shadow-lg`}
+                  className={`relative flex w-full flex-col rounded-[32px] bg-white px-6 py-8 lg:px-0 shadow-lg`}
                 >
                   {tier.popular && (
                     <span className='absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-[#EB4F68] w-[154px] text-center py-1.5 text-[14px]/[26px] tracking-[10%] font-medium text-white'>
@@ -316,11 +316,11 @@ export default function ChooseYourPathSection({ cohortLabel }: { cohortLabel?: s
                     </span>
                   )}
 
-                  <h3 className='mx-[30px] text-[42px]/[126%] mb-[10px] max-w-[200px] lg:mx-auto font-canela font-thin lg:text-[36px] text-brand-black lg:text-center xs:text-left'>
+                  <h3 className='mx-0 text-[42px]/[126%] mb-[10px] max-w-[200px] lg:mx-auto font-canela font-thin lg:text-[36px] text-brand-black lg:text-center xs:text-left'>
                     {tier.title}
                   </h3>
 
-                  <ul className='mt-8 flex flex-col gap-4 lg:gap-0 flex-1 px-4 4xl:px-8 font-lato text-[18px]/[120%] text-brand-gray'>
+                  <ul className='mt-8 flex flex-col gap-0 flex-1 px-0 lg:px-4 4xl:px-8 font-lato text-[18px]/[120%] text-brand-gray'>
                     {tier.features.map((feature, i) => {
                       const isExist = feature !== '-';
 
@@ -329,7 +329,7 @@ export default function ChooseYourPathSection({ cohortLabel }: { cohortLabel?: s
                       return (
                         <li
                           key={i}
-                          className={`flex flex-col lg:items-start lg:justify-center h-auto lg:h-[90px] lg:border-b lg:border-[#C6ABB3] lg:last:border-none ${!isExist ? 'lg:justify-center lg:items-center' : ''}`}
+                          className={`flex flex-col lg:items-start lg:justify-center h-auto py-4 lg:py-0 lg:h-[90px] border-b border-[#C6ABB3] last:border-none ${!isExist ? 'lg:justify-center lg:items-center' : ''}`}
                         >
                           <h5 className='text-brand-gray text-[17px]/[22px] lg:hidden'>{title}</h5>
                           <span className={`font-lato font-semibold text-[18px]/[150%] lg:font-normal lg:text-[16px] xl:text-[18px] 4xl:text-[18px]`}>
@@ -340,8 +340,8 @@ export default function ChooseYourPathSection({ cohortLabel }: { cohortLabel?: s
                     })}
                   </ul>
 
-                  <div className='mt-10 text-left lg:text-center px-4'>
-                    <p className='font-canela lg:font-light mb-5 text-[48px]/[126%] lg:text-[32px] text-[#3C1212] pl-[16px] lg:pl-0'>
+                  <div className='mt-10 text-left lg:text-center px-0 lg:px-4'>
+                    <p className='font-canela lg:font-light mb-5 text-[48px]/[126%] lg:text-[32px] text-[#3C1212]'>
                       {tier.price}
                     </p>
                     <Button

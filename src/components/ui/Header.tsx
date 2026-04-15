@@ -41,7 +41,7 @@ export default function Header({ className }: { className?: string }) {
         {/* Logo */}
         <Link
           href='/'
-          className='px-2 md:px-3 lg:px-4 font-light transition text-[20px] md:text-[22px] lg:text-[24px] leading-[126%] font-canela flex items-center gap-2 md:gap-2.5 lg:gap-3'
+          className='px-2 md:px-3 lg:px-4 font-light transition text-[20px] md:text-[22px] lg:text-[24px]  font-canela flex items-center gap-2 md:gap-2.5 lg:gap-3'
           onClick={() => setOpen(false)}
         >
           <Logo />

@@ -18,11 +18,11 @@ const content = {
 const HeroSection = () => {
   const { title, description, link } = content;
   return (
-    <section className='relative bg-brand-white lg:pb-[142px]'>
+    <section className='relative bg-brand-white pb-16 lg:pb-[142px]'>
       <Header />
-      <div className='container px-4 flex flex-col lg:flex-row items-center justify-between lg:gap-12 gap-0 mt-[80px]'>
+      <div className='container px-4 flex flex-col lg:flex-row lg:items-stretch items-center justify-between lg:gap-12 gap-0 mt-8 lg:mt-[80px]'>
         {/* Text Content */}
-        <div className='lg:w-1/2 xs:relative xs:top-[-60px] flex flex-col max-w-[549px] order-2'>
+        <div className='lg:w-1/2 xs:relative lg:top-0 xs:top-[-60px] flex flex-col max-w-[549px] order-2 lg:justify-center'>
           <h1 className='font-canela font-thin text-brand-deep mb-6 lg:mb-12 leading-[126%] tracking-normal text-[48px] lg:text-[60px] text-center lg:text-left'>
             {title}
           </h1>

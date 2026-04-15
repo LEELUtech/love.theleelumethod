@@ -59,8 +59,15 @@ export const FooterPromo = (props: Props) => {
               </RotateOnView>
             </div>
 
-            <div className='relative w-full aspect-[551/748] rounded-[24px] md:rounded-[32px] lg:rounded-[40px] overflow-hidden'>
-              <Image src='/images/lily/lily_2.png' alt='Lily' fill quality={85} className='object-cover' />
+            <div className='relative w-full aspect-[551/748] rounded-[110px] overflow-hidden'>
+              <video
+                src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/landingVideos%2Flanding_video_3.mp4?alt=media&token=d412cfaa-895b-4ecc-82aa-94ec4684a67d'
+                autoPlay
+                muted
+                loop
+                playsInline
+                className='absolute inset-0 w-full h-full object-cover'
+              />
             </div>
           </div>
 
