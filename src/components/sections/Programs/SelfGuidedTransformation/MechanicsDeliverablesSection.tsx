@@ -69,11 +69,11 @@ const content = {
   },
 };
 
-const VideoContent = () => (
+const VideoContent = ({ src = 'https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/landingVideos%2Flanding_video_1.mp4?alt=media&token=34b349ac-bfae-4eb4-8926-f8e297d2b898' }: { src?: string }) => (
   <div className='relative w-full max-w-[496px] aspect-[496/535] mx-auto'>
     <SlowVideo
       skipSlowVideo
-      src='https://firebasestorage.googleapis.com/v0/b/leelu-tech.firebasestorage.app/o/landingVideos%2Flanding_video_1.mp4?alt=media&token=34b349ac-bfae-4eb4-8926-f8e297d2b898'
+      src={src}
       className='
         absolute inset-0
         w-full h-full
