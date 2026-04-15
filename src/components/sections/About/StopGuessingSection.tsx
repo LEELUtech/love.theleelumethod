@@ -65,7 +65,7 @@ const StopGuessingSection = () => {
         </div>
 
         {/* Heading */}
-        <h2 className='font-thin pt-[40px] md:pt-0 text-[48px] lg:text-[60px] leading-[126%] font-canela text-brand-deep mb-6'>
+        <h2 className='font-thin pt-[80px] md:pt-0 text-[48px] lg:text-[60px] leading-[126%] font-canela text-brand-deep mb-6'>
           Stop Guessing. Start Knowing.
         </h2>
 

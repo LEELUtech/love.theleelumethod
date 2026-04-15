@@ -421,10 +421,10 @@ export default function ModulesSection({ cohortLabel }: { cohortLabel?: string |
             </div>
           </div>
 
-          <div className='text-center relative mt-[200px] lg:mt-[100px]'>
-            <div className='lg:hidden absolute z-0 left-1/2 -translate-x-1/2 top-[-80px] md:top-[-280px] lg:top-[-300px] flex flex-row items-center justify-center gap-[130px]'>
+          <div className='text-center relative mt-[10px] lg:mt-[100px]'>
+            <div className='lg:hidden absolute z-0 left-1/2 -translate-x-1/2 top-[0px] flex flex-row items-center justify-center gap-[130px] translate-y-[50px]'>
               <div
-                className='relative overflow-hidden w-[340px] h-[340px] sm:w-[418px] sm:h-[418px] md:translate-y-[50px] lg:translate-y-[60px]   '
+                className='relative overflow-hidden w-[174px] h-[174px] sm:w-[174px] sm:h-[174px]'
                 style={{
                   WebkitMaskImage:
                     'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 15%, rgba(0,0,0,0) 100%)',

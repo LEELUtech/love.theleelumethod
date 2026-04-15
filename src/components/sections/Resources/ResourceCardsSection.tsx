@@ -121,9 +121,7 @@ export function ResourceCardsSection() {
                     variant='primary'
                     className='w-full py-[12px] text-center !text-[12px]'
                     href={item.href}
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    trackingData={{
+                                        trackingData={{
                       cta_name: 'start_quiz',
                       cta_text: 'Start quiz',
                       cta_target_url: item.href,

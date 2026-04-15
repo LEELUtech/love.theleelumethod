@@ -9,7 +9,7 @@ export const Logo = ({ size = 'md' }: Props) => {
 
   return (
     <div className='font-canela flex items-center gap-3'>
-      <span className={`inline-block relative flex-shrink-0 ${imgSize}`}>
+      <span className={`inline-block relative flex-shrink-0 translate-y-[2px] ${imgSize}`}>
         <Image src='/leelu_logo.svg' alt='Lily Chystofat Logo' fill className='object-contain' priority quality={85} />
       </span>
 
