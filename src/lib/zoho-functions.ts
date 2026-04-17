@@ -186,6 +186,7 @@ export async function upsertZohoContactFunnel(input: {
   country?: string;
 
   birthDate1?: string; // MM/DD/YYYY — saved to Date_of_Birth
+  birthDate2?: string; // MM/DD/YYYY — saved to Partner_Date_of_Birth
 }): Promise<UpsertResult> {
   const apiDomain = ZOHO_API_DOMAIN || env("ZOHO_API_DOMAIN_LILYCHYSTOFAT");
 
@@ -218,6 +219,7 @@ export async function upsertZohoContactFunnel(input: {
     // snapshot fields
     setIfEmpty(patch, "Site", existing["Site"], input.site);
     setIfEmpty(patch, "Date_of_Birth", existing["Date_of_Birth"], toZohoCrmDate(input.birthDate1));
+    setIfEmpty(patch, "Partner_Date_of_Birth", existing["Partner_Date_of_Birth"], toZohoCrmDate(input.birthDate2));
 
     // cohort: fill if empty (bulk sync handles mass updates)
     setIfEmpty(patch, "Cohort_Start_Date", existing["Cohort_Start_Date"], cohort.date);
@@ -259,6 +261,9 @@ export async function upsertZohoContactFunnel(input: {
 
   const dob = toZohoCrmDate(input.birthDate1);
   if (dob) createData.Date_of_Birth = dob;
+
+  const dob2 = toZohoCrmDate(input.birthDate2);
+  if (dob2) createData.Partner_Date_of_Birth = dob2;
 
   if (cohort.date) createData.Cohort_Start_Date = cohort.date;
   if (cohort.label) createData.Cohort_Start_Date_Name = cohort.label;
@@ -325,6 +330,7 @@ export async function upsertContactCheckoutStarted(input: {
 
   stripePaymentIntentId?: string;
   birthDate1?: string;
+  birthDate2?: string;
 }) {
   return upsertZohoContactFunnel({
     email: input.email,
@@ -344,5 +350,6 @@ export async function upsertContactCheckoutStarted(input: {
     country: input.country,
 
     birthDate1: input.birthDate1,
+    birthDate2: input.birthDate2,
   });
 }
