@@ -432,6 +432,7 @@ export async function POST(req: NextRequest) {
 				site: siteFromReq,
 				stripePaymentIntentId: intentId,
 				birthDate1: clean(body.birthDate1),
+				birthDate2: clean(body.birthDate2),
 			});
 		} catch (e) {
 			console.error("Zoho checkout_started failed (non-critical)", {
