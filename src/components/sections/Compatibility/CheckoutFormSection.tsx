@@ -31,6 +31,7 @@ const pk = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY_LILYCHYSTOFAT!;
 const stripePromise = loadStripe(pk);
 
 type CompatibilityCheckoutForm = {
+	firstName: string;
 	email: string;
 	birthDate1: string;
 	birthDate2: string;
@@ -39,6 +40,7 @@ type CompatibilityCheckoutForm = {
 type FormErrors = Partial<Record<keyof CompatibilityCheckoutForm, string>>;
 
 const initialForm: CompatibilityCheckoutForm = {
+	firstName: "",
 	email: "",
 	birthDate1: "",
 	birthDate2: "",
@@ -231,13 +233,16 @@ export default function CheckoutFormSection() {
 			const controller = new AbortController();
 			leadAbortRef.current = controller;
 
-			salesiqIdentify({ email });
+			const firstName = (formRef.current.firstName || "").trim() || undefined;
+
+			salesiqIdentify({ email, firstName });
 			saveEmailToLS(email);
 
 			const payload = {
 				paymentIntentId: intentId || undefined,
 				intentToken: intentToken || undefined,
 				email,
+				firstName,
 				sessionId: localStorage.getItem("ff_session_id") || undefined,
 				salesiqVisitorId:
 					localStorage.getItem("ff_salesiq_visitor_id") || undefined,
@@ -295,6 +300,7 @@ export default function CheckoutFormSection() {
 		(data: CompatibilityCheckoutForm) => {
 			const next: FormErrors = {};
 
+			if (!data.firstName.trim()) next.firstName = "Please enter your first name.";
 			if (!data.birthDate1) next.birthDate1 = "Please select your birthdate.";
 			if (!data.birthDate2)
 				next.birthDate2 = "Please select partner’s birthdate.";
@@ -327,6 +333,7 @@ export default function CheckoutFormSection() {
 		await payFnRef.current();
 	}, [form, validateOnSubmit]);
 
+	const showFirstNameError = submitAttempted && !!errors.firstName;
 	const showEmailError = submitAttempted && !!errors.email;
 	const showBirth1Error = submitAttempted && !!errors.birthDate1;
 	const showBirth2Error = submitAttempted && !!errors.birthDate2;
@@ -392,6 +399,19 @@ export default function CheckoutFormSection() {
 
 							<div className="mt-[26px] space-y-4">
 								<div>
+									<Input
+										placeholder="First Name"
+										value={form.firstName}
+										onChange={(e) => setField("firstName", e.target.value)}
+									/>
+									{showFirstNameError ? (
+										<p className="mt-1 text-xs font-lato text-brand-primary">
+											{errors.firstName}
+										</p>
+									) : null}
+								</div>
+
+								<div>
 									<BirthDatePicker
 										placeholder="Your Birthdate"
 										onChange={(val) =>
@@ -455,6 +475,7 @@ export default function CheckoutFormSection() {
 											<StripeCardPart
 												clientSecret={clientSecret!}
 												productType={productId}
+												firstName={form.firstName}
 												email={form.email}
 												emailValid={emailValid}
 												birthDate1={form.birthDate1}

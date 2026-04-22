@@ -14,6 +14,7 @@ export type BillingForm = {
 export type BillingErrors = Partial<Record<keyof BillingForm, string>>;
 
 export type CompatibilityCheckoutForm = {
+  firstName: string;
   email: string;
   birthDate1: string;
   birthDate2: string;

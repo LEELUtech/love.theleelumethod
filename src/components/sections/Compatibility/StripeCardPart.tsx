@@ -44,6 +44,7 @@ type Props = {
   clientSecret: string;
   productType: string;
 
+  firstName: string;
   email: string;
   emailValid: boolean;
   birthDate1: string;
@@ -57,6 +58,7 @@ type Props = {
 export function StripeCardPart({
   clientSecret,
   productType,
+  firstName,
   email,
   emailValid,
   birthDate1,
@@ -114,10 +116,11 @@ export function StripeCardPart({
       // 1) update metadata BEFORE confirming (server-side)
       const utm = getStoredLastUTM();
 
-      salesiqIdentify({ email });
+      salesiqIdentify({ email, firstName });
 
       await updateIntent({
         productType,
+        firstName,
         email,
         birthDate1,
         birthDate2,
@@ -172,6 +175,7 @@ export function StripeCardPart({
     clientSecret,
     updateIntent,
     productType,
+    firstName,
     email,
     emailValid,
     birthDate1,
