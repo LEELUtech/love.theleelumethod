@@ -116,7 +116,7 @@ export function StripeCardPart({
       // 1) update metadata BEFORE confirming (server-side)
       const utm = getStoredLastUTM();
 
-      salesiqIdentify({ email });
+      salesiqIdentify({ email, firstName });
 
       await updateIntent({
         productType,

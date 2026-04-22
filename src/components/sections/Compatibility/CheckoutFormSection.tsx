@@ -233,10 +233,10 @@ export default function CheckoutFormSection() {
 			const controller = new AbortController();
 			leadAbortRef.current = controller;
 
-			salesiqIdentify({ email });
-			saveEmailToLS(email);
-
 			const firstName = (formRef.current.firstName || "").trim() || undefined;
+
+			salesiqIdentify({ email, firstName });
+			saveEmailToLS(email);
 
 			const payload = {
 				paymentIntentId: intentId || undefined,

@@ -53,11 +53,13 @@ async function ensureSubscribed(email: string, token: string, listkey?: string) 
   body.set("listkey", resolvedListKey);
   body.set("contactinfo", JSON.stringify(contact));
 
-  await fetch("https://campaigns.zoho.com/api/v1.1/json/listsubscribe", {
+  const resp = await fetch("https://campaigns.zoho.com/api/v1.1/json/listsubscribe", {
     method: "POST",
     headers: { ...authHeaders(token), "Content-Type": "application/x-www-form-urlencoded" },
     body,
   });
+  const result = await resp.json().catch(() => null);
+  console.log("[add-tags] listsubscribe response", { email, status: resp.status, result });
 }
 
 async function ensureTag(tag: string, token: string) {

@@ -13,7 +13,7 @@ export const Logo = ({ size = 'md' }: Props) => {
         <Image src='/leelu_logo.svg' alt='Lily Chystofat Logo' fill className='object-contain' priority quality={85} />
       </span>
 
-      <div className='whitespace-nowrap text-[24px]/[126%] flex gap-1 text-brand-black'>
+      <div className='whitespace-nowrap text-[24px]/[126%] flex items-baseline gap-1 text-brand-black'>
         <span className='font-light'>THE</span>
 
         <span className='font-medium'>LEELU</span>
