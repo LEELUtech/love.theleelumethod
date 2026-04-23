@@ -1,7 +1,7 @@
 // URLs
 export const WEBINAR_URL = 'https://theleelumethod.ewebinar.com/webinar/decoded-love-22610';
 
-export const QUIZ_URL = 'https://quiz.tryinteract.com/#/6924e6b9f816b54db5bec555?user.email=test@example.com';
+export const QUIZ_URL = 'https://www.tryinteract.com/share/quiz/69e89c5821143d14568acf98';
 
 // LocalStorage Keys
 export const FORM_STORAGE_KEY = 'FORM_PERSISTENCE';
