@@ -16,6 +16,18 @@ const nextConfig: NextConfig = {
 				permanent: true,
 				has: [{ type: "host", value: "www.theleelumethod.com" }],
 			},
+			{
+				source: "/:path*",
+				destination: "https://love.theleelumethod.com/:path*",
+				permanent: true,
+				has: [{ type: "header", key: "x-forwarded-host", value: "theleelumethod.com" }],
+			},
+			{
+				source: "/:path*",
+				destination: "https://love.theleelumethod.com/:path*",
+				permanent: true,
+				has: [{ type: "header", key: "x-forwarded-host", value: "www.theleelumethod.com" }],
+			},
 		];
 	},
 	output: "standalone",

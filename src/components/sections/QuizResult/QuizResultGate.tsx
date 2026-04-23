@@ -13,17 +13,17 @@ import { getStoredFirstUTM, getStoredLastUTM } from "@/utils/utm-tracker";
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const typeToProfileTag: Record<string, string> = {
-  brokenHeartStorm: "q_pf_over",
-  lonelyHopeLoop: "q_pf_drift",
-  silentBreakupRelationship: "q_pf_karmic",
-  endlessWaitingRoom: "q_pf_proj",
+  TheOverFunctioner: "q_pf_over",
+  KarmicLoop: "q_pf_drift",
+  Drifter: "q_pf_karmic",
+  Projector: "q_pf_proj",
 };
 
 const typeToTitle: Record<string, string> = {
-  brokenHeartStorm: "The Broken Heart Storm",
-  lonelyHopeLoop: "The Lonely Hope Loop",
-  silentBreakupRelationship: "The Silent Breakup Relationship",
-  endlessWaitingRoom: "The Endless Waiting Room",
+  TheOverFunctioner: "The Over Functioner",
+  KarmicLoop: "Karmic Loop",
+  Drifter: "Drifter",
+  Projector: "Projector",
 };
 
 const ALL_PROFILE_TAGS = Object.values(typeToProfileTag);

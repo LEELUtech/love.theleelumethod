@@ -9,8 +9,8 @@ export interface QuizResult {
 export const quizResults: QuizResult[] = [
   {
     id: 1,
-    type: 'brokenHeartStorm',
-    title: 'The Broken Heart Storm',
+    type: 'TheOverFunctioner',
+    title: 'The Over Functioner',
     description:
       "You're inside an emotional storm — raw heartbreak, shock, confusion, and fear. Your nervous system is overwhelmed. Your thoughts are loud. And every decision feels dangerous. This phase is the most vulnerable for a woman — because your heart is screaming, while your mind is trying to survive.",
     secondaryDescription:
@@ -18,8 +18,8 @@ export const quizResults: QuizResult[] = [
   },
   {
     id: 2,
-    type: 'lonelyHopeLoop',
-    title: 'The Lonely Hope Loop',
+    type: 'KarmicLoop',
+    title: 'Karmic Loop',
     description:
       "You're caught between hope and disappointment. You want love deeply — but dating feels exhausting, discouraging, and unpredictable. You attract the wrong type, or you feel invisible to the kind of men you want. You compare yourself to women who 'got lucky,' and secretly worry that love is slipping away from you.",
     secondaryDescription:
@@ -27,8 +27,8 @@ export const quizResults: QuizResult[] = [
   },
   {
     id: 3,
-    type: 'silentBreakupRelationship',
-    title: 'The Silent Breakup Relationship',
+    type: 'Drifter',
+    title: 'Drifter',
     description:
       "You're in a relationship… but emotionally, you're already alone. You give more than you receive. You try to fix things on your own. You feel unseen, unheard, and unchosen. You're scared to stay — and terrified to leave. This is one of the most painful emotional states for a woman — because it feels like you're disappearing inside a relationship that no longer feeds you.",
     secondaryDescription:
@@ -36,8 +36,8 @@ export const quizResults: QuizResult[] = [
   },
   {
     id: 4,
-    type: 'endlessWaitingRoom',
-    title: 'The Endless Waiting Room',
+    type: 'Projector',
+    title: 'Projector',
     description:
       "You're in a relationship that looks like a future… but doesn't move toward one. You give love, support, time, loyalty — and deep down, you hope that one day he'll choose you and commit to the life you want. But the truth is painful: You're emotionally stuck between what you desire and what he's actually offering. He's comfortable. But not committed. And this dynamic slowly erodes your confidence, your value, and your sense of time.",
     secondaryDescription:
