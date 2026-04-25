@@ -5,9 +5,10 @@ import React from 'react';
 
 interface HeroSectionProps {
   title: string;
+  subtitle: string;
 }
 
-const HeroSection = ({ title }: HeroSectionProps) => {
+const HeroSection = ({ title, subtitle }: HeroSectionProps) => {
   return (
     <section className='relative overflow-hidden min-h-[686px]'>
       <div className='absolute inset-0 z-0'>
@@ -47,7 +48,7 @@ const HeroSection = ({ title }: HeroSectionProps) => {
           </h1>
 
           <p className='font-canela font-light text-[20px] md:text-[22px] lg:text-[24px] text-brand-deep uppercase mt-[24px]'>
-            High Friction / Misaligned Script
+            {subtitle}
           </p>
 
           <Button

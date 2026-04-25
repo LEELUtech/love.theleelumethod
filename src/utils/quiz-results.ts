@@ -2,45 +2,58 @@ export interface QuizResult {
   id: number;
   type: string;
   title: string;
-  description: string;
-  secondaryDescription: string;
+  subtitle: string;
+  psychologicalProfile: string;
+  pattern: string;
+  fix: string;
 }
 
 export const quizResults: QuizResult[] = [
   {
     id: 1,
     type: 'TheOverFunctioner',
-    title: 'The Over Functioner',
-    description:
-      "You're inside an emotional storm — raw heartbreak, shock, confusion, and fear. Your nervous system is overwhelmed. Your thoughts are loud. And every decision feels dangerous. This phase is the most vulnerable for a woman — because your heart is screaming, while your mind is trying to survive.",
-    secondaryDescription:
-      "You're not broken. You're hurting. And you're doing everything you can. But if you stay in this emotional cycle, your self-worth and clarity will collapse — and you'll repeat the same painful patterns in the next relationship. This is why Lily's Masterclass is essential for you. You'll learn what's happening in his mind, why the pain feels unbearable, and how to regain emotional control without chasing, begging, or breaking yourself even more.",
+    title: 'THE BROKEN HEART STORM',
+    subtitle: 'Acute Wound / Unresolved Loop',
+    psychologicalProfile:
+      'Your heart is broken, yet fully awake, which is why it hurts so much. You cannot sleep. You cannot stop the loop. And underneath the question of "why did he do this to me?" is the louder one: "what did I do wrong?"',
+    pattern:
+      'This is a live wire, not a dead end. The intensity you feel is not evidence that you will never love again. It is evidence that you still can. But without intervention, the storm becomes the armor, and the woman who comes out the other side stops feeling everything, not just the pain.',
+    fix: 'You cannot wait this out. In the Decoded Love Masterclass, Lily will show you how to break the self-blame loop, reclaim your instincts, and come out of this as someone who can love again.',
   },
   {
     id: 2,
     type: 'KarmicLoop',
-    title: 'Karmic Loop',
-    description:
-      "You're caught between hope and disappointment. You want love deeply — but dating feels exhausting, discouraging, and unpredictable. You attract the wrong type, or you feel invisible to the kind of men you want. You compare yourself to women who 'got lucky,' and secretly worry that love is slipping away from you.",
-    secondaryDescription:
-      "But nothing is wrong with you. You're not behind. You're not defective. You're simply choosing from the wrong emotional frequency — a pattern you can break. Lily's Masterclass will be powerful for you. You'll learn why good men don't stick, how men fall in love, and how to shift into the energy that attracts real commitment —not crumbs.",
+    title: 'THE LONELY HOPE LOOP',
+    subtitle: 'High Standards / Shrinking Return',
+    psychologicalProfile:
+      'You built a life while others built relationships, and now the available men don\'t match what you\'ve become. Every date is a mismatch. Every almost-relationship confirms the gap between what you hope for and what keeps showing up. You tell yourself it\'s temporary. The loop says otherwise.',
+    pattern:
+      'This is a calibration problem, not a character flaw. The same drive that built your career is working against you in dating. You are filtering through the wrong signals and reading the wrong results as proof of the wrong conclusion.',
+    fix: 'You cannot date your way out of this. In the Decoded Love Masterclass, Lily will show you why high-achieving women keep hitting this wall, and what actually creates attraction with a man worth your time.',
   },
   {
     id: 3,
     type: 'Drifter',
-    title: 'Drifter',
-    description:
-      "You're in a relationship… but emotionally, you're already alone. You give more than you receive. You try to fix things on your own. You feel unseen, unheard, and unchosen. You're scared to stay — and terrified to leave. This is one of the most painful emotional states for a woman — because it feels like you're disappearing inside a relationship that no longer feeds you.",
-    secondaryDescription:
-      "But this pattern can be transformed — or completed. The key is clarity. This is why Lily's Masterclass will be life-changing for you. You'll understand what broke the emotional bond, what men need to reawaken connection, and whether your relationship can be saved — or whether you must finally choose yourself.",
+    title: 'THE SILENT BREAKUP',
+    subtitle: 'Emotional Exit / No Stated Terms',
+    psychologicalProfile:
+      'The house is intact. The calendar is full. From the outside, nothing is wrong. But intimacy has been gone for years, you feel invisible to the man you live with, and somewhere inside you a version of your life is playing out that looks nothing like this one. The breakup is already happening. It\'s just silent.',
+    pattern:
+      'Silence is not peace. It is just a slower kind of leaving. You already know what you feel. You already know what is missing. The longer it goes unnamed, the further you get from any version of your life that actually fits you.',
+    fix: 'You cannot keep swallowing this. In the Decoded Love Masterclass, Lily will show you how to resurface inside a relationship that has gone quiet — and whether what\'s there is worth coming back to.',
   },
   {
     id: 4,
     type: 'Projector',
-    title: 'Projector',
-    description:
-      "You're in a relationship that looks like a future… but doesn't move toward one. You give love, support, time, loyalty — and deep down, you hope that one day he'll choose you and commit to the life you want. But the truth is painful: You're emotionally stuck between what you desire and what he's actually offering. He's comfortable. But not committed. And this dynamic slowly erodes your confidence, your value, and your sense of time.",
-    secondaryDescription:
-      "This is not your fault — but it is your responsibility to break the cycle. Lily's Masterclass is crucial for you. You'll learn how men decide whether a woman is a 'girlfriend' or a 'future wife,' why he delays commitment, and what shifts the dynamic without threats or pressure. You deserve clarity — not another year of waiting.",
+    title: 'THE ENDLESS WAITING ROOM',
+    subtitle: 'Full Investment / No Commitment',
+    psychologicalProfile:
+      'You\'ve given years. You know his family, shaped his life, built everything but a title. You call it patience. But underneath that patience is a quieter belief you\'ve been trying not to look at directly: that maybe you\'re simply not enough to be chosen.',
+    pattern:
+      'This is a sunk cost spiral, not a love story. The waiting room stays open because you won\'t walk out and he won\'t call your name. Every year you stay recalibrates your sense of what you deserve, and not upward.',
+    fix: 'You cannot wait your way to being chosen. In the Decoded Love Masterclass, Lily will show you why he hasn\'t committed, whether he ever will, and what to do either way.',
   },
 ];
+
+export const quizResultsFooter =
+  "Lily's numerology system reads the mathematical patterns underneath your relationships — the ones that repeat regardless of the man, the situation, or how hard you try. What you just received is the surface. The Decoded Love Masterclass is where the full pattern gets decoded.";
