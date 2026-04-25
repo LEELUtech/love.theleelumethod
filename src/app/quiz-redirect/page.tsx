@@ -25,9 +25,9 @@ const QuizResultPage = ({ searchParams }: QuizResultPageProps) => {
   return (
     <QuizResultGate type={type!}>
       <main>
-        <HeroSection title={result.title} />
-        <ProfileGlitchSection description={result.description} secondaryDescription={result.secondaryDescription} />
-        <FixSection />
+        <HeroSection title={result.title} subtitle={result.subtitle} />
+        <ProfileGlitchSection psychologicalProfile={result.psychologicalProfile} pattern={result.pattern} />
+        <FixSection fix={result.fix} />
         <FooterLayout withNavigation={false} />
       </main>
     </QuizResultGate>
