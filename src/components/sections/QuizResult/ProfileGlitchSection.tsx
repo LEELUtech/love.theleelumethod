@@ -3,11 +3,11 @@ import Image from 'next/image';
 import React from 'react';
 
 interface ProfileGlitchSectionProps {
-  description: string;
-  secondaryDescription: string;
+  psychologicalProfile: string;
+  pattern: string;
 }
 
-const ProfileGlitchSection = ({ description, secondaryDescription }: ProfileGlitchSectionProps) => {
+const ProfileGlitchSection = ({ psychologicalProfile, pattern }: ProfileGlitchSectionProps) => {
   return (
     <section className='relative overflow-hidden'>
       {/* background */}
@@ -47,17 +47,13 @@ const ProfileGlitchSection = ({ description, secondaryDescription }: ProfileGlit
 
             {/* TEXT */}
             <div className='order-2 md:order-1 text-center md:text-left max-w-[560px] md:max-w-[420px] lg:max-w-[560px]'>
-              <h2 className='font-canela font-thin text-[42px] md:text-[42px] lg:text-[48px]leading-[1.05] text-brand-deep'>
+              <h2 className='font-canela font-thin text-[42px] md:text-[42px] lg:text-[48px] leading-[1.05] text-brand-deep'>
                 THE PSYCHOLOGICAL
                 <br />
                 PROFILE:
               </h2>
 
-              <p className='mt-[40px] font-canela font-light text-[32px] leading-[1.35] text-brand-deep'>
-                You are running a script of High Output / Low Return.
-              </p>
-
-              <p className='mt-4 font-lato font-medium text-body leading-[1.7] text-[#5A5757]'>{description}</p>
+              <p className='mt-[40px] font-lato font-medium text-body leading-[1.7] text-[#5A5757]'>{psychologicalProfile}</p>
             </div>
           </div>
 
@@ -87,12 +83,8 @@ const ProfileGlitchSection = ({ description, secondaryDescription }: ProfileGlit
                 GLITCH:
               </h2>
 
-              <p className='mt-[40px] font-canela font-light text-[32px] leading-[1.35] text-brand-deep'>
-                This is a Polarity Inversion.
-              </p>
-
-              <p className='mt-4 font-lato font-medium text-body leading-[1.7] text-[#5A5757]'>
-                {secondaryDescription}
+              <p className='mt-[40px] font-lato font-medium text-body leading-[1.7] text-[#5A5757]'>
+                {pattern}
               </p>
             </div>
           </div>
