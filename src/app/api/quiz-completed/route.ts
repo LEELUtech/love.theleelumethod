@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { markQuizCompleted } from "@/lib/zoho-crm-scoring";
+import { emitFunnelEvent } from "@/lib/emitFunnelEvent";
 
 export async function POST(req: NextRequest) {
   try {
@@ -13,6 +14,16 @@ export async function POST(req: NextRequest) {
 
     const site = process.env.ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT || "unknown";
     await markQuizCompleted(email, site, quizResult);
+
+    await emitFunnelEvent({
+      event_id: `quiz_completed_${email.replace(/[^a-z0-9]/g, "_")}_${Date.now()}`,
+      source: "web:server",
+      funnel_step: "lead_captured",
+      event_name: "quiz_completed",
+      email,
+      site,
+      ...(quizResult ? { quiz_result: quizResult } : {}),
+    });
 
     return NextResponse.json({ ok: true, email });
   } catch (e: unknown) {
