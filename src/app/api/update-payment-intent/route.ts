@@ -60,6 +60,7 @@ type Body = {
   salesiqVisitorId?: string;
   installment?: string;
   webinarDiscount?: boolean;
+  promoCode?: string;
 };
 
 function clean(v?: string | null): string | undefined {
@@ -279,6 +280,7 @@ export async function POST(req: NextRequest) {
     // Installment amount (existing plan takes priority over toggle)
     const installmentIn = clean(body.installment);
     const webinarDiscountIn = !!body.webinarDiscount;
+    const promoCodeIn = clean(body.promoCode)?.toUpperCase();
     let installmentAmount: number | undefined;
     let setupFutureUsage: 'off_session' | undefined;
 
@@ -295,9 +297,42 @@ export async function POST(req: NextRequest) {
       nextMeta.source = existingPlan.status === 'overdue' ? 'installment_retry' : 'installment_early';
       nextMeta.installment = '2';
     } else {
-      // Resolve base amount (webinar discount or full price)
+      // Resolve base amount: promo > webinar discount > full price
       let baseAmount = pi.amount;
-      if (webinarDiscountIn) {
+
+      if (promoCodeIn && productTypeIn === 'protocol_essentials') {
+        try {
+          const promoSnap = await getDoc(doc(db, 'promo_links', promoCodeIn));
+          if (promoSnap.exists()) {
+            const promoData = promoSnap.data() as {
+              enabled?: boolean;
+              expires_at?: { toDate?: () => Date } | string;
+              discount_price?: number;
+            };
+            const enabled = !!promoData.enabled;
+            let expiresAt: Date | null = null;
+            if (promoData.expires_at) {
+              if (typeof (promoData.expires_at as { toDate?: () => Date }).toDate === 'function') {
+                expiresAt = (promoData.expires_at as { toDate: () => Date }).toDate();
+              } else if (typeof promoData.expires_at === 'string') {
+                expiresAt = new Date(promoData.expires_at);
+              }
+            }
+            const notExpired = expiresAt !== null && expiresAt > new Date();
+            if (
+              enabled &&
+              notExpired &&
+              typeof promoData.discount_price === 'number' &&
+              promoData.discount_price > 0
+            ) {
+              baseAmount = promoData.discount_price;
+              nextMeta.promo_code = promoCodeIn;
+            }
+          }
+        } catch (e) {
+          console.error('Failed to fetch promo code (non-critical)', { e });
+        }
+      } else if (webinarDiscountIn) {
         try {
           const offeringSnap = await getDoc(doc(collection(db, 'offerings'), productTypeIn));
           if (offeringSnap.exists()) {
@@ -323,7 +358,7 @@ export async function POST(req: NextRequest) {
         const orig = parseInt(pi.metadata.original_amount, 10);
         if (Number.isFinite(orig) && orig > 0) installmentAmount = orig;
         nextMeta.installment = '';
-      } else if (webinarDiscountIn && baseAmount !== pi.amount) {
+      } else if (baseAmount !== pi.amount) {
         installmentAmount = baseAmount;
       }
     }

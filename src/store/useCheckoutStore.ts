@@ -78,6 +78,7 @@ function buildUpdateKey(
 
 		norm(p.site),
 		norm(p.installment ?? ""),
+		norm(p.promoCode ?? "").toUpperCase(),
 	].join("|");
 }
 

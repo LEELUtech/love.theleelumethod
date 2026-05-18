@@ -57,6 +57,7 @@ type Props = {
   loading: boolean;
   buttonText?: string;
   webinarDiscount?: boolean;
+  promoCode?: string;
 };
 
 export function StripeCardPart({
@@ -74,6 +75,7 @@ export function StripeCardPart({
   loading,
   buttonText = 'SIGN UP NOW',
   webinarDiscount,
+  promoCode,
 }: Props) {
   const stripe = useStripe();
   const elements = useElements();
@@ -154,6 +156,7 @@ export function StripeCardPart({
 
           installment: firstPaymentLabel ? '1' : undefined,
           webinarDiscount: webinarDiscount || undefined,
+          promoCode: promoCode || undefined,
         });
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : 'Failed to update payment info. Please try again.';

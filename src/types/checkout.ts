@@ -81,6 +81,7 @@ export type UpdateIntentPayload = {
 	site?: string;
 	installment?: string;
 	webinarDiscount?: boolean;
+	promoCode?: string;
 };
 
 export type CreateIntentResponse = {
