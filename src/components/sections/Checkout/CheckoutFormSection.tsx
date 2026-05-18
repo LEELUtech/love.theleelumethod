@@ -36,6 +36,7 @@ import { salesiqIdentify } from "@/lib/tracking/salesiqIdentify";
 import { saveEmailToLS } from "@/lib/tracking/localEmail";
 import { Section } from "@/components/ui/containers/section";
 import { checkWebinarDiscount, checkInstallmentPlan } from "@/lib/webinarDiscount";
+import { validatePromoCode, type PromoData } from "@/lib/promoDiscount";
 
 const pk = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY_LILYCHYSTOFAT!;
 const stripePromise = loadStripe(pk);
@@ -104,6 +105,7 @@ export default function CheckoutFormSection({
 	const searchParams = useSearchParams();
 
 	const [webinarDiscount, setWebinarDiscount] = React.useState(false);
+	const [promoDiscount, setPromoDiscount] = React.useState<PromoData | null>(null);
 
 	const product = useProductStore((s) => s.getProduct(productId));
 	const productLoading = useProductStore((s) =>
@@ -139,6 +141,15 @@ export default function CheckoutFormSection({
 	}, []);
 
 	React.useEffect(() => {
+		const promoFromUrl = searchParams.get("promo")?.trim().toUpperCase();
+		if (promoFromUrl) {
+			validatePromoCode(promoFromUrl, productId)
+				.then((data) => { if (data) setPromoDiscount(data); })
+				.catch(() => {});
+		}
+	}, [productId, searchParams]);
+
+	React.useEffect(() => {
 		if (productId !== "protocol_essentials") return;
 		const emailFromUrl = searchParams.get("email")?.trim().toLowerCase();
 		if (!emailFromUrl) return;
@@ -156,9 +167,11 @@ export default function CheckoutFormSection({
 			.catch(() => {});
 	}, [productId, searchParams]);
 
-	const effectivePrice = webinarDiscount && product?.discount_price != null
-		? product.discount_price
-		: (product?.price ?? 0);
+	const effectivePrice = promoDiscount
+		? promoDiscount.discountPrice
+		: webinarDiscount && product?.discount_price != null
+			? product.discount_price
+			: (product?.price ?? 0);
 
 	const priceLabel =
 		!productLoading && product
@@ -564,6 +577,14 @@ export default function CheckoutFormSection({
 									Payment Info
 								</h3>
 
+								{promoDiscount ? (
+									<div className="mt-4 inline-flex items-center gap-2 rounded-full bg-green-50 border border-green-200 px-3 py-1">
+										<span className="font-lato text-[12px] font-semibold text-green-700 uppercase tracking-[0.05em]">
+											Promo applied: {promoDiscount.code}
+										</span>
+									</div>
+								) : null}
+
 								{installmentOwed !== null ? (
 									<div className="mt-8 rounded-[8px] border border-brand-primary bg-brand-primary/5 px-4 py-3">
 										<p className="font-lato text-[13px] font-semibold uppercase tracking-[0.05em] text-brand-black">
@@ -637,6 +658,7 @@ export default function CheckoutFormSection({
 											firstPaymentLabel={firstPaymentLabel}
 											buttonText={getButtonText(productId)}
 											webinarDiscount={webinarDiscount || undefined}
+											promoCode={promoDiscount?.code}
 											onSuccess={() => {
 												markSuccess();
 												router.push("/success");
