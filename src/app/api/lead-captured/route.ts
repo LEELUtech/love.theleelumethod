@@ -34,6 +34,7 @@ type Body = {
 
 	firstName?: string;
 	lastName?: string;
+	phone?: string;
 
 	utmSource?: string;
 	utmMedium?: string;
@@ -200,6 +201,7 @@ export async function POST(req: NextRequest) {
 		const email = clean(body.email)?.toLowerCase();
 		const firstName = clean(body.firstName);
 		const lastName = clean(body.lastName);
+		const phone = clean(body.phone);
 		if (!email || !emailRegex.test(email)) {
 			return NextResponse.json({ ok: true, ignored: true });
 		}
@@ -223,6 +225,7 @@ export async function POST(req: NextRequest) {
 				site: siteFromReq,
 				firstName,
 				lastName,
+				phone,
 			});
 		} catch (e) {
 			console.error("Zoho lead_captured failed (non-critical)", {

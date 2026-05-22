@@ -3,10 +3,12 @@ import ArcAutoOnce from '@/components/ui/ArcFlyOnce';
 import Button from '@/components/ui/Button';
 import Header from '@/components/ui/Header';
 import RotateOnView from '@/components/ui/RotateOnView';
+import { PhoneNumberInput } from '@/components/ui/phone-number-input';
 import { sendFreeGuideEmail } from '@/lib/firebaseFunctions';
 import { api } from '@/lib/api';
 import { getStoredFirstUTM, getStoredLastUTM } from '@/utils/utm-tracker';
 import { salesiqIdentify } from '@/lib/tracking/salesiqIdentify';
+import { isPhoneValid } from '@/utils/is-phone-valid';
 import Image from 'next/image';
 import React from 'react';
 import { saveEmailToLS } from '@/lib/tracking/localEmail';
@@ -16,6 +18,7 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export default function SecretsHeroSection() {
   const [firstName, setFirstName] = React.useState('');
   const [email, setEmail] = React.useState('');
+  const [phone, setPhone] = React.useState('');
 
   const [submitting, setSubmitting] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -31,6 +34,7 @@ export default function SecretsHeroSection() {
 
     if (!fn) return setError('Please enter your first name.');
     if (!em || !emailRegex.test(em)) return setError('Please enter a valid email.');
+    if (!phone || !isPhoneValid(phone)) return setError('Please enter a valid phone number.');
 
     setSubmitting(true);
     try {
@@ -44,6 +48,7 @@ export default function SecretsHeroSection() {
         .post('/api/resource-optin', {
           email: em,
           firstName: fn,
+          phone: phone.trim() || undefined,
           resource: 'secrets',
           pagePath: window.location.pathname,
           sessionId: localStorage.getItem('ff_session_id') || undefined,
@@ -67,6 +72,7 @@ export default function SecretsHeroSection() {
       setSuccess(true);
       setFirstName('');
       setEmail('');
+      setPhone('');
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
@@ -152,6 +158,15 @@ export default function SecretsHeroSection() {
               spellCheck={false}
               className='w-full mt-4 rounded-md border border-[#E3D6CF] bg-white px-4 py-3 text-base text-[#1A0F0A] placeholder:text-[#5A5757] placeholder:text-lg outline-none'
             />
+
+            <div className='mt-4'>
+              <PhoneNumberInput
+                value={phone}
+                onChange={setPhone}
+                defaultCountry='us'
+                placeholder='Phone Number'
+              />
+            </div>
 
             <Button
               variant='primary'

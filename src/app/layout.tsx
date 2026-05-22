@@ -1,7 +1,8 @@
 import { Suspense } from "react";
 import localFont from "next/font/local";
 import { Figtree, Inter, Lato, Marcellus, Playfair_Display } from "next/font/google";
-import "./globals.css";
+import "./globals.css"
+import "react-international-phone/style.css";
 import UTMTracker from "@/components/ui/UTMTracker"
 import SalesIQScript from "@/components/ui/SalesIQScript"
 import PageTracker from "@/components/ui/PageTracker"

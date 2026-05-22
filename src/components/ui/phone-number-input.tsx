@@ -102,6 +102,7 @@ export const PhoneNumberInput: React.FC<Props> = ({
 							padding: "6px",
 							marginTop: "6px",
 							overflow: "auto",
+							zIndex: 9999,
 						},
 					},
 				}}

@@ -300,13 +300,14 @@ export async function upsertZohoContactFunnel(input: {
 // -------------------------
 // Backwards-compatible wrappers
 // -------------------------
-export async function upsertContactLeadCaptured(input: { email: string; site?: string, firstName?: string; lastName?: string }) {
+export async function upsertContactLeadCaptured(input: { email: string; site?: string; firstName?: string; lastName?: string; phone?: string }) {
   const res = await upsertZohoContactFunnel({
     email: input.email,
     step: "lead_captured",
     site: input.site,
     firstName: input.firstName,
     lastName: input.lastName,
+    phone: input.phone,
   });
   return res;
 }
