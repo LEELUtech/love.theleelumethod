@@ -9,6 +9,7 @@ type Body = {
   email: string;
   firstName?: string;
   lastName?: string;
+  phone?: string;
 
   site?: string;
   pagePath?: string;
@@ -65,7 +66,7 @@ export async function POST(req: NextRequest) {
     // Zoho CRM — create/update contact (non-critical)
     try {
       console.log("[resource-optin] CRM upsert start", { email });
-      const crmResult = await upsertContactLeadCaptured({ email, site, firstName, lastName });
+      const crmResult = await upsertContactLeadCaptured({ email, site, firstName, lastName, phone: clean(body.phone) });
       console.log("[resource-optin] CRM upsert ok", crmResult);
     } catch (e) {
       console.error("[resource-optin] CRM upsert FAILED", {

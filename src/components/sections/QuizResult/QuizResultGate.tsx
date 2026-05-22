@@ -5,10 +5,12 @@ import Image from "next/image";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import { Logo } from "@/components/ui/Logo";
+import { PhoneNumberInput } from "@/components/ui/phone-number-input";
 import { saveEmailToLS } from "@/lib/tracking/localEmail";
 import { salesiqIdentify } from "@/lib/tracking/salesiqIdentify";
 import { updateCampaignTags } from "@/lib/campaigns";
 import { getStoredFirstUTM, getStoredLastUTM } from "@/utils/utm-tracker";
+import { isPhoneValid } from "@/utils/is-phone-valid";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -37,6 +39,7 @@ export default function QuizResultGate({ children, type }: Props) {
   const [open, setOpen] = React.useState(true);
   const [firstName, setFirstName] = React.useState("");
   const [email, setEmail] = React.useState("");
+  const [phone, setPhone] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
   const [submitting, setSubmitting] = React.useState(false);
 
@@ -54,6 +57,7 @@ export default function QuizResultGate({ children, type }: Props) {
 
     if (!fn) return setError("Please enter your first name.");
     if (!em || !emailRegex.test(em)) return setError("Please enter a valid email.");
+    if (!phone || !isPhoneValid(phone)) return setError("Please enter a valid phone number.");
 
     setSubmitting(true);
     try {
@@ -71,6 +75,7 @@ export default function QuizResultGate({ children, type }: Props) {
         body: JSON.stringify({
           email: em,
           firstName: fn,
+          phone: phone.trim() || undefined,
           site: window.location.hostname,
           pagePath: window.location.pathname,
           sessionId: localStorage.getItem("ff_session_id") || undefined,
@@ -159,6 +164,15 @@ export default function QuizResultGate({ children, type }: Props) {
                     autoCorrect="off"
                     autoCapitalize="off"
                     spellCheck={false}
+                  />
+                </div>
+
+                <div>
+                  <PhoneNumberInput
+                    value={phone}
+                    onChange={setPhone}
+                    defaultCountry="us"
+                    placeholder="Phone Number"
                   />
                 </div>
 

@@ -47,6 +47,7 @@ type Props = {
   firstName: string;
   email: string;
   emailValid: boolean;
+  phone?: string;
   birthDate1: string;
   birthDate2: string;
 
@@ -61,6 +62,7 @@ export function StripeCardPart({
   firstName,
   email,
   emailValid,
+  phone,
   birthDate1,
   birthDate2,
   onSuccess,
@@ -122,6 +124,7 @@ export function StripeCardPart({
         productType,
         firstName,
         email,
+        phone,
         birthDate1,
         birthDate2,
 
@@ -178,6 +181,7 @@ export function StripeCardPart({
     firstName,
     email,
     emailValid,
+    phone,
     birthDate1,
     birthDate2,
     cardComplete,
