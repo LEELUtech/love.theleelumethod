@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 import Image from "next/image";
@@ -8,6 +8,7 @@ import { loadStripe, type StripeElementsOptions } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 
 import Input from "@/components/ui/Input";
+import { PhoneNumberInput } from "@/components/ui/phone-number-input";
 import BirthDatePicker from "@/components/ui/BirthDatePicker";
 import CardBrand from "@/components/ui/CardBrand";
 
@@ -18,6 +19,7 @@ import { formatPriceFromCents } from "@/helpers";
 import { COMPATIBILITY_REPORT, DATE_FORMAT } from "@/utils/constants";
 import { getStoredFirstUTM, getStoredLastUTM } from "@/utils/utm-tracker";
 import { salesiqIdentify } from "@/lib/tracking/salesiqIdentify";
+import { isPhoneValid } from "@/utils/is-phone-valid";
 import { saveEmailToLS } from "@/lib/tracking/localEmail";
 
 import {
@@ -33,6 +35,7 @@ const stripePromise = loadStripe(pk);
 type CompatibilityCheckoutForm = {
 	firstName: string;
 	email: string;
+	phone: string;
 	birthDate1: string;
 	birthDate2: string;
 };
@@ -42,6 +45,7 @@ type FormErrors = Partial<Record<keyof CompatibilityCheckoutForm, string>>;
 const initialForm: CompatibilityCheckoutForm = {
 	firstName: "",
 	email: "",
+	phone: "",
 	birthDate1: "",
 	birthDate2: "",
 };
@@ -243,6 +247,7 @@ export default function CheckoutFormSection() {
 				intentToken: intentToken || undefined,
 				email,
 				firstName,
+				phone: (formRef.current.phone || "").trim() || undefined,
 				sessionId: localStorage.getItem("ff_session_id") || undefined,
 				salesiqVisitorId:
 					localStorage.getItem("ff_salesiq_visitor_id") || undefined,
@@ -309,6 +314,9 @@ export default function CheckoutFormSection() {
 			if (!email || !emailRegex.test(email))
 				next.email = "Please enter a valid email.";
 
+			if (!data.phone || !isPhoneValid(data.phone))
+				next.phone = "Please enter a valid phone number.";
+
 			return next;
 		},
 		[],
@@ -335,6 +343,7 @@ export default function CheckoutFormSection() {
 
 	const showFirstNameError = submitAttempted && !!errors.firstName;
 	const showEmailError = submitAttempted && !!errors.email;
+	const showPhoneError = submitAttempted && !!errors.phone;
 	const showBirth1Error = submitAttempted && !!errors.birthDate1;
 	const showBirth2Error = submitAttempted && !!errors.birthDate2;
 
@@ -453,6 +462,20 @@ export default function CheckoutFormSection() {
 									) : null}
 								</div>
 
+								<div>
+									<PhoneNumberInput
+										value={form.phone}
+										onChange={(val) => setField("phone", val)}
+										defaultCountry="us"
+										placeholder="Phone number"
+									/>
+									{showPhoneError ? (
+										<p className="mt-1 text-xs font-lato text-brand-primary">
+											{errors.phone}
+										</p>
+									) : null}
+								</div>
+
 								<div className="pt-6">
 									<p className="font-canela font-light text-brand-black text-[20px]">
 										Payment Info
@@ -478,6 +501,7 @@ export default function CheckoutFormSection() {
 												firstName={form.firstName}
 												email={form.email}
 												emailValid={emailValid}
+												phone={form.phone}
 												birthDate1={form.birthDate1}
 												birthDate2={form.birthDate2}
 												onSuccess={onSuccess}
