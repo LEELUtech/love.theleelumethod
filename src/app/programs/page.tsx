@@ -1,4 +1,5 @@
 export const metadata = { title: "Programs | The Leelu Method" };
+export const revalidate = 300;
 
 import ProgramPreloader from '@/app/programs/ProgramPreloader';
 import BlindSpotSection from '@/components/sections/Programs/BlindSpotSection';
