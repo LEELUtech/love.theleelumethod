@@ -1,4 +1,4 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import Link from "next/link";
 
 function SocialIcon({
@@ -181,6 +181,14 @@ export default function Footer({ className }: { className?: string }) {
 											Legal
 										</Link>
 									</li>
+									<li>
+										<Link
+											href="/legal#refund-policy"
+											className="text-[11px] font-lato font-medium leading-6 tracking-widest text-black uppercase"
+										>
+											Terms of Purchase
+										</Link>
+									</li>
 								</ul>
 							</div>
 						</div>
@@ -229,6 +237,19 @@ export default function Footer({ className }: { className?: string }) {
 					</div>
 				</div>
 			</div>
+
+		<div className="container mt-10 border-t border-black/10 pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+			<p className="font-lato text-[11px] text-[#9B9DA8]">
+				&copy; {new Date().getFullYear()} Leelu Tech Inc. All rights reserved.
+			</p>
+			<p className="font-lato text-[11px] text-[#9B9DA8]">
+				All sales are final.{' '}
+				<Link href="/legal#refund-policy" className="underline hover:text-[#757986] transition-colors">
+					Terms of Purchase
+				</Link>
+			</p>
+		</div>
 		</footer>
 	);
 }
+

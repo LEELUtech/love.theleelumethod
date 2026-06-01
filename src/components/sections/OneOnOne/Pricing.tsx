@@ -295,6 +295,13 @@ export const Pricing = () => {
                   >
                     {link.label}
                   </Button>
+                  <p className='mt-3 text-center font-lato text-[11px] leading-[1.6] text-[#9B9DA8]'>
+                    All sales are final. No refunds. By purchasing you agree to our{' '}
+                    <a href='/legal#refund-policy' className='underline hover:text-[#757986] transition-colors'>
+                      Terms of Purchase
+                    </a>
+                    .
+                  </p>
                 </div>
               </li>
             );

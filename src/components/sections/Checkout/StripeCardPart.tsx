@@ -294,6 +294,14 @@ export function StripeCardPart({
       >
         {buttonText}
       </Button>
+
+      <p className='mt-4 text-center font-lato text-[11px] leading-[1.6] text-[#9B9DA8]'>
+        All sales are final. No refunds. By completing this purchase you agree to our{' '}
+        <a href='/legal#refund-policy' className='underline hover:text-[#757986] transition-colors'>
+          Terms of Purchase
+        </a>
+        .
+      </p>
     </>
   );
 }
