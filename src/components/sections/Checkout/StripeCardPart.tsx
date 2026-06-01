@@ -2,8 +2,8 @@
 'use client';
 
 import * as React from 'react';
-import { CardNumberElement, CardExpiryElement, CardCvcElement, useElements, useStripe } from '@stripe/react-stripe-js';
-import type { StripeError } from '@stripe/stripe-js';
+import { CardNumberElement, CardExpiryElement, CardCvcElement, PaymentRequestButtonElement, useElements, useStripe } from '@stripe/react-stripe-js';
+import type { PaymentRequest, PaymentRequestPaymentMethodEvent, StripeError } from '@stripe/stripe-js';
 import type { BillingForm } from '@/helpers/checkout';
 import { useCheckoutStore } from '@/store/useCheckoutStore';
 import Button from '@/components/ui/Button';
@@ -45,6 +45,7 @@ type Props = {
   clientSecret: string;
   productType: string;
   billing: BillingForm;
+  amountCents: number;
 
   ctx?: CheckoutCtx;
 
@@ -64,6 +65,7 @@ export function StripeCardPart({
   clientSecret,
   productType,
   billing,
+  amountCents,
   ctx,
 
   onSubmitAttempt,
@@ -92,6 +94,128 @@ export function StripeCardPart({
   const [cardError, setCardError] = React.useState<string | null>(null);
 
   const canPay = !!stripe && !!elements && !paying && cardComplete && expComplete && cvcComplete && !cardError;
+
+  // ── Apple Pay ──────────────────────────────────────────────────────────────
+  const [paymentRequest, setPaymentRequest] = React.useState<PaymentRequest | null>(null);
+  const [canApplePay, setCanApplePay] = React.useState(false);
+  const prInitialized = React.useRef(false);
+
+  // Initialize payment request once amount is known
+  React.useEffect(() => {
+    if (!stripe || !amountCents || prInitialized.current) return;
+    prInitialized.current = true;
+
+    const initialAmount = firstPaymentLabel ? Math.ceil(amountCents / 2) : amountCents;
+
+    const pr = stripe.paymentRequest({
+      country: 'US',
+      currency: 'usd',
+      total: {
+        label: productName ?? 'The Leelu Method',
+        amount: initialAmount,
+      },
+      requestPayerName: true,
+      requestPayerEmail: true,
+      requestPayerPhone: true,
+    });
+
+    pr.canMakePayment().then((result) => {
+      if (result) {
+        setPaymentRequest(pr);
+        setCanApplePay(true);
+      }
+    });
+
+    return () => { prInitialized.current = false; };
+  }, [stripe, amountCents]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Update amount when installment toggle or price changes
+  React.useEffect(() => {
+    if (!paymentRequest || !amountCents) return;
+    const amount = firstPaymentLabel ? Math.ceil(amountCents / 2) : amountCents;
+    paymentRequest.update({
+      total: { label: productName ?? 'The Leelu Method', amount },
+    });
+  }, [paymentRequest, firstPaymentLabel, amountCents, productName]);
+
+  // Apple Pay payment handler
+  React.useEffect(() => {
+    if (!paymentRequest || !stripe) return;
+
+    const handlePaymentMethod = async (event: PaymentRequestPaymentMethodEvent) => {
+      try {
+        const utm = getStoredLastUTM();
+        const nameParts = (event.payerName ?? '').trim().split(/\s+/);
+        const appleFirstName = nameParts[0] ?? '';
+        const appleLastName = nameParts.slice(1).join(' ');
+        const addr = event.paymentMethod.billing_details.address;
+
+        salesiqIdentify({
+          email: event.payerEmail ?? undefined,
+          firstName: appleFirstName || undefined,
+          lastName: appleLastName || undefined,
+          phone: event.payerPhone ?? undefined,
+        });
+
+        await updateIntent({
+          ...(ctx || {}),
+          productType,
+          email: event.payerEmail ?? '',
+          firstName: appleFirstName,
+          lastName: appleLastName,
+          phone: event.payerPhone ?? undefined,
+          address1: addr?.line1 ?? undefined,
+          address2: addr?.line2 ?? undefined,
+          city: addr?.city ?? undefined,
+          state: addr?.state ?? undefined,
+          postalCode: addr?.postal_code ?? undefined,
+          country: addr?.country ?? undefined,
+          utmSource: utm?.utm_source,
+          utmMedium: utm?.utm_medium,
+          utmCampaign: utm?.utm_campaign,
+          utmContent: utm?.utm_content,
+          utmTerm: utm?.utm_term,
+          installment: firstPaymentLabel ? '1' : undefined,
+          webinarDiscount: webinarDiscount || undefined,
+          promoCode: promoCode || undefined,
+        });
+      } catch {
+        event.complete('fail');
+        return;
+      }
+
+      const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(
+        clientSecret,
+        { payment_method: event.paymentMethod.id },
+        { handleActions: false },
+      );
+
+      if (confirmError) {
+        event.complete('fail');
+        setError(confirmError.message ?? 'Payment failed');
+        return;
+      }
+
+      event.complete('success');
+
+      if (paymentIntent?.status === 'requires_action') {
+        const { error: actionError } = await stripe.confirmCardPayment(clientSecret);
+        if (actionError) {
+          setError(actionError.message ?? 'Payment failed');
+          return;
+        }
+        onSuccess();
+      } else if (paymentIntent?.status === 'succeeded') {
+        onSuccess();
+      } else {
+        setError('Payment not completed. Please try again.');
+      }
+    };
+
+    paymentRequest.on('paymentmethod', handlePaymentMethod);
+    return () => { paymentRequest.off('paymentmethod', handlePaymentMethod); };
+  }, [paymentRequest, stripe, clientSecret, productType, ctx, firstPaymentLabel, webinarDiscount, promoCode, updateIntent, onSuccess]);
+  // ── End Apple Pay ──────────────────────────────────────────────────────────
 
   const onPay = async () => {
     const ok = onSubmitAttempt();
@@ -205,6 +329,28 @@ export function StripeCardPart({
 
   return (
     <>
+      {canApplePay && paymentRequest ? (
+        <div className='mt-4'>
+          <PaymentRequestButtonElement
+            options={{
+              paymentRequest,
+              style: {
+                paymentRequestButton: {
+                  type: 'default',
+                  theme: 'dark',
+                  height: '48px',
+                },
+              },
+            }}
+          />
+          <div className='my-6 flex items-center gap-3'>
+            <div className='h-px flex-1 bg-[#DADDE4]' />
+            <span className='font-lato text-[12px] uppercase tracking-widest text-[#9B9DA8]'>or pay with card</span>
+            <div className='h-px flex-1 bg-[#DADDE4]' />
+          </div>
+        </div>
+      ) : null}
+
       <div className='mt-4 space-y-3'>
         <div className={fieldClass}>
           <CardNumberElement
@@ -296,7 +442,7 @@ export function StripeCardPart({
       </Button>
 
       <p className='mt-4 text-center font-lato text-[11px] leading-[1.6] text-[#9B9DA8]'>
-        All sales are final. No refunds. By completing this purchase you agree to our{' '}
+        All sales are final. No refunds. By purchasing you agree to our{' '}
         <a href='/legal#refund-policy' className='underline hover:text-[#757986] transition-colors'>
           Terms of Purchase
         </a>
