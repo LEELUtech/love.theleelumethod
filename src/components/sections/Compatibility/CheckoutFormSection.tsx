@@ -498,6 +498,7 @@ export default function CheckoutFormSection() {
 											<StripeCardPart
 												clientSecret={clientSecret!}
 												productType={productId}
+												amountCents={product?.price ?? 0}
 												firstName={form.firstName}
 												email={form.email}
 												emailValid={emailValid}

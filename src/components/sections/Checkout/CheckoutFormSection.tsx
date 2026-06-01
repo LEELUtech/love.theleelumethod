@@ -650,6 +650,7 @@ export default function CheckoutFormSection({
 											clientSecret={clientSecret}
 											productType={productId}
 											billing={billing}
+											amountCents={installmentOwed ?? effectivePrice}
 											ctx={ctx}
 											onSubmitAttempt={handleSubmitAttempt}
 											loading={productLoading}
