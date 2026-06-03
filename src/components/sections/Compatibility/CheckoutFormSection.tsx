@@ -474,6 +474,19 @@ export default function CheckoutFormSection() {
 											{errors.phone}
 										</p>
 									) : null}
+									<label className="mt-3 flex items-start gap-2 cursor-pointer">
+										<input
+											type="checkbox"
+											defaultChecked={false}
+											className="mt-0.5 shrink-0 accent-brand-primary"
+										/>
+										<span className="font-lato text-xs text-[#5A5757] leading-relaxed">
+											By checking this box, you agree to receive SMS messages from The Leelu Method. Message and data rates may apply. Reply STOP to opt out at any time.{" "}
+											<a href="/legal" target="_blank" rel="noopener noreferrer" className="underline hover:text-brand-primary">
+												View our Privacy Policy.
+											</a>
+										</span>
+									</label>
 								</div>
 
 								<div className="pt-6">

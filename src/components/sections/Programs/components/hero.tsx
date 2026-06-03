@@ -121,12 +121,6 @@ export const ProgramsHero = (props: Props) => {
           {link.label}
         </Button>
 
-        <p className='mt-3 font-lato text-[11px] text-[#9B9DA8] text-center lg:order-4'>
-          All sales are final. No refunds.{' '}
-          <a href='/legal#refund-policy' className='underline hover:text-[#757986] transition-colors'>
-            Terms of Purchase
-          </a>
-        </p>
       </div>
     </Section>
   );

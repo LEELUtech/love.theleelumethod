@@ -4,17 +4,17 @@ import FixSection from '@/components/sections/QuizResult/FixSection';
 import HeroSection from '@/components/sections/QuizResult/HeroSection';
 import ProfileGlitchSection from '@/components/sections/QuizResult/ProfileGlitchSection';
 import QuizResultGate from '@/components/sections/QuizResult/QuizResultGate';
-import FooterLayout from '@/components/ui/footer/FooterLayout';
+import Footer from '@/components/ui/Footer';
 import { quizResults } from '@/utils/quiz-results';
 import { redirect } from 'next/navigation';
 import React from 'react';
 
 interface QuizResultPageProps {
-  searchParams: { type: string };
+  searchParams: Promise<{ type: string }>;
 }
 
-const QuizResultPage = ({ searchParams }: QuizResultPageProps) => {
-  const type = searchParams.type;
+const QuizResultPage = async ({ searchParams }: QuizResultPageProps) => {
+  const { type } = await searchParams;
 
   const result = quizResults.find((r) => r.type === type);
 
@@ -28,7 +28,7 @@ const QuizResultPage = ({ searchParams }: QuizResultPageProps) => {
         <HeroSection title={result.title} subtitle={result.subtitle} />
         <ProfileGlitchSection psychologicalProfile={result.psychologicalProfile} pattern={result.pattern} />
         <FixSection fix={result.fix} />
-        <FooterLayout withNavigation={false} />
+        <Footer />
       </main>
     </QuizResultGate>
   );
