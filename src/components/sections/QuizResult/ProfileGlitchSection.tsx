@@ -9,7 +9,7 @@ interface ProfileGlitchSectionProps {
 
 const ProfileGlitchSection = ({ psychologicalProfile, pattern }: ProfileGlitchSectionProps) => {
   return (
-    <section className='relative overflow-hidden'>
+    <section id="profile" className='relative overflow-hidden'>
       {/* background */}
       {/* <div className='absolute inset-0 z-0'>
         <Image

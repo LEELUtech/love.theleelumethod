@@ -53,14 +53,14 @@ const HeroSection = ({ title, subtitle }: HeroSectionProps) => {
 
           <Button
             className='mt-[24px] md:mt-[28px] xs:px-4 px-10 xs:text-[12px] text-center'
-            href="https://theleelumethod.ewebinar.com/webinar/decoded-love-22610"
+            href="#profile"
             trackingData={{
-              cta_name: 'quiz_result_secure_seat_cta',
-              cta_text: 'SECURE YOUR SEAT TO RESET THE DYNAMIC',
+              cta_name: 'quiz_result_what_does_this_mean_cta',
+              cta_text: 'WHAT DOES THIS MEAN?',
               cta_location: 'hero',
             }}
           >
-            SECURE YOUR SEAT TO RESET THE DYNAMIC
+            WHAT DOES THIS MEAN?
           </Button>
         </div>
       </div>
