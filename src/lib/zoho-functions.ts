@@ -187,6 +187,13 @@ export async function upsertZohoContactFunnel(input: {
 
   birthDate1?: string; // MM/DD/YYYY — saved to Date_of_Birth
   birthDate2?: string; // MM/DD/YYYY — saved to Partner_Date_of_Birth
+
+  // SMS consent (TCPA) — write once, never overwrite
+  smsConsent?: boolean;
+  smsConsentAt?: string;   // ISO timestamp
+  smsConsentSource?: string; // page URL
+  smsConsentIp?: string;
+  smsConsentText?: string; // consent text version, e.g. "v1"
 }): Promise<UpsertResult> {
   const apiDomain = ZOHO_API_DOMAIN || env("ZOHO_API_DOMAIN_LILYCHYSTOFAT");
 
@@ -238,6 +245,15 @@ export async function upsertZohoContactFunnel(input: {
       if (st) patch.Checkout_Status = st;
     }
 
+    // SMS consent — write once, never overwrite
+    if (input.smsConsent) {
+      setIfEmpty(patch, "SMS_Consent", existing["SMS_Consent"], true);
+      setIfEmpty(patch, "SMS_Consent_At", existing["SMS_Consent_At"], nowDT);
+      setIfEmpty(patch, "SMS_Consent_Source", existing["SMS_Consent_Source"], input.smsConsentSource);
+      setIfEmpty(patch, "SMS_Consent_IP", existing["SMS_Consent_IP"], input.smsConsentIp);
+      setIfEmpty(patch, "SMS_Consent_Text", existing["SMS_Consent_Text"], input.smsConsentText ?? "v1");
+    }
+
     if (Object.keys(patch).length === 1) {
       return { contactId: existing.id, isNew: false };
     }
@@ -283,6 +299,15 @@ export async function upsertZohoContactFunnel(input: {
     createData.Stripe_Payment_Intent_ID = input.stripePaymentIntentId!.trim();
   }
 
+  // SMS consent — only on create if user opted in
+  if (input.smsConsent) {
+    createData.SMS_Consent = true;
+    createData.SMS_Consent_At = nowDT;
+    if (cleanStr(input.smsConsentSource)) createData.SMS_Consent_Source = input.smsConsentSource!.trim();
+    if (cleanStr(input.smsConsentIp)) createData.SMS_Consent_IP = input.smsConsentIp!.trim();
+    createData.SMS_Consent_Text = input.smsConsentText ?? "v1";
+  }
+
   console.log("[zoho-functions] CRM create payload:", JSON.stringify({ data: [createData] }, null, 2));
   const created = await zohoRequest<{ data?: Array<{ details?: { id?: string } }> }>({
     method: "POST",
@@ -300,7 +325,18 @@ export async function upsertZohoContactFunnel(input: {
 // -------------------------
 // Backwards-compatible wrappers
 // -------------------------
-export async function upsertContactLeadCaptured(input: { email: string; site?: string; firstName?: string; lastName?: string; phone?: string }) {
+export async function upsertContactLeadCaptured(input: {
+  email: string;
+  site?: string;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  smsConsent?: boolean;
+  smsConsentAt?: string;
+  smsConsentSource?: string;
+  smsConsentIp?: string;
+  smsConsentText?: string;
+}) {
   const res = await upsertZohoContactFunnel({
     email: input.email,
     step: "lead_captured",
@@ -308,6 +344,11 @@ export async function upsertContactLeadCaptured(input: { email: string; site?: s
     firstName: input.firstName,
     lastName: input.lastName,
     phone: input.phone,
+    smsConsent: input.smsConsent,
+    smsConsentAt: input.smsConsentAt,
+    smsConsentSource: input.smsConsentSource,
+    smsConsentIp: input.smsConsentIp,
+    smsConsentText: input.smsConsentText,
   });
   return res;
 }

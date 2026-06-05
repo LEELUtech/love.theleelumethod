@@ -101,6 +101,8 @@ export default function CheckoutFormSection() {
 	const [form, setForm] =
 		React.useState<CompatibilityCheckoutForm>(initialForm);
 
+	const [smsConsent, setSmsConsent] = React.useState(false);
+	const smsConsentRef = React.useRef(false);
 	const [submitAttempted, setSubmitAttempted] = React.useState(false);
 	const [errors, setErrors] = React.useState<FormErrors>({});
 	const [hadSecretOnce, setHadSecretOnce] = React.useState(false);
@@ -251,6 +253,7 @@ export default function CheckoutFormSection() {
 				sessionId: localStorage.getItem("ff_session_id") || undefined,
 				salesiqVisitorId:
 					localStorage.getItem("ff_salesiq_visitor_id") || undefined,
+				smsConsent: smsConsentRef.current || undefined,
 				...(ctx || {}),
 			};
 
@@ -477,7 +480,12 @@ export default function CheckoutFormSection() {
 									<label className="mt-3 flex items-start gap-2 cursor-pointer">
 										<input
 											type="checkbox"
-											defaultChecked={false}
+											checked={smsConsent}
+											onChange={(e) => {
+												setSmsConsent(e.target.checked);
+												smsConsentRef.current = e.target.checked;
+												if (e.target.checked) captureLeadInternal({ force: true });
+											}}
 											className="mt-0.5 shrink-0 accent-brand-primary"
 										/>
 										<span className="font-lato text-xs text-[#5A5757] leading-relaxed">

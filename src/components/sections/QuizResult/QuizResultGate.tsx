@@ -40,6 +40,7 @@ export default function QuizResultGate({ children, type }: Props) {
   const [firstName, setFirstName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [phone, setPhone] = React.useState("");
+  const [smsConsent, setSmsConsent] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [submitting, setSubmitting] = React.useState(false);
 
@@ -76,6 +77,7 @@ export default function QuizResultGate({ children, type }: Props) {
           email: em,
           firstName: fn,
           phone: phone.trim() || undefined,
+          smsConsent: smsConsent || undefined,
           site: window.location.hostname,
           pagePath: window.location.pathname,
           sessionId: localStorage.getItem("ff_session_id") || undefined,
@@ -177,7 +179,8 @@ export default function QuizResultGate({ children, type }: Props) {
                   <label className="mt-3 flex items-start gap-2 cursor-pointer">
                     <input
                       type="checkbox"
-                      defaultChecked={false}
+                      checked={smsConsent}
+                      onChange={(e) => setSmsConsent(e.target.checked)}
                       className="mt-0.5 shrink-0 accent-brand-primary"
                     />
                     <span className="font-lato text-xs text-[#5A5757] leading-relaxed">

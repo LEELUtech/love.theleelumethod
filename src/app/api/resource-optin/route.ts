@@ -28,6 +28,7 @@ type Body = {
 
   sessionId?: string;
   resource?: string; // e.g. "secrets"
+  smsConsent?: boolean;
 };
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -60,13 +61,25 @@ export async function POST(req: NextRequest) {
     const lastName = clean(body.lastName) ?? split.lastName;
     const site = process.env.ZOHO_WEBSITE_DOMAIN_LILYCHYSTOFAT || "unknown";
     const pagePath = clean(body.pagePath);
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+      ?? req.headers.get("x-real-ip")
+      ?? undefined;
 
     console.log("[resource-optin] start", { email, firstName, lastName, site, pagePath, resource: body.resource });
 
     // Zoho CRM — create/update contact (non-critical)
     try {
       console.log("[resource-optin] CRM upsert start", { email });
-      const crmResult = await upsertContactLeadCaptured({ email, site, firstName, lastName, phone: clean(body.phone) });
+      const crmResult = await upsertContactLeadCaptured({
+        email, site, firstName, lastName, phone: clean(body.phone),
+        ...(body.smsConsent ? {
+          smsConsent: true,
+          smsConsentAt: new Date().toISOString(),
+          smsConsentSource: pagePath ? `https://${site}${pagePath}` : site,
+          smsConsentIp: ip,
+          smsConsentText: "v1",
+        } : {}),
+      });
       console.log("[resource-optin] CRM upsert ok", crmResult);
     } catch (e) {
       console.error("[resource-optin] CRM upsert FAILED", {
