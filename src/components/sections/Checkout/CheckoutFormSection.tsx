@@ -126,6 +126,8 @@ export default function CheckoutFormSection({
 	} = useCheckoutStore();
 
 	const [billing, setBilling] = React.useState<BillingForm>(initialBilling);
+	const [smsConsent, setSmsConsent] = React.useState(false);
+	const smsConsentRef = React.useRef(false);
 	const [payInInstallments, setPayInInstallments] = React.useState(false);
 	const [submitAttempted, setSubmitAttempted] = React.useState(false);
 	const [hadSecretOnce, setHadSecretOnce] = React.useState(false);
@@ -321,6 +323,7 @@ export default function CheckoutFormSection({
 				firstName: (billingRef.current.firstName || "").trim() || undefined,
 				lastName: (billingRef.current.lastName || "").trim() || undefined,
 				sessionId: localStorage.getItem("ff_session_id") || undefined,
+				smsConsent: smsConsentRef.current || undefined,
 				...(ctx || {}),
 			};
 
@@ -571,7 +574,12 @@ export default function CheckoutFormSection({
 										<label className="mt-3 flex items-start gap-2 cursor-pointer">
 											<input
 												type="checkbox"
-												defaultChecked={false}
+												checked={smsConsent}
+												onChange={(e) => {
+													setSmsConsent(e.target.checked);
+													smsConsentRef.current = e.target.checked;
+													if (e.target.checked) captureLeadInternal({ force: true });
+												}}
 												className="mt-0.5 shrink-0 accent-brand-primary"
 											/>
 											<span className="font-lato text-xs text-[#5A5757] leading-relaxed">

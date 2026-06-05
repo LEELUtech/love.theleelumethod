@@ -53,8 +53,9 @@ type Body = {
 
 	leadSource?: string;
 
-	// optional (if you decide to send later)
 	salesiqVisitorId?: string;
+
+	smsConsent?: boolean;
 };
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -218,6 +219,10 @@ export async function POST(req: NextRequest) {
 				(await findPaymentDocIdByIntentToken(intentToken)) ?? undefined;
 		}
 
+		const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+			?? req.headers.get("x-real-ip")
+			?? undefined;
+
 		// Zoho snapshot (non-critical)
 		try {
 			await upsertContactLeadCaptured({
@@ -226,6 +231,13 @@ export async function POST(req: NextRequest) {
 				firstName,
 				lastName,
 				phone,
+				...(body.smsConsent ? {
+					smsConsent: true,
+					smsConsentAt: new Date().toISOString(),
+					smsConsentSource: pagePathIn ? `https://${siteFromReq}${pagePathIn}` : siteFromReq,
+					smsConsentIp: ip,
+					smsConsentText: "v1",
+				} : {}),
 			});
 		} catch (e) {
 			console.error("Zoho lead_captured failed (non-critical)", {
