@@ -15,4 +15,5 @@ export type FirestoreOfferingDoc = {
   discount_price?: number;
   currency?: string;
   space_id?: string;
+  hide_installments?: boolean;
 };

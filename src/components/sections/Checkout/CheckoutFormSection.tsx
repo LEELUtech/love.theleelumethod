@@ -169,6 +169,16 @@ export default function CheckoutFormSection({
 			.catch(() => {});
 	}, [productId, searchParams]);
 
+	const splitUnlocked = searchParams.get("split") === "1";
+	const showInstallmentToggle =
+		!productLoading &&
+		!!product &&
+		(product.hide_installments !== true || splitUnlocked);
+
+	React.useEffect(() => {
+		if (!showInstallmentToggle) setPayInInstallments(false);
+	}, [showInstallmentToggle]);
+
 	const effectivePrice = promoDiscount
 		? promoDiscount.discountPrice
 		: webinarDiscount && product?.discount_price != null
@@ -634,22 +644,24 @@ export default function CheckoutFormSection({
 											</p>
 										</button>
 
-										<button
-											type="button"
-											onClick={() => setPayInInstallments(true)}
-											className={`flex-1 rounded-[8px] border px-4 py-3 text-left transition-colors ${
-												payInInstallments
-													? "border-brand-primary bg-brand-primary/5"
-													: "border-[#C3C6D1] bg-white"
-											}`}
-										>
-											<p className="font-lato text-[13px] font-semibold uppercase tracking-[0.05em] text-brand-black">
-												2 payments
-											</p>
-											<p className="mt-0.5 font-lato text-[15px] text-[#41444E]">
-												{productLoading ? "..." : `${halfPriceLabel} × 2`}
-											</p>
-										</button>
+										{showInstallmentToggle ? (
+											<button
+												type="button"
+												onClick={() => setPayInInstallments(true)}
+												className={`flex-1 rounded-[8px] border px-4 py-3 text-left transition-colors ${
+													payInInstallments
+														? "border-brand-primary bg-brand-primary/5"
+														: "border-[#C3C6D1] bg-white"
+												}`}
+											>
+												<p className="font-lato text-[13px] font-semibold uppercase tracking-[0.05em] text-brand-black">
+													2 payments
+												</p>
+												<p className="mt-0.5 font-lato text-[15px] text-[#41444E]">
+													{productLoading ? "..." : `${halfPriceLabel} × 2`}
+												</p>
+											</button>
+										) : null}
 									</div>
 								)}
 
